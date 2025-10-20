@@ -39,8 +39,8 @@
     position: absolute;
     inset: 0;
     z-index: 9999;
-    outline: var(--chakra-colors-trails-solid) solid 3px;
-    outline-offset: -3px;
+    outline: var(--chakra-colors-trails-solid) solid 2px;
+    outline-offset: -2px;
 }
 
 .map-container:focus-visible {

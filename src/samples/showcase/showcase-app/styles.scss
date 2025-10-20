@@ -3,18 +3,6 @@
     overflow-y: auto;
 }
 
-.map-container:focus-visible {
-    outline: none;
-}
-
-.map-container:focus-visible:after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border: 3px solid var(--chakra-colors-trails-500);
-}
-
 @media screen and (max-width: 48em) {
     .map-anchor.main-map-anchor {
         max-height: 45%;
