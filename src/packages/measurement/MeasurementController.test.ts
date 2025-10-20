@@ -395,16 +395,6 @@ async function waitForZIndex(olLayer: VectorLayer) {
     });
 }
 
-async function waitForStyle(olLayer: VectorLayer) {
-    return await waitFor(() => {
-        const style = olLayer.getStyle();
-        if (style === undefined || style === null) {
-            throw new Error("No style was assigned");
-        }
-        return style;
-    });
-}
-
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
     const allOverlays = olMap.getOverlays().getArray();
     const tooltips = allOverlays.filter((ol) => ol.getElement()?.classList.contains(className));
