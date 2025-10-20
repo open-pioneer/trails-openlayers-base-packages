@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install
-        uses: open-pioneer/trails-core-packages/.github/actions/install@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Run tests
         run: pnpm ci:test
@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install
-        uses: open-pioneer/trails-core-packages/.github/actions/install@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Build samples
         run: pnpm build
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install
-        uses: open-pioneer/trails-core-packages/.github/actions/install@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Build packages
         run: pnpm build-packages
@@ -108,7 +108,7 @@ jobs:
           mv dist/docs site/docs;
 
       - name: Deploy
-        uses: open-pioneer/trails-core-packages/.github/actions/deploy-demo@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-demo@main
         with:
           src-repo: openlayers-base-packages
           target-path: ${{ needs.version.outputs.published == 'true' && 'latest' || 'dev' }}
