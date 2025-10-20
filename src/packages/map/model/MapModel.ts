@@ -20,7 +20,7 @@ import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
-import type { BaseFeature } from "../BaseFeature";
+import type { BaseFeature } from "../utils/BaseFeature";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
 import {
     assertInternalConstructor,

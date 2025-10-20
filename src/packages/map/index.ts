@@ -35,6 +35,16 @@ export { type WMSSublayer, type WMSSublayerConfig } from "./layers/wms/WMSSublay
 export { WMSLayer, type WMSLayerConfig } from "./layers/WMSLayer";
 export { WMTSLayer, type WMTSLayerConfig } from "./layers/WMTSLayer";
 export { type SublayersCollection } from "./layers/shared/SublayersCollection";
+export {
+    type AddLayerOptions,
+    type AddLayerOptionsAboveBelow,
+    type AddLayerOptionsBase,
+    type AddLayerOptionsTopBottom
+} from "./layers/shared/AddLayerOptions";
+export {
+    type LayerRetrievalOptions,
+    type RecursiveRetrievalOptions
+} from "./layers/shared/LayerRetrievalOptions";
 
 // Map Model
 export {
@@ -72,16 +82,4 @@ export {
 // Utils
 export { calculateBufferedExtent } from "./utils/geometry-utils";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
-
-// TODO: Decide where to put this
-export { type BaseFeature } from "./BaseFeature";
-
-// TODO: Decide where to put this
-export {
-    type AddLayerOptions,
-    type AddLayerOptionsAboveBelow,
-    type AddLayerOptionsBase,
-    type AddLayerOptionsTopBottom,
-    type LayerRetrievalOptions,
-    type RecursiveRetrievalOptions
-} from "./shared";
+export { type BaseFeature } from "./utils/BaseFeature";

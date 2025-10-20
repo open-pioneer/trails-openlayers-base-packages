@@ -5,7 +5,7 @@ import { LineString, Point, Polygon } from "ol/geom";
 import OlMap from "ol/Map";
 import View from "ol/View";
 import { afterEach, expect, it } from "vitest";
-import { BaseFeature } from "../BaseFeature";
+import { BaseFeature } from "../utils/BaseFeature";
 import { Highlights } from "./Highlights";
 
 let _highlights: Highlights | undefined;

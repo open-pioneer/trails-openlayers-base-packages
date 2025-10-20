@@ -22,9 +22,13 @@ import {
 } from "../layers/shared/internals";
 import { assertInternalConstructor, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AnyLayer, Layer, Sublayer } from "../layers/unions";
-import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import type { AddLayerOptions } from "../layers/shared/AddLayerOptions";
+import type {
+    LayerRetrievalOptions,
+    RecursiveRetrievalOptions
+} from "../layers/shared/LayerRetrievalOptions";
 import { MapModel } from "./MapModel";
-import { getRecursiveLayers } from "./getRecursiveLayers";
+import { getRecursiveLayers } from "../layers/shared/getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
 

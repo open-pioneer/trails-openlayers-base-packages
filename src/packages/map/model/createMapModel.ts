@@ -72,9 +72,8 @@ class MapModelFactory {
                 const originalEvent = mapBrowserEvent.originalEvent;
                 return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
             };
-            /*
-             * setting altShiftDragRotate to false disables or excludes DragRotate interaction
-             * */
+
+            // setting altShiftDragRotate to false disables or excludes DragRotate interaction
             mapOptions.interactions = defaultInteractions({
                 dragPan: true,
                 altShiftDragRotate: false,
@@ -105,7 +104,6 @@ class MapModelFactory {
         }
 
         const olMap = new OlMap(mapOptions);
-
         const mapModel = new MapModel(
             {
                 id: mapId,
