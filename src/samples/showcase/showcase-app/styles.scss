@@ -8,8 +8,3 @@
         max-height: 45%;
     }
 }
-
-/* Set map focus style on map-anchor container to respect map padding inset 0*/
-.map-container-root:has(> .map-container:focus-visible) .map-anchors::after {
-    outline: none;
-}
