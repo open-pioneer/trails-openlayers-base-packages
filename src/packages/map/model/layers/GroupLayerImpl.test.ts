@@ -4,6 +4,7 @@ import { expect, it } from "vitest";
 import { Group } from "ol/layer";
 import { GroupLayer, SimpleLayer, WMSLayer } from "../../api";
 import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
+import TileLayer from "ol/layer/Tile";
 
 it("should not have any sublayers", () => {
     const olLayer = createTestOlLayer();
@@ -156,16 +157,19 @@ it("should return internal child layers only if explicitly specified", () => {
     const olLayer1 = new TileLayer({});
     const olLayer2 = new TileLayer({});
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new SimpleLayerImpl({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "internal",
                 title: "internal group member",
                 olLayer: olLayer2,
@@ -189,21 +193,25 @@ it("should return internal child layers only if explicitly specified (recursive 
     const olLayer1 = new TileLayer({});
     const olLayer2 = new TileLayer({});
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            createTestLayer({
+                type: GroupLayer,
                 id: "internal subgroup",
                 title: "subgroup test",
                 internal: true,
                 layers: [
-                    new SimpleLayerImpl({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2

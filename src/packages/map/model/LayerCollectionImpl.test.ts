@@ -161,22 +161,22 @@ it("only returns internal layer if explicitly specified", async () => {
     let layers = model.layers.getLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3); //expect 3 because internal map highlight layer is added automatically
 
     layers = model.layers.getAllLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getAllLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 
     layers = model.layers.getItems();
     expect(layers.length).toBe(1);
     layers = model.layers.getItems({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 
     layers = model.layers.getOperationalLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getOperationalLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 });
 
 it("generates automatic unique ids for layers", async () => {
@@ -1172,7 +1172,7 @@ describe("child access", () => {
             includeInternalLayers: true,
             sortByDisplayOrder: true
         });
-        expect(allLayers.length).toBe(3);
+        expect(allLayers.length).toBe(4); //expect 4 because internal map highlight layer is added automatically
         expect(allLayers[0]).toBe(base);
         expect(allLayers[1]).toBe(child);
         expect(allLayers[2]).toBe(group);
