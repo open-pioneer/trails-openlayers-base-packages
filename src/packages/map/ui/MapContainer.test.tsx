@@ -4,8 +4,12 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
-import { setupMap, waitForMapMount, SimpleMapOptions } from "@open-pioneer/map-test-utils";
-import TileLayer from "ol/layer/Tile";
+import {
+    setupMap,
+    waitForMapMount,
+    SimpleMapOptions,
+    createTestOlLayer
+} from "@open-pioneer/map-test-utils";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -71,15 +75,11 @@ it("successfully creates a map with given configuration", async () => {
         layers: [
             {
                 title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    visible: false
-                })
+                olLayer: createTestOlLayer()
             },
             {
                 title: "TopPlus Open Grau",
-                olLayer: new TileLayer({
-                    visible: false
-                })
+                olLayer: createTestOlLayer()
             }
         ]
     } satisfies SimpleMapOptions;

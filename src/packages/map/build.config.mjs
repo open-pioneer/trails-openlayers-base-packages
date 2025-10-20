@@ -8,7 +8,7 @@ export default defineBuildConfig({
     entryPoints: ["index", "internalTestSupport"],
     styles: "./ui/styles.css",
     services: {
-        MapRegistryImpl: {
+        MapRegistry: {
             provides: ["map.MapRegistry"],
             references: {
                 providers: {

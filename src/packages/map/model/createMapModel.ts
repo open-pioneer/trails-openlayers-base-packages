@@ -13,10 +13,11 @@ import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
-import { MapConfig } from "../api";
-import { registerProjections } from "../projections";
-import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
-import { MapModelImpl } from "./MapModelImpl";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
+import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
+import { registerProjections } from "../utils/projections";
+import { MapConfig } from "./MapConfig";
+import { MapModel } from "./MapModel";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -35,7 +36,7 @@ export async function createMapModel(
     mapConfig: MapConfig,
     intl: PackageIntl,
     httpService: HttpService
-): Promise<MapModelImpl> {
+): Promise<MapModel> {
     return await new MapModelFactory(mapId, mapConfig, intl, httpService).createMapModel();
 }
 
@@ -71,9 +72,8 @@ class MapModelFactory {
                 const originalEvent = mapBrowserEvent.originalEvent;
                 return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
             };
-            /*
-             * setting altShiftDragRotate to false disables or excludes DragRotate interaction
-             * */
+
+            // setting altShiftDragRotate to false disables or excludes DragRotate interaction
             mapOptions.interactions = defaultInteractions({
                 dragPan: true,
                 altShiftDragRotate: false,
@@ -104,13 +104,15 @@ class MapModelFactory {
         }
 
         const olMap = new OlMap(mapOptions);
-
-        const mapModel = new MapModelImpl({
-            id: mapId,
-            olMap,
-            initialExtent,
-            httpService: this.httpService
-        });
+        const mapModel = new MapModel(
+            {
+                id: mapId,
+                olMap,
+                initialExtent,
+                httpService: this.httpService
+            },
+            INTERNAL_CONSTRUCTOR_TAG
+        );
 
         return batch(() => {
             try {
