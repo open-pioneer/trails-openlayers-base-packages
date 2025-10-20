@@ -32,3 +32,17 @@
 .map-container-root .map-anchors > * {
     pointer-events: auto;
 }
+
+/* Set map focus style on map-anchor container to respect map padding inset 0*/
+.map-container-root:has(> .map-container:focus-visible) .map-anchors::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    outline: var(--chakra-colors-trails-solid) solid 3px;
+    outline-offset: -3px;
+}
+
+.map-container:focus-visible {
+    outline: none;
+}
