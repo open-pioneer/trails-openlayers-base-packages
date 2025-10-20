@@ -246,6 +246,35 @@ it("provides access to sublayers", () => {
     expect(sublayer.parent).toBe(layer);
 });
 
+it("should return internal sublayers only if explicitly specified", () => {
+    const { layer } = createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1"
+            },
+            {
+                name: "sublayer-2",
+                title: "Sublayer 2",
+                internal: true
+            }
+        ],
+        attach: true
+    });
+
+    let sublayers = layer.sublayers.getSublayers();
+    expect(sublayers.length).toBe(1);
+    sublayers = layer.sublayers.getSublayers({ includeInternalLayers: true });
+    expect(sublayers.length).toBe(2);
+
+    sublayers = layer.sublayers.getItems();
+    expect(sublayers.length).toBe(1);
+    sublayers = layer.sublayers.getItems({ includeInternalLayers: true });
+    expect(sublayers.length).toBe(2);
+});
+
 it("provides access to nested sublayers", () => {
     const { layer } = createLayer({
         title: "Layer",
@@ -300,6 +329,48 @@ it("should return all wms sublayers", () => {
     const sublayerIds = sublayers.map((sublayer) => sublayer.id);
     expect(sublayerIds).toContain("sublayer1");
     expect(sublayerIds).toContain("sublayer2");
+});
+
+it("should return internal sublayers only if explicitly specified (recursive retrieval)", () => {
+    const { layer } = createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1",
+                id: "sublayer1",
+                sublayers: [
+                    {
+                        name: "sublayer-2",
+                        title: "Sublayer 2",
+                        id: "sublayer2",
+                        internal: true,
+                        sublayers: [
+                            {
+                                name: "sublayer-3",
+                                title: "Sublayer 3",
+                                id: "sublayer3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        attach: true
+    });
+
+    let sublayers = layer.sublayers.getRecursiveLayers();
+    let sublayerIds = sublayers.map((sublayer) => sublayer.id);
+    expect(sublayerIds.length).toBe(1);
+    expect(sublayerIds).toContain("sublayer1");
+
+    sublayers = layer.sublayers.getRecursiveLayers({ includeInternalLayers: true });
+    sublayerIds = sublayers.map((sublayer) => sublayer.id);
+    expect(sublayerIds.length).toBe(3);
+    expect(sublayerIds).toContain("sublayer1");
+    expect(sublayerIds).toContain("sublayer2");
+    expect(sublayerIds).toContain("sublayer3");
 });
 
 it("uses http service to fetch images", async () => {

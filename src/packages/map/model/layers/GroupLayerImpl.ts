@@ -146,16 +146,23 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         return this.getLayers(options);
     }
 
-    getLayers(_options?: LayerRetrievalOptions | undefined): (AbstractLayer & Layer)[] {
-        // NOTE: options are ignored because layers are always ordered at this time.
-        return this.#layers.slice();
+    getLayers(options?: LayerRetrievalOptions | undefined): (AbstractLayer & Layer)[] {
+        // NOTE: sort options are ignored because layers are always ordered at this time.
+        let allLayers = this.#layers.slice();
+
+        if (!options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+
+        return allLayers;
     }
 
-    getRecursiveLayers(_options?: RecursiveRetrievalOptions): AnyLayer[] {
+    getRecursiveLayers(options?: RecursiveRetrievalOptions): AnyLayer[] {
         return getRecursiveLayers({
             from: this,
-            sortByDisplayOrder: _options?.sortByDisplayOrder,
-            filter: _options?.filter
+            sortByDisplayOrder: options?.sortByDisplayOrder,
+            includeInternalLayers: options?.includeInternalLayers,
+            filter: options?.filter
         });
     }
 
