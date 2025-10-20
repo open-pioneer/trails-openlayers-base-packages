@@ -11,6 +11,7 @@ export default defineBuildConfig({
             provides: "editing.EditingService",
             references: {
                 mapRegistry: "map.MapRegistry",
+                layerFactory: "map.LayerFactory",
                 httpService: "http.HttpService"
             }
         }

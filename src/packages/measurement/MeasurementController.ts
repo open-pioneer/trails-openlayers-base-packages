@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { destroyResource, Resource } from "@open-pioneer/core";
-import { MapModel, SimpleLayer } from "@open-pioneer/map";
+import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
 import MapBrowserEvent from "ol/MapBrowserEvent";
@@ -82,12 +82,13 @@ export class MeasurementController {
      */
     private measurementChangedHandler: MeasurementsChangeHandler | undefined;
 
-    constructor(map: MapModel, messages: Messages) {
+    constructor(map: MapModel, layerFactory: LayerFactory, messages: Messages) {
         this.map = map;
         this.olMap = map.olMap;
         this.messages = messages;
         const source = (this.source = new VectorSource());
-        this.layer = new SimpleLayer({
+        this.layer = layerFactory.create({
+            type: SimpleLayer,
             internal: true,
             title: "measurement-layer",
             olLayer: new VectorLayer<VectorSource, Feature>({
@@ -130,7 +131,7 @@ export class MeasurementController {
         this.helpTooltip.destroy();
 
         // Cleanup layer
-        this.map.layers.removeLayerById(this.layer.id);
+        this.map.layers.removeLayer(this.layer.id);
 
         this.measurementChangedHandler = undefined;
         this.predefinedMeasurements.clear();

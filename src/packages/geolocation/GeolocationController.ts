@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
-import { calculateBufferedExtent, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { calculateBufferedExtent, LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import olGeolocation, { GeolocationError } from "ol/Geolocation";
 import { unByKey } from "ol/Observable";
@@ -43,7 +43,12 @@ export class GeolocationController {
     #loading = reactive(false);
     #active = reactive(false);
 
-    constructor(map: MapModel, onError: OnErrorCallback, trackingOptions?: PositionOptions) {
+    constructor(
+        map: MapModel,
+        layerFactory: LayerFactory,
+        onError: OnErrorCallback,
+        trackingOptions?: PositionOptions
+    ) {
         this.map = map;
         this.onError = onError;
         this.isInitialZoom = true;
@@ -59,7 +64,8 @@ export class GeolocationController {
                 features: [this.accuracyFeature, this.positionFeature]
             })
         });
-        this.positionHighlightLayer = new SimpleLayer({
+        this.positionHighlightLayer = layerFactory.create({
+            type: SimpleLayer,
             title: "geolocation-highlight-layer",
             internal: true,
             olLayer: olLayer

@@ -3,7 +3,7 @@
 import { Reactive, effect, reactive } from "@conterra/reactivity-core";
 import { ManualPromise, Resource, createManualPromise } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { MapModel, SimpleLayer } from "@open-pioneer/map";
+import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Collection } from "ol";
 import { EventsKey } from "ol/events";
@@ -29,6 +29,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
 
     private _httpService: HttpService;
     private _intl: PackageIntl;
+    private _layerFactory: LayerFactory;
 
     private _map: MapModel;
     private _polygonStyle: FlatStyle;
@@ -54,6 +55,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
 
     constructor(options: { feature: Feature } & EditingWorkflowProps) {
         this._httpService = options.httpService;
+        this._layerFactory = options.layerFactory;
         this._intl = options.intl;
 
         this._polygonStyle = options.polygonStyle;
@@ -86,7 +88,8 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
         const olLayer = new VectorLayer({
             source: this._editingSource
         });
-        this._editingLayer = new SimpleLayer({
+        this._editingLayer = this._layerFactory.create({
+            type: SimpleLayer,
             title: "editing-layer",
             internal: true,
             olLayer: olLayer

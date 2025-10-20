@@ -361,14 +361,14 @@ function getFirstFeature(layer: VectorLayer<VectorSource, Feature>) {
 }
 
 async function setup() {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
 
     const olMap = map.olMap;
 
     // Sometimes needed by Draw interaction (returns null otherwise) :(
     olMap.getPixelFromCoordinate = () => [0, 0];
 
-    const controller = new MeasurementController(map, {
+    const controller = new MeasurementController(map, layerFactory, {
         getContinueMessage() {
             return "Click to continue drawing";
         },

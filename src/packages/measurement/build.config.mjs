@@ -9,5 +9,8 @@ export default defineBuildConfig({
     i18n: ["en", "de"],
     publishConfig: {
         strict: true
+    },
+    ui: {
+        references: ["map.LayerFactory"]
     }
 });

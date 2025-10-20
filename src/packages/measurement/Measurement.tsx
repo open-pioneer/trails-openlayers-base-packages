@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Field, HStack, Text } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
-import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import LineString from "ol/geom/LineString";
 import Polygon from "ol/geom/Polygon";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { MeasurementController, MeasurementType } from "./MeasurementController";
 
@@ -136,11 +136,12 @@ function useController(map: MapModel, props: MeasurementProps, intl: PackageIntl
         predefinedMeasurements
     } = props;
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
     useEffect(() => {
         if (!map) {
             return;
         }
-        const controller = new MeasurementController(map, {
+        const controller = new MeasurementController(map, layerFactory, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });
             },
@@ -159,7 +160,7 @@ function useController(map: MapModel, props: MeasurementProps, intl: PackageIntl
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl]);
+    }, [map, intl, layerFactory]);
 
     // Synchronize styles with controller
     useEffect(() => {
