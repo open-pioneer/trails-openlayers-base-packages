@@ -21,6 +21,8 @@ DefaultMapContext.displayName = "DefaultMapContext";
  *   <Toc />
  * </DefaultMapProvider>
  * ```
+ *
+ * @group UI Components and Hooks
  */
 export function DefaultMapProvider(
     props: Required<MapModelProps> & { children?: React.ReactNode }

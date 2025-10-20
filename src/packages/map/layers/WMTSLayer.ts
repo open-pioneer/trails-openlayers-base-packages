@@ -24,6 +24,8 @@ import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options supported by {@link WMTSLayer}.
+ *
+ * @group Layers
  */
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
@@ -55,6 +57,8 @@ const deprecatedConstructor = deprecated({
 
 /**
  * Displays an OGC Web Map Tile Service (WMTS).
+ *
+ * @group Layers
  */
 export class WMTSLayer extends AbstractLayer {
     #url: string;

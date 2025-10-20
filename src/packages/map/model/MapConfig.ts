@@ -9,6 +9,8 @@ import type { Layer } from "../layers/unions";
  * Configures an extent.
  *
  * Coordinates must be valid for the map's configured projection.
+ *
+ * @group Map Model
  */
 export interface ExtentConfig {
     xMin: number;
@@ -21,6 +23,8 @@ export interface ExtentConfig {
  * Configures a coordinate.
  *
  * Coordinates must be valid for the map's configured projection.
+ *
+ * @group Map Model
  */
 export interface CoordinateConfig {
     x: number;
@@ -30,6 +34,8 @@ export interface CoordinateConfig {
 
 /**
  * Configures the map's initial extent.
+ *
+ * @group Map Model
  */
 export interface InitialExtentConfig {
     kind: "extent";
@@ -38,6 +44,8 @@ export interface InitialExtentConfig {
 
 /**
  * Configures the map's initial position.
+ *
+ * @group Map Model
  */
 export interface InitialPositionConfig {
     kind: "position";
@@ -47,11 +55,15 @@ export interface InitialPositionConfig {
 
 /**
  * Configures the map's initial view.
+ *
+ * @group Map Model
  */
 export type InitialViewConfig = InitialExtentConfig | InitialPositionConfig;
 
 /**
  * Advanced options during map construction.
+ *
+ * @group Map Model
  */
 export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> {
     /**
@@ -67,6 +79,8 @@ export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> 
 
 /**
  * Options supported during map construction.
+ *
+ * @group Map Model
  */
 export interface MapConfig {
     /**

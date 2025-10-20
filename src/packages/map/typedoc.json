@@ -1,5 +1,15 @@
 {
     // openlayers-base-packages is a dev dependency (link to the project root)
     "extends": ["openlayers-base-packages/typedoc.base.json"],
-    "entryPoints": ["./index.ts"]
+    "entryPoints": ["./index.ts"],
+    "groupOrder": [
+        "Services",
+        "Layers",
+        "Layer Utilities",
+        "Map Model",
+        "UI Components and Hooks",
+        "Utilities",
+        "*"
+    ],
+    "sort": ["static-first", "visibility", "alphabetical-ignoring-documents"]
 }

@@ -20,6 +20,8 @@ const LOG = createLogger("map:MapRegistry");
 
 /**
  * Options passed to the {@link MapConfigProvider.getMapConfig} method.
+ *
+ * @group Services
  */
 export interface MapConfigProviderOptions {
     /**
@@ -32,6 +34,8 @@ export interface MapConfigProviderOptions {
  * Provides an OpenLayers map configuration with a given map id.
  *
  * The implementor must also provide the interface name `"map.MapConfigProvider"`.
+ *
+ * @group Services
  */
 export interface MapConfigProvider {
     /**
@@ -66,6 +70,8 @@ type ModelJobResult =
  * Maps are identified by a unique id.
  *
  * Inject an instance of this service by referencing the interface name `"map.MapRegistry"`.
+ *
+ * @group Services
  */
 export class MapRegistry implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "map.MapRegistry";

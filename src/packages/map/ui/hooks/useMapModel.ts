@@ -7,21 +7,28 @@ import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
 import { useDefaultMap } from "../DefaultMapProvider";
 
-/** Return value of {@link useMapModel}. */
+/**
+ * Return value of {@link useMapModel}.
+ *
+ * @group UI Components and Hooks
+ **/
 export type UseMapModelResult = UseMapModelLoading | UseMapModelResolved | UseMapModelRejected;
 
+/** @group UI Components and Hooks */
 export interface UseMapModelLoading {
     kind: "loading";
     map?: undefined;
     error?: undefined;
 }
 
+/** @group UI Components and Hooks */
 export interface UseMapModelResolved {
     kind: "resolved";
     map: MapModel;
     error?: undefined;
 }
 
+/** @group UI Components and Hooks */
 export interface UseMapModelRejected {
     kind: "rejected";
     map?: undefined;
@@ -32,6 +39,8 @@ export interface UseMapModelRejected {
  * React hook that returns the default map model (if available, see {@link DefaultMapProvider}).
  *
  * @deprecated Use {@link useMapModelValue} instead.
+ *
+ * @group UI Components and Hooks
  */
 export function useMapModel(): UseMapModelResult;
 
@@ -42,6 +51,8 @@ export function useMapModel(): UseMapModelResult;
  * the map model value or an initialization error.
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
+ *
+ * @group UI Components and Hooks
  */
 export function useMapModel(mapId: string): UseMapModelResult;
 
@@ -52,6 +63,8 @@ export function useMapModel(mapId: string): UseMapModelResult;
  * the map model value or an initialization error.
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
+ *
+ * @group UI Components and Hooks
  */
 export function useMapModel(props: { mapId: string }): UseMapModelResult;
 
@@ -107,6 +120,8 @@ export function useMapModel(props?: undefined | string | { mapId: string }): Use
  * If that is not available either, an error will be thrown.
  *
  * @see {@link DefaultMapProvider}
+ *
+ * @group UI Components and Hooks
  */
 export interface MapModelProps {
     /**
@@ -122,6 +137,8 @@ export interface MapModelProps {
  * If neither has been specified, an error will be thrown.
  *
  * This hook is preferable to {@link useMapModel} because it can return the map model directly, without waiting.
+ *
+ * @group UI Components and Hooks
  */
 export function useMapModelValue(props?: MapModelProps): MapModel {
     if (props instanceof MapModel) {

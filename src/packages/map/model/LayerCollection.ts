@@ -56,6 +56,8 @@ export const TOPMOST_LAYER_Z = 9999999;
 
 /**
  * Contains the layers contained in a {@link MapModel}.
+ *
+ * @group Map Model
  */
 export class LayerCollection {
     #map: MapModel;

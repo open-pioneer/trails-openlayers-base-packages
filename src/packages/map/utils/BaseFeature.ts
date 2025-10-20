@@ -9,6 +9,8 @@ import { Style } from "ol/style";
  * @typeParam PropertiesType The type of the properties of the feature.
  *            Use this parameter if you know the shape of features ahead of time.
  *            Note that this parameter should be some kind of object (not an array or primitive type).
+ *
+ * @group Utilities
  */
 export interface BaseFeature<PropertiesType = Readonly<Record<string, unknown>>> {
     /**

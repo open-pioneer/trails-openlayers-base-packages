@@ -19,6 +19,8 @@ import { AnyLayer, Layer } from "../unions";
 
 /**
  * Contains {@link Layer} instances that belong to a {@link GroupLayer}
+ *
+ * @group Layer Utilities
  */
 // NOTE: adding / removing  currently not supported.
 // When adding support for dynamic content, make sure to also updating the layer indexing logic in the map (LayerCollectionImpl).

@@ -17,6 +17,8 @@ import { Layer } from "../unions";
 
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
+ *
+ * @group Layer Utilities
  */
 // NOTE: adding / removing sublayers currently not supported
 export class SublayersCollection<SublayerType extends SublayerBaseType>
@@ -80,6 +82,8 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
      * Returns a reference to the internal sublayers array.
      *
      * NOTE: Do not modify directly!
+     *
+     * @internal
      */
     [GET_RAW_SUBLAYERS](): SublayerType[] {
         return this.#sublayers;

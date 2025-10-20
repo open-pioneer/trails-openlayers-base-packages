@@ -22,6 +22,8 @@ import { WMSLayer } from "../WMSLayer";
 
 /**
  * Configuration options to construct the sublayers of a {@link WMSLayer}.
+ *
+ * @group Layers
  */
 export interface WMSSublayerConfig extends LayerBaseConfig {
     /**
@@ -36,6 +38,8 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
 
 /**
  * Represents a sublayer of a {@link WMSLayer}.
+ *
+ * @group Layers
  */
 export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #parent: WMSSublayer | WMSLayer | undefined;
@@ -107,6 +111,8 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
 
     /**
      * Called by the parent layer when it is attached to the map to attach all sublayers.
+     *
+     * @internal
      */
     override [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
@@ -117,6 +123,7 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
         }
     }
 
+    /** @internal */
     override [DETACH_FROM_MAP](): void {
         super[DETACH_FROM_MAP]();
         for (const sublayer of this.#sublayers.getSublayers()) {
@@ -126,6 +133,8 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
 
     /**
      * Attaches this sublayer to its parent _layer_ and its immediate parent _layer or sublayer_.
+     *
+     * @internal
      */
     [ATTACH_TO_PARENT](parentLayer: WMSLayer, parent: WMSLayer | WMSSublayer): void {
         if (this.#parent) {
@@ -150,6 +159,8 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
 
     /**
      * Called by the parent layer to update the legend on load.
+     *
+     * @internal
      */
     [SET_LEGEND](legendUrl: string | undefined) {
         this.#legend.value = legendUrl;

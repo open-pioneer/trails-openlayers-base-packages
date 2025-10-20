@@ -36,6 +36,8 @@ export interface AbstractLayerBaseOptions {
  *
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
+ *
+ * @group Layers
  */
 export abstract class AbstractLayerBase {
     #map = reactive<MapModel>();
@@ -216,6 +218,8 @@ export abstract class AbstractLayerBase {
 
     /**
      * Attaches the layer to its owning map.
+     *
+     * @internal
      */
     [ATTACH_TO_MAP](map: MapModel): void {
         if (this.#map.value) {
@@ -229,6 +233,8 @@ export abstract class AbstractLayerBase {
     /**
      * Attach group layers to its parent group layer.
      * Called by the parent layer.
+     *
+     * @internal
      */
     [ATTACH_TO_GROUP](parent: GroupLayer): void {
         if (this.#parent) {
@@ -241,6 +247,8 @@ export abstract class AbstractLayerBase {
 
     /**
      * Called when a layer is removed from the map.
+     *
+     * @internal
      */
     [DETACH_FROM_MAP](): void {
         this.#map.value = undefined;
@@ -250,6 +258,8 @@ export abstract class AbstractLayerBase {
      * Detach layer from parent group layer.
      *
      * Called by the parent group layer when destroyed or the layer gets removed.
+     *
+     * @internal
      */
     [DETACH_FROM_GROUP](): void {
         this.#parent = undefined;

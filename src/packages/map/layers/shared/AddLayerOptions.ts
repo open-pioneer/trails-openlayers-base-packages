@@ -2,9 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Layer } from "../unions";
 
-/** These options can be used to insert a new layer at a specific location in the top level hierarchy. */
+/**
+ * These options can be used to insert a new layer at a specific location in the top level hierarchy.
+ *
+ * @group Layer Utilities
+ **/
 export type AddLayerOptions = AddLayerOptionsTopBottom | AddLayerOptionsAboveBelow;
 
+/**
+ * @group Layer Utilities
+ */
 export interface AddLayerOptionsBase {
     /**
      * Where to insert the new layer.
@@ -20,10 +27,16 @@ export interface AddLayerOptionsBase {
     at: "top" | "bottom" | "above" | "below" | "topmost";
 }
 
+/**
+ * @group Layer Utilities
+ */
 export interface AddLayerOptionsTopBottom extends AddLayerOptionsBase {
     at: "top" | "bottom" | "topmost";
 }
 
+/**
+ * @group Layer Utilities
+ */
 export interface AddLayerOptionsAboveBelow extends AddLayerOptionsBase {
     at: "above" | "below";
 

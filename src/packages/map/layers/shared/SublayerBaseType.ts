@@ -5,6 +5,8 @@ import { AnyLayer, Layer, SublayerTypes } from "../unions";
 
 /**
  * Represents a sublayer of another layer.
+ *
+ * @group Layers
  */
 export interface SublayerBaseType extends AbstractLayerBase {
     /**

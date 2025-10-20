@@ -4,6 +4,8 @@ import { LayerRetrievalOptions } from "./LayerRetrievalOptions";
 
 /**
  * Contains the children of a layer.
+ *
+ * @group Layer Utilities
  */
 export interface ChildrenCollection<LayerType> {
     /**

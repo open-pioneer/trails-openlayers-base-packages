@@ -39,6 +39,8 @@ import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.
+ *
+ * @group Layers
  */
 export interface WMSLayerConfig extends LayerConfig {
     /** URL of the WMS service. */
@@ -75,6 +77,8 @@ const deprecatedConstructor = deprecated({
 
 /**
  * Displays an OGC Web Map Service (WMS).
+ *
+ * @group Layers
  */
 export class WMSLayer extends AbstractLayer {
     #url: string;
@@ -201,6 +205,7 @@ export class WMSLayer extends AbstractLayer {
         return this.#capabilities;
     }
 
+    /** @internal */
     [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
         for (const sublayer of this.#sublayers.getSublayers()) {
@@ -210,6 +215,7 @@ export class WMSLayer extends AbstractLayer {
         this.#load();
     }
 
+    /** @internal */
     [DETACH_FROM_MAP](): void {
         super[DETACH_FROM_MAP]();
         for (const sublayer of this.#sublayers.getSublayers()) {

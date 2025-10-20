@@ -17,6 +17,8 @@ interface References {
  *
  * The `type` option is mandatory and indicates the type of the layer (e.g. `WMSLayer`).
  * The other options depend on the specific layer type.
+ *
+ * @group Services
  */
 export type LayerCreateOptions<LayerType extends Layer, Config extends LayerConfig> = {
     /** The layer type to construct. */
@@ -27,6 +29,8 @@ export type LayerCreateOptions<LayerType extends Layer, Config extends LayerConf
  * Creates instances of layer classes.
  *
  * Use the interface `"map.LayerFactory"` to obtain an instance of this service.
+ *
+ * @group Services
  */
 export class LayerFactory {
     declare [DECLARE_SERVICE_INTERFACE]: "map.LayerFactory";

@@ -11,6 +11,9 @@ import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { MapModel, MapPadding } from "../model/MapModel";
 const LOG = createLogger("map:MapContainer");
 
+/**
+ * @group UI Components and Hooks
+ */
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {
     /**
      * Sets the map's padding directly.
@@ -63,6 +66,8 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
  * Displays the map with the given id.
  *
  * There can only be at most one MapContainer for every map.
+ *
+ * @group UI Components and Hooks
  */
 export function MapContainer(props: MapContainerProps) {
     const {

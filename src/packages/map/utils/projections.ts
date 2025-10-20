@@ -10,6 +10,7 @@ type Proj4ProjectionDefinition = typeof proj4.defs extends infer R
         : never
     : never;
 
+/** @group Utilities */
 export type ProjectionDefinition = string | Proj4ProjectionDefinition;
 
 /**
@@ -31,6 +32,8 @@ export type ProjectionDefinition = string | Proj4ProjectionDefinition;
  * @param projections
  *      An object containing (key, definition) pairs. The key must be projection name (such as `"EPSG:4326"`).
  *      The value can be a string defining the projection or an existing proj4 definition object.
+ *
+ * @group Utilities
  */
 export function registerProjections(projections: Record<string, ProjectionDefinition>): void {
     for (const [name, definition] of Object.entries(projections)) {
@@ -42,6 +45,8 @@ export function registerProjections(projections: Record<string, ProjectionDefini
 
 /**
  * Searches the global [proj4js](https://github.com/proj4js/proj4js) definition set for a definition with the given name.
+ *
+ * @group Utilities
  */
 export function getProjection(name: string): Proj4ProjectionDefinition {
     return proj4.defs(name);

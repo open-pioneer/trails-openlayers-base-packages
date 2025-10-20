@@ -28,7 +28,11 @@ import { SimpleLayer } from "./SimpleLayer";
 
 const LOG = createLogger("map:AbstractLayer");
 
-/** The load state of a layer. */
+/**
+ * The load state of a layer.
+ *
+ * @group Layer Utilities
+ **/
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
@@ -38,6 +42,8 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
  *
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
+ *
+ * @group Layers
  */
 export abstract class AbstractLayer extends AbstractLayerBase {
     // Layer dependencies are present when the LayerFactory API was used to construct the layer.
@@ -119,6 +125,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
     /**
      * Called by the map model when the layer is added to the map.
+     *
+     * @internal
      */
     override [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
@@ -147,12 +155,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this[SET_VISIBLE](newVisibility);
     }
 
+    /** @internal */
     [SET_VISIBLE](newVisibility: boolean): void {
         if (this.#olLayer.getVisible() !== newVisibility) {
             this.#olLayer.setVisible(newVisibility);
         }
     }
 
+    /** @internal */
     [GET_DEPS](): LayerDependencies {
         const deps = this.#deps;
         if (deps) {

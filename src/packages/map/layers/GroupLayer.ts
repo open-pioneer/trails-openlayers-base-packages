@@ -22,6 +22,8 @@ import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.
+ *
+ * @group Layers
  */
 export interface GroupLayerConfig extends LayerConfig {
     /**
@@ -45,6 +47,8 @@ const deprecatedConstructor = deprecated({
  *
  * A group layer contains a collection of {@link Layer} children.
  * Groups can be nested to form a hierarchy.
+ *
+ * @group Layers
  */
 export class GroupLayer extends AbstractLayer {
     #children: GroupLayerCollection;
@@ -108,11 +112,13 @@ export class GroupLayer extends AbstractLayer {
         return super.olLayer as Group;
     }
 
+    /** @internal */
     override [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
         this.layers[GET_RAW_LAYERS]().forEach((layer) => layer[ATTACH_TO_MAP](map));
     }
 
+    /** @internal */
     override [DETACH_FROM_MAP](): void {
         super[DETACH_FROM_MAP]();
         this.layers[GET_RAW_LAYERS]().forEach((layer) => layer[DETACH_FROM_MAP]());

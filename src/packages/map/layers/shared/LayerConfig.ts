@@ -4,6 +4,8 @@ import { Layer } from "../unions";
 
 /**
  * Configuration options supported by all layer types (layers and sublayers).
+ *
+ * @group Layers
  */
 export interface LayerBaseConfig {
     /**
@@ -46,6 +48,8 @@ export interface LayerBaseConfig {
 
 /**
  * Configuration options supported by all operational layer types.
+ *
+ * @group Layers
  */
 export interface LayerConfig extends LayerBaseConfig {
     /**
@@ -64,5 +68,9 @@ export interface LayerConfig extends LayerBaseConfig {
     healthCheck?: string | HealthCheckFunction;
 }
 
-/** Custom function to check the state of a layer and returning a "loaded" or "error". */
+/**
+ * Custom function to check the state of a layer and returning a "loaded" or "error".
+ *
+ * @group Layer Utilities
+ **/
 export type HealthCheckFunction = (layer: Layer) => Promise<"loaded" | "error">;

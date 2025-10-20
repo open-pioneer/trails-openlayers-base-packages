@@ -12,3 +12,20 @@ new WMTS({
     // ...
 });
 ```
+
+## TypeDoc watch mode für einzelnes Bild
+
+`pnpm exec typedoc --watch` kann zum kontinuierlichen Bauen von Typedoc benutzt werden.
+Je nach Setup wird ein Pfad zu einer `tsconfig.json` und zu einem Outputverzeichnis benötigt, z.B.
+
+```bash
+$ cd src/packages/map
+$ pnpm exec typedoc --tsconfig ./../../../tsconfig.json  --out ../../../dist/docs-test --watch
+```
+
+In einem anderen Terminal dann einen Webserver starten:
+
+```bash
+$ cd dist/docs-test
+$ npx serve .
+```

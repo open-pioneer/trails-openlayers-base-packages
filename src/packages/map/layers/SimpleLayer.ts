@@ -15,6 +15,8 @@ import type { LayerFactory } from "../LayerFactory";
  * Options to construct a simple layer.
  *
  * Simple layers are wrappers around a custom OpenLayers layer.
+ *
+ * @group Layers
  */
 export interface SimpleLayerConfig extends LayerConfig {
     /**
@@ -35,6 +37,8 @@ const deprecatedConstructor = deprecated({
  *
  * Any kind of open layers can be made to work with the map package using this class.
  * Some API features (such as sublayers) may not be available.
+ *
+ * @group Layers
  */
 export class SimpleLayer extends AbstractLayer {
     /**

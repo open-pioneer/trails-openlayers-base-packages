@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { AnyLayer } from "../unions";
 
-/** These options can be used by some APIs returning an array of layers (or sublayers). */
+/**
+ * These options can be used by some APIs returning an array of layers (or sublayers).
+ *
+ * @group Layer Utilities
+ **/
 export interface LayerRetrievalOptions {
     /**
      * If set to `true`, layers will be ordered by their display order:
@@ -21,7 +25,11 @@ export interface LayerRetrievalOptions {
     includeInternalLayers?: boolean;
 }
 
-/** These options can be used when recursively retrieving layers from a collection. */
+/**
+ * These options can be used when recursively retrieving layers from a collection.
+ *
+ * @group Layer Utilities
+ **/
 export interface RecursiveRetrievalOptions extends LayerRetrievalOptions {
     /**
      * Optional filter function to determine whether a layer should be included in the result.

@@ -11,6 +11,8 @@ import { useMapContainerContext } from "./MapContainerContext";
  * The position of an anchor on the map.
  *
  * This is either a predefined position (like a corner) or a completely manual position.
+ *
+ * @group UI Components and Hooks
  */
 export type MapAnchorPosition =
     | "manual"
@@ -26,6 +28,9 @@ export type MapAnchorPosition =
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
+/**
+ * @group UI Components and Hooks
+ */
 export interface MapAnchorProps extends CommonComponentProps {
     /**
      * The position of the anchor container above the map.
@@ -62,6 +67,8 @@ export interface MapAnchorProps extends CommonComponentProps {
  * It can be used to position widgets (such as zoom buttons) at a specific location.
  *
  * Map anchors respect the map's current _view padding_.
+ *
+ * @group UI Components and Hooks
  */
 export function MapAnchor(props: MapAnchorProps): ReactNode {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;

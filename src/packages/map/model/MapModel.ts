@@ -36,7 +36,11 @@ const LOG = createLogger("map:MapModel");
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
-/** Style options supported when creating a new {@link Highlight}. */
+/**
+ * Style options supported when creating a new {@link Highlight}.
+ *
+ * @group Map Model
+ **/
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
@@ -44,7 +48,11 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 }
 
-/** Zoom options supported when creating a new {@link Highlight}. */
+/**
+ * Zoom options supported when creating a new {@link Highlight}.
+ *
+ * @group Map Model
+ **/
 export interface ZoomOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
@@ -68,11 +76,17 @@ export interface ZoomOptions {
     buffer?: number;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+/**
+ * Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method.
+ *
+ * @group Map Model
+ **/
 export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
 
 /**
  * Custom styles when creating a new {@link Highlight}.
+ *
+ * @group Map Model
  */
 export type HighlightStyle = {
     Point?: StyleLike;
@@ -87,6 +101,8 @@ export type HighlightStyle = {
  * Map padding, all values are pixels.
  *
  * See https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
+ *
+ * @group Map Model
  */
 export interface MapPadding {
     left?: number;
@@ -99,6 +115,8 @@ export interface MapPadding {
  * Represents the additional graphical representations of objects.
  *
  * See also {@link MapModel.highlight}.
+ *
+ * @group Map Model
  */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
@@ -106,11 +124,15 @@ export interface Highlight extends Resource {
 
 /**
  * Represents an object in the map.
+ *
+ * @group Map Model
  */
 export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Represents a map.
+ *
+ * @group Map Model
  */
 export class MapModel {
     readonly #id: string;
@@ -330,6 +352,8 @@ export class MapModel {
 
     /**
      * TODO: Can be removed once the LayerFactory is the only supported way of constructing a layer.
+     *
+     * @internal
      */
     get [LAYER_DEPS](): LayerDependencies {
         return this.#layerDeps;

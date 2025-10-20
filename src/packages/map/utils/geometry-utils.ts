@@ -8,6 +8,8 @@ const DEFAULT_BUFFER_FACTOR = 1.2;
  * Computes a buffered extent using the given original extent.
  *
  * Use the `factor` (`1.2` by default) to specify the size increase.
+ *
+ * @group Utilities
  */
 export function calculateBufferedExtent(extent: Extent, factor = DEFAULT_BUFFER_FACTOR): Extent {
     checkExtent(extent);

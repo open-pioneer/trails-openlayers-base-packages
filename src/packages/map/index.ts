@@ -1,6 +1,34 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+/**
+ * @module
+ *
+ * @groupDescription Services
+ *
+ * Services provided by this package and associated entities.
+ *
+ * @groupDescription Map Model
+ *
+ * Creating maps and accessing their state.
+ *
+ * @groupDescription UI Components and Hooks
+ *
+ * UI Components and hooks related to the map.
+ *
+ * @groupDescription Layers
+ *
+ * Layer classes and related types.
+ *
+ * @groupDescription Layer Utilities
+ *
+ * Utilities related to layer types.
+ *
+ * @groupDescription Utilities
+ *
+ * Various utilities related map state.
+ */
+
 // UI Components
 export { MapAnchor, type MapAnchorPosition, type MapAnchorProps } from "./ui/MapAnchor";
 export { MapContainer, type MapContainerProps } from "./ui/MapContainer";
