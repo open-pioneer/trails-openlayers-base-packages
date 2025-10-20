@@ -14,7 +14,7 @@ export interface LayerRetrievalOptions {
 
     /**
      * If set to `true` internal layers (`myLayer.internal === true`) are included in the returned array of layers.
-     * This includes also functional layer, such as the layer for highlights or geolocation, which were not explicitly added to the map.
+     * This includes system layer as well, such as the layer for highlights or geolocation, which were not explicitly added to the map.
      *
      * By default, internal layers are not returned.
      */
