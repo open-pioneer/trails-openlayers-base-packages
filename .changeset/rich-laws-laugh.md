@@ -2,7 +2,7 @@
 "@open-pioneer/map": minor
 ---
 
-Add new `"topmost"` option to add layers that are always displayed on the top (above all other layers).
+Add new `"topmost"` option to add layers that are always displayed on top (above all other layers).
 
 A new layers can be added at `topmost` to ensure that this layer will always be displayed on top of the other layers.
 This can be used, for example, to implement highlights or to draw graphics.

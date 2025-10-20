@@ -3,7 +3,7 @@
 ---
 
 Introduce `internal` property for all layer types (including sublayers).
-If `internal` is `true` (default: `false`) the layer is not considered by any UI widget (e.g. legend and Toc).
+If `internal` is `true` (default: `false`) the layer is not considered by any UI widget (e.g. Legend and Toc).
 The `internal` state of a layer is not to be confused with the layer's visibility on the map which is determined by the `visible` property.
 
 ```typescript

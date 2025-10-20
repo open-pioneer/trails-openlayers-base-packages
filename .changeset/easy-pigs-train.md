@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/legend": patch
+"@open-pioneer/legend": minor
 ---
 
 Introduce `listMode` for layer legend configurations:
