@@ -1,9 +1,10 @@
 ---
-"@open-pioneer/map": minor
+"@open-pioneer/map": major
 ---
 
-Introduce new property to make retrieval of internal (child) layers optional.
+**Breaking**: Internal layers are no longer returned from getters such as `getItems()` or `getRecursiveLayers()` by default.
 
+A new option `includeInternalLayers` has been implemented opt-in into internal layers.
 By default, internal layers are not returned by functions like `getItems()` or `getRecursiveLayers()`.
 If internal layer should be returned this must be specified explicitly with the `includeInternalLayers` option.
 
@@ -16,6 +17,6 @@ const layers = myMapModel.layers.getItems();
 const allLayers = myMapModel.layers.getItems({ includeInternalLayers: true });
 ```
 
-Note that if internal layers are returned this includes system layers  (e.g. for highlights or geolocation) that were not explicitly added to the map.
+Note that if internal layers are returned this includes system layers (e.g. for highlights or geolocation) that were not explicitly added to the map.
 The described behavior is aligned for the functions `getItems()`, `getLayers()`, `getAllLayers()` and `getRecursiveLayers()` in `LayerCollection`, `WMSLayer` and `GroupLayer`.
 The function `getRecursiveLayers()` does not return non-internal child layers of an internal layer.
