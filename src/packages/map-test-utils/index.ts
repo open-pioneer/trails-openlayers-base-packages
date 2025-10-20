@@ -127,6 +127,7 @@ export async function waitForInitialExtent(model: MapModel) {
 export interface SetupMapResult {
     mapId: string;
     registry: MapRegistry;
+    layerFactory: LayerFactory;
 }
 
 /**
@@ -192,7 +193,7 @@ export async function setupMap(
         // Ignore error on this promise (prevents unhandled error in tests)
         promise.catch(() => undefined);
     }
-    return { mapId, registry, map };
+    return { mapId, registry, layerFactory, map };
 }
 
 function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
