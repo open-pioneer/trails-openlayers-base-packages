@@ -653,9 +653,9 @@ describe("adding and removing layers", () => {
         expect(zIndices).toMatchInlineSnapshot(`
           {
             "dummy1": 0,
-            "topmost1": 1,
+            "topmost1": 2,
           }
-        `);
+        `); //z-index 1 is assigned to internal map highlight layer
 
         model.layers.addLayer(layerTopMost2, { at: "topmost" }); //should be above topmost1
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
@@ -666,10 +666,10 @@ describe("adding and removing layers", () => {
         expect(zIndices).toMatchInlineSnapshot(`
           {
             "dummy1": 0,
-            "topmost1": 1,
-            "topmost2": 2,
+            "topmost1": 2,
+            "topmost2": 3,
           }
-        `);
+        `); //z-index 1 is assigned to internal map highlight layer
 
         const oldZIndex = layerTopMost2.olLayer.getZIndex();
         model.layers.removeLayerById(layerTopMost.id); //remove (first) topmost
@@ -680,9 +680,9 @@ describe("adding and removing layers", () => {
         expect(zIndices).toMatchInlineSnapshot(`
           {
             "dummy1": 0,
-            "topmost2": 1,
+            "topmost2": 2,
           }
-        `);
+        `); //z-index 1 is assigned to internal map highlight layer
     });
 
     it("it throws error if reference layer is not a top level operational layer", async () => {
@@ -814,9 +814,9 @@ describe("adding and removing layers", () => {
         let zIndices = getZIndices(layers);
         expect(zIndices).toMatchInlineSnapshot(`
           {
-            "topmost": 0,
+            "topmost": 1,
           }
-        `);
+        `); //z-index 0 is assigned to internal map highlight layer
 
         model.layers.addLayer(layerOther, { at: "top" }); //top should be below topmost
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
@@ -827,9 +827,9 @@ describe("adding and removing layers", () => {
         expect(zIndices).toMatchInlineSnapshot(`
           {
             "other": 0,
-            "topmost": 1,
+            "topmost": 2,
           }
-        `);
+        `); //z-index 1 is assigned to internal map highlight layer
     });
 
     it("supports adding a layer to the model (above/below with top most layer as reference)", async () => {
@@ -880,10 +880,10 @@ describe("adding and removing layers", () => {
           {
             "dummy": 0,
             "other": 1,
-            "topmost": 3,
-            "topmostbelow": 2,
+            "topmost": 4,
+            "topmostbelow": 3,
           }
-        `);
+        `); //z-index 2 is assigned to internal map highlight
 
         model.layers.addLayer(layerTopMostAbove, { at: "above", reference: layerTopMostBelow });
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
@@ -896,11 +896,11 @@ describe("adding and removing layers", () => {
           {
             "dummy": 0,
             "other": 1,
-            "topmost": 4,
-            "topmostabove": 3,
-            "topmostbelow": 2,
+            "topmost": 5,
+            "topmostabove": 4,
+            "topmostbelow": 3,
           }
-        `);
+        `); //z-index 2 is assigned to internal map highlight layer
 
         model.layers.removeLayerById(layerTopMostBelow.id);
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
@@ -912,10 +912,10 @@ describe("adding and removing layers", () => {
           {
             "dummy": 0,
             "other": 1,
-            "topmost": 3,
-            "topmostabove": 2,
+            "topmost": 4,
+            "topmostabove": 3,
           }
-        `);
+        `); //z-index 0 is assigned to internal map highlight layer
     });
 });
 

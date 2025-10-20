@@ -74,7 +74,10 @@ export class LayerCollectionImpl implements LayerCollection {
         this.#map = map;
         this.#syncHandle = effect(() => {
             // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.
-            const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
+            const orderedLayers = this.getLayers({
+                sortByDisplayOrder: true,
+                includeInternalLayers: true
+            });
 
             // Simply reassign all z-indices whenever the order changes.
             let index = 0;
