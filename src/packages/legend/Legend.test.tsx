@@ -841,7 +841,7 @@ it("renders legend item if list mode is `show` even if layer is internal", async
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png",

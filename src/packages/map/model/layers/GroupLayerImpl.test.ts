@@ -153,19 +153,20 @@ it("should return all layers of the group layer collection, including child laye
 });
 
 it("should return internal child layers only if explicitly specified", () => {
-    const olLayer1 = new TileLayer({});
-    const olLayer2 = new TileLayer({});
+    const olLayer1 = createTestOlLayer();
+    const olLayer2 = createTestOlLayer();
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            createTestLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new SimpleLayerImpl({
+            createTestLayer({
                 id: "internal",
                 title: "internal group member",
                 olLayer: olLayer2,
@@ -186,24 +187,26 @@ it("should return internal child layers only if explicitly specified", () => {
 });
 
 it("should return internal child layers only if explicitly specified (recursive retrieval)", () => {
-    const olLayer1 = new TileLayer({});
-    const olLayer2 = new TileLayer({});
+    const olLayer1 = createTestOlLayer();
+    const olLayer2 = createTestOlLayer();
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            createTestLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            createTestLayer({
+                type: GroupLayer,
                 id: "internal subgroup",
                 title: "subgroup test",
                 internal: true,
                 layers: [
-                    new SimpleLayerImpl({
+                    createTestLayer({
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
