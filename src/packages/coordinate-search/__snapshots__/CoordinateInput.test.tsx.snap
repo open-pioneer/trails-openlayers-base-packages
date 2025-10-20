@@ -44,6 +44,7 @@ exports[`should successfully create a coordinate input component 1`] = `
           aria-haspopup="listbox"
           aria-invalid="false"
           aria-labelledby="select:_r_1_:label"
+          aria-required="false"
           class="coordinate-input-select-trigger chakra-select__trigger css-1qq4sc1"
           data-part="trigger"
           data-scope="select"

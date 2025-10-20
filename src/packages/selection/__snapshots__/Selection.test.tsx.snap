@@ -37,6 +37,7 @@ exports[`should successfully create a selection component and select the first s
         aria-haspopup="listbox"
         aria-invalid="false"
         aria-labelledby="select:_r_0_:label"
+        aria-required="false"
         class="chakra-select__trigger css-jjrwqe"
         data-part="trigger"
         data-scope="select"
