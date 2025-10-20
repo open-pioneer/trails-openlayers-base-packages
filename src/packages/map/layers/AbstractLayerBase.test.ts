@@ -8,7 +8,8 @@ import { afterEach, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { ATTACH_TO_MAP, INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
+import { ATTACH_TO_MAP } from "./shared/internals";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { onSync } from "@conterra/reactivity-events";
 

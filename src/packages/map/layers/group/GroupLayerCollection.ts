@@ -5,13 +5,17 @@ import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
 import { AbstractLayer } from "../AbstractLayer";
 import { GroupLayer } from "../GroupLayer";
 import { ChildrenCollection } from "../shared/ChildrenCollection";
-import { AnyLayer, Layer } from "../unions";
 import {
     ATTACH_TO_GROUP,
     DETACH_FROM_GROUP,
     GET_PARENT,
     GET_RAW_LAYERS
 } from "../shared/internals";
+import {
+    assertInternalConstructor,
+    InternalConstructorTag
+} from "../../utils/InternalConstructorTag";
+import { AnyLayer, Layer } from "../unions";
 
 /**
  * Contains {@link Layer} instances that belong to a {@link GroupLayer}
@@ -23,7 +27,9 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
     #layers: Layer[];
     #parent: GroupLayer;
 
-    constructor(layers: Layer[], parent: GroupLayer) {
+    /** @internal */
+    constructor(layers: Layer[], parent: GroupLayer, tag: InternalConstructorTag) {
+        assertInternalConstructor(tag);
         layers = layers.slice(); // Don't modify the input
         for (const layer of layers) {
             if (layer.isBaseLayer) {

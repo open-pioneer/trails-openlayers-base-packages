@@ -3,14 +3,10 @@
 import { HttpService } from "@open-pioneer/http";
 import { LayerConfig } from "./LayerConfig";
 import { Layer } from "../unions";
-
-/**
- * Package-internal constructor tag to signal that the layer constructor is being called from the layer factory.
- *
- * @internal
- */
-export const INTERNAL_CONSTRUCTOR_TAG = Symbol("INTERNAL_CONSTRUCTOR_TAG");
-export type InternalConstructorTag = typeof INTERNAL_CONSTRUCTOR_TAG;
+import {
+    InternalConstructorTag,
+    INTERNAL_CONSTRUCTOR_TAG
+} from "../../utils/InternalConstructorTag";
 
 /**
  * Options passed from the layer factory to the layer constructor.
@@ -59,12 +55,6 @@ export function getLayerDependencies(
         throw new Error("Internal error: layer dependencies are missing");
     }
     return deps;
-}
-
-export function assertInternalConstructor(tag: InternalConstructorTag) {
-    if (tag !== INTERNAL_CONSTRUCTOR_TAG) {
-        throw new Error("This constructor is internal.");
-    }
 }
 
 // use symbols for internal functions

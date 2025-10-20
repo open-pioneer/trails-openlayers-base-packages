@@ -22,6 +22,11 @@ import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
 import type { BaseFeature } from "../BaseFeature";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
+import {
+    assertInternalConstructor,
+    INTERNAL_CONSTRUCTOR_TAG,
+    InternalConstructorTag
+} from "../utils/InternalConstructorTag";
 import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
@@ -111,7 +116,7 @@ export class MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #olView: ReadonlyReactive<OlView>;
-    readonly #layers = new LayerCollection(this);
+    readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
@@ -126,12 +131,19 @@ export class MapModel {
     #displayStatus: "waiting" | "ready" | "error";
     #displayWaiter: ManualPromise<void> | undefined;
 
-    constructor(properties: {
-        id: string;
-        olMap: OlMap;
-        initialExtent: ExtentConfig | undefined;
-        httpService: HttpService;
-    }) {
+    /**
+     * @internal
+     */
+    constructor(
+        properties: {
+            id: string;
+            olMap: OlMap;
+            initialExtent: ExtentConfig | undefined;
+            httpService: HttpService;
+        },
+        tag: InternalConstructorTag
+    ) {
+        assertInternalConstructor(tag);
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#olView = synchronized(

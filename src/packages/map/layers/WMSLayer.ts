@@ -24,11 +24,10 @@ import {
     GET_DEPS,
     GET_RAW_SUBLAYERS,
     SET_LEGEND,
-    INTERNAL_CONSTRUCTOR_TAG,
-    InternalConstructorTag,
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
+import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { getLegendUrl } from "./wms/getLegendUrl";

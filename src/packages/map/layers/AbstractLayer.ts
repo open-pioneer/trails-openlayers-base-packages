@@ -11,13 +11,13 @@ import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     getLayerDependencies,
-    InternalConstructorTag,
     LayerDependencies,
     LAYER_DEPS,
     SET_VISIBLE,
     ATTACH_TO_MAP,
     GET_DEPS
 } from "./shared/internals";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";

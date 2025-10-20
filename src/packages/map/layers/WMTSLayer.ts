@@ -14,13 +14,8 @@ import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
-import {
-    ATTACH_TO_MAP,
-    GET_DEPS,
-    InternalConstructorTag,
-    LayerConstructor,
-    LayerDependencies
-} from "./shared/internals";
+import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 
 // Import for api docs

@@ -4,7 +4,8 @@ import { deprecated } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
+import { LayerConstructor, LayerDependencies } from "./shared/internals";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports

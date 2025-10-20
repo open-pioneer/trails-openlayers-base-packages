@@ -4,15 +4,17 @@ import { Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModel } from "../../model/MapModel";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
-    assertInternalConstructor,
     ATTACH_TO_MAP,
     ATTACH_TO_PARENT,
     DETACH_FROM_MAP,
     GET_RAW_SUBLAYERS,
-    INTERNAL_CONSTRUCTOR_TAG,
-    InternalConstructorTag,
     SET_LEGEND
 } from "../shared/internals";
+import {
+    assertInternalConstructor,
+    INTERNAL_CONSTRUCTOR_TAG,
+    InternalConstructorTag
+} from "../../utils/InternalConstructorTag";
 import { LayerBaseConfig } from "../shared/LayerConfig";
 import { SublayerBaseType } from "../shared/SublayerBaseType";
 import { SublayersCollection } from "../shared/SublayersCollection";

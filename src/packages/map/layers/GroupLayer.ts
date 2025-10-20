@@ -9,10 +9,10 @@ import {
     ATTACH_TO_MAP,
     DETACH_FROM_MAP,
     GET_RAW_LAYERS,
-    InternalConstructorTag,
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
+import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { Layer } from "./unions";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 
@@ -77,7 +77,7 @@ export class GroupLayer extends AbstractLayer {
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
         super({ ...config, olLayer: olGroup }, deps, internalTag);
-        this.#children = new GroupLayerCollection(groupLayers, this);
+        this.#children = new GroupLayerCollection(groupLayers, this, INTERNAL_CONSTRUCTOR_TAG);
     }
 
     override get type() {

@@ -13,10 +13,6 @@ import { createLogger, Resource } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
-import { AnyLayer, Layer, Sublayer } from "../layers/unions";
-import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
-import { MapModel } from "./MapModel";
-import { getRecursiveLayers } from "./getRecursiveLayers";
 import {
     ATTACH_TO_MAP,
     DETACH_FROM_MAP,
@@ -24,6 +20,11 @@ import {
     GET_RAW_SUBLAYERS,
     SET_VISIBLE
 } from "../layers/shared/internals";
+import { assertInternalConstructor, InternalConstructorTag } from "../utils/InternalConstructorTag";
+import { AnyLayer, Layer, Sublayer } from "../layers/unions";
+import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import { MapModel } from "./MapModel";
+import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
 
@@ -79,7 +80,10 @@ export class LayerCollection {
 
     #syncHandle: Resource | undefined;
 
-    constructor(map: MapModel) {
+    /** @internal */
+    constructor(map: MapModel, tag: InternalConstructorTag) {
+        assertInternalConstructor(tag);
+
         this.#map = map;
         this.#syncHandle = effect(() => {
             // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.
