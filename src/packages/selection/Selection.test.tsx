@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { SimpleLayer } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { createTestLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionSourceChangedEvent } from "./Selection";
@@ -89,7 +88,7 @@ it("Should fire selection source change events when the user selects a different
 });
 
 it("Should disable or enable selection option when changing the status of a source layer", async () => {
-    const layer = new SimpleLayer({
+    const layer = createTestLayer({
         id: "ogc_kitas",
         title: "Kindertagesstätten",
         visible: false,
@@ -251,7 +250,7 @@ function getOptions() {
 }
 
 function createTestSelectionSource(id: string, title: string, visibility: boolean = true) {
-    const layer = new SimpleLayer({
+    const layer = createTestLayer({
         id: id,
         title: title,
         visible: visibility,

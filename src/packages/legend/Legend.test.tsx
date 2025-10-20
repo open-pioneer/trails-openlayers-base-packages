@@ -822,7 +822,7 @@ it("reacts to changes in layer's internal state", async () => {
     expect(images.length).toBe(1);
 
     // Set internal to false
-    const layers = map.layers.getOperationalLayers();
+    const layers = map.layers.getOperationalLayers({ includeInternalLayers: true });
     act(() => {
         layers[1]?.setInternal(false);
     });
@@ -833,6 +833,48 @@ it("reacts to changes in layer's internal state", async () => {
 
     const nextImages = await getLegendImages(nextLegendDiv, 2);
     expect(nextImages.length).toBe(2);
+});
+
+it("renders legend item if list mode is `show` even if layer is internal", async () => {
+    const { map, Wrapper } = await setup({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: createTestOlLayer(),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png",
+                        listMode: "show"
+                    } satisfies LegendItemAttributes
+                },
+                visible: true,
+                internal: false
+            }
+        ]
+    });
+
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
+
+    // First check
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv, 1);
+    expect(images.length).toBe(1);
+
+    // Set internal to true
+    const layers = map.layers.getOperationalLayers({ includeInternalLayers: false });
+    act(() => {
+        layers[0]?.setInternal(true);
+    });
+
+    // Second check, legend item should still be there because listMode has precedence over internal status
+    const nextLegendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const nextImages = await getLegendImages(nextLegendDiv, 1);
+    expect(nextImages.length).toBe(1);
 });
 
 async function findLegend() {
