@@ -280,10 +280,6 @@ function mockVectorLayer() {
     VectorLayer.prototype.render = () => {
         return div;
     };
-
-    // Needed by tests in editing package
-    VectorLayer.prototype.setStyle = () => {};
-    VectorLayer.prototype.getStyleFunction = () => () => [];
 }
 
 mockVectorLayer();

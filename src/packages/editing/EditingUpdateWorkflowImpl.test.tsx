@@ -15,6 +15,16 @@ import { Feature } from "ol";
 import { Point } from "ol/geom";
 import VectorSource from "ol/source/Vector";
 
+// Flat style parsing doesn't work in tests (node, happy-dom, etc.)
+vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
+    const original: any = await importOriginal();
+    return {
+        ...original,
+        rulesToStyleFunction: () => () => [],
+        flatStylesToStyleFunction: () => () => []
+    };
+});
+
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const DEFAULT_SLEEP = 50;
 const HTTP_SERVICE: HttpService = {
@@ -362,7 +372,7 @@ function getEditingLayerAndSource(map: MapModel) {
 }
 
 function findEditingOlLayer(map: MapModel) {
-    const layers = map.layers.getOperationalLayers({includeInternalLayers: true});
+    const layers = map.layers.getOperationalLayers({ includeInternalLayers: true });
     const editingLayer = layers.find((l) => l.title === "editing-layer") as SimpleLayer | undefined;
 
     if (editingLayer) {

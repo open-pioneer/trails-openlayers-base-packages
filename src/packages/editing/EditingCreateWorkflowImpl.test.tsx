@@ -7,7 +7,7 @@ import Draw from "ol/interaction/Draw";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
 import { MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -15,6 +15,16 @@ import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
+
+// Flat style parsing doesn't work in tests (node, happy-dom, etc.)
+vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
+    const original: any = await importOriginal();
+    return {
+        ...original,
+        rulesToStyleFunction: () => () => [],
+        flatStylesToStyleFunction: () => () => []
+    };
+});
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const DEFAULT_SLEEP = 50;
@@ -425,7 +435,7 @@ function sleep(ms: number) {
 }
 
 function findEditingOlLayer(map: MapModel) {
-    const layers = map.layers.getOperationalLayers({includeInternalLayers: true});
+    const layers = map.layers.getOperationalLayers({ includeInternalLayers: true });
     const editingLayer = layers.find((l) => l.title === "editing-layer") as SimpleLayer | undefined;
 
     if (editingLayer) {
