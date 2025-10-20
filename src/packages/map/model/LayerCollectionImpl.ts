@@ -87,7 +87,6 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     destroy() {
-        // Collection is destroyed together with the map, there is no need to clean up the olMap
         for (const layer of this.#layersById.values()) {
             layer.destroy();
         }
@@ -100,10 +99,12 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     addLayer(layer: Layer, options?: AddLayerOptions): void {
-        checkLayerInstance(layer);
+        batch(() => {
+            checkLayerInstance(layer);
 
-        layer.__attachToMap(this.#map);
-        this.#addLayer(layer, options);
+            layer.__attachToMap(this.#map);
+            this.#addLayer(layer, options);
+        });
     }
 
     getBaseLayers(): Layer[] {
@@ -205,13 +206,47 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     removeLayerById(id: string): void {
-        const model = this.#layersById.get(id);
-        if (!model) {
-            LOG.isDebug() && LOG.debug(`Cannot remove layer '${id}': layer is unknown.`);
-            return;
-        }
+        batch(() => {
+            const model = this.#layersById.get(id);
+            if (!model) {
+                LOG.isDebug() && LOG.debug(`Cannot remove layer '${id}': layer is unknown.`);
+                return;
+            }
 
-        this.#removeLayer(model);
+            checkLayerInstance(model);
+            if (!this.#topLevelLayers.has(model)) {
+                LOG.warn(
+                    `Cannot remove layer '${model.id}': only top level layers can be removed at this time.`
+                );
+                return;
+            }
+
+            this.#removeLayer(model);
+            model.destroy();
+        });
+    }
+
+    removeLayer(layer: string | Layer): Layer | undefined {
+        return batch(() => {
+            let model;
+            if (typeof layer === "string") {
+                model = this.#layersById.get(layer);
+                if (!model) {
+                    return undefined;
+                }
+            } else {
+                model = layer;
+            }
+
+            checkLayerInstance(model);
+            if (!this.#topLevelLayers.has(model)) {
+                return undefined;
+            }
+
+            this.#removeLayer(model);
+            model.__detachFromMap();
+            return model;
+        });
     }
 
     getLayerByRawInstance(layer: OlBaseLayer): Layer | undefined {
@@ -297,24 +332,9 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     /**
-     * Removes the given layer from the map and all relevant indices.
-     * The layer will be destroyed.
+     * Removes the given top level layer from the map and all relevant indices.
      */
-    #removeLayer(model: LayerType | LayerBaseType) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (!this.#topLevelLayers.has(model as any)) {
-            LOG.warn(
-                `Cannot remove layer '${model.id}': only top level layers can be removed at this time.`
-            );
-            return;
-        }
-
-        if (!(model instanceof AbstractLayer)) {
-            throw new Error(
-                `Internal error: expected top level layer to be an instance of AbstractLayer.`
-            );
-        }
-
+    #removeLayer(model: LayerType) {
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         if (!model.isBaseLayer) {
@@ -331,8 +351,6 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             this.#updateBaseLayer(newBaseLayer);
         }
-
-        model.destroy();
     }
 
     #updateBaseLayer(model: LayerType | undefined) {
@@ -376,7 +394,7 @@ export class LayerCollectionImpl implements LayerCollection {
                 throw new Error(`OlLayer used by layer '${id}' has already been used in map.`);
             }
 
-            // Register this layer with the maps.
+            // Register this layer with the map.
             this.#layersById.set(id, model);
             if (olLayer) {
                 this.#layersByOlLayer.set(olLayer, model as LayerType); // ol is present --> not a sublayer

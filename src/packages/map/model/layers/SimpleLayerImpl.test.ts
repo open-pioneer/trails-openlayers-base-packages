@@ -1,15 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment node
- */
-import TileLayer from "ol/layer/Tile";
+import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { expect, it } from "vitest";
-import { SimpleLayerImpl } from "./SimpleLayerImpl";
+import { SimpleLayer } from "../../api";
 
 it("supports wrap an OpenLayers layer", () => {
-    const olLayer = new TileLayer({});
-    const layer = new SimpleLayerImpl({
+    const olLayer = createTestOlLayer();
+    const layer = createTestLayer({
+        type: SimpleLayer,
         id: "a",
         title: "Foo",
         olLayer: olLayer
@@ -18,10 +16,11 @@ it("supports wrap an OpenLayers layer", () => {
 });
 
 it("should not have any sublayers", () => {
-    const layer = new SimpleLayerImpl({
+    const layer = createTestLayer({
+        type: SimpleLayer,
         id: "a",
         title: "Foo",
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     });
     expect(layer.sublayers).toBeUndefined();
 });

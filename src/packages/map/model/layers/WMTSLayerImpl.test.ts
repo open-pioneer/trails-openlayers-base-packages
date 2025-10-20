@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
+import { createTestLayer } from "@open-pioneer/map-test-utils";
 import TileState from "ol/TileState";
 import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
@@ -8,7 +9,6 @@ import { WMTS } from "ol/source";
 import { Mock, afterEach, expect, it, vi } from "vitest";
 import { WMTSLayer, WMTSLayerConfig } from "../../api";
 import { MapModelImpl } from "../MapModelImpl";
-import { WMTSLayerImpl } from "./WMTSLayerImpl";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -69,19 +69,24 @@ it("uses http service to fetch images", async () => {
 function createLayer(
     options: WMTSLayerConfig & { fetch?: Mock; attach?: boolean; waitForCapas?: boolean }
 ) {
-    const layer = new WMTSLayerImpl(options);
     const httpService = {
         fetch:
             options?.fetch ??
             vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
     } as HttpService;
+    const layer = createTestLayer({ type: WMTSLayer, ...options }, httpService);
+
     const mapModel = {
-        __sharedDependencies: {
+        __layerDeps: {
             httpService: httpService as HttpService
         }
     } as MapModelImpl;
 
-    if (options?.attach) {
+    // ensure that __attachToMap can be called
+    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModelImpl): void } {
+        return !!l && typeof (l as any).__attachToMap === "function";
+    }
+    if (options?.attach && isAttachable(layer)) {
         layer.__attachToMap(mapModel);
     }
 

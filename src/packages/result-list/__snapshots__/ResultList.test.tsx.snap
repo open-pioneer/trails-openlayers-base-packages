@@ -50,7 +50,7 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="tooltip"
                 data-state="closed"
                 dir="ltr"
-                id="tooltip:«r0»:trigger"
+                id="tooltip:_r_0_:trigger"
               >
                 <label
                   aria-label="selectAllTooltip"
@@ -59,12 +59,13 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  for="checkbox:«r2»:input"
-                  id="«r1»"
+                  for="checkbox:_r_2_:input"
+                  id="_r_1_"
                 >
                   <input
-                    aria-labelledby="«r1»"
-                    id="checkbox:«r2»:input"
+                    aria-invalid="false"
+                    aria-labelledby="_r_1_"
+                    id="checkbox:_r_2_:input"
                     style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                     type="checkbox"
                     value="on"
@@ -76,7 +77,7 @@ exports[`expect result list to be created successfully 1`] = `
                     data-scope="checkbox"
                     data-state="unchecked"
                     dir="ltr"
-                    id="checkbox:«r2»:control"
+                    id="checkbox:_r_2_:control"
                   >
                     <svg
                       class="css-wuqtn7"
@@ -188,12 +189,13 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="checkbox"
                 data-state="unchecked"
                 dir="ltr"
-                for="checkbox:«r4»:input"
-                id="«r3»"
+                for="checkbox:_r_4_:input"
+                id="_r_3_"
               >
                 <input
-                  aria-labelledby="«r3»"
-                  id="checkbox:«r4»:input"
+                  aria-invalid="false"
+                  aria-labelledby="_r_3_"
+                  id="checkbox:_r_4_:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -205,7 +207,7 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  id="checkbox:«r4»:control"
+                  id="checkbox:_r_4_:control"
                 >
                   <svg
                     class="css-wuqtn7"
@@ -258,12 +260,13 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="checkbox"
                 data-state="unchecked"
                 dir="ltr"
-                for="checkbox:«r6»:input"
-                id="«r5»"
+                for="checkbox:_r_6_:input"
+                id="_r_5_"
               >
                 <input
-                  aria-labelledby="«r5»"
-                  id="checkbox:«r6»:input"
+                  aria-invalid="false"
+                  aria-labelledby="_r_5_"
+                  id="checkbox:_r_6_:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -275,7 +278,7 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  id="checkbox:«r6»:control"
+                  id="checkbox:_r_6_:control"
                 >
                   <svg
                     class="css-wuqtn7"
@@ -328,12 +331,13 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="checkbox"
                 data-state="unchecked"
                 dir="ltr"
-                for="checkbox:«r8»:input"
-                id="«r7»"
+                for="checkbox:_r_8_:input"
+                id="_r_7_"
               >
                 <input
-                  aria-labelledby="«r7»"
-                  id="checkbox:«r8»:input"
+                  aria-invalid="false"
+                  aria-labelledby="_r_7_"
+                  id="checkbox:_r_8_:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -345,7 +349,7 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  id="checkbox:«r8»:control"
+                  id="checkbox:_r_8_:control"
                 >
                   <svg
                     class="css-wuqtn7"
@@ -398,12 +402,13 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="checkbox"
                 data-state="unchecked"
                 dir="ltr"
-                for="checkbox:«ra»:input"
-                id="«r9»"
+                for="checkbox:_r_a_:input"
+                id="_r_9_"
               >
                 <input
-                  aria-labelledby="«r9»"
-                  id="checkbox:«ra»:input"
+                  aria-invalid="false"
+                  aria-labelledby="_r_9_"
+                  id="checkbox:_r_a_:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -415,7 +420,7 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  id="checkbox:«ra»:control"
+                  id="checkbox:_r_a_:control"
                 >
                   <svg
                     class="css-wuqtn7"
@@ -458,12 +463,13 @@ exports[`expect result list to be created successfully 1`] = `
                 data-scope="checkbox"
                 data-state="unchecked"
                 dir="ltr"
-                for="checkbox:«rc»:input"
-                id="«rb»"
+                for="checkbox:_r_c_:input"
+                id="_r_b_"
               >
                 <input
-                  aria-labelledby="«rb»"
-                  id="checkbox:«rc»:input"
+                  aria-invalid="false"
+                  aria-labelledby="_r_b_"
+                  id="checkbox:_r_c_:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -475,7 +481,7 @@ exports[`expect result list to be created successfully 1`] = `
                   data-scope="checkbox"
                   data-state="unchecked"
                   dir="ltr"
-                  id="checkbox:«rc»:control"
+                  id="checkbox:_r_c_:control"
                 >
                   <svg
                     class="css-wuqtn7"

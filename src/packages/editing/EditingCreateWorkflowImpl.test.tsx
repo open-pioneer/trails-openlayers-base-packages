@@ -353,11 +353,10 @@ describe("when create editing workflow complete", () => {
 });
 
 async function renderMap() {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
         </PackageContextProvider>
     );

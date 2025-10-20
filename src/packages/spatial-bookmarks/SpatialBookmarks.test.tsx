@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     act,
@@ -172,11 +172,10 @@ async function createBookmarkComponent() {
 }
 
 async function setupComponent() {
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         projection: "EPSG:25832"
     });
     const injectedServices = {
-        ...createServiceOptions({ registry }),
         "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
     };
     return {

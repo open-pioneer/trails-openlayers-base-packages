@@ -5,7 +5,7 @@ import VectorLayer from "ol/layer/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
 import { MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -296,11 +296,10 @@ describe("when update editing workflow complete", () => {
 });
 
 async function renderMap() {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
         </PackageContextProvider>
     );

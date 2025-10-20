@@ -8,7 +8,7 @@ exports[`renders as a button 1`] = `
   data-scope="tooltip"
   data-state="closed"
   dir="ltr"
-  id="tooltip:«r0»:trigger"
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
   <span

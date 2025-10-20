@@ -13,9 +13,9 @@ exports[`should successfully create a scale Setter component 1`] = `
     data-part="trigger"
     data-scope="menu"
     data-state="closed"
-    data-uid="«r0»"
+    data-uid="_r_0_"
     dir="ltr"
-    id="menu:«r0»:trigger"
+    id="menu:_r_0_:trigger"
     type="button"
   >
     1 : 336,409
@@ -54,9 +54,9 @@ exports[`should successfully create a scale setter component with additional css
     data-part="trigger"
     data-scope="menu"
     data-state="closed"
-    data-uid="«r1»"
+    data-uid="_r_1_"
     dir="ltr"
-    id="menu:«r1»:trigger"
+    id="menu:_r_1_:trigger"
     type="button"
   >
     1 : 336,409

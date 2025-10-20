@@ -9,7 +9,7 @@ exports[`should successfully create a initial extent component with additional c
   data-state="closed"
   data-testid="initial-extent"
   dir="ltr"
-  id="tooltip:«r1»:trigger"
+  id="tooltip:_r_1_:trigger"
   type="button"
 >
   <svg
@@ -45,7 +45,7 @@ exports[`should successfully create a initial extent component with home button 
   data-state="closed"
   data-testid="initial-extent"
   dir="ltr"
-  id="tooltip:«r0»:trigger"
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
   <svg

@@ -14,15 +14,15 @@ exports[`should successfully create a measurement component 1`] = `
     class="chakra-stack chakra-field__root css-1nz2z00"
     data-part="root"
     data-scope="field"
-    id="field::«r0»"
+    id="field::_r_0_"
     role="group"
   >
     <label
       class="chakra-field__label css-1pvefsz"
       data-part="label"
       data-scope="field"
-      for="«r0»"
-      id="field::«r0»::label"
+      for="_r_0_"
+      id="field::_r_0_::label"
     >
       measurementLabel
     </label>
@@ -33,7 +33,7 @@ exports[`should successfully create a measurement component 1`] = `
         class="chakra-native-select__field measurement-select css-1sph0c1"
         data-part="select"
         data-scope="field"
-        id="«r0»"
+        id="_r_0_"
       >
         <option
           value="distance"

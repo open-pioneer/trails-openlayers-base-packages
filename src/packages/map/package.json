@@ -34,7 +34,6 @@
         "@open-pioneer/test-utils": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:^",
         "@types/jsdom": "catalog:",
-        "@types/uuid": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

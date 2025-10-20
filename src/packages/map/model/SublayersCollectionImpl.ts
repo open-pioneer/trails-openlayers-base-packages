@@ -14,11 +14,9 @@ import { getRecursiveLayers } from "./getRecursiveLayers";
  * Manages the sublayers of a layer.
  */
 // NOTE: adding / removing sublayers currently not supported
-/* eslint-disable indent */
 export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & AbstractLayerBase>
     implements SublayersCollection<SublayerType>
 {
-    /* eslint-enable indent */
     #sublayers: SublayerType[];
 
     constructor(sublayers: SublayerType[]) {
