@@ -38,6 +38,7 @@ exports[`should successfully create a toc component 1`] = `
             aria-haspopup="listbox"
             aria-invalid="false"
             aria-labelledby="_r_0_"
+            aria-required="false"
             class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
             data-part="trigger"
             data-placement="bottom-start"

@@ -6,11 +6,14 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { MapModel, MapPadding } from "../api";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
-import { MapModelProps, useMapModelValue } from "./useMapModel";
+import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
+import { MapModel, MapPadding } from "../model/MapModel";
 const LOG = createLogger("map:MapContainer");
 
+/**
+ * @group UI Components and Hooks
+ */
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {
     /**
      * Sets the map's padding directly.
@@ -63,6 +66,8 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
  * Displays the map with the given id.
  *
  * There can only be at most one MapContainer for every map.
+ *
+ * @group UI Components and Hooks
  */
 export function MapContainer(props: MapContainerProps) {
     const {

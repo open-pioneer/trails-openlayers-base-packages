@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { GroupLayer, Layer, SimpleLayer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import { GroupLayer, Layer, SimpleLayerConfig } from "@open-pioneer/map";
+import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
@@ -225,17 +225,19 @@ describe("toc api", () => {
     });
 
     it("should toggle LayerItem via Toc API", async () => {
-        const group = new GroupLayer({
+        const group = createTestLayer({
+            type: GroupLayer,
             id: "group",
             title: "a group layer",
             visible: false,
             layers: [
-                new GroupLayer({
+                createTestLayer({
+                    type: GroupLayer,
                     id: "subgroup",
                     title: "a nested group layer",
                     visible: false,
                     layers: [
-                        new SimpleLayer({
+                        createTestLayer({
                             id: "submember",
                             title: "subgroup member",
                             olLayer: createTestOlLayer(),

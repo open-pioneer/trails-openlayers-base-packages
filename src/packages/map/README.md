@@ -58,6 +58,17 @@ Additionally, using the prop `viewPaddingChangeBehavior` it is possible to speci
 Possible values are `none` (do nothing), `preserve-center` (ensures that the center point remains the same
 by animating the view) and `preserve-extent` (ensures that the extent remains the same by zooming).
 
+By default, the focus outline of the map container also respects the view padding.
+If you want to disable the focus outline, you can use the following css style:
+
+```css
+.map-container-root:has(> .map-container:focus-visible) .map-anchors::after {
+    outline: none;
+}
+```
+
+In this case, you will need to create an appropriate focus outline style for the map container yourself.
+
 ### Map anchor component
 
 To pass custom React components onto the map, the following anchor-points are provided:

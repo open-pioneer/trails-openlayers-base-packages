@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { afterEach, expect, it, vi } from "vitest";
-import { Highlights } from "./Highlights";
-import { LineString, Point, Polygon } from "ol/geom";
-import { approximatelyEquals } from "ol/extent";
-import { BaseFeature } from "../api/BaseFeature";
-import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
+import { setupMap } from "@open-pioneer/map-test-utils";
+import { approximatelyEquals } from "ol/extent";
+import { LineString, Point, Polygon } from "ol/geom";
+import { afterEach, expect, it, vi } from "vitest";
+import { BaseFeature } from "../utils/BaseFeature";
+import { Highlights } from "./Highlights";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()

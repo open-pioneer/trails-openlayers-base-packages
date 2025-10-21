@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createContext, useContext } from "react";
-import { MapModel } from "../api";
-import { MapModelProps } from "./useMapModel";
+import { MapModel } from "../model/MapModel";
+import { MapModelProps } from "./hooks/useMapModel";
 
 const DefaultMapContext = createContext<MapModel | undefined>(undefined);
 DefaultMapContext.displayName = "DefaultMapContext";
@@ -21,6 +21,8 @@ DefaultMapContext.displayName = "DefaultMapContext";
  *   <Toc />
  * </DefaultMapProvider>
  * ```
+ *
+ * @group UI Components and Hooks
  */
 export function DefaultMapProvider(
     props: Required<MapModelProps> & { children?: React.ReactNode }

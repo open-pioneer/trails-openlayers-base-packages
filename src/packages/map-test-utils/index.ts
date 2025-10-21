@@ -7,15 +7,19 @@ import {
     InitialViewConfig,
     Layer,
     LayerCreateOptions,
+    LayerFactory,
     MapConfig,
     MapModel,
+    LayerConfig as MapPackageLayerConfig,
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
-    SimpleLayerConfig,
-    LayerConfig as MapPackageLayerConfig
+    SimpleLayerConfig
 } from "@open-pioneer/map";
-import { LayerFactory, MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
+import {
+    LayerFactory as LayerFactoryImpl,
+    MapRegistry as MapRegistryImpl
+} from "@open-pioneer/map/internalTestSupport";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
@@ -171,7 +175,7 @@ export async function setupMap(
         }
     } satisfies Partial<HttpService> as HttpService;
 
-    const layerFactory = await createService(LayerFactory, {
+    const layerFactory = await createService(LayerFactoryImpl, {
         references: {
             httpService
         }
@@ -265,8 +269,8 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
     };
 }
 
-function createLayerFactory(httpService?: HttpService) {
-    return new LayerFactory({
+function createLayerFactory(httpService?: HttpService): LayerFactory {
+    return new LayerFactoryImpl({
         intl: {} satisfies Partial<PackageIntl> as PackageIntl,
         references: { httpService: httpService ?? DUMMY_HTTP_SERVICE },
         properties: {},
