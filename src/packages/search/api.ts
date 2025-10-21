@@ -128,6 +128,13 @@ export interface SearchApi {
      * Clears the search input field.
      */
     resetInput(): void;
+
+    /**
+     * Sets the search input field to the given value.
+     * The search is not automatically triggered when setting the input value.
+     * @param inputValue The value to be set in the search input field.
+     */
+    setInputValue(inputValue: string): void;
 }
 
 /**

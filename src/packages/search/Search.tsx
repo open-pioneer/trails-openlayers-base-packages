@@ -189,7 +189,7 @@ export const Search: FC<SearchProps> = (props) => {
         }
     );
 
-    useSearchApi(onReady, onDisposed, clearInput);
+    useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -531,11 +531,12 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
-    clearInput: (trigger: SearchClearTrigger) => void
+    clearInput: (trigger: SearchClearTrigger) => void,
+    setInputValue: (newValue: string) => void
 ) {
     const apiRef = useRef<SearchApi>(null);
     if (!apiRef.current) {
-        apiRef.current = new SearchApiImpl(clearInput);
+        apiRef.current = new SearchApiImpl(clearInput, setInputValue);
     }
 
     const api = apiRef.current;
