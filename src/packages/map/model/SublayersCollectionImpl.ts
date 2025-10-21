@@ -35,26 +35,26 @@ export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & Abs
         return this.getSublayers(options);
     }
 
-    getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
+    getSublayers(options?: LayerRetrievalOptions | undefined): SublayerType[] {
         // NOTE: sort options are ignored because layers are always ordered at this time.
         let allLayers = this.#sublayers.slice();
 
-        if (!_options?.includeInternalLayers) {
+        if (!options?.includeInternalLayers) {
             allLayers = allLayers.filter((l) => !l.internal);
         }
 
         return allLayers;
     }
 
-    getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {
+    getRecursiveLayers(options?: RecursiveRetrievalOptions): Sublayer[] {
         return getRecursiveLayers({
             // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).
             // _Might_ be possible to refactor this class to use the Sublayer union instead in the generic type parameters,
             // but then we might also introduce a cycle in the type definitions, which could be bad (?).
             from: this as unknown as SublayersCollection<Sublayer>,
-            sortByDisplayOrder: _options?.sortByDisplayOrder,
-            includeInternalLayers: _options?.includeInternalLayers,
-            filter: _options?.filter
+            sortByDisplayOrder: options?.sortByDisplayOrder,
+            includeInternalLayers: options?.includeInternalLayers,
+            filter: options?.filter
         }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }
 
