@@ -224,6 +224,7 @@ function useTocModel(props: TocProps): TocModel {
 
     // Sync props to model
     useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         tocModelRef.current!.updateOptions(
             createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
         );

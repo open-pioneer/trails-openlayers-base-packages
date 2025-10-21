@@ -65,6 +65,7 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
             return [];
 
         const allResults: SelectionResult[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.#vectorLayer
             .getSource()!
             .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
@@ -78,6 +79,7 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
 
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || uuid4v(),
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     geometry: feature.getGeometry()!,
                     properties: filteredProperties
                 };

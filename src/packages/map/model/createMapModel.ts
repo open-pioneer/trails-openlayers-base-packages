@@ -199,6 +199,7 @@ class MapModelFactory {
 
     private initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
         }
 

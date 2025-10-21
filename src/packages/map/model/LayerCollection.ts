@@ -438,7 +438,10 @@ export class LayerCollection {
         this.#map.olMap.removeLayer(layer.olLayer);
         this.#topLevelLayers.delete(layer);
         if (!layer.isBaseLayer) {
-            const pos = this.#findOpOrTopmost(layer)!;
+            const pos = this.#findOpOrTopmost(layer);
+            if (!pos) {
+                throw new Error(`Internal error: layer '${layer.id}' not found.`);
+            }
             const layerList = this.#getLayerList(pos);
             layerList.splice(pos.index, 1);
         }

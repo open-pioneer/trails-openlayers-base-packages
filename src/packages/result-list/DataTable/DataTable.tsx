@@ -73,7 +73,7 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
     });
 
     // We cache the table's root because chakra's table has some broken memo behavior: it recomputes
-    // its styles and rerenders all all its children via context when some props change.
+    // its styles and rerenders all its children via context when some props change.
     // We keep both the props and the table's children as stable as possible.
     //
     // The table content instead uses a force rerender bypass via the `forceRerender` signal:
@@ -116,7 +116,7 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
 }
 
 function TableContent<Data extends BaseFeature>(props: { useMemo: boolean }) {
-    const store = useContext(TableContext)! as TableContext<Data>;
+    const store = useContext(TableContext) as TableContext<Data>;
     const table = store.table;
 
     // Hack to let the grandparent of this component force a rerender.
@@ -260,6 +260,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
         (void columnSizingInfo, columnSizing);
         const colSizes: { [key: string]: number } = {};
         for (let i = 0; i < tableHeaders.length; i++) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const header = tableHeaders[i]!;
             colSizes[`--header-${header.id}-size`] = header.getSize();
             colSizes[`--col-${header.column.id}-size`] = header.column.getSize();

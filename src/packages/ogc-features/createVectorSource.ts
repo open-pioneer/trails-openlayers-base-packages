@@ -120,7 +120,7 @@ export function _createVectorSource(
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),
                 httpService: httpService,
-                featureFormat: vectorSrc.getFormat()!,
+                featureFormat: vectorSrc.getFormat(),
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,
@@ -158,7 +158,7 @@ type AddFeaturesFunc = (features: FeatureLike[]) => void;
 export interface LoadFeatureOptions {
     fullURL: string;
     httpService: HttpService;
-    featureFormat: FeatureFormat;
+    featureFormat: FeatureFormat | null;
     queryFeatures: QueryFeaturesFunc;
     addFeatures: AddFeaturesFunc;
     limit: number;
@@ -239,7 +239,7 @@ export async function loadFeatures(
  */
 export async function loadPages(
     allUrls: string[],
-    featureFormat: FeatureFormat,
+    featureFormat: FeatureFormat | null,
     httpService: HttpService,
     signal: AbortSignal | undefined,
     addFeaturesFunc: AddFeaturesFunc,

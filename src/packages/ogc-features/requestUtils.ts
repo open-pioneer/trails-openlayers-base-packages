@@ -68,7 +68,7 @@ export interface FeatureResponse {
  */
 export async function queryFeatures(
     fullURL: string,
-    featureFormat: FeatureFormat | undefined,
+    featureFormat: FeatureFormat | null,
     httpService: HttpService,
     signal: AbortSignal | undefined
 ): Promise<FeatureResponse> {

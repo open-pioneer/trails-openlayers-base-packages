@@ -240,7 +240,7 @@ function BookmarkItem(props: {
                 return;
             }
 
-            let nextIndex = (index + ARROW_INDEX_MAP[key]!) % len;
+            let nextIndex = (index + ARROW_INDEX_MAP[key]) % len;
             if (nextIndex < 0) {
                 nextIndex = len - 1;
             }

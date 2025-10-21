@@ -20,11 +20,13 @@ const DEFAULT_PRECISION = 3;
 const DEFAULT_PROJECTIONS = [
     {
         label: "WGS 84",
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         value: getProjection("EPSG:4326")!,
         precision: 3
     },
     {
         label: "Web Mercator",
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         value: getProjection("EPSG:3857")!,
         precision: 2
     }
@@ -140,6 +142,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const availableProjections = useProjectionItems(projections);
     const [selectedProjection, setSelectedProjection] = useState<ProjectionItem>(
         // choose first option initially
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         availableProjections[0]!
     );
 
@@ -340,10 +343,11 @@ function useProjectionItems(projections: ProjectionInput[]) {
     return useMemo(() => {
         // filter out projections that are not known
         const availableProjections: ProjectionItem[] = projections.flatMap((ele) => {
-            if (getProjection(ele.value) != null)
+            const projection = getProjection(ele.value);
+            if (projection != null)
                 return {
                     label: ele.label,
-                    value: getProjection(ele.value)!,
+                    value: projection,
                     precision: ele.precision ?? DEFAULT_PRECISION
                 };
             return [];
