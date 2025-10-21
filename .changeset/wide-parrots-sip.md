@@ -24,4 +24,4 @@
 "@open-pioneer/toc": minor
 ---
 
-Update to chakra-ui 3.27.1
+Update to chakra-ui 3.28.0
