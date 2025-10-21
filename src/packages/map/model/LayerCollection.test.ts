@@ -4,8 +4,8 @@
  * no xml parser in happy dom
  * @vitest-environment jsdom
  */
-import { syncEffect, syncWatch } from "@conterra/reactivity-core";
-import { onSync } from "@conterra/reactivity-events";
+import { effect, watch } from "@conterra/reactivity-core";
+import { on } from "@conterra/reactivity-events";
 import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
@@ -34,6 +34,8 @@ const WMTS_CAPAS = readFileSync(
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
 };
+
+const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
 let model: MapModel | undefined;
 afterEach(() => {
@@ -273,8 +275,8 @@ it("destroys child layers when parent group layer is removed", async () => {
     //register dummy event handlers
     const groupFn = vi.fn();
     const memberFn = vi.fn();
-    onSync(groupMember.destroyed, memberFn);
-    onSync(groupLayer.destroyed, groupFn);
+    on(groupMember.destroyed, memberFn, SYNC_DISPATCH);
+    on(groupLayer.destroyed, groupFn, SYNC_DISPATCH);
 
     model = await create("foo", {
         layers: [groupLayer]
@@ -482,11 +484,12 @@ describe("adding and removing layers", () => {
         expect(model.layers.getLayers()).toHaveLength(0);
 
         let changed = 0;
-        syncWatch(
+        watch(
             () => [model!.layers.getLayers()],
             () => {
                 ++changed;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         const layer = createTestLayer({
@@ -757,9 +760,9 @@ describe("adding and removing layers", () => {
         });
 
         const ids: (string | undefined)[] = [];
-        syncEffect(() => {
+        effect(() => {
             ids.push(model?.layers.getLayerById("l-1")?.id);
-        });
+        }, SYNC_DISPATCH);
 
         expect(ids).toEqual(["l-1"]);
         expect(layer.isDestroyed).toBe(false);
@@ -781,9 +784,9 @@ describe("adding and removing layers", () => {
         });
 
         const ids: (string | undefined)[] = [];
-        syncEffect(() => {
+        effect(() => {
             ids.push(model?.layers.getLayerById("l-1")?.id);
-        });
+        }, SYNC_DISPATCH);
 
         expect(ids).toEqual(["l-1"]);
 
@@ -949,11 +952,12 @@ describe("base layers", () => {
         const b2 = layers.getLayerById("b-2")! as SimpleLayer;
 
         let events = 0;
-        syncWatch(
+        watch(
             () => [model!.layers.getActiveBaseLayer()],
             () => {
                 ++events;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(layers.getActiveBaseLayer()).toBe(b1); // first base layer wins initially
@@ -1008,11 +1012,12 @@ describe("base layers", () => {
         expect(layers.getBaseLayers().length).toBe(2);
 
         let events = 0;
-        syncWatch(
+        watch(
             () => [model!.layers.getLayers()],
             () => {
                 ++events;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(layers.getActiveBaseLayer()).toBe(b1);

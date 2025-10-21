@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { syncWatch } from "@conterra/reactivity-core";
+import { watch } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
@@ -12,6 +12,8 @@ import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
+
+const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -37,11 +39,12 @@ it("supports the visibility attribute", async () => {
     expect(layer.olLayer.getVisible()).toBe(true);
 
     let changedVisibility = 0;
-    syncWatch(
+    watch(
         () => [layer.visible],
         () => {
             ++changedVisibility;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.setVisible(false);
@@ -64,11 +67,12 @@ it("manages the internal attribute", async () => {
     expect(layer.internal).toBe(false); //should be false by default
 
     let changedInternalState = 0;
-    syncWatch(
+    watch(
         () => [layer.internal],
         () => {
             ++changedInternalState;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.setInternal(true);
@@ -168,11 +172,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        syncWatch(
+        watch(
             () => [layer.loadState],
             () => {
                 eventEmitted++;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
@@ -203,11 +208,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        syncWatch(
+        watch(
             () => [layer.loadState],
             () => {
                 eventEmitted++;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
@@ -251,11 +257,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        syncWatch(
+        watch(
             () => [layer.loadState],
             () => {
                 eventEmitted++;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
@@ -326,11 +333,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        syncWatch(
+        watch(
             () => [layer.loadState],
             () => {
                 eventEmitted++;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
@@ -347,11 +355,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        syncWatch(
+        watch(
             () => [layer.loadState],
             () => {
                 eventEmitted++;
-            }
+            },
+            SYNC_DISPATCH
         );
 
         expect(layer.loadState).toBe("error");
