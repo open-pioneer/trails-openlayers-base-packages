@@ -96,9 +96,6 @@ export {
 } from "./model/MapModel";
 export { type LayerCollection } from "./model/LayerCollection";
 
-// FIXME: remove this
-export { TOPMOST_LAYER_Z } from "./model/LayerCollection";
-
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";
 export {

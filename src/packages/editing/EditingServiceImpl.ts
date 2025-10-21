@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModel, MapRegistry } from "@open-pioneer/map";
+import { LayerFactory, MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
@@ -8,11 +8,12 @@ import { FlatStyle } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 import { Feature } from "ol";
-import { syncWatch } from "@conterra/reactivity-core";
+import { watch } from "@conterra/reactivity-core";
 
 export interface References {
     mapRegistry: MapRegistry;
     httpService: HttpService;
+    layerFactory: LayerFactory;
 }
 
 export class EditingServiceImpl implements EditingService {
@@ -44,6 +45,7 @@ export class EditingServiceImpl implements EditingService {
             polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
+            layerFactory: this._serviceOptions.references.layerFactory,
             intl: this._serviceOptions.intl
         });
         this._workflows.set(mapId, workflow);
@@ -77,6 +79,7 @@ export class EditingServiceImpl implements EditingService {
             polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
+            layerFactory: this._serviceOptions.references.layerFactory,
             intl: this._serviceOptions.intl
         });
         this._workflows.set(mapId, workflow);
@@ -108,7 +111,7 @@ export class EditingServiceImpl implements EditingService {
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
         mapId: string
     ) {
-        const watchStateHandle = syncWatch(
+        const watchStateHandle = watch(
             () => [workflow.getState()],
             ([newState]) => {
                 if (newState === "destroyed") {
@@ -117,7 +120,8 @@ export class EditingServiceImpl implements EditingService {
                     }
                     watchStateHandle.destroy();
                 }
-            }
+            },
+            { dispatch: "sync" }
         );
     }
 }

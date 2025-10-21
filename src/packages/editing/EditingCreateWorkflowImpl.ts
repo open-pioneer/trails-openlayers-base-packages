@@ -3,7 +3,7 @@
 import { Reactive, effect, reactive } from "@conterra/reactivity-core";
 import { ManualPromise, Resource, createLogger, createManualPromise } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
@@ -29,6 +29,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
+    private _layerFactory: LayerFactory;
     private _intl: PackageIntl;
 
     private _map: MapModel;
@@ -39,7 +40,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     private _featureId: string | undefined;
 
     private _editingSource: VectorSource;
-    private _editingLayer: VectorLayer<VectorSource, Feature>;
+    private _editingLayer: SimpleLayer;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
     private _tooltip: Tooltip;
@@ -53,6 +54,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
 
     constructor(options: EditingWorkflowProps) {
         this._httpService = options.httpService;
+        this._layerFactory = options.layerFactory;
         this._intl = options.intl;
 
         this._polygonStyle = options.polygonStyle;
@@ -64,12 +66,14 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         this._editingSource = new VectorSource();
-        this._editingLayer = new VectorLayer({
-            source: this._editingSource,
-            zIndex: TOPMOST_LAYER_Z,
-            properties: {
-                name: "editing-layer"
-            }
+        const olLayer = new VectorLayer({
+            source: this._editingSource
+        });
+        this._editingLayer = this._layerFactory.create({
+            type: SimpleLayer,
+            title: "editing-layer",
+            internal: true,
+            olLayer: olLayer
         });
 
         this._drawInteraction = new Draw({
@@ -170,7 +174,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     }
 
     private _start() {
-        this._olMap.addLayer(this._editingLayer);
+        this._map.layers.addLayer(this._editingLayer, { at: "topmost" });
         this._olMap.addInteraction(this._drawInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -230,7 +234,8 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     }
 
     private _destroy() {
-        this._olMap.removeLayer(this._editingLayer);
+        this._map.layers.removeLayer(this._editingLayer);
+        this._editingLayer.destroy();
         this._olMap.removeInteraction(this._drawInteraction);
         this._tooltip.destroy();
 

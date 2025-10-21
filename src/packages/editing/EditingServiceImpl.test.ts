@@ -245,13 +245,14 @@ describe("editing: update", () => {
 });
 
 async function createEditingService() {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry, layerFactory } = await setupMap();
     const map = await registry.expectMapModel(mapId);
 
     const editingService = (await createService(EditingServiceImpl, {
         references: {
             mapRegistry: registry,
-            httpService: HTTP_SERVICE
+            httpService: HTTP_SERVICE,
+            layerFactory: layerFactory
         },
         properties: {
             POLYGON_DRAW_STYLE

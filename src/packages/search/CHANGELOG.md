@@ -1,5 +1,48 @@
 # @open-pioneer/search
 
+## 1.0.0
+
+### Minor Changes
+
+- 0485014: Introduce search API and `resetInput` method (see [PR](https://github.com/open-pioneer/trails-openlayers-base-packages/pull/493)).
+
+    The search API allows programmatic access to the search component.
+    Currently, it provides a method to reset the search input field.
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+- 2abcaaf: Update to chakra-ui 3.28.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 138d85b: Update core packages to 4.2.0
+- 952edb7: Pass the map in the `SearchOptions` to an `SearchSource` when a search is triggered. This allows to improve the search using information from the map (e.g. only search for results in the current map extent).
+- da6a410: Update dependencies
+- Updated dependencies [c6180c6]
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [2702df4]
+- Updated dependencies [12561fe]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [b3709f1]
+- Updated dependencies [14c484e]
+- Updated dependencies [138d85b]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [aeb9000]
+- Updated dependencies [9e9bc6e]
+- Updated dependencies [b3709f1]
+- Updated dependencies [2c8b617]
+- Updated dependencies [b3709f1]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [a1614de]
+- Updated dependencies [773fa2d]
+- Updated dependencies [2abcaaf]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@1.0.0
+
 ## 0.11.0
 
 ### Minor Changes

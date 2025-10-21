@@ -13,7 +13,7 @@ new WMTS({
 });
 ```
 
-## TypeDoc watch mode für einzelnes Bild
+## TypeDoc watch mode für einzelnes Package
 
 `pnpm exec typedoc --watch` kann zum kontinuierlichen Bauen von Typedoc benutzt werden.
 Je nach Setup wird ein Pfad zu einer `tsconfig.json` und zu einem Outputverzeichnis benötigt, z.B.

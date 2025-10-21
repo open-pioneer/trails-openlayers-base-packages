@@ -4,7 +4,7 @@ import { Feature } from "ol";
 import { FeatureLike } from "ol/Feature";
 import OlMap from "ol/Map";
 import { Coordinate } from "ol/coordinate";
-import { Extent, createEmpty, extend, getArea, getCenter } from "ol/extent";
+import { createEmpty, extend, Extent, getArea, getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { Type } from "ol/geom/Geometry";
 import VectorLayer from "ol/layer/Vector";
@@ -12,14 +12,17 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
+import { SimpleLayer } from "../layers/SimpleLayer";
+import { LayerDependencies } from "../layers/shared/internals";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { calculateBufferedExtent } from "../utils/geometry-utils";
-import { TOPMOST_LAYER_Z } from "./LayerCollection";
 import {
     DisplayTarget,
     Highlight,
     HighlightOptions,
     HighlightStyle,
     HighlightZoomOptions,
+    MapModel,
     ZoomOptions
 } from "./MapModel";
 
@@ -30,14 +33,17 @@ const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export class Highlights {
+    private map: MapModel;
     private olMap: OlMap;
 
     private olLayer: VectorLayer<VectorSource, Feature>;
+    private layer: SimpleLayer;
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 
-    constructor(olMap: OlMap) {
-        this.olMap = olMap;
+    constructor(map: MapModel, layerDeps: LayerDependencies) {
+        this.map = map;
+        this.olMap = this.map.olMap;
         this.olSource = new VectorSource({
             features: undefined
         });
@@ -48,9 +54,18 @@ export class Highlights {
                 return resolveStyle(feature, resolution);
             }
         });
+        this.layer = new SimpleLayer(
+            {
+                title: "highlight-layer",
+                internal: true,
+                olLayer: this.olLayer
+            },
+            layerDeps,
+            INTERNAL_CONSTRUCTOR_TAG
+        );
+        map.layers.addLayer(this.layer, { at: "topmost" });
+
         this.activeHighlights = new Set();
-        this.olLayer.setZIndex(TOPMOST_LAYER_Z);
-        this.olMap.addLayer(this.olLayer);
     }
 
     /**

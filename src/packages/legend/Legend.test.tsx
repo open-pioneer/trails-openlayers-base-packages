@@ -22,6 +22,7 @@ const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xm
 // Happy dom does not have an XML parser
 import jsdom from "jsdom";
 import { ReactNode } from "react";
+import TileLayer from "ol/layer/Tile";
 window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 
 const LEGEND_ITEM_CLASS = ".legend-item";
@@ -822,9 +823,9 @@ it("reacts to changes in layer's internal state", async () => {
     expect(images.length).toBe(1);
 
     // Set internal to false
-    const layers = map.layers.getOperationalLayers({ includeInternalLayers: true });
+    const layer = map.layers.getLayerById("layer-2");
     act(() => {
-        layers[1]?.setInternal(false);
+        layer?.setInternal(false);
     });
 
     // Second check
@@ -841,7 +842,7 @@ it("renders legend item if list mode is `show` even if layer is internal", async
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: createTestOlLayer(),
+                olLayer: new TileLayer({}),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png",

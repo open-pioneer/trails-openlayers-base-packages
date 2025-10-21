@@ -1,5 +1,44 @@
 # @open-pioneer/measurement
 
+## 1.0.0
+
+### Minor Changes
+
+- 2abcaaf: Update to chakra-ui 3.28.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 4f1e7bd: The highlight layer(s) created by this package now uses the map model's `topmost` option to register an (internal) layer.
+  The previous implementation was based on adding a "raw" OpenLayers layer to the `olMap`.
+- 138d85b: Update core packages to 4.2.0
+- 030e657: The measurement tooltip was fixed to update its text even if the mouse is not moved.
+- da6a410: Update dependencies
+- Updated dependencies [c6180c6]
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [2702df4]
+- Updated dependencies [12561fe]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [b3709f1]
+- Updated dependencies [14c484e]
+- Updated dependencies [138d85b]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [aeb9000]
+- Updated dependencies [9e9bc6e]
+- Updated dependencies [b3709f1]
+- Updated dependencies [2c8b617]
+- Updated dependencies [b3709f1]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [a1614de]
+- Updated dependencies [773fa2d]
+- Updated dependencies [2abcaaf]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@1.0.0
+
 ## 0.11.0
 
 ### Minor Changes

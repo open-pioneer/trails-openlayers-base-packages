@@ -3,15 +3,17 @@
 /**
  * @vitest-environment node
  */
-import { syncWatch } from "@conterra/reactivity-core";
+import { watch } from "@conterra/reactivity-core";
+import { on } from "@conterra/reactivity-events";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { ATTACH_TO_MAP } from "./shared/internals";
-import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { SublayersCollection } from "./shared/SublayersCollection";
-import { onSync } from "@conterra/reactivity-events";
+
+const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -24,9 +26,13 @@ it("emits a destroy event when destroyed", async () => {
     });
 
     let destroyed = 0;
-    onSync(layer.destroyed, () => {
-        destroyed++;
-    });
+    on(
+        layer.destroyed,
+        () => {
+            destroyed++;
+        },
+        SYNC_DISPATCH
+    );
 
     layer.destroy();
     expect(destroyed).toBe(1);
@@ -80,11 +86,12 @@ it("supports the title attribute", async () => {
     expect(layer.title).toBe("A");
 
     let changedTitle = 0;
-    syncWatch(
+    watch(
         () => [layer.title],
         () => {
             ++changedTitle;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.setTitle("B");
@@ -100,11 +107,12 @@ it("supports the description attribute", async () => {
     expect(layer.description).toBe("");
 
     let changedDescription = 0;
-    syncWatch(
+    watch(
         () => [layer.description],
         () => {
             ++changedDescription;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.setDescription("Description");
@@ -132,11 +140,12 @@ it("supports arbitrary additional attributes", async () => {
     `);
 
     let changedAttributes = 0;
-    syncWatch(
+    watch(
         () => [layer.attributes],
         () => {
             ++changedAttributes;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.updateAttributes({
@@ -178,11 +187,12 @@ it("supports deletion of attributes", async () => {
     `);
 
     let changedAttributes = 0;
-    syncWatch(
+    watch(
         () => [layer.attributes],
         () => {
             ++changedAttributes;
-        }
+        },
+        SYNC_DISPATCH
     );
 
     layer.deleteAttribute("foo");
@@ -206,11 +216,12 @@ it("supports initial empty attribute object and empty attribute object after upd
     });
 
     let changedAttributes = 0;
-    syncWatch(
+    watch(
         () => [layer.attributes],
         () => {
             ++changedAttributes;
-        }
+        },
+        SYNC_DISPATCH
     );
     // check layer attributes is empty object
     expect(layer.attributes).toMatchInlineSnapshot(`

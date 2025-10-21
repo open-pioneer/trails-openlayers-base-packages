@@ -1,5 +1,18 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 1.0.0
+
+### Minor Changes
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+- 2abcaaf: Update to chakra-ui 3.28.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 138d85b: Update core packages to 4.2.0
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes

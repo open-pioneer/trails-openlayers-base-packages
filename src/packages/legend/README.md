@@ -31,11 +31,12 @@ Examples:
 import { CustomLegend } from "./CustomLegend"; // import react component to show as layer's legend
 // ...
 
-async getMapConfig(): Promise<MapConfig> {
+async getMapConfig({ layerFactory }): Promise<MapConfig> {
     return {
         // ...
         layers: [
-            new SimpleLayer({
+            layerFactory.create({
+                type: SimpleLayer,
                 id: "topplus_open",
                 title: "TopPlus Open",
                 isBaseLayer: true,
@@ -48,7 +49,8 @@ async getMapConfig(): Promise<MapConfig> {
                     }
                 }
             }),
-            new SimpleLayer({
+            layerFactory.create({
+                type: SimpleLayer,
                 title: "Kindertagesstätten",
                 visible: true,
                 olLayer: createKitasLayer(),

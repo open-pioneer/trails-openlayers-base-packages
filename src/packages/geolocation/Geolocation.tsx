@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ButtonProps } from "@chakra-ui/react";
-import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -118,6 +118,7 @@ function useController(
 ): GeolocationController | undefined {
     const intl = useIntl();
     const notificationService = useService<NotificationService>("notifier.NotificationService");
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
     const [controller, setController] = useState<GeolocationController>();
     useEffect(() => {
         const onError: OnErrorCallback = (error) => {
@@ -142,14 +143,14 @@ function useController(
             });
         };
 
-        const geolocationController = new GeolocationController(map, onError, trackingOptions);
+        const geolocationController = new GeolocationController(map, layerFactory, onError, trackingOptions);
         setController(geolocationController);
 
         return () => {
             geolocationController.destroy();
             setController(undefined);
         };
-    }, [map, trackingOptions, intl, notificationService]);
+    }, [map, trackingOptions, intl, notificationService, layerFactory]);
     useEffect(() => {
         controller?.setPositionFeatureStyle(positionFeatureStyle);
     }, [controller, positionFeatureStyle]);

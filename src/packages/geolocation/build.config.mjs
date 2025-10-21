@@ -7,7 +7,7 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
     ui: {
-        references: ["notifier.NotificationService"]
+        references: ["notifier.NotificationService", "map.LayerFactory"]
     },
     publishConfig: {
         strict: true

@@ -98,7 +98,8 @@ Layers that are marked as `internal` are not considered by the Toc.
 
 ```typescript
 //internal layer will not be displayed in the Toc
-const internalLayer = new SimpleLayer({
+const internalLayer = layerFactory.create({
+    type: SimpleLayer,
     id: "layer1",
     title: "layer 1",
     olLayer: myOlLayer,
@@ -110,7 +111,8 @@ The layer's `internal` state also affects other UI widgets (e.g. Legend). If the
 
 ```typescript
 //use listMode to hide the layer specifically in Toc
-const hiddenLayer = new SimpleLayer({
+const hiddenLayer = layerFactory.create({
+    type: SimpleLayer,
     id: "layer1",
     title: "layer 1",
     olLayer: myOlLayer,

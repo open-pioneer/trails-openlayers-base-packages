@@ -52,7 +52,10 @@ The map package supports any kind of OpenLayers layer (called `olLayer` by conve
 All OpenLayers layer instances can be integrated by configuring a `SimpleLayer`:
 
 ```ts
-new SimpleLayer({
+const layerFactory = ...; // Injected service
+layerFactory.create({
+    type: SimpleLayer,
+
     // Unique id
     id: "ogc_kataster",
 

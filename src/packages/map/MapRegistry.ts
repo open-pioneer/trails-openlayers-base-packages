@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { batch } from "@conterra/reactivity-core";
-import { onSync } from "@conterra/reactivity-events";
+import { on } from "@conterra/reactivity-events";
 import { createLogger, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import {
@@ -200,15 +200,19 @@ export class MapRegistry implements Service {
                     throw new Error(`MapRegistry has been destroyed.`);
                 }
 
-                const listener = onSync(mapModel.destroyed, () => {
-                    // Allow id reuse for dynamically created maps
-                    if (this.#isDynamic(mapId)) {
-                        const currentEntry = this.#entries.get(mapId);
-                        if (currentEntry === entry) {
-                            this.#entries.delete(mapId);
+                const listener = on(
+                    mapModel.destroyed,
+                    () => {
+                        // Allow id reuse for dynamically created maps
+                        if (this.#isDynamic(mapId)) {
+                            const currentEntry = this.#entries.get(mapId);
+                            if (currentEntry === entry) {
+                                this.#entries.delete(mapId);
+                            }
                         }
-                    }
-                });
+                    },
+                    { dispatch: "sync" }
+                );
 
                 const entry: ModelJobResult = { kind: "model", model: mapModel, listener };
                 this.#entries.set(mapId, entry);

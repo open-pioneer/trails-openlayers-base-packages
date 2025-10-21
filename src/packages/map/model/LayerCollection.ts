@@ -47,14 +47,6 @@ interface BaseLayerPos {
 type LayerPos = OpOrTopmostLayerPos | BaseLayerPos;
 
 /**
- * Z index for layers that should always be rendered on top of all other layers.
- * Note that this is an internal, unstable property!
- *
- * @internal
- */
-export const TOPMOST_LAYER_Z = 9999999;
-
-/**
  * Contains the layers contained in a {@link MapModel}.
  *
  * @group Map Model
@@ -93,7 +85,10 @@ export class LayerCollection {
         this.#map = map;
         this.#syncHandle = effect(() => {
             // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.
-            const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
+            const orderedLayers = this.getLayers({
+                sortByDisplayOrder: true,
+                includeInternalLayers: true
+            });
 
             // Simply reassign all z-indices whenever the order changes.
             let index = 0;
