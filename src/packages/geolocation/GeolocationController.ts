@@ -88,6 +88,7 @@ export class GeolocationController {
         this.stopGeolocation();
         this.geolocation?.setTracking(false);
         this.geolocation.dispose();
+        this.positionHighlightLayer.destroy();
         this.accuracyFeature = undefined;
         this.positionFeature = undefined;
     }
@@ -196,7 +197,6 @@ export class GeolocationController {
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
         this.map.layers.removeLayer(this.positionHighlightLayer);
-        this.positionHighlightLayer.destroy();
     }
 
     /** True if the position is being tracked. */
