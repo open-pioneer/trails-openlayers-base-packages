@@ -1,5 +1,264 @@
 # @open-pioneer/map
 
+## 1.0.0
+
+### Major Changes
+
+- b3709f1: **Breaking:** Remove layer constructor types from public API (e.g. `SimpleLayerConstructor`).
+- 9e9bc6e: **Breaking**: Internal layers are no longer returned from getters such as `getItems()` or `getRecursiveLayers()` by default.
+
+    A new option `includeInternalLayers` has been implemented to opt-in into internal layers.
+    By default, internal layers are not returned by functions like `getItems()` or `getRecursiveLayers()`.
+    If internal layer should be returned this must be specified explicitly with the `includeInternalLayers` option.
+
+    ```js
+    import { MapModel } from "@open-pioneer/map";
+
+    //internal layers are not included
+    const layers = myMapModel.layers.getItems();
+    //include internal layers
+    const allLayers = myMapModel.layers.getItems({ includeInternalLayers: true });
+    ```
+
+    Note that if internal layers are returned this includes system layers (e.g. for highlights or geolocation) that were not explicitly added to the map.
+    The described behavior is aligned for the functions `getItems()`, `getLayers()`, `getAllLayers()` and `getRecursiveLayers()` in `LayerCollection`, `WMSLayer` and `GroupLayer`.
+    The function `getRecursiveLayers()` does not return non-internal child layers of an internal layer.
+
+- b3709f1: **Breaking:** Remove old event API from layer types and the map model.
+
+    These were only used for the `"destroy"` event.
+
+    ```ts
+    // OLD, removed API:
+    const layer = ...;
+    layer.on("destroyed", () => {
+        console.debug("layer was destroyed");
+    });
+    ```
+
+    The destroy event still exists, but is now based on the event system of the [reactivity API](https://github.com/conterra/reactivity/tree/main/packages/reactivity-events):
+
+    ```ts
+    // NEW
+    import { on } from "@conterra/reactivity-events";
+
+    const layer = ...;
+    on(layer.destroyed, () => {
+        console.debug("layer was destroyed");
+    });
+
+    const mapModel = ...;
+    on(mapModel.destroyed, () => {
+        console.debug("layer was destroyed");
+    });
+    ```
+
+- a1614de: **Breaking**: Remove support for `mapId` in all React components.
+
+    To configure the map for a component (for example: `Legend`), either pass the `map`
+    as an explicit parameter or use the `DefaultMapProvider`:
+
+    ```ts
+    // Explicit API
+    <Legend map={map} />
+
+    // All children of the DefaultMapProvider can use the configured map
+    <DefaultMapProvider map={map}>
+        <MapContainer />
+        <Legend />
+        <SomeOtherComponent />
+    </DefaultMapProvider>;
+    ```
+
+    Support for `mapId` was removed in [PR #486](https://github.com/open-pioneer/trails-openlayers-base-packages/pull/486).
+
+### Minor Changes
+
+- 29a10df: Support buffer for zoom geometries.
+  Use the `buffer` option to specify the size increase. E.g. `0.1` for 10% size increase.
+
+    We use the already existing `calculateBufferedExtent` function to compute the buffer.
+
+    For example:
+
+    ```ts
+    const map: MapModel = ...;
+    const highlight = map.highlightAndZoom(someGeometries, {
+        // Grows extent by 10%
+        buffer: 0.1
+    });
+    ```
+
+- 2702df4: Introduce `internal` property for all layer types (including sublayers).
+  If `internal` is `true` (default: `false`) the layer is not considered by any UI widget (e.g. Legend and Toc).
+  The `internal` state of a layer is not to be confused with the layer's visibility on the map which is determined by the `visible` property.
+
+    ```typescript
+    //internal layer is visible on the map but hidden in UI elements like legend and Toc
+    const internalLayer = new SimpleLayer({
+        id: "layer1",
+        title: "layer 1",
+        olLayer: myOlLayer,
+        visible: true,
+        internal: true
+    });
+    ```
+
+- 5df900f: Add a new hook `useMapModelValue(props?)`.
+  The hook returns either the directly configured `map` (via props) or the default map from a parent `DefaultMapProvider`.
+  If neither is present, an error will be thrown.
+
+    This hook is used in all components that work with the map.
+    The typical usage works like this:
+
+    ```ts
+    import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
+
+    // optional `map` property inherited from `MapModelProps`
+    export interface MyComponentProps extends MapModelProps {
+        // ... other properties
+    }
+
+    export function MyComponent(props) {
+        const map = useMapModelValue(props); // looks up the map
+    }
+    ```
+
+    You can also call this hook without any arguments:
+
+    ```ts
+    // Map model from DefaultMapProvider or an error.
+    const mapModel = useMapModelValue();
+    ```
+
+    This hook should replace _most_ usages `useMapModel`, which can't return the map model directly since it may not have finished construction yet.
+
+- 14c484e: Introduce the `LayerFactory` service (interface `"map.LayerFactory"`).
+
+    The layer factory should be used to construct new layer instances, instead of calling the layer constructor directly.
+    Calling the constructor directly (e.g. `new SimpleLayer`) is deprecated (but still fully supported).
+
+    For example:
+
+    ```ts
+    // OLD
+    new SimpleLayer({
+        title: "OSM",
+        isBaseLayer: true,
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    ```
+
+    ```ts
+    // NEW
+    const layerFactory = ...; // injected
+    layerFactory.create({
+        type: SimpleLayer,
+        title: "OSM",
+        isBaseLayer: true,
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    ```
+
+    This was done to support passing hidden dependencies from the layer factory to the layer instance (such as the `HttpService`),
+    without forcing the user to supply these dependencies manually.
+
+    The `MapConfigProvider` has been updated as well.
+    The `getMapConfig` method will now receive the layer factory as an option.
+    This makes it easy to migrate to the new API:
+
+    ```diff
+    # Example MapConfigProvider
+    export class MapConfigProviderImpl implements MapConfigProvider {
+        mapId = MAP_ID;
+
+    -   async getMapConfig(): Promise<MapConfig> {
+    +   async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
+            return {
+                initialView: {
+                    kind: "position",
+                    center: { x: 404747, y: 5757920 },
+                    zoom: 14
+                },
+                layers: [
+    -               new SimpleLayer({
+    +               layerFactory.create({
+    +                   type: SimpleLayer,
+                        title: "OSM",
+                        isBaseLayer: true,
+                        olLayer: new TileLayer({
+                            source: new OSM()
+                        })
+                    })
+                ]
+            };
+        }
+    }
+    ```
+
+- aeb9000: Add new `"topmost"` option to add layers that are always displayed on top (above all other layers).
+
+    A new layers can be added at `topmost` to ensure that this layer will always be displayed on top of the other layers.
+    This can be used, for example, to implement highlights or to draw graphics.
+    Layers added at `"topmost"` will always be shown above layers at `"top"`.
+
+    When using the `"above"` or `"below"` options with a `"topmost"` reference layer, that layer becomes `"topmost"` as well.
+
+    ```typescript
+    import { MapModel, SimpleLayer } from "@open-pioneer/map";
+
+    const highlightLayer = new SimpleLayer({
+        title: "highlights",
+        olLayer: myOlLayer
+    });
+    //always displayed at the top
+    myMapModel.layers.addLayer(highlightLayer, { at: "topmost" });
+    ```
+
+- 5df900f: Deprecate the parameter-less signature of `useMapModel()`:
+
+    ```ts
+    // Returns the DefaultMapProvider's map, but wrapped in a result value (loading/resolved/rejected)
+    const result = useMapModel();
+    ```
+
+    Use `useMapModelValue()` instead:
+
+    ```ts
+    // Returns the map model directly.
+    const mapModel = useMapModelValue();
+    ```
+
+    All other signatures of `useMapModel()` are still fully supported.
+
+- 773fa2d: The map now has an appropriate focus outline style by default, which respects the map view's padding.
+  For information on disabling this behavior, see the map package documentation.
+- 2abcaaf: Update to chakra-ui 3.28.0
+
+### Patch Changes
+
+- c6180c6: Update eslint to version 9.
+- 10d2fe7: Update dependencies
+- 4f1e7bd: The highlight layer(s) created by this package now uses the map model's `topmost` option to register an (internal) layer.
+  The previous implementation was based on adding a "raw" OpenLayers layer to the `olMap`.
+- 12561fe: The default value of the `role` prop on the `MapContainer` was changed to `application` to allow map keyboard navigation while using NVDA screen reader.
+- 8986b3b: Remove obsolete dependency @types/proj4
+- 138d85b: Update core packages to 4.2.0
+- 4f1e7bd: The internal constant `TOPMOST_LAYER_Z` has been removed.
+  To configure a layer that is always on top:
+    - Create a layer using the `LayerFactory`
+    - Add it to the map model and specify the `at: "topmost"` option
+
+- 2c8b617: Introduce `MapRegistry.createMapModel` method to create a `MapModel` without a `MapConfigProvider`.
+  For more details, see [PR](https://github.com/open-pioneer/trails-openlayers-base-packages/pull/499) and [issue](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/483).
+- b3709f1: Refactor map package internals.
+- f1f69f2: Update to OpenLayers 10.6.1
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes
