@@ -24,4 +24,4 @@
 "@open-pioneer/toc": patch
 ---
 
-Update core packages to 4.1.0
+Update core packages to 4.2.0
