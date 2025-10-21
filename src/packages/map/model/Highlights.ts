@@ -23,6 +23,8 @@ import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { calculateBufferedExtent, SimpleLayer } from "../api";
 import { Type } from "ol/geom/Geometry";
+import { INTERNAL_CONSTRUCTOR_TAG, LayerDependencies } from "./layers/internals";
+import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 
 type HighlightStyleType = keyof HighlightStyle;
 
@@ -39,7 +41,7 @@ export class Highlights {
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 
-    constructor(map: MapModel) {
+    constructor(map: MapModel, layerDeps: LayerDependencies) {
         this.map = map;
         this.olMap = this.map.olMap;
         this.olSource = new VectorSource({
@@ -52,11 +54,15 @@ export class Highlights {
                 return resolveStyle(feature, resolution);
             }
         });
-        this.layer = new SimpleLayer({
-            title: "highlight-layer",
-            internal: true,
-            olLayer: this.olLayer
-        });
+        this.layer = new SimpleLayerImpl(
+            {
+                title: "highlight-layer",
+                internal: true,
+                olLayer: this.olLayer
+            },
+            layerDeps,
+            INTERNAL_CONSTRUCTOR_TAG
+        );
         map.layers.addLayer(this.layer, { at: "topmost" });
 
         this.activeHighlights = new Set();

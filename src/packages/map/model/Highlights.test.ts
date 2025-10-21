@@ -1,17 +1,23 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { afterEach, expect, it } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
 import { Highlights } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
 import { approximatelyEquals } from "ol/extent";
 import { BaseFeature } from "../api/BaseFeature";
 import { setupMap } from "@open-pioneer/map-test-utils";
+import { HttpService } from "@open-pioneer/http";
+
+const MOCKED_HTTP_SERVICE = {
+    fetch: vi.fn()
+};
 
 let _highlights: Highlights | undefined;
 afterEach(() => {
     _highlights?.destroy();
     _highlights = undefined;
+    vi.resetAllMocks();
 });
 
 it("should successfully add marker for point geometries", async () => {
@@ -301,7 +307,9 @@ async function setup() {
     const { map } = await setupMap({ center: { x: 0, y: 0 }, zoom: 5, layers: [] });
     map.olMap.setSize([500, 500]);
 
-    const highlights = (_highlights = new Highlights(map));
+    const highlights = (_highlights = new Highlights(map, {
+        httpService: MOCKED_HTTP_SERVICE as HttpService
+    }));
     return { map, highlights };
 }
 
