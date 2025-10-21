@@ -158,7 +158,7 @@ it("should return internal child layers only if explicitly specified", () => {
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
 
-    const grouplayer = createTestLayer({
+    const groupLayer = createTestLayer({
         type: GroupLayer,
         id: "group",
         title: "group test",
@@ -177,14 +177,14 @@ it("should return internal child layers only if explicitly specified", () => {
         ]
     });
 
-    let childLayers = grouplayer.layers.getLayers();
+    let childLayers = groupLayer.layers.getLayers();
     expect(childLayers.length).toBe(1);
-    childLayers = grouplayer.layers.getLayers({ includeInternalLayers: true });
+    childLayers = groupLayer.layers.getLayers({ includeInternalLayers: true });
     expect(childLayers.length).toBe(2);
 
-    childLayers = grouplayer.layers.getItems();
+    childLayers = groupLayer.layers.getItems();
     expect(childLayers.length).toBe(1);
-    childLayers = grouplayer.layers.getItems({ includeInternalLayers: true });
+    childLayers = groupLayer.layers.getItems({ includeInternalLayers: true });
     expect(childLayers.length).toBe(2);
 });
 
@@ -192,7 +192,7 @@ it("should return internal child layers only if explicitly specified (recursive 
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
 
-    const grouplayer = createTestLayer({
+    const groupLayer = createTestLayer({
         type: GroupLayer,
         id: "group",
         title: "group test",
@@ -218,10 +218,10 @@ it("should return internal child layers only if explicitly specified (recursive 
         ]
     });
 
-    let childLayers = grouplayer.layers.getRecursiveLayers();
+    let childLayers = groupLayer.layers.getRecursiveLayers();
     expect(childLayers.length).toBe(1);
 
-    childLayers = grouplayer.layers.getRecursiveLayers({ includeInternalLayers: true });
+    childLayers = groupLayer.layers.getRecursiveLayers({ includeInternalLayers: true });
     expect(childLayers.length).toBe(3);
 });
 

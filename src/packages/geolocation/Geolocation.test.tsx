@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 it("should successfully create a geolocation component with a button", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
     const notifier: Partial<NotificationService> = {
         notify() {
             throw new Error("not implemented");
@@ -29,7 +29,8 @@ it("should successfully create a geolocation component with a button", async () 
     };
 
     const injectedServices = {
-        "notifier.NotificationService": notifier
+        "notifier.NotificationService": notifier,
+        "map.LayerFactory": layerFactory
     };
 
     render(
@@ -53,7 +54,7 @@ it("should center to user's position", async () => {
 
     const user = userEvent.setup();
 
-    const { map } = await setupMap({
+    const { map, layerFactory } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
@@ -65,7 +66,8 @@ it("should center to user's position", async () => {
         }
     };
     const injectedServices = {
-        "notifier.NotificationService": notifier
+        "notifier.NotificationService": notifier,
+         "map.LayerFactory": layerFactory
     };
 
     render(
@@ -97,7 +99,7 @@ it("should zoom to user's position accuracy", async () => {
 
     const user = userEvent.setup();
 
-    const { map } = await setupMap({
+    const { map, layerFactory } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
@@ -109,7 +111,8 @@ it("should zoom to user's position accuracy", async () => {
         }
     };
     const injectedServices = {
-        "notifier.NotificationService": notifier
+        "notifier.NotificationService": notifier,
+         "map.LayerFactory": layerFactory
     };
 
     render(
@@ -144,7 +147,7 @@ it("should successfully create an error with notifier message", async () => {
 
     const user = userEvent.setup();
 
-    const { map } = await setupMap({
+    const { map, layerFactory } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
@@ -157,7 +160,8 @@ it("should successfully create an error with notifier message", async () => {
     };
 
     const injectedServices = {
-        "notifier.NotificationService": notifier
+        "notifier.NotificationService": notifier,
+         "map.LayerFactory": layerFactory
     };
 
     render(

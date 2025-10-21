@@ -11,9 +11,12 @@ import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
 it("should successfully create a measurement component", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider>
+        <PackageContextProvider services = {injectedServices}>
             <Measurement map={map} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -27,9 +30,12 @@ it("should successfully create a measurement component", async () => {
 });
 
 it("should successfully create a measurement component with additional css class", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider>
+        <PackageContextProvider services = {injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -41,9 +47,12 @@ it("should successfully create a measurement component with additional css class
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider>
+        <PackageContextProvider services = {injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -63,9 +72,12 @@ it("should successfully select a measurement from the select dropdown", async ()
 });
 
 it("should successfully add tooltip overlays to the map", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider>
+        <PackageContextProvider services = {injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -89,9 +101,12 @@ it("should successfully add tooltip overlays to the map", async () => {
 });
 
 it("should successfully activate draw interaction for the right geometry type", async () => {
-    const { map } = await setupMap();
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider>
+        <PackageContextProvider services = {injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );

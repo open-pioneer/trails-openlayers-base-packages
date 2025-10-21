@@ -24,6 +24,7 @@ import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
+import { displayItemForLayer } from "../../utils/displayLayer";
 
 /**
  * Renders a single layer as a list item.
@@ -33,7 +34,8 @@ import { LayerTocAttributes } from "../Toc";
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
     const intl = useIntl();
-    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer);
+    const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
+    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
     const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
@@ -46,7 +48,6 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             title: layer.title,
             description: layer.description,
             isVisible: layer.visible,
-            isInternal: layer.internal,
             allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
         };
     }, [layer]);
@@ -54,10 +55,10 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     let hasNestedChildren = !!nestedChildren;
 
-    const display = displayLayerItem(layer);
+
     if (!display) {
         return null;
-    }
+    } 
     //all children hidden => do not render collapse button and child entries
     if (allChildrenHidden || listMode === "hide-children") {
         hasNestedChildren = false;
@@ -198,7 +199,7 @@ function CollapseButton(props: {
 }
 
 // Creates a toc item and registers it with the shared toc model.
-function useTocItem(layer: AnyLayer) {
+function useTocItem(layer: AnyLayer, display: boolean) {
     const tocModel = useTocModel();
     const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
     const tocItemElemRef = useRef<HTMLDivElement>(null);
@@ -208,13 +209,16 @@ function useTocItem(layer: AnyLayer) {
 
     // Register the item on the shared toc model
     useEffect(() => {
+        if (!display) {
+            return; //prevent registering if item is not displayed
+        }
         tocItem.setHtmlElement(tocItemElemRef.current ?? undefined);
         tocModel.registerItem(tocItem);
         return () => {
             tocItem.setHtmlElement(undefined);
             tocModel.unregisterItem(tocItem);
         };
-    }, [tocModel, tocItem]);
+    }, [tocModel, tocItem, display]);
 
     return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
@@ -247,24 +251,10 @@ function hasShownChildren(layer: AnyLayer): boolean {
         return false;
     } else {
         return layer.children.getItems().some((childLayer) => {
-            const isDisplayed = displayLayerItem(childLayer);
+            const isDisplayed = displayItemForLayer(childLayer);
             return isDisplayed;
         });
     }
 }
 
-/**
- * Checks if a layer should be displayed in the Toc.
- */
-function displayLayerItem(layer: AnyLayer): boolean {
-    const isInternal = layer.internal;
-    const listMode = (layer.attributes.toc as LayerTocAttributes | undefined)?.listMode;
 
-    if (listMode === "show" || listMode === "hide-children") {
-        return true;
-    } else if (isInternal || listMode === "hide") {
-        return false;
-    } else {
-        return true;
-    }
-}

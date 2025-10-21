@@ -179,7 +179,7 @@ export class MapModel {
         this.#layerDeps = {
             httpService: properties.httpService
         };
-        this.#highlights = new Highlights(this.#olMap);
+        this.#highlights = new Highlights(this, this.#layerDeps);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(

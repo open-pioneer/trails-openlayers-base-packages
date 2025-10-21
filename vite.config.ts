@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
                 deps: {
                     // Workaround to fix some import issues, see
                     // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
-                    inline: [/@open-pioneer[/\\]/]
+                    inline: [/@open-pioneer[/\\]/, /ol\//]
                 }
             }
         }

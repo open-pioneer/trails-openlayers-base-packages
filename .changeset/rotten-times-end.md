@@ -4,7 +4,7 @@
 
 **Breaking**: Internal layers are no longer returned from getters such as `getItems()` or `getRecursiveLayers()` by default.
 
-A new option `includeInternalLayers` has been implemented opt-in into internal layers.
+A new option `includeInternalLayers` has been implemented to opt-in into internal layers.
 By default, internal layers are not returned by functions like `getItems()` or `getRecursiveLayers()`.
 If internal layer should be returned this must be specified explicitly with the `includeInternalLayers` option.
 

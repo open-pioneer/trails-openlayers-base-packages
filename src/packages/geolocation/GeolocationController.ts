@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
-import { calculateBufferedExtent, MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { calculateBufferedExtent, LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import olGeolocation, { GeolocationError } from "ol/Geolocation";
 import { unByKey } from "ol/Observable";
@@ -28,7 +28,7 @@ export class GeolocationController {
     public readonly supported = !!navigator.geolocation;
 
     private readonly map: MapModel;
-    private readonly positionHighlightLayer: VectorLayer<VectorSource, Feature>;
+    private readonly positionHighlightLayer: SimpleLayer;
     private readonly geolocation: olGeolocation;
     private readonly onError: OnErrorCallback;
 
@@ -43,7 +43,12 @@ export class GeolocationController {
     #loading = reactive(false);
     #active = reactive(false);
 
-    constructor(map: MapModel, onError: OnErrorCallback, trackingOptions?: PositionOptions) {
+    constructor(
+        map: MapModel,
+        layerFactory: LayerFactory,
+        onError: OnErrorCallback,
+        trackingOptions?: PositionOptions
+    ) {
         this.map = map;
         this.onError = onError;
         this.isInitialZoom = true;
@@ -54,12 +59,17 @@ export class GeolocationController {
         this.positionFeature = new Feature();
         this.positionFeature.setStyle(getDefaultPositionStyle());
 
-        this.positionHighlightLayer = new VectorLayer({
+        const olLayer = new VectorLayer({
             source: new VectorSource({
                 features: [this.accuracyFeature, this.positionFeature]
             })
         });
-        this.positionHighlightLayer.setZIndex(TOPMOST_LAYER_Z);
+        this.positionHighlightLayer = layerFactory.create({
+            type: SimpleLayer,
+            title: "geolocation-highlight-layer",
+            internal: true,
+            olLayer: olLayer
+        });
 
         const geolocationTrackingOptions: PositionOptions =
             trackingOptions || getDefaultTrackingOptions();
@@ -78,9 +88,9 @@ export class GeolocationController {
         this.stopGeolocation();
         this.geolocation?.setTracking(false);
         this.geolocation.dispose();
+        this.positionHighlightLayer.destroy();
         this.accuracyFeature = undefined;
         this.positionFeature = undefined;
-        this.positionHighlightLayer.dispose();
     }
 
     startGeolocation() {
@@ -159,7 +169,7 @@ export class GeolocationController {
                 draggingHandler
             );
 
-            this.map.olMap.addLayer(this.positionHighlightLayer);
+            this.map.layers.addLayer(this.positionHighlightLayer, { at: "topmost" });
         });
 
         geolocationPromise
@@ -186,7 +196,7 @@ export class GeolocationController {
         this.changeHandlers = [];
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
-        this.map.olMap.removeLayer(this.positionHighlightLayer);
+        this.map.layers.removeLayer(this.positionHighlightLayer);
     }
 
     /** True if the position is being tracked. */

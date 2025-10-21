@@ -4,7 +4,7 @@ import {
     assertInternalConstructor,
     InternalConstructorTag
 } from "../../utils/InternalConstructorTag";
-import { Layer, Sublayer } from "../unions";
+import { Sublayer } from "../unions";
 import { ChildrenCollection } from "./ChildrenCollection";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 import { GET_RAW_SUBLAYERS } from "./internals";
@@ -43,11 +43,11 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
     /**
      * Returns the child sublayers in this collection.
      */
-    getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
+    getSublayers(options?: LayerRetrievalOptions | undefined): SublayerType[] {
         // NOTE: sort options are ignored because layers are always ordered at this time.
         let allLayers = this.#sublayers.slice();
 
-        if (!_options?.includeInternalLayers) {
+        if (!options?.includeInternalLayers) {
             allLayers = allLayers.filter((l) => !l.internal);
         }
 
@@ -62,15 +62,15 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
      * >
      * > If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
      */
-    getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {
+    getRecursiveLayers(options?: RecursiveRetrievalOptions): Sublayer[] {
         return getRecursiveLayers({
             // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).
             // _Might_ be possible to refactor this class to use the Sublayer union instead in the generic type parameters,
             // but then we might also introduce a cycle in the type definitions, which could be bad (?).
             from: this as unknown as SublayersCollection<Sublayer>,
-            sortByDisplayOrder: _options?.sortByDisplayOrder,
-            includeInternalLayers: _options?.includeInternalLayers,
-            filter: _options?.filter
+            sortByDisplayOrder: options?.sortByDisplayOrder,
+            includeInternalLayers: options?.includeInternalLayers,
+            filter: options?.filter
         }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }
 

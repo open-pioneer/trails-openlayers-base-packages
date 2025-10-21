@@ -86,14 +86,10 @@ it("makes the map layers accessible", async () => {
     `);
 
     // Z-Index is assigned internally based on the display order of layers.
+    // Validate relative order: OSM should be below "Empty tile"
     await waitForZIndex(layers[0]!);
-    const zIndices = getZIndices(layers);
-    expect(zIndices).toMatchInlineSnapshot(`
-      {
-        "Empty tile": 2,
-        "OSM": 1,
-      }
-    `);
+    const sortedLayers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expectLayerOrder(sortedLayers);
 
     const baseLayers = model.layers.getBaseLayers();
     expect(baseLayers.length).toBe(1);
@@ -166,22 +162,22 @@ it("only returns internal layer if explicitly specified", async () => {
     let layers = model.layers.getLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3); // Expect 3 because internal map highlight layer is added automatically
 
     layers = model.layers.getAllLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getAllLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 
     layers = model.layers.getItems();
     expect(layers.length).toBe(1);
     layers = model.layers.getItems({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 
     layers = model.layers.getOperationalLayers();
     expect(layers.length).toBe(1);
     layers = model.layers.getOperationalLayers({ includeInternalLayers: true });
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(3);
 });
 
 it("generates automatic unique ids for layers", async () => {
@@ -271,8 +267,7 @@ it("destroys child layers when parent group layer is removed", async () => {
         title: "group test",
         layers: [groupMember]
     });
-
-    //register dummy event handlers
+    // Register dummy event handlers
     const groupFn = vi.fn();
     const memberFn = vi.fn();
     on(groupMember.destroyed, memberFn, SYNC_DISPATCH);
@@ -282,8 +277,8 @@ it("destroys child layers when parent group layer is removed", async () => {
         layers: [groupLayer]
     });
 
-    model.layers.removeLayerById("group"); //remove group layer
-    //destroy event should be emitted for each (child) layer
+    model.layers.removeLayerById("group"); // Remove group layer
+    // Destroy event should be emitted for each (child) layer
     expect(memberFn).toHaveBeenCalledOnce();
     expect(groupFn).toHaveBeenCalledOnce();
 });
@@ -410,7 +405,7 @@ describe("layer lookup", () => {
 
         const memberLayer = model.layers.getLayerByRawInstance(olLayer);
         expect(memberLayer).toBeDefined();
-        const olGroup = model.olMap.getLayers().getArray()[1]; //get raw ol group la
+        const olGroup = model.olMap.getLayers().getArray()[1]; // Get raw OpenLayers group layer
         const groupLayer = model.layers.getLayerByRawInstance(olGroup!);
         expect(olGroup instanceof Group).toBeTruthy();
         expect(groupLayer).toBeDefined();
@@ -442,7 +437,7 @@ describe("layer lookup", () => {
         memberLayer = model.layers.getLayerById("member") as Layer;
         expect(memberLayer).toBeDefined();
 
-        //remove group layer and check if group members are not indexed anymore
+        // Remove group layer and check if group members are not indexed anymore
         model.layers.removeLayerById("group");
         memberLayer = model.layers.getLayerByRawInstance(olLayer);
         expect(memberLayer).toBeUndefined();
@@ -533,14 +528,9 @@ describe("adding and removing layers", () => {
         expect(layers).toHaveLength(2);
         expect(layers[layers.length - 1]).toBe(layer);
 
+        // Validate relative order: dummy1 should be below foo
         await waitForZIndex(layer);
-        const zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy1": 0,
-            "foo": 1,
-          }
-        `);
+        expectLayerOrder(layers);
     });
 
     it("supports adding a layer to the model (bottom)", async () => {
@@ -564,14 +554,9 @@ describe("adding and removing layers", () => {
         expect(layers).toHaveLength(2);
         expect(layers[0]).toBe(layer);
 
+        // Validate relative order: foo should be below dummy1
         await waitForZIndex(layer);
-        const zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy1": 1,
-            "foo": 0,
-          }
-        `);
+        expectLayerOrder(layers);
     });
 
     it("supports adding a layer to the model (above / below)", async () => {
@@ -616,17 +601,9 @@ describe("adding and removing layers", () => {
         expect(layers[1]).toBe(layerAbove);
         expect(layers[3]).toBe(layerBelow);
 
+        // Validate relative order: dummy1 < above 1 < dummy2 < below 3 < dummy3
         await waitForZIndex(layerAbove);
-        const zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "above 1": 1,
-            "below 3": 3,
-            "dummy1": 0,
-            "dummy2": 2,
-            "dummy3": 4,
-          }
-        `);
+        expectLayerOrder(layers);
     });
 
     it("supports adding a layer to the model (topmost)", async () => {
@@ -656,40 +633,24 @@ describe("adding and removing layers", () => {
         let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         await waitForZIndex(layerTopMost);
-        let zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy1": 0,
-            "topmost1": 1,
-          }
-        `);
+        // Validate relative order: dummy1 should be below topmost1
+        expectLayerOrder(layers);
 
-        model.layers.addLayer(layerTopMost2, { at: "topmost" }); //should be above topmost1
+        model.layers.addLayer(layerTopMost2, { at: "topmost" }); // Should be above topmost1
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost2);
         expect(layers[layers.length - 2]).toBe(layerTopMost);
         await waitForZIndex(layerTopMost2);
-        zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy1": 0,
-            "topmost1": 1,
-            "topmost2": 2,
-          }
-        `);
+        // Validate relative order: dummy1 < topmost1 < topmost2
+        expectLayerOrder(layers);
 
         const oldZIndex = layerTopMost2.olLayer.getZIndex();
-        model.layers.removeLayerById(layerTopMost.id); //remove (first) topmost
+        model.layers.removeLayerById(layerTopMost.id); // Remove (first) topmost
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost2);
         await waitForUpdatedZIndex(layerTopMost2, oldZIndex);
-        zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy1": 0,
-            "topmost2": 1,
-          }
-        `);
+        // Validate relative order: dummy1 should be below topmost2
+        expectLayerOrder(layers);
     });
 
     it("it throws error if reference layer is not a top level operational layer", async () => {
@@ -818,28 +779,19 @@ describe("adding and removing layers", () => {
         let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         await waitForZIndex(layerTopMost);
-        let zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "topmost": 0,
-          }
-        `);
+        // Single topmost layer should have a z-index assigned
+        expect(layerTopMost.olLayer.getZIndex()).toBeGreaterThan(0);
 
         model.layers.addLayer(layerOther, { at: "top" }); //top should be below topmost
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         expect(layers[layers.length - 2]).toBe(layerOther);
         await waitForZIndex(layerOther);
-        zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "other": 0,
-            "topmost": 1,
-          }
-        `);
+        // Validate relative order: other should be below topmost
+        expectLayerOrder(layers);
     });
 
-    it("supports adding a layer to the model (above/below with top most layer as reference)", async () => {
+    it("supports adding a layer to the model (above/below with topmost layer as reference)", async () => {
         model = await create("foo", {
             layers: [
                 createTestLayer({
@@ -882,15 +834,8 @@ describe("adding and removing layers", () => {
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         expect(layers[layers.length - 2]).toBe(layerTopMostBelow);
         await waitForZIndex(layerOther);
-        let zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy": 0,
-            "other": 1,
-            "topmost": 3,
-            "topmostbelow": 2,
-          }
-        `);
+        // Validate relative order: dummy < other < topmostbelow < topmost
+        expectLayerOrder(layers);
 
         model.layers.addLayer(layerTopMostAbove, { at: "above", reference: layerTopMostBelow });
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
@@ -898,31 +843,17 @@ describe("adding and removing layers", () => {
         expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
         expect(layers[layers.length - 3]).toBe(layerTopMostBelow);
         await waitForZIndex(layerTopMostAbove);
-        zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy": 0,
-            "other": 1,
-            "topmost": 4,
-            "topmostabove": 3,
-            "topmostbelow": 2,
-          }
-        `);
+        // Validate relative order: dummy < other < topmostbelow < topmostabove < topmost
+        expectLayerOrder(layers);
 
+        const oldZIndexTopMostAbove = layerTopMostAbove.olLayer.getZIndex();
         model.layers.removeLayerById(layerTopMostBelow.id);
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
-        await waitForUpdatedZIndex(layerTopMostAbove, 3);
-        zIndices = getZIndices(layers);
-        expect(zIndices).toMatchInlineSnapshot(`
-          {
-            "dummy": 0,
-            "other": 1,
-            "topmost": 3,
-            "topmostabove": 2,
-          }
-        `);
+        await waitForUpdatedZIndex(layerTopMostAbove, oldZIndexTopMostAbove);
+        // Validate relative order: dummy < other < topmostabove < topmost
+        expectLayerOrder(layers);
     });
 });
 
@@ -1174,15 +1105,15 @@ describe("child access", () => {
             layers: [group, base] // order reversed to test sorting
         });
 
-        let allLayers = model.layers.getRecursiveLayers(); //no internal layers be default
-        expect(allLayers.length).toBe(1); //only one because children of internal layers are not considered
+        let allLayers = model.layers.getRecursiveLayers(); // No internal layers by default
+        expect(allLayers.length).toBe(1); // Only one because children of internal layers are not considered
         expect(allLayers[0]).toBe(base);
 
         allLayers = model.layers.getRecursiveLayers({
             includeInternalLayers: true,
             sortByDisplayOrder: true
         });
-        expect(allLayers.length).toBe(3);
+        expect(allLayers.length).toBe(4); // Expect 4 because internal map highlight layer is added automatically
         expect(allLayers[0]).toBe(base);
         expect(allLayers[1]).toBe(child);
         expect(allLayers[2]).toBe(group);
@@ -1317,9 +1248,25 @@ async function waitForUpdatedZIndex(layer: Layer, oldZIndex?: number) {
     });
 }
 
-function getZIndices(layers: Layer[]) {
-    const entries = layers.map((layer) => [layer.title, layer.olLayer.getZIndex()]);
-    return Object.fromEntries(entries);
+/**
+ * Validates that layers have the expected relative z-index order.
+ * Layers should be provided in ascending order (bottom to top).
+ * The function checks that each layer's z-index is greater than the previous layer's z-index.
+ */
+function expectLayerOrder(layers: Layer[]) {
+    const zIndices = layers.map((layer) => ({
+        title: layer.title,
+        zIndex: layer.olLayer.getZIndex()
+    }));
+
+    for (let i = 1; i < zIndices.length; i++) {
+        const prev = zIndices[i - 1]!;
+        const curr = zIndices[i]!;
+        expect(
+            curr.zIndex,
+            `Layer "${curr.title}" (z-index: ${curr.zIndex}) should be above "${prev.title}" (z-index: ${prev.zIndex})`
+        ).toBeGreaterThan(prev.zIndex!);
+    }
 }
 
 function create(mapId: string, mapConfig: MapConfig) {

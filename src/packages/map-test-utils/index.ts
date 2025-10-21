@@ -131,6 +131,7 @@ export async function waitForInitialExtent(model: MapModel) {
 export interface SetupMapResult {
     mapId: string;
     registry: MapRegistry;
+    layerFactory: LayerFactory;
 }
 
 /**
@@ -196,7 +197,7 @@ export async function setupMap(
         // Ignore error on this promise (prevents unhandled error in tests)
         promise.catch(() => undefined);
     }
-    return { mapId, registry, map };
+    return { mapId, registry, layerFactory, map };
 }
 
 function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
@@ -284,10 +285,6 @@ function mockVectorLayer() {
     VectorLayer.prototype.render = () => {
         return div;
     };
-
-    // Needed by tests in editing package
-    VectorLayer.prototype.setStyle = () => {};
-    VectorLayer.prototype.getStyleFunction = () => () => [];
 }
 
 mockVectorLayer();
