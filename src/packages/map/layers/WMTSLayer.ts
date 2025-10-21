@@ -10,17 +10,14 @@ import TileLayer from "ol/layer/Tile";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
+import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
-import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { getLegendUrl } from "./wmts/getLegendUrl";
-
-// Import for api docs
-// eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options supported by {@link WMTSLayer}.

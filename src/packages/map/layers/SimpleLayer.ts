@@ -2,14 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { deprecated } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
+import type { LayerFactory } from "../LayerFactory";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { LayerConstructor, LayerDependencies } from "./shared/internals";
-import { InternalConstructorTag } from "../utils/InternalConstructorTag";
-
-// Import for api docs
-// eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Options to construct a simple layer.

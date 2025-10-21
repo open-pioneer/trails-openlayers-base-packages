@@ -14,8 +14,10 @@ import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import ImageWMS from "ol/source/ImageWMS";
+import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
+import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
 import {
     ATTACH_TO_MAP,
@@ -23,19 +25,14 @@ import {
     DETACH_FROM_MAP,
     GET_DEPS,
     GET_RAW_SUBLAYERS,
-    SET_LEGEND,
     LayerConstructor,
-    LayerDependencies
+    LayerDependencies,
+    SET_LEGEND
 } from "./shared/internals";
-import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
-
-// Import for api docs
-// eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.

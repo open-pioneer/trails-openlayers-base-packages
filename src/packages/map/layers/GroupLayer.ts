@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
+import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
+import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
+import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { LayerConfig } from "./shared/LayerConfig";
 import {
     ATTACH_TO_MAP,
@@ -12,13 +15,7 @@ import {
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
-import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { Layer } from "./unions";
-import { GroupLayerCollection } from "./group/GroupLayerCollection";
-
-// Import for api docs
-// eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.

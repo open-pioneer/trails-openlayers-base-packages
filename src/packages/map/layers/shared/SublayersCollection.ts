@@ -1,19 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { getRecursiveLayers } from "./getRecursiveLayers";
-import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "./LayerRetrievalOptions";
-import { Sublayer } from "../unions";
-import { ChildrenCollection } from "./ChildrenCollection";
-import { GET_RAW_SUBLAYERS } from "./internals";
 import {
     assertInternalConstructor,
     InternalConstructorTag
 } from "../../utils/InternalConstructorTag";
+import { Layer, Sublayer } from "../unions";
+import { ChildrenCollection } from "./ChildrenCollection";
+import { getRecursiveLayers } from "./getRecursiveLayers";
+import { GET_RAW_SUBLAYERS } from "./internals";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "./LayerRetrievalOptions";
 import { SublayerBaseType } from "./SublayerBaseType";
-
-// Imported for typedoc
-// eslint-disable-next-line unused-imports/no-unused-imports
-import { Layer } from "../unions";
 
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.

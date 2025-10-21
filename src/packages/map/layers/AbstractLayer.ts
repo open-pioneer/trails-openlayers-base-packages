@@ -8,23 +8,19 @@ import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
 import { MapModel } from "../model/MapModel";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
-    getLayerDependencies,
-    LayerDependencies,
-    LAYER_DEPS,
-    SET_VISIBLE,
     ATTACH_TO_MAP,
-    GET_DEPS
+    GET_DEPS,
+    getLayerDependencies,
+    LAYER_DEPS,
+    LayerDependencies,
+    SET_VISIBLE
 } from "./shared/internals";
-import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
-import { SimpleLayerConfig } from "./SimpleLayer";
+import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
-
-// Imported for typedoc
-// eslint-disable-next-line unused-imports/no-unused-imports
-import { SimpleLayer } from "./SimpleLayer";
 
 const LOG = createLogger("map:AbstractLayer");
 
