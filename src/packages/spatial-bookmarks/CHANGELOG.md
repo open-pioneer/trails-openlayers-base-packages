@@ -1,5 +1,13 @@
 # @open-pioneer/spatial-bookmarks
 
+## 1.0.1
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+- Updated dependencies [fce7fa9]
+    - @open-pioneer/map@1.0.1
+
 ## 1.0.0
 
 ### Minor Changes
