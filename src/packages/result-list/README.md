@@ -241,7 +241,8 @@ To always display features from a layer in the same way, define the metadata dir
 For example:
 
 ```js
-new SimpleLayer({
+layerFactory.create({
+    type: SimpleLayer,
     id: "ogc_kitas",
     title: "Kindertagesstätten",
     olLayer: createKitasLayer(),
