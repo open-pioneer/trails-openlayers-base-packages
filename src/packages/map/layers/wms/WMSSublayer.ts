@@ -184,7 +184,7 @@ export function constructSublayers(sublayerConfigs: WMSSublayerConfig[] = []): W
     } catch (e) {
         // Ensure previous sublayers are destroyed if a single constructor throws
         while (sublayers.length) {
-            const layer = sublayers.pop()!;
+            const layer = sublayers.pop();
             layer?.destroy();
         }
         throw new Error("Failed to construct sublayers.", { cause: e });

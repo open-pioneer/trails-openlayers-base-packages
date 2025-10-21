@@ -251,8 +251,10 @@ export class WMSLayer extends AbstractLayer {
                     getNestedSublayer(this.#sublayers.getSublayers(), layers);
 
                     for (const layer of layers) {
-                        const legendUrl = getLegendUrl(capabilities, layer.name!);
-                        layer[SET_LEGEND](legendUrl);
+                        if (layer.name) {
+                            const legendUrl = getLegendUrl(capabilities, layer.name);
+                            layer[SET_LEGEND](legendUrl);
+                        }
                     }
                 });
             })

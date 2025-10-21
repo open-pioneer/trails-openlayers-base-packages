@@ -163,10 +163,12 @@ function useSelectionSourceId(): GetSelectionSourceId {
     }
 
     return useCallback((selectionSource: SelectionSource) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const ids = sourceIds.current!;
         if (!ids.has(selectionSource)) {
             ids.set(selectionSource, `source-${counter.current++}`);
         }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return ids.get(selectionSource)!;
     }, []);
 }

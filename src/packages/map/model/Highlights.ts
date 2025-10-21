@@ -154,7 +154,7 @@ export class Highlights {
 
         let extent = createEmpty();
         for (const geometry of geometries) {
-            extent = extend(extent, geometry!.getExtent());
+            extent = extend(extent, geometry.getExtent());
         }
 
         const bufferParameter = options?.buffer;

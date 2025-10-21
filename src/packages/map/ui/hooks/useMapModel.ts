@@ -95,7 +95,7 @@ export function useMapModel(props?: undefined | string | { mapId: string }): Use
     const state = useAsync(async () => {
         if (mapId == null) {
             // For backwards compatibility
-            return defaultMap!;
+            return defaultMap;
         }
 
         return await mapRegistry.expectMapModel(mapId);
@@ -108,6 +108,7 @@ export function useMapModel(props?: undefined | string | { mapId: string }): Use
         if (state.error) {
             return { kind: "rejected", error: state.error };
         }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return { kind: "resolved", map: state.value! };
     }, [state]);
     return result;

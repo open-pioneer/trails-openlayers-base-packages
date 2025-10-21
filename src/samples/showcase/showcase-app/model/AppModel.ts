@@ -37,7 +37,10 @@ export class AppModel {
             throw new Error("No demos defined.");
         }
 
-        const demo = demos[0]!;
+        const demo = demos[0];
+        if (!demo) {
+            throw new Error("No demo found.");
+        }
         this.#currentDemo = reactive([demo, demo.createModel()]);
 
         this.#applyStateFromUrl();

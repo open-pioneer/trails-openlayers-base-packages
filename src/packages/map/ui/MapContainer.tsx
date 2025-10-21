@@ -130,6 +130,7 @@ export function MapContainer(props: MapContainerProps) {
                 {ready && map && (
                     <MapContainerReady
                         olMap={map.olMap}
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
                         viewPaddingChangeBehavior={viewPaddingChangeBehavior}

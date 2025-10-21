@@ -68,10 +68,14 @@ export class ViewHistoryModel {
 
     #goto(activeViewId: number) {
         const view = this.olMap.getView();
+        const activeView = this.mapViews.get(activeViewId);
+        if (activeView == null) {
+            throw new Error(`No view found for id ${activeViewId}`);
+        }
         this.olMap.setView(
             new View({
-                center: this.mapViews.get(activeViewId)!.center,
-                resolution: this.mapViews.get(activeViewId)!.resolution,
+                center: activeView.center,
+                resolution: activeView.resolution,
                 projection: view.getProjection()
             })
         );

@@ -65,9 +65,8 @@ interface CreateColumnOptions {
 function createColumn(options: CreateColumnOptions) {
     const { id, column, columnWidth, formatOptions, intl } = options;
     const { propertyName, getPropertyValue } = column;
-    const hasPropertyValue = getPropertyValue != null || propertyName != null;
 
-    if (!hasPropertyValue) {
+    if (getPropertyValue == null && propertyName == null) {
         throw new Error(
             "Display columns are not yet implemented. You must either specify 'propertyName' or 'getPropertyValue'."
         );
@@ -75,6 +74,7 @@ function createColumn(options: CreateColumnOptions) {
 
     return columnHelper.accessor(
         (feature: BaseFeature) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getPropertyValue?.(feature) ?? feature.properties?.[propertyName!];
         },
         {
