@@ -1,5 +1,7 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 1.0.1
+
 ## 1.0.0
 
 ### Minor Changes
