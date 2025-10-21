@@ -1,5 +1,42 @@
 # @open-pioneer/scale-setter
 
+## 1.0.0
+
+### Minor Changes
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+- 2abcaaf: Update to chakra-ui 3.28.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 138d85b: Update core packages to 4.2.0
+- da6a410: Update dependencies
+- Updated dependencies [c6180c6]
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [2702df4]
+- Updated dependencies [12561fe]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [b3709f1]
+- Updated dependencies [14c484e]
+- Updated dependencies [138d85b]
+- Updated dependencies [4f1e7bd]
+- Updated dependencies [aeb9000]
+- Updated dependencies [9e9bc6e]
+- Updated dependencies [b3709f1]
+- Updated dependencies [2c8b617]
+- Updated dependencies [b3709f1]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [a1614de]
+- Updated dependencies [773fa2d]
+- Updated dependencies [2abcaaf]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@1.0.0
+
 ## 0.11.0
 
 ### Minor Changes
