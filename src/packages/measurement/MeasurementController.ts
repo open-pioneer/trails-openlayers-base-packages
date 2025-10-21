@@ -131,7 +131,8 @@ export class MeasurementController {
         this.helpTooltip.destroy();
 
         // Cleanup layer
-        this.map.layers.removeLayer(this.layer.id);
+        this.map.layers.removeLayer(this.layer);
+        this.layer.destroy();
 
         this.measurementChangedHandler = undefined;
         this.predefinedMeasurements.clear();

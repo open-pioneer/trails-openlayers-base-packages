@@ -234,7 +234,8 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     }
 
     private _destroy() {
-        this._map.layers.removeLayerById(this._editingLayer.id);
+        this._map.layers.removeLayer(this._editingLayer);
+        this._editingLayer.destroy();
         this._olMap.removeInteraction(this._drawInteraction);
         this._tooltip.destroy();
 

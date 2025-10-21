@@ -195,7 +195,8 @@ export class GeolocationController {
         this.changeHandlers = [];
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
-        this.map.layers.removeLayerById(this.positionHighlightLayer.id);
+        this.map.layers.removeLayer(this.positionHighlightLayer);
+        this.positionHighlightLayer.destroy();
     }
 
     /** True if the position is being tracked. */
