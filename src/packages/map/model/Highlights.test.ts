@@ -17,7 +17,7 @@ let _highlights: Highlights | undefined;
 afterEach(() => {
     _highlights?.destroy();
     _highlights = undefined;
-    vi.resetAllMocks();
+    vi.restoreAllMocks();
 });
 
 it("should successfully add marker for point geometries", async () => {
