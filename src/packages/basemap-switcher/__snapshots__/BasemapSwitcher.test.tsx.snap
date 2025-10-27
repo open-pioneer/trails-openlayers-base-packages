@@ -6,7 +6,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
   data-part="root"
   data-scope="select"
   dir="ltr"
-  id="select:_r_9_"
+  id="select:_r_b_"
 >
   <div
     class="chakra-select__control css-17j1053"
@@ -14,21 +14,21 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
     data-scope="select"
     data-state="closed"
     dir="ltr"
-    id="select:_r_9_:control"
+    id="select:_r_b_:control"
   >
     <button
-      aria-controls="select:_r_9_:content"
+      aria-controls="select:_r_b_:content"
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-invalid="false"
-      aria-labelledby="select:_r_9_:label"
+      aria-labelledby="select:_r_b_:label"
       aria-required="false"
       class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
       data-part="trigger"
       data-scope="select"
       data-state="closed"
       dir="ltr"
-      id="select:_r_9_:trigger"
+      id="select:_r_b_:trigger"
       role="combobox"
       type="button"
     >
