@@ -39,7 +39,7 @@ Renders as (for example):
 </div>
 ```
 
-### React `forwardRef`
+### React `ref` support
 
 If a component is a simple wrapper around another DOM element (such as a button), it will provide a reference to the underlying DOM element via a `ref` prop.
 You can use the `ref` property on the component to access the DOM element:
