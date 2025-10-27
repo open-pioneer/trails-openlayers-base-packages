@@ -174,14 +174,15 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             this.#stateWatchResource = stateWatchResource;
             this.#loadState.value = initialState;
         }
-        //TODO move the impl. maybe
+
+        // TODO move the impl. maybe
         this.handle = watchValue(
             () => map.resolution,
             (mapRes) => {
                 if (!mapRes) return;
 
-                const minRes = this.minResolution ? this.minResolution : 0;
-                const maxRes = this.maxResolution ? this.maxResolution : Infinity;
+                const minRes = this.#minResolution ? this.#minResolution : 0;
+                const maxRes = this.#maxResolution ? this.#maxResolution : Infinity;
 
                 this.#visibleInScale.value = mapRes >= minRes && mapRes <= maxRes;
             },
