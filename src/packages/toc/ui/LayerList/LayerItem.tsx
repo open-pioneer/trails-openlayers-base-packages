@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer, isSublayer } from "@open-pioneer/map";
+import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
