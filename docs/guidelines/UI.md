@@ -9,7 +9,7 @@ Guidelines for React components developed in this repository.
 - Every component receives an extra `className` prop (optional string) that can be customized by the user
     - The css classes in `className` are simply added to the predefined classes
 - For components that simply wrap another HTML/Chakra-Element (such as a button):
-    - Use [`forwardRef`](https://react.dev/reference/react/forwardRef) to make the inner component accessible to the outside. This can be important for being able to call `.focus()`, for example.
+    - Implement the `ref` prop to make the inner component accessible to the outside. This can be important for being able to call `.focus()`, for example.
     - Consider accepting all properties of the wrapped components
 - Prefer chakra components where available in favor of "plain" HTML elements
     - otherwise Chakra theming might not be applied
