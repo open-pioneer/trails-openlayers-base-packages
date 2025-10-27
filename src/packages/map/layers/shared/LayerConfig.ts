@@ -66,6 +66,10 @@ export interface LayerConfig extends LayerBaseConfig {
      * or a {@link HealthCheckFunction} performing a custom check and returning the state.
      */
     healthCheck?: string | HealthCheckFunction;
+
+    // TODO add comments
+    minResolution?: number;
+    maxResolution?: number;
 }
 
 /**
