@@ -1,5 +1,13 @@
 # @open-pioneer/geolocation
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [fce7fa9]
+    - @open-pioneer/map@1.0.1
+    - @open-pioneer/map-ui-components@1.0.1
+
 ## 1.0.0
 
 ### Minor Changes

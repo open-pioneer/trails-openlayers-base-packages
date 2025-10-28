@@ -1,5 +1,11 @@
 # @open-pioneer/map
 
+## 1.0.1
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+
 ## 1.0.0
 
 ### Major Changes
