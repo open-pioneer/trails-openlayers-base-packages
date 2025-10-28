@@ -1,5 +1,12 @@
 # @open-pioneer/map-test-utils
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [fce7fa9]
+    - @open-pioneer/map@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
