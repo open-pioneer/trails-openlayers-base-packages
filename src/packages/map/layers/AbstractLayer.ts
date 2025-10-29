@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     CleanupHandle,
+    computed,
     reactive,
     Reactive,
     ReadonlyReactive,
@@ -62,9 +63,9 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
     #stateWatchResource: Resource | undefined;
 
-    #minResolution?: number;
-    #maxResolution?: number;
-    #visibleInScale: Reactive<boolean>;
+    #minResolution?: ReadonlyReactive<number>;
+    #maxResolution?: ReadonlyReactive<number>;
+    #visibleInScale: ReadonlyReactive<boolean>;
     private handle: CleanupHandle | undefined;
 
     constructor(
@@ -85,12 +86,44 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             }
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
-        this.#minResolution = config.minResolution;
-        this.#maxResolution = config.maxResolution;
+        this.#minResolution = synchronized(
+            () => this.olLayer.getMinResolution(),
+            (cb) => {
+                const key = this.olLayer.on("change:minResolution", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#maxResolution = synchronized(
+            () => this.olLayer.getMaxResolution(),
+            (cb) => {
+                const key = this.olLayer.on("change:maxResolution", cb);
+                return () => unByKey(key);
+            }
+        );
         this.#visibleInScale = reactive(true);
         this.handle = undefined;
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+
+        watchValue(
+            () => this.nullableMap,
+            (map) => {
+                if (!map) {
+                    return;
+                }
+                this.#visibleInScale = computed(() => {
+                    const minRes = this.#minResolution?.value ? this.#minResolution.value : 0;
+                    const maxRes = this.#maxResolution?.value
+                        ? this.#maxResolution.value
+                        : Infinity;
+                    const mapRes = map.resolution;
+                    if (!mapRes) {
+                        return false;
+                    }
+                    return mapRes >= minRes && mapRes <= maxRes;
+                });
+            }
+        );
 
         if (config.maxResolution) {
             this.#olLayer.setMaxResolution(config.maxResolution);
@@ -174,22 +207,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             this.#stateWatchResource = stateWatchResource;
             this.#loadState.value = initialState;
         }
-
-        // TODO move the impl. maybe
-        this.handle = watchValue(
-            () => map.resolution,
-            (mapRes) => {
-                if (!mapRes) return;
-
-                const minRes = this.#minResolution ? this.#minResolution : 0;
-                const maxRes = this.#maxResolution ? this.#maxResolution : Infinity;
-
-                this.#visibleInScale.value = mapRes >= minRes && mapRes <= maxRes;
-            },
-            {
-                immediate: true
-            }
-        );
     }
 
     override setVisible(newVisibility: boolean): void {
