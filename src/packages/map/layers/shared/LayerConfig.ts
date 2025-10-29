@@ -70,6 +70,9 @@ export interface LayerConfig extends LayerBaseConfig {
     // TODO add comments
     minResolution?: number;
     maxResolution?: number;
+
+    minZoom?: number;
+    maxZoom?: number;
 }
 
 /**
