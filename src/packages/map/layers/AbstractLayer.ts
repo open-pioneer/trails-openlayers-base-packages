@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    CleanupHandle,
     computed,
     reactive,
     Reactive,
@@ -29,7 +28,6 @@ import {
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
-import BaseLayer from "ol/layer/Base";
 
 const LOG = createLogger("map:AbstractLayer");
 
@@ -64,13 +62,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
     #stateWatchResource: Resource | undefined;
 
-    #minResolution?: ReadonlyReactive<number>;
-    #maxResolution?: ReadonlyReactive<number>;
-    #minZoom?: ReadonlyReactive<number>;
-    #maxZoom?: ReadonlyReactive<number>;
     #visibleInScale: ReadonlyReactive<boolean>;
-    #layerBindings: ReadonlyReactive<LayerBindings>;
-    private handle: CleanupHandle | undefined;
 
     constructor(
         config: SimpleLayerConfig,
@@ -90,44 +82,24 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             }
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
-        this.#layerBindings = computed(() => createLayerBinding(this.#olLayer));
-
-        this.#minResolution = this.#layerBindings.value.minResolution;
-        this.#maxResolution = this.#layerBindings.value.maxResolution;
-        this.#minZoom = this.#layerBindings.value.minZoom;
-        this.#maxZoom = this.#layerBindings.value.maxZoom;
 
         this.#visibleInScale = reactive(true);
-        this.handle = undefined;
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
         watchValue(
             () => this.nullableMap,
             (map) => {
-                if (!map) {
-                    return;
-                }
+                if (!map) return;
+
                 this.#visibleInScale = computed(() => {
-                    if (config.maxResolution != undefined || config.minResolution != undefined) {
-                        const minRes = this.#minResolution?.value ? this.#minResolution.value : 0;
-                        const maxRes = this.#maxResolution?.value
-                            ? this.#maxResolution.value
-                            : Infinity;
-                        const mapRes = map.resolution;
-                        if (!mapRes) {
-                            return false;
-                        }
-                        return mapRes >= minRes && mapRes <= maxRes;
-                    } else {
-                        const minZoom = this.#minZoom?.value ? this.#minZoom.value : 0;
-                        const maxZoom = this.#maxZoom?.value ? this.#maxZoom.value : Infinity;
-                        const mapZoom = map.zoomLevel;
-                        if (!mapZoom) {
-                            return false;
-                        }
-                        return mapZoom >= minZoom && mapZoom <= maxZoom;
+                    if (!map.resolution) {
+                        return false;
                     }
+                    if (!(this.#olLayer instanceof OlLayer)) {
+                        return true;
+                    }
+                    return this.#olLayer.isVisible(map.olView);
                 });
             }
         );
@@ -154,7 +126,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
         this.#stateWatchResource = destroyResource(this.#stateWatchResource);
         this.olLayer.dispose();
-        this.handle?.destroy();
         super.destroy();
     }
 
@@ -190,23 +161,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#loadState.value;
     }
 
-    get minResolution() {
-        return this.#minResolution?.value;
-    }
-
-    get maxResolution() {
-        return this.#maxResolution?.value;
-    }
-
-    get minZoom() {
-        return this.#minZoom?.value;
-    }
-
-    get maxZoom() {
-        return this.#maxZoom?.value;
-    }
-
-    get visibleInScale() {
+    /**
+     * Whether the layer is visible in the current map scale or not.
+     */
+    get visibleInScale(): boolean {
         return this.#visibleInScale.value;
     }
 
@@ -400,42 +358,4 @@ function getSourceState(olSource: OlSource | undefined) {
         case "error":
             return "error";
     }
-}
-interface LayerBindings {
-    minResolution: ReadonlyReactive<number>;
-    maxResolution: ReadonlyReactive<number>;
-    minZoom: ReadonlyReactive<number>;
-    maxZoom: ReadonlyReactive<number>;
-}
-function createLayerBinding(olLayer: OlLayer | BaseLayer) {
-    return {
-        minResolution: synchronized(
-            () => olLayer.getMinResolution(),
-            (cb) => {
-                const key = olLayer.on("change:minResolution", cb);
-                return () => unByKey(key);
-            }
-        ),
-        maxResolution: synchronized(
-            () => olLayer.getMaxResolution(),
-            (cb) => {
-                const key = olLayer.on("change:maxResolution", cb);
-                return () => unByKey(key);
-            }
-        ),
-        minZoom: synchronized(
-            () => olLayer.getMinZoom(),
-            (cb) => {
-                const key = olLayer.on("change:minZoom", cb);
-                return () => unByKey(key);
-            }
-        ),
-        maxZoom: synchronized(
-            () => olLayer.getMaxZoom(),
-            (cb) => {
-                const key = olLayer.on("change:maxZoom", cb);
-                return () => unByKey(key);
-            }
-        )
-    };
 }
