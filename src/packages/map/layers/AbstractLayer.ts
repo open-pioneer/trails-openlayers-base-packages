@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
+import {
+    computed,
+    reactive,
+    Reactive,
+    ReadonlyReactive,
+    synchronized,
+    watchValue
+} from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
@@ -55,6 +62,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
     #stateWatchResource: Resource | undefined;
 
+    #visibleInScale: ReadonlyReactive<boolean>;
+
     constructor(
         config: SimpleLayerConfig,
         deps?: LayerDependencies,
@@ -74,7 +83,40 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
 
+        this.#visibleInScale = reactive(true);
+
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+
+        watchValue(
+            () => this.nullableMap,
+            (map) => {
+                if (!map) return;
+
+                this.#visibleInScale = computed(() => {
+                    if (!map.resolution) {
+                        return false;
+                    }
+                    if (!(this.#olLayer instanceof OlLayer)) {
+                        return true;
+                    }
+                    return this.#olLayer.isVisible(map.olView);
+                });
+            }
+        );
+
+        if (config.maxResolution) {
+            this.#olLayer.setMaxResolution(config.maxResolution);
+        }
+        if (config.minResolution) {
+            this.#olLayer.setMinResolution(config.minResolution);
+        }
+
+        if (config.maxZoom) {
+            this.#olLayer.setMaxZoom(config.maxZoom);
+        }
+        if (config.minZoom) {
+            this.#olLayer.setMinZoom(config.minZoom);
+        }
     }
 
     override destroy() {
@@ -117,6 +159,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get loadState(): LayerLoadState {
         return this.#loadState.value;
+    }
+
+    /**
+     * Whether the layer is visible in the current map scale or not.
+     */
+    get visibleInScale(): boolean {
+        return this.#visibleInScale.value;
     }
 
     /**

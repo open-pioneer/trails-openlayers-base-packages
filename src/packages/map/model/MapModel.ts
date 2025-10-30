@@ -179,7 +179,6 @@ export class MapModel {
         this.#layerDeps = {
             httpService: properties.httpService
         };
-        this.#highlights = new Highlights(this, this.#layerDeps);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
@@ -222,6 +221,9 @@ export class MapModel {
             const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
             return scale;
         });
+
+        // expects fully constructed mapModel
+        this.#highlights = new Highlights(this, this.#layerDeps);
     }
 
     /**

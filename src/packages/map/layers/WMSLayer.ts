@@ -117,6 +117,7 @@ export class WMSLayer extends AbstractLayer {
         }
 
         const layer = new ImageLayer();
+
         super(
             {
                 ...config,
@@ -125,6 +126,7 @@ export class WMSLayer extends AbstractLayer {
             deps,
             internalTag
         );
+
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,

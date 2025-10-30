@@ -139,6 +139,7 @@ function createAdminAreasLayer(layerFactory: LayerFactory) {
                 listMode: "show"
             } satisfies LegendItemAttributes
         },
+        sourceOptions: {},
         sublayers: [
             {
                 name: "nw_dvg_krs",

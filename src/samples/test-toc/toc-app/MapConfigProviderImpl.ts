@@ -7,7 +7,8 @@ import {
     MapConfigProvider,
     MapConfigProviderOptions,
     SimpleLayer,
-    WMSLayer
+    WMSLayer,
+    WMTSLayer
 } from "@open-pioneer/map";
 import { LayerTocAttributes } from "@open-pioneer/toc";
 import GeoJSON from "ol/format/GeoJSON";
@@ -44,6 +45,19 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: createTopPlusOpenLayer("web")
                 }),
                 layerFactory.create({
+                    type: WMTSLayer,
+                    isBaseLayer: true,
+                    title: "Orthofotos NRW",
+                    url: "https://www.wmts.nrw.de/geobasis/wmts_nw_dop/1.0.0/WMTSCapabilities.xml",
+                    name: "nw_dop",
+                    minZoom: 10,
+                    maxZoom: 16,
+                    matrixSet: "EPSG_3857_16",
+                    sourceOptions: {
+                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf"</a>`
+                    }
+                }),
+                layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
@@ -65,6 +79,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
+                    minZoom: 10,
+                    maxZoom: 16,
                     visible: false,
                     // valid URL
                     healthCheck:
@@ -84,6 +100,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: GroupLayer,
                     id: "group_edu",
                     title: "Bildung",
+                    minZoom: 8,
+                    maxZoom: 14,
                     layers: [
                         layerFactory.create({
                             type: SimpleLayer,
@@ -101,6 +119,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: GroupLayer,
                     title: "Verkehr",
                     id: "group_transport",
+                    minZoom: 8,
+                    maxZoom: 16,
                     layers: [
                         layerFactory.create({
                             type: SimpleLayer,
@@ -240,6 +260,8 @@ function createStrassenLayer(layerFactory: LayerFactory) {
         id: "streets",
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        minZoom: 10,
+        maxZoom: 13,
         attributes: {
             toc: {
                 listMode: "show"

@@ -17,10 +17,10 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { LuTriangleAlert, LuChevronDown, LuChevronRight } from "react-icons/lu";
+import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState } from "./hooks";
+import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
@@ -33,6 +33,7 @@ import { displayItemForLayer } from "../../utils/displayLayer";
  */
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
+
     const intl = useIntl();
     const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
     const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
@@ -42,7 +43,10 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const listMode = useListMode(layer)?.listMode;
+    const visibleInScale = useVisibleInScale(layer);
+
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -94,9 +98,16 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
                     // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
+                    aria-label={
+                        title +
+                        (!isAvailable
+                            ? " " + notAvailableLabel
+                            : !visibleInScale
+                              ? " " + notVisibleLabel
+                              : "")
+                    }
                     checked={isVisible}
-                    disabled={!isAvailable}
+                    disabled={!isAvailable || !visibleInScale}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
@@ -119,6 +130,21 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                                 className="toc-layer-item-content-icon"
                                 color={"red"}
                                 aria-label={notAvailableLabel}
+                            />
+                        </span>
+                    </Tooltip>
+                )}
+                {!visibleInScale && isAvailable && (
+                    <Tooltip
+                        content={notVisibleLabel}
+                        positioning={{ placement: "right" }}
+                        openDelay={500}
+                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
+                    >
+                        <span>
+                            <LuInfo
+                                className="toc-layer-item-content-icon"
+                                aria-label={notVisibleLabel}
                             />
                         </span>
                     </Tooltip>
