@@ -161,6 +161,38 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#loadState.value;
     }
 
+    get minResolution() {
+        return this.#olLayer.getMinResolution();
+    }
+
+    set minResolution(value) {
+        this.#olLayer.setMinResolution(value);
+    }
+
+    get maxResolution() {
+        return this.#olLayer.getMaxResolution();
+    }
+
+    set maxResolution(value) {
+        this.#olLayer.setMaxResolution(value);
+    }
+
+    get minZoom() {
+        return this.#olLayer.getMinZoom();
+    }
+
+    set minZoom(value) {
+        this.#olLayer.setMinZoom(value);
+    }
+
+    get maxZoom() {
+        return this.#olLayer.getMaxZoom();
+    }
+
+    set maxZoom(value) {
+        this.#olLayer.setMaxZoom(value);
+    }
+
     /**
      * Whether the layer is visible in the current map scale or not.
      */
