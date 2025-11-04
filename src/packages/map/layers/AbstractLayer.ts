@@ -12,6 +12,8 @@ import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
+import { Extent } from "ol/extent";
+import { Coordinate } from "ol/coordinate";
 import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
 import { MapModel } from "../model/MapModel";
@@ -58,6 +60,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #healthCheck?: string | HealthCheckFunction;
 
     #visible: ReadonlyReactive<boolean>;
+    #minResolution: ReadonlyReactive<number>;
+    #maxResolution: ReadonlyReactive<number>;
+    #minZoom: ReadonlyReactive<number>;
+    #maxZoom: ReadonlyReactive<number>;
+    #extent: ReadonlyReactive<Extent | undefined>;
+    #resolution: ReadonlyReactive<number | undefined>;
+    #center: ReadonlyReactive<Coordinate | undefined>;
+    #rotation: ReadonlyReactive<number | undefined>;
     #loadState: Reactive<LayerLoadState>;
 
     #stateWatchResource: Resource | undefined;
@@ -81,28 +91,106 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return () => unByKey(key);
             }
         );
-        this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
-
-        this.#visibleInScale = reactive(true);
-
-        this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+        this.#minResolution = synchronized(
+            () => this.#olLayer.getMinResolution(),
+            (cb) => {
+                const key = this.#olLayer.on("change:minResolution", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#maxResolution = synchronized(
+            () => this.#olLayer.getMaxResolution(),
+            (cb) => {
+                const key = this.#olLayer.on("change:maxResolution", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#minZoom = synchronized(
+            () => this.#olLayer.getMinZoom(),
+            (cb) => {
+                const key = this.#olLayer.on("change:minZoom", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#maxZoom = synchronized(
+            () => this.#olLayer.getMaxZoom(),
+            (cb) => {
+                const key = this.#olLayer.on("change:maxZoom", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#extent = synchronized(
+            () => this.#olLayer.getExtent(),
+            (cb) => {
+                const key = this.#olLayer.on("change:extent", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#resolution = reactive(undefined);
+        this.#center = reactive(undefined);
+        this.#rotation = reactive(undefined);
 
         watchValue(
             () => this.nullableMap,
             (map) => {
                 if (!map) return;
 
-                this.#visibleInScale = computed(() => {
-                    if (!map.resolution) {
-                        return false;
+                // TODO replace by map.resolution?
+                this.#resolution = synchronized(
+                    () => map.olView.getResolution(),
+                    (cb) => {
+                        const key = map.olView.on("change:resolution", cb);
+                        return () => unByKey(key);
                     }
-                    if (!(this.#olLayer instanceof OlLayer)) {
-                        return true;
+                );
+                // TODO replace by map.center?
+                this.#center = synchronized(
+                    () => map.olView.getCenter(),
+                    (cb) => {
+                        const key = map.olView.on("change:center", cb);
+                        return () => unByKey(key);
                     }
-                    return this.#olLayer.isVisible(map.olView);
-                });
+                );
+                // TODO replace by map.rotation?
+                this.#rotation = synchronized(
+                    () => map.olView.getRotation(),
+                    (cb) => {
+                        const key = map.olView.on("change:rotation", cb);
+                        return () => unByKey(key);
+                    }
+                );
             }
         );
+
+        this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+
+        this.#visibleInScale = reactive(true);
+
+        this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+
+        this.#visibleInScale = computed(() => {
+            const map = this.nullableMap; // handle case where not in the map yet
+            if (!map) {
+                return true; // or false? doesn't really matter
+            }
+            if (!(this.#olLayer instanceof OlLayer)) {
+                return true;
+            }
+
+            // workaround until OpenLayers offers an event to detect changes of isVisible()
+            // values are irrelevant, but necessary to trigger re-computation of this computed property
+            const pseudoDependency = this.#rotation.value != undefined
+                && this.#center.value != undefined
+                && this.#resolution.value != undefined
+                && this.#extent.value != undefined
+                && this.#minZoom.value != undefined
+                && this.#maxZoom.value != undefined
+                && this.#minResolution.value != undefined
+                && this.#maxResolution.value != undefined
+                && this.#visible.value != undefined;
+
+            return this.#olLayer.isVisible(map.olView);
+        });
 
         if (config.maxResolution) {
             this.#olLayer.setMaxResolution(config.maxResolution);
