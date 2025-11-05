@@ -144,8 +144,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
 
-        this.#visibleInScale = reactive(true);
-
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
         this.#visibleInScale = computed(() => {
