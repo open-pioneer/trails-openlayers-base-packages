@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
+    Box,
     Flex,
     HStack,
+    IconButton,
     Popover,
     Portal,
     UseTooltipProps,
@@ -14,6 +16,8 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { RefObject, useState } from "react";
 import {
+    LuArrowLeft,
+    LuArrowRight,
     LuImages,
     LuMenu,
     LuMousePointerClick,
@@ -22,16 +26,19 @@ import {
     LuPrinter,
     LuRuler,
     LuSquareDashedMousePointer,
-    LuTextSearch
+    LuTextSearch,
+    LuThermometerSnowflake
 } from "react-icons/lu";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 import { AppModel } from "../AppModel";
+import { Tooltip } from "@open-pioneer/map";
 
 export function MapTools() {
     const intl = useIntl();
     const appModel = useService<AppModel>("ol-app.AppModel");
     const resultListState = useReactiveSnapshot(() => appModel.resultListState, [appModel]);
     const resultListOpen = resultListState.open;
+    const [tooltip, setTooltip] = useState<Tooltip | undefined>();
 
     const { isTocActive, isLegendActive, isPrintingActive } = useReactiveSnapshot(() => {
         return {
@@ -81,6 +88,52 @@ export function MapTools() {
             <InitialExtent />
             <ZoomIn />
             <ZoomOut />
+            <ToolButton
+                label="Toggle Tooltip"
+                icon={<LuThermometerSnowflake />}
+                active={tooltip != undefined}
+                onClick={() => {
+                    const map = appModel.map;
+                    if (!map) {
+                        return; 
+                    }
+
+                    if (!tooltip) {
+                        const content = <Box width={"100px"} height={"100px"} background="red">Hello World!</Box>;
+                        const position = [404747, 5757920];
+                        const tooltip = map.tooltips.addTooltip(position, content);
+                        setTooltip(tooltip);
+                    } else {
+                        const successful = map.tooltips.removeTooltip(tooltip);
+                        if (successful) {
+                            setTooltip(undefined);
+                        }
+                    }
+                }
+                }
+            />
+            {
+                tooltip && (
+                    <IconButton onClick={() => {
+                        const pos = tooltip.getPosition();
+                        if (pos && pos[0] && pos[1]) {
+                            const newPos = [pos[0] + 500, pos[1]];
+                            tooltip.setPosition(newPos);
+                        }
+                    }}><LuArrowRight></LuArrowRight></IconButton>
+                )
+            }
+            {
+                tooltip && (
+                    <IconButton onClick={() => {
+                        const pos = tooltip.getPosition();
+                        if (pos && pos[0] && pos[1]) {
+                            const newPos = [pos[0] - 500, pos[1]];
+                            tooltip.setPosition(newPos);
+                        }
+                    }}><LuArrowLeft></LuArrowLeft></IconButton>
+                )
+            }
         </Flex>
     );
 }

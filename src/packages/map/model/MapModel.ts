@@ -30,6 +30,7 @@ import {
 import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
+import { Tooltips } from "./Tooltips";
 
 const LOG = createLogger("map:MapModel");
 
@@ -140,6 +141,7 @@ export class MapModel {
     readonly #olView: ReadonlyReactive<OlView>;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
+    readonly #tooltips: Tooltips;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
@@ -180,6 +182,7 @@ export class MapModel {
             httpService: properties.httpService
         };
         this.#highlights = new Highlights(this, this.#layerDeps);
+        this.#tooltips = new Tooltips(this);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
@@ -357,6 +360,10 @@ export class MapModel {
      */
     get [LAYER_DEPS](): LayerDependencies {
         return this.#layerDeps;
+    }
+
+    get tooltips(): Tooltips {
+        return this.#tooltips;
     }
 
     /**

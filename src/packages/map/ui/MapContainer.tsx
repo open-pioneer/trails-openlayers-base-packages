@@ -9,6 +9,8 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { MapModel, MapPadding } from "../model/MapModel";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { createPortal } from "react-dom";
 const LOG = createLogger("map:MapContainer");
 
 /**
@@ -111,6 +113,8 @@ export function MapContainer(props: MapContainerProps) {
         };
     }, [viewPadding]);
 
+    useTooltips(map);
+
     return (
         <chakra.div {...containerProps} css={styleProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
@@ -129,7 +133,7 @@ export function MapContainer(props: MapContainerProps) {
             <chakra.div ref={mapAnchorsHost} className="map-anchors">
                 {ready && map && (
                     <MapContainerReady
-                        olMap={map.olMap}
+                        map={map}
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
@@ -149,18 +153,20 @@ export function MapContainer(props: MapContainerProps) {
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { olMap: OlMap; mapAnchorsHost: HTMLElement } & Omit<
+    props: { map: MapModel; mapAnchorsHost: HTMLElement } & Omit<
         MapContainerProps,
         "mapId" | "map" | "className"
     >
 ): ReactNode {
     const {
-        olMap,
+        map,
         mapAnchorsHost,
         viewPadding: viewPaddingProp,
         viewPaddingChangeBehavior = "preserve-center",
         children
     } = props;
+
+    const olMap = map.olMap;
 
     const viewPadding = useMemo<Required<MapPadding>>(() => {
         return {
@@ -206,7 +212,13 @@ function MapContainerReady(
             mapAnchorsHost
         };
     }, [mapAnchorsHost]);
-    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
+    const tooltips = useTooltips(map);
+    return <MapContainerContextProvider value={mapContext}>
+        {children}
+        {tooltips.map(([node, elem]) => {
+            return createPortal(node, elem);
+        })}
+    </MapContainerContextProvider>;
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
@@ -283,3 +295,23 @@ function toOlPadding(padding: Required<MapPadding>): number[] {
     const { top, right, bottom, left } = padding;
     return [top, right, bottom, left];
 }
+
+
+function useTooltips(map: MapModel): [ReactNode, HTMLElement][] {
+    const tuples = useReactiveSnapshot(() => {
+        console.log("re-render tooltips");
+        const tuples: [ReactNode, HTMLElement][] = [];
+        const tooltips = map.tooltips;
+        tooltips.getTooltips().forEach((tooltip) => {
+            const element = tooltip.olOverlay.getElement();
+            if (element) {
+                tuples.push([tooltip.content, element]);
+            }
+
+        });
+        return tuples;
+    }, [map]);
+    return tuples;
+}
+
+

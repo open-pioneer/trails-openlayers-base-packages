@@ -108,3 +108,5 @@ export {
 export { calculateBufferedExtent } from "./utils/geometry-utils";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
 export { type BaseFeature } from "./utils/BaseFeature";
+
+export { Tooltip } from "./model/Tooltips";
