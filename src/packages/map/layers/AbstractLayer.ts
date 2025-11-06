@@ -5,8 +5,7 @@ import {
     reactive,
     Reactive,
     ReadonlyReactive,
-    synchronized,
-    watchValue
+    synchronized
 } from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
@@ -62,8 +61,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #maxResolution: ReadonlyReactive<number>;
     #minZoom: ReadonlyReactive<number>;
     #maxZoom: ReadonlyReactive<number>;
-    #resolution: ReadonlyReactive<number | undefined>;
-    #zoom: ReadonlyReactive<number | undefined>;
     #loadState: Reactive<LayerLoadState>;
 
     #stateWatchResource: Resource | undefined;
@@ -115,32 +112,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return () => unByKey(key);
             }
         );
-        this.#resolution = reactive(undefined);
-        this.#zoom = reactive(undefined);
-
-        watchValue(
-            () => this.nullableMap,
-            (map) => {
-                if (!map) return;
-
-                // TODO replace by map.resolution?
-                this.#resolution = synchronized(
-                    () => map.olView.getResolution(),
-                    (cb) => {
-                        const key = map.olView.on("change:resolution", cb);
-                        return () => unByKey(key);
-                    }
-                );
-                // TODO replace by map.zoom?
-                this.#zoom = synchronized(
-                    () => map.olView.getZoom(),
-                    (cb) => {
-                        const key = map.olView.on("change:resolution", cb);
-                        return () => unByKey(key);
-                    }
-                );
-            }
-        );
 
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
 
@@ -151,10 +122,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             if (!map) {
                 return true; // or false? doesn't really matter
             }
-            if (this.#resolution.value == undefined) {
-                return false;
-            }
-            if (this.#zoom.value == undefined) {
+
+            const zoom = map.zoomLevel;
+            const resolution = map.resolution;
+            if (zoom == null || resolution == null) {
                 return false;
             }
 
@@ -164,16 +135,11 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return false;
             }
 
-            const resolution = this.#resolution.value;
-            if (
-                resolution < this.#minResolution.value ||
-                resolution >= this.#maxResolution.value
-            ) {
+            if (resolution < this.minResolution || resolution >= this.maxResolution) {
                 return false;
             }
 
-            const zoom = this.#zoom.value;
-            return zoom > this.#minZoom.value && zoom <= this.#maxZoom.value;
+            return zoom > this.minZoom && zoom <= this.maxZoom;
         });
 
         if (config.maxResolution) {
@@ -233,8 +199,9 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#loadState.value;
     }
 
+    // TODO: Simple API-Comment (same for the other setters and getters).
     get minResolution() {
-        return this.#olLayer.getMinResolution();
+        return this.#minResolution.value;
     }
 
     set minResolution(value) {
@@ -242,7 +209,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     get maxResolution() {
-        return this.#olLayer.getMaxResolution();
+        return this.#maxResolution.value;
     }
 
     set maxResolution(value) {
@@ -250,7 +217,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     get minZoom() {
-        return this.#olLayer.getMinZoom();
+        return this.#minZoom.value;
     }
 
     set minZoom(value) {
@@ -258,7 +225,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     get maxZoom() {
-        return this.#olLayer.getMaxZoom();
+        return this.#maxZoom.value;
     }
 
     set maxZoom(value) {
