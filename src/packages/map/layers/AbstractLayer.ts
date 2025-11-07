@@ -129,7 +129,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return false;
             }
 
-            // TODO check if works correctly
             const parent = this.parent;
             if (parent && parent.type === "group" && !parent.visibleInScale) {
                 return false;
