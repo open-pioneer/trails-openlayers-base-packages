@@ -199,35 +199,58 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#loadState.value;
     }
 
-    // TODO: Simple API-Comment (same for the other setters and getters).
+    /**
+     * The minimum resolution (inclusive) at which this layer will be visible.
+     */
     get minResolution() {
         return this.#minResolution.value;
     }
 
+    /**
+     * The minimum resolution (inclusive) at which this layer will be visible.
+     */
     set minResolution(value) {
         this.#olLayer.setMinResolution(value);
     }
 
+    /**
+     * The maximum resolution (exclusive) below which this layer will be visible.
+     */
     get maxResolution() {
         return this.#maxResolution.value;
     }
 
+    /**
+     * The maximum resolution (exclusive) below which this layer will be visible.
+     */
     set maxResolution(value) {
         this.#olLayer.setMaxResolution(value);
     }
 
+    /**
+     * The minimum view zoom level (exclusive) above which this layer will be visible.
+     */
     get minZoom() {
         return this.#minZoom.value;
     }
 
+    /**
+     * The minimum view zoom level (exclusive) above which this layer will be visible.
+     */
     set minZoom(value) {
         this.#olLayer.setMinZoom(value);
     }
 
+    /**
+     * The maximum view zoom level (inclusive) at which this layer will be visible.
+     */
     get maxZoom() {
         return this.#maxZoom.value;
     }
 
+    /**
+     * The maximum view zoom level (inclusive) at which this layer will be visible.
+     */
     set maxZoom(value) {
         this.#olLayer.setMaxZoom(value);
     }

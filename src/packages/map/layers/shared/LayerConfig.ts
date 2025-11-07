@@ -67,11 +67,24 @@ export interface LayerConfig extends LayerBaseConfig {
      */
     healthCheck?: string | HealthCheckFunction;
 
-    // TODO add comments
+    /**
+     * Optional property to restrict the visibility of a layer to a minimum resolution (inclusive).
+     */
     minResolution?: number;
+
+    /**
+     * Optional property to restrict the visibility of a layer to a maximum resolution (exclusive).
+     */
     maxResolution?: number;
 
+    /**
+     * Optional property to restrict the visibility of a layer to a minimum zoom level (inclusive).
+     */
     minZoom?: number;
+
+    /**
+     * Optional property to restrict the visibility of a layer to a maximum zoom level (exclusive).
+     */
     maxZoom?: number;
 }
 
