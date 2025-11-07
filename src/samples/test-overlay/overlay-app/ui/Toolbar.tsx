@@ -58,7 +58,7 @@ export function Toolbar(props: { map: MapModel }) {
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] + 500, pos[1]];
                             tooltip.setPosition(newPos);
-                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="red">{newPos[0]}, {newPos[1]}</Box>);
+                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="green">{newPos[0]}, {newPos[1]}</Box>);
                         }
                     }}><LuArrowRight></LuArrowRight></IconButton>
                 )
@@ -70,7 +70,7 @@ export function Toolbar(props: { map: MapModel }) {
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] - 500, pos[1]];
                             tooltip.setPosition(newPos);
-                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="red">{newPos[0]}, {newPos[1]}</Box>);
+                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="blue">{newPos[0]}, {newPos[1]}</Box>);
                         }
                     }}><LuArrowLeft></LuArrowLeft></IconButton>
                 )

@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 import { ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { v4 as uuid4v } from "uuid";
 import { Options } from "ol/Overlay";
+import { Resource } from "@open-pioneer/core";
 
 export const GET_OVERLAYS_MAP = Symbol("GET_OVERLAYS_MAP");
 
@@ -32,18 +33,22 @@ export class Overlays {
             id: id,
             ...properties
         });
+
         const model: OverlayModel = {
             content: content,
             olOverlay: overlay,
             id: id,
+            destroyed: false,
             update: () => {
                 //this.tooltips.delete(model.id);
                 this.tooltips.set(model.id, {
-                    id: model.id,
-                    content: model.content,
-                    olOverlay: model.olOverlay,
-                    update: model.update
+                    ...model
                 });
+            },
+            destroy: () => {
+                this.olMap.removeOverlay(model.olOverlay);
+                this.tooltips.delete(model.id);
+                model.destroyed = true;
             }
         };
         this.tooltips.set(id, model);
@@ -53,18 +58,6 @@ export class Overlays {
         const tooltip = new Overlay(model);
 
         return tooltip;
-    }
-
-    removeOverlay(tooltip: Overlay): boolean {
-        const model = this.tooltips.get(tooltip.id);
-        if (model) {
-            const olOverlay = this.olMap.removeOverlay(model.olOverlay);
-            if (olOverlay) {
-                this.tooltips.delete(model.id);
-                return true;
-            }
-        }
-        return false;
     }
 }
 
@@ -89,11 +82,20 @@ export class Overlay {
     getPosition() {
         return this.model.olOverlay.getPosition();
     }
+
+    isDestroyed(): boolean {
+        return this.model.destroyed;
+    }
+
+    destroy() {
+        this.model.destroy();
+    }
 }
 
-interface OverlayModel {
+interface OverlayModel extends Resource {
     id: string;
     content: ReactNode;
+    destroyed: boolean;
     olOverlay: OlOverlay;
     update: () => void;
 }

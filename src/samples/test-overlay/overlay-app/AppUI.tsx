@@ -13,7 +13,6 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
-import { Toolbar } from "./ui/Toolbar";
 
 export function AppUI() {
     const intl = useIntl();
@@ -28,13 +27,13 @@ export function AppUI() {
     );
 
     useEffect(() => {
-        const overlay: Overlay | undefined = undefined;
+        let overlay: Overlay | undefined = undefined;
         if (map) {
-            map.overlays.addOverlay({ position: [404747, 5757920], positioning: "center-center"}, <Box bg={"white"}>This is a static map overlay!</Box>);
+            overlay = map.overlays.addOverlay({ position: [404747, 5757920], positioning: "center-center" }, <Box bg={"white"}>This is a static map overlay!</Box>);
         }
         return () => {
-            if (map && overlay) {
-                map.overlays.removeOverlay(overlay);
+            if (overlay) {
+                overlay.destroy();
             }
         };
     },[map]);
@@ -88,7 +87,7 @@ export function AppUI() {
                                         gap={1}
                                         padding={1}
                                     >
-                                        <Toolbar map={map}></Toolbar>
+                                        
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>
