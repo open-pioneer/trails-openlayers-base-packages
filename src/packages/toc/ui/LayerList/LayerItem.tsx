@@ -7,7 +7,8 @@ import {
     Flex,
     Icon,
     IconButton,
-    Spacer
+    Spacer,
+    Text
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
@@ -107,7 +108,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                               : "")
                     }
                     checked={isVisible}
-                    disabled={!isAvailable || !visibleInScale}
+                    disabled={!isAvailable}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
@@ -116,7 +117,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         )
                     }
                 >
-                    {title}
+                    <Text opacity={!visibleInScale ? 0.5 : 1}>{title}</Text>
                 </Checkbox>
                 {!isAvailable && (
                     <Tooltip
