@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, createListCollection, Portal, Select } from "@chakra-ui/react";
+import { Box, createListCollection, Portal, Select, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -88,7 +88,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 value: layer.id,
                 layer: layer,
                 label: layer.title,
-                disabled: layer.loadState == "error" || !layer.visibleInScale
+                disabled: layer.loadState == "error"
             };
         });
 
@@ -159,7 +159,7 @@ function BasemapItem(props: { item: SelectOption }) {
             pointerEvents="auto"
             className="basemap-switcher-option"
         >
-            {item.label}
+            <Text opacity={!item.layer?.visibleInScale ? 0.5 : 1}>{item.label}</Text>
             {item.layer?.loadState === "error" && (
                 <Box ml={2}>
                     <Tooltip
