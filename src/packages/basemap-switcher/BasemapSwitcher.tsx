@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, createListCollection, Portal, Select, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer, isSublayer, Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -221,9 +221,8 @@ function BasemapItemContent(props: { item: SelectOption }) {
     );
 }
 
-function useVisibleInScale(layer: AnyLayer | undefined): boolean {
+function useVisibleInScale(layer: Layer | undefined): boolean {
     return useReactiveSnapshot(() => {
-        // for sublayers, use the state of the parent
-        return !!layer && (isSublayer(layer) ? layer.parentLayer : layer).visibleInScale;
+        return !!layer && layer.visibleInScale;
     }, [layer]);
 }
