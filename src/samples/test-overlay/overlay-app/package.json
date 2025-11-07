@@ -19,6 +19,7 @@
         "@open-pioneer/search": "workspace:^",
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
+        "@open-pioneer/basemap-switcher": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",

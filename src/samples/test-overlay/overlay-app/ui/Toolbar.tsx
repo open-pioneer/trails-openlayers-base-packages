@@ -38,8 +38,9 @@ export function Toolbar(props: { map: MapModel }) {
                 active={tooltip != undefined}
                 onClick={() => {
                     if (!tooltip) {
-                        const content = <Box width={"100px"} height={"100px"} background="red">Hello World!</Box>;
-                        const tooltip = map.overlays.addOverlay({position: [410000, 5759500], insertFirst: false, autoPan: true}, content);
+                        const initialPosition =  [410000, 5759500];
+                        const content = <Box width={"100px"} height={"100px"} background="red">{initialPosition[0]}, {initialPosition[1]}</Box>;
+                        const tooltip = map.overlays.addOverlay({position: initialPosition, insertFirst: false, autoPan: true}, content);
                         setTooltip(tooltip);
                     } else {
                         const successful = map.overlays.removeOverlay(tooltip);
@@ -57,6 +58,7 @@ export function Toolbar(props: { map: MapModel }) {
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] + 500, pos[1]];
                             tooltip.setPosition(newPos);
+                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="red">{newPos[0]}, {newPos[1]}</Box>);
                         }
                     }}><LuArrowRight></LuArrowRight></IconButton>
                 )
@@ -68,6 +70,7 @@ export function Toolbar(props: { map: MapModel }) {
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] - 500, pos[1]];
                             tooltip.setPosition(newPos);
+                            tooltip.setContent(<Box width={"100px"} height={"100px"} background="red">{newPos[0]}, {newPos[1]}</Box>);
                         }
                     }}><LuArrowLeft></LuArrowLeft></IconButton>
                 )
