@@ -202,14 +202,18 @@ function BasemapItemContent(props: { item: SelectOption }) {
             )}
             {item.layer && !visibleInScale && item.layer?.loadState !== "error" && (
                 <Box ml={2}>
-                    <Tooltip content={notVisibleLabel} aria-label={notVisibleLabel}>
-                        <Box my={1}>
+                    <Tooltip
+                        content={notVisibleLabel}
+                        aria-label={notVisibleLabel}
+                        positioning={{ placement: "right" }}
+                    >
+                        <span>
                             <LuInfo
                                 aria-label={intl.formatMessage({
                                     id: "layerNotVisible"
                                 })}
                             />
-                        </Box>
+                        </span>
                     </Tooltip>
                 </Box>
             )}
