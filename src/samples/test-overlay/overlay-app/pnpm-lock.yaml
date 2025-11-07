@@ -1706,7 +1706,7 @@ importers:
         specifier: 'catalog:'
         version: 19.2.0
 
-  src/samples/test-overlay/overlay-app:
+  src/samples/test-overlay/overlay-app/toc-app:
     dependencies:
       '@chakra-ui/react':
         specifier: 'catalog:'
@@ -1717,27 +1717,12 @@ importers:
       '@emotion/styled':
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
-      '@open-pioneer/coordinate-viewer':
-        specifier: workspace:^
-        version: link:../../../packages/coordinate-viewer
-      '@open-pioneer/http':
-        specifier: 'catalog:'
-        version: 4.2.0(@types/react@19.2.2)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:^
-        version: link:../../../packages/map
-      '@open-pioneer/map-navigation':
-        specifier: workspace:^
-        version: link:../../../packages/map-navigation
+        version: link:../../../../packages/map
       '@open-pioneer/map-ui-components':
         specifier: workspace:^
-        version: link:../../../packages/map-ui-components
-      '@open-pioneer/notifier':
-        specifier: 'catalog:'
-        version: 4.2.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
-      '@open-pioneer/overview-map':
-        specifier: workspace:^
-        version: link:../../../packages/overview-map
+        version: link:../../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.2.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))
@@ -1747,18 +1732,9 @@ importers:
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.2.0(@types/react@19.2.2)(typescript@5.9.3)
-      '@open-pioneer/scale-bar':
+      '@open-pioneer/toc':
         specifier: workspace:^
-        version: link:../../../packages/scale-bar
-      '@open-pioneer/scale-viewer':
-        specifier: workspace:^
-        version: link:../../../packages/scale-viewer
-      '@open-pioneer/search':
-        specifier: workspace:^
-        version: link:../../../packages/search
-      '@open-pioneer/selection':
-        specifier: workspace:^
-        version: link:../../../packages/selection
+        version: link:../../../../packages/toc
       ol:
         specifier: 'catalog:'
         version: 10.6.1

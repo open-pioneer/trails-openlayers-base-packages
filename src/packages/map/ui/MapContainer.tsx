@@ -11,6 +11,7 @@ import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { MapModel, MapPadding } from "../model/MapModel";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { createPortal } from "react-dom";
+import { GET_OVERLAYS_MAP } from "../model/Overlays";
 const LOG = createLogger("map:MapContainer");
 
 /**
@@ -113,7 +114,7 @@ export function MapContainer(props: MapContainerProps) {
         };
     }, [viewPadding]);
 
-    useTooltips(map);
+    useOverlays(map);
 
     return (
         <chakra.div {...containerProps} css={styleProps}>
@@ -212,7 +213,7 @@ function MapContainerReady(
             mapAnchorsHost
         };
     }, [mapAnchorsHost]);
-    const tooltips = useTooltips(map);
+    const tooltips = useOverlays(map);
     return <MapContainerContextProvider value={mapContext}>
         {children}
         {tooltips.map(([node, elem]) => {
@@ -297,15 +298,15 @@ function toOlPadding(padding: Required<MapPadding>): number[] {
 }
 
 
-function useTooltips(map: MapModel): [ReactNode, HTMLElement][] {
+function useOverlays(map: MapModel): [ReactNode, HTMLElement][] {
     const tuples = useReactiveSnapshot(() => {
-        console.log("re-render tooltips");
         const tuples: [ReactNode, HTMLElement][] = [];
-        const tooltips = map.tooltips;
-        tooltips.getTooltips().forEach((tooltip) => {
-            const element = tooltip.olOverlay.getElement();
+        const overlays = map.overlays;
+        console.log("re-render overlays");
+        overlays[GET_OVERLAYS_MAP]().forEach((overlay) => {
+            const element = overlay.olOverlay.getElement();
             if (element) {
-                tuples.push([tooltip.content, element]);
+                tuples.push([overlay.content, element]);
             }
 
         });

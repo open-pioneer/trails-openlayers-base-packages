@@ -1,0 +1,28 @@
+{
+    "name": "overlay-map",
+    "private": true,
+    "dependencies": {
+        "@emotion/react": "catalog:",
+        "@emotion/styled": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/coordinate-viewer": "workspace:^",
+        "@open-pioneer/http": "catalog:",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-navigation": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/notifier": "catalog:",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/scale-bar": "workspace:^",
+        "@open-pioneer/scale-viewer": "workspace:^",
+        "@open-pioneer/search": "workspace:^",
+        "@open-pioneer/selection": "workspace:^",
+        "@open-pioneer/overview-map": "workspace:^",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "react-icons": "catalog:"
+    },
+    "version": "0.0.10"
+}
