@@ -97,6 +97,7 @@ export class Overlay {
             return;
         }
 
+        this.#isDestroyed.value = true;
         this.#parent[UNREGISTER_OVERLAY](this);
         this.olOverlay.dispose();
     }
