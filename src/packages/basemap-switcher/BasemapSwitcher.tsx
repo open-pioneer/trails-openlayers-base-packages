@@ -160,7 +160,7 @@ function BasemapItem(props: { item: SelectOption }) {
             className="basemap-switcher-option"
         >
             <Text opacity={!item.layer?.visibleInScale ? 0.5 : 1}>{item.label}</Text>
-            {item.layer?.loadState === "error" && (
+            {item.layer && item.layer?.loadState === "error" && (
                 <Box ml={2}>
                     <Tooltip
                         content={notAvailableLabel}
@@ -178,7 +178,7 @@ function BasemapItem(props: { item: SelectOption }) {
                     </Tooltip>
                 </Box>
             )}
-            {!item.layer?.visibleInScale && item.layer?.loadState !== "error" && (
+            {item.layer && !item.layer?.visibleInScale && item.layer?.loadState !== "error" && (
                 <Box ml={2}>
                     <Tooltip
                         content={notVisibleLabel}
