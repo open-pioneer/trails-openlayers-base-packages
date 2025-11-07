@@ -60,10 +60,9 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     let hasNestedChildren = !!nestedChildren;
 
-
     if (!display) {
         return null;
-    } 
+    }
     //all children hidden => do not render collapse button and child entries
     if (allChildrenHidden || listMode === "hide-children") {
         hasNestedChildren = false;
@@ -283,5 +282,3 @@ function hasShownChildren(layer: AnyLayer): boolean {
         });
     }
 }
-
-
