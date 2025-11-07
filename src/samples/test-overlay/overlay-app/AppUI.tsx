@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Separator, VStack, Text } from "@chakra-ui/react";
-import { DefaultMapProvider, MapAnchor, MapContainer, Overlay, useMapModel } from "@open-pioneer/map";
+import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
@@ -13,6 +13,7 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
+import { Toolbar } from "./ui/Toolbar";
 
 export function AppUI() {
     const intl = useIntl();
@@ -27,16 +28,18 @@ export function AppUI() {
     );
 
     useEffect(() => {
-        let overlay: Overlay | undefined = undefined;
-        if (map) {
-            overlay = map.overlays.addOverlay({ position: [404747, 5757920], positioning: "center-center" }, <Box bg={"white"}>This is a static map overlay!</Box>);
+        if (!map) {
+            return;
         }
+
+        const overlay = map.overlays.addOverlay(
+            { position: [404747, 5757920], positioning: "center-center" },
+            <Box bg={"white"}>This is a static map overlay!</Box>
+        );
         return () => {
-            if (overlay) {
-                overlay.destroy();
-            }
+            overlay.destroy();
         };
-    },[map]);
+    }, [map]);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -48,9 +51,7 @@ export function AppUI() {
                         textAlign="center"
                         py={1}
                     >
-                        <SectionHeading size={"md"}>
-                            Open Pioneer Trails - Overlays
-                        </SectionHeading>
+                        <SectionHeading size={"md"}>Open Pioneer Trails - Overlays</SectionHeading>
                     </Box>
                 }
             >
@@ -87,7 +88,7 @@ export function AppUI() {
                                         gap={1}
                                         padding={1}
                                     >
-                                        
+                                        <Toolbar map={map} />
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>
@@ -109,7 +110,6 @@ export function AppUI() {
         </Flex>
     );
 }
-
 
 function BasemapSwitcherComponent() {
     const intl = useIntl();

@@ -1,103 +1,126 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { Map, Overlay as OlOverlay } from "ol";
+import { Map as OlMap, Overlay as OlOverlay } from "ol";
 import { MapModel } from "./MapModel";
 import { Coordinate } from "ol/coordinate";
 import { ReactNode } from "react";
-import { ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
+import { reactive, Reactive, reactiveSet } from "@conterra/reactivity-core";
 import { v4 as uuid4v } from "uuid";
 import { Options } from "ol/Overlay";
-import { Resource } from "@open-pioneer/core";
 
-export const GET_OVERLAYS_MAP = Symbol("GET_OVERLAYS_MAP");
+export const GET_CURRENT_OVERLAYS = Symbol("GET_CURRENT_OVERLAYS");
+export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
+export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
 
 export class Overlays {
-    private olMap: Map;
-    private tooltips: ReactiveMap<string, OverlayModel>;
+    private olMap: OlMap;
+    private overlays = reactiveSet<Overlay>();
 
     constructor(map: MapModel) {
         this.olMap = map.olMap;
-        this.tooltips = reactiveMap<string, OverlayModel>();
     }
 
-    [GET_OVERLAYS_MAP]() {
-        return this.tooltips;
+    // Reactive, used by renderer
+    [GET_CURRENT_OVERLAYS](): Overlay[] {
+        return Array.from(this.overlays);
     }
+
+    [REGISTER_OVERLAY](overlay: Overlay) {
+        if (this.overlays.has(overlay)) {
+            throw new Error("Internal error: overlay is already registered");
+        }
+        this.overlays.add(overlay);
+        this.olMap.addOverlay(overlay.olOverlay);
+    }
+
+    [UNREGISTER_OVERLAY](overlay: Overlay) {
+        if (!this.overlays.has(overlay)) {
+            throw new Error("Internal error: overlay was not registered");
+        }
+        this.overlays.delete(overlay);
+        this.olMap.removeOverlay(overlay.olOverlay);
+    }
+
+    /*
+    
+    addOverlay({
+        content: "foo",
+        position: {
+            kind: "mouse"
+        },
+        position: {
+            kind: "fixed",
+            // ...point
+        },
+        advanced: {
+            // ...
+        }
+    })
+
+    */
 
     addOverlay(properties: OverlayProperties, content: ReactNode): Overlay {
-        const tooltipDiv = document.createElement("div");
         const id = uuid4v();
-        const overlay = new OlOverlay({
-            element: tooltipDiv,
-            id: id,
-            ...properties
-        });
-
-        const model: OverlayModel = {
-            content: content,
-            olOverlay: overlay,
-            id: id,
-            destroyed: false,
-            update: () => {
-                //this.tooltips.delete(model.id);
-                this.tooltips.set(model.id, {
-                    ...model
-                });
-            },
-            destroy: () => {
-                this.olMap.removeOverlay(model.olOverlay);
-                this.tooltips.delete(model.id);
-                model.destroyed = true;
-            }
-        };
-        this.tooltips.set(id, model);
-
-        this.olMap.addOverlay(model.olOverlay);
-
-        const tooltip = new Overlay(model);
-
-        return tooltip;
+        const newModel = new Overlay(id, content, properties, this);
+        return newModel;
     }
 }
 
 export class Overlay {
     readonly id: string;
-    private model: OverlayModel;
 
-    constructor(model: OverlayModel) {
-        this.model = model;
-        this.id = model.id;
+    // TODO: Decide whether this should be public or not
+    readonly olOverlay: OlOverlay;
+
+    #parent: Overlays;
+    #isDestroyed = reactive(false);
+    #content: Reactive<ReactNode>;
+
+    constructor(id: string, content: ReactNode, properties: OverlayProperties, parent: Overlays) {
+        const overlayDiv = document.createElement("div");
+
+        this.id = id;
+        this.olOverlay = new OlOverlay({
+            element: overlayDiv,
+            id: id,
+            ...properties
+        });
+        this.#parent = parent;
+        this.#content = reactive(content);
+
+        parent[REGISTER_OVERLAY](this);
     }
 
-    setContent(content: ReactNode) {
-        this.model.content = content;
-        this.model.update();
+    destroy(): void {
+        if (this.isDestroyed) {
+            return;
+        }
+
+        this.#parent[UNREGISTER_OVERLAY](this);
+        this.olOverlay.dispose();
+    }
+
+    get isDestroyed(): boolean {
+        return this.#isDestroyed.value;
+    }
+
+    // TODO: Package private? Only needed by tooltip renderer
+    get content(): ReactNode {
+        return this.#content.value;
+    }
+
+    get position() {
+        return this.olOverlay.getPosition();
+    }
+
+    setContent(content: ReactNode): void {
+        this.#content.value = content;
     }
 
     setPosition(position: Coordinate | undefined) {
-        this.model.olOverlay.setPosition(position);
+        this.olOverlay.setPosition(position);
     }
-
-    getPosition() {
-        return this.model.olOverlay.getPosition();
-    }
-
-    isDestroyed(): boolean {
-        return this.model.destroyed;
-    }
-
-    destroy() {
-        this.model.destroy();
-    }
-}
-
-interface OverlayModel extends Resource {
-    id: string;
-    content: ReactNode;
-    destroyed: boolean;
-    olOverlay: OlOverlay;
-    update: () => void;
 }
 
 export interface OverlayProperties extends Omit<Options, "id" | "element"> {}

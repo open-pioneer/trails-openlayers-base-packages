@@ -95,6 +95,7 @@ export {
     type ZoomOptions
 } from "./model/MapModel";
 export { type LayerCollection } from "./model/LayerCollection";
+export { type Overlay, type OverlayProperties, type Overlays } from "./model/Overlays";
 
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";
@@ -108,5 +109,3 @@ export {
 export { calculateBufferedExtent } from "./utils/geometry-utils";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
 export { type BaseFeature } from "./utils/BaseFeature";
-
-export { Overlay } from "./model/Overlays";

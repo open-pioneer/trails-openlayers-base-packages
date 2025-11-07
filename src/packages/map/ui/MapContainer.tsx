@@ -6,12 +6,10 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
-import { MapModel, MapPadding } from "../model/MapModel";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { createPortal } from "react-dom";
-import { GET_OVERLAYS_MAP } from "../model/Overlays";
+import { OverlaysRenderer } from "./OverlaysRenderer";
 const LOG = createLogger("map:MapContainer");
 
 /**
@@ -114,8 +112,6 @@ export function MapContainer(props: MapContainerProps) {
         };
     }, [viewPadding]);
 
-    useOverlays(map);
-
     return (
         <chakra.div {...containerProps} css={styleProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
@@ -213,13 +209,12 @@ function MapContainerReady(
             mapAnchorsHost
         };
     }, [mapAnchorsHost]);
-    const tooltips = useOverlays(map);
-    return <MapContainerContextProvider value={mapContext}>
-        {children}
-        {tooltips.map(([node, elem]) => {
-            return createPortal(node, elem);
-        })}
-    </MapContainerContextProvider>;
+    return (
+        <MapContainerContextProvider value={mapContext}>
+            <OverlaysRenderer map={map} />
+            {children}
+        </MapContainerContextProvider>
+    );
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
@@ -296,23 +291,3 @@ function toOlPadding(padding: Required<MapPadding>): number[] {
     const { top, right, bottom, left } = padding;
     return [top, right, bottom, left];
 }
-
-
-function useOverlays(map: MapModel): [ReactNode, HTMLElement][] {
-    const tuples = useReactiveSnapshot(() => {
-        const tuples: [ReactNode, HTMLElement][] = [];
-        const overlays = map.overlays;
-        console.log("re-render overlays");
-        overlays[GET_OVERLAYS_MAP]().forEach((overlay) => {
-            const element = overlay.olOverlay.getElement();
-            if (element) {
-                tuples.push([overlay.content, element]);
-            }
-
-        });
-        return tuples;
-    }, [map]);
-    return tuples;
-}
-
-
