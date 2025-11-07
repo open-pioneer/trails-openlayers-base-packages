@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, createListCollection, Portal, Select, Text } from "@chakra-ui/react";
+import { Box, createListCollection, HStack, Portal, Select, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { AnyLayer, isSublayer, Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { LuTriangleAlert, LuInfo } from "react-icons/lu";
 
 /*
@@ -76,6 +76,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
+    const [currentItem, setCurrentItem] = useState<SelectOption | undefined>();
 
     const activateLayer = (layerId: string[]) => {
         map.layers.activateBaseLayer(layerId[0] === NO_BASEMAP_ID ? undefined : layerId[0]);
@@ -108,12 +109,21 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         return { optionsListCollection, selectedOption };
     }, [allowSelectingEmptyBasemap, emptyBasemapLabel, map]);
 
+    let triggerItem;
+    if (currentItem) {
+        triggerItem = <BasemapItemContent item={currentItem} />;
+    } else {
+        triggerItem = null;
+    }
+
     return (
         <Box {...containerProps}>
             <Select.Root
                 collection={optionsListCollection}
                 value={selectedOption}
-                onValueChange={(option) => option && activateLayer(option.value)}
+                onValueChange={(option) =>
+                    option && (activateLayer(option.value), setCurrentItem(option.items[0]))
+                }
                 className="basemap-switcher-select"
                 lazyMount={true}
                 unmountOnExit={true}
@@ -124,7 +134,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                         aria-labelledby={ariaLabelledBy}
                         className="basemap-switcher-select-trigger"
                     >
-                        <Select.ValueText />
+                        <Select.ValueText display="flex">{triggerItem}</Select.ValueText>
                     </Select.Trigger>
                     <Select.IndicatorGroup>
                         <Select.Indicator />
@@ -146,10 +156,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 };
 
 function BasemapItem(props: { item: SelectOption }) {
-    const intl = useIntl();
-    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
     const item = props.item;
+
     return (
         <Select.Item
             item={item}
@@ -159,7 +167,21 @@ function BasemapItem(props: { item: SelectOption }) {
             pointerEvents="auto"
             className="basemap-switcher-option"
         >
-            <Text opacity={!item.layer?.visibleInScale ? 0.5 : 1}>{item.label}</Text>
+            <BasemapItemContent item={item} />
+        </Select.Item>
+    );
+}
+
+function BasemapItemContent(props: { item: SelectOption }) {
+    const { item } = props;
+    const intl = useIntl();
+    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
+    const visibleInScale = useVisibleInScale(item.layer);
+
+    return (
+        <>
+            <Text opacity={!visibleInScale ? 0.5 : 1}>{item.label}</Text>
             {item.layer && item.layer?.loadState === "error" && (
                 <Box ml={2}>
                     <Tooltip
@@ -178,23 +200,26 @@ function BasemapItem(props: { item: SelectOption }) {
                     </Tooltip>
                 </Box>
             )}
-            {item.layer && !item.layer?.visibleInScale && item.layer?.loadState !== "error" && (
+            {item.layer && !visibleInScale && item.layer?.loadState !== "error" && (
                 <Box ml={2}>
-                    <Tooltip
-                        content={notVisibleLabel}
-                        aria-label={notVisibleLabel}
-                        positioning={{ placement: "right" }}
-                    >
-                        <span>
+                    <Tooltip content={notVisibleLabel} aria-label={notVisibleLabel}>
+                        <Box my={1}>
                             <LuInfo
                                 aria-label={intl.formatMessage({
                                     id: "layerNotVisible"
                                 })}
                             />
-                        </span>
+                        </Box>
                     </Tooltip>
                 </Box>
             )}
-        </Select.Item>
+        </>
     );
+}
+
+function useVisibleInScale(layer: AnyLayer | undefined): boolean {
+    return useReactiveSnapshot(() => {
+        // for sublayers, use the state of the parent
+        return !!layer && (isSublayer(layer) ? layer.parentLayer : layer).visibleInScale;
+    }, [layer]);
 }

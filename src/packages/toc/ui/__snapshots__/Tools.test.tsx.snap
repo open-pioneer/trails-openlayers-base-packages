@@ -128,7 +128,11 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                 dir="ltr"
                 id="checkbox:_r_6_:label"
               >
-                Layer 1
+                <p
+                  class="css-whh5e5"
+                >
+                  Layer 1
+                </p>
               </span>
             </label>
             <div
