@@ -51,9 +51,10 @@ it("reacts to changes in the layer description", async () => {
         const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
         expect(icons).toHaveLength(0);
     }
-    //set map out of layer visibility
-    await waitFor(async () => {
+    // set map out of layer visibility
+    await act(async () => {
         map.olView.setZoom(5);
+        await nextTick();
     });
     const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
     expect(icons).toHaveLength(1);

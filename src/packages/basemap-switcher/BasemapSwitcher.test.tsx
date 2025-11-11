@@ -62,9 +62,10 @@ it("should successfully show info for the user", async () => {
     const icons = osmOption.querySelectorAll(".basemap-layer-item-icon-info");
     expect(icons).toHaveLength(0);
 
-    //set map out of layer visibility
-    await waitFor(() => {
+    // set map out of layer visibility
+    await act(async () => {
         map.olView.setZoom(5);
+        await nextTick();
     });
 
     {
