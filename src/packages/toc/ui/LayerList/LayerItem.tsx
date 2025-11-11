@@ -139,11 +139,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         content={notVisibleLabel}
                         positioning={{ placement: "right" }}
                         openDelay={500}
-                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
+                        contentProps={{ className: "toc-layer-item-content-tooltip-info" }}
                     >
                         <span>
                             <LuInfo
-                                className="toc-layer-item-content-icon"
+                                className="toc-layer-item-content-icon-info"
                                 aria-label={notVisibleLabel}
                             />
                         </span>

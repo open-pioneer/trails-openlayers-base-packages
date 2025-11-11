@@ -8,15 +8,105 @@ import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest"
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { MapModel } from "../model/MapModel";
-import { createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
+import { waitFor } from "@testing-library/dom";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
 afterEach(() => {
     vi.restoreAllMocks();
+});
+
+it("support backward reactivity of minZoom", async () => {
+    const layer = new LayerImpl({
+        id: "testId",
+        title: "A",
+        minZoom: 10,
+        maxZoom: 16,
+        olLayer: createTestOlLayer()
+    });
+
+    await waitFor(() => {
+        layer.minZoom = 5;
+    });
+
+    expect(layer.olLayer.getMinZoom()).toBe(5);
+});
+
+it("support reactivity of minZoom attribute", async () => {
+    const layer = new LayerImpl({
+        id: "testId",
+        title: "A",
+        minZoom: 10,
+        maxZoom: 16,
+        olLayer: createTestOlLayer()
+    });
+
+    let changedMinZoom = 0;
+    watch(
+        () => [layer.minZoom],
+        () => {
+            ++changedMinZoom;
+        }
+    );
+    await waitFor(() => {
+        layer.olLayer.setMinZoom(5);
+    });
+
+    expect(changedMinZoom).toBe(1);
+});
+
+it("support the minZoom/maxZoom attribute", async () => {
+    const layer = new LayerImpl({
+        id: "testId",
+        title: "A",
+        minZoom: 10,
+        maxZoom: 16,
+        olLayer: createTestOlLayer()
+    });
+    const { map } = await setupMap({
+        layers: [layer]
+    });
+
+    let changedVisibleInScale = 0;
+    watch(
+        () => [layer.visibleInScale],
+        () => {
+            ++changedVisibleInScale;
+        }
+    );
+
+    expect(layer.visibleInScale).toBe(false);
+    await waitFor(() => {
+        map.olMap.getView().setZoom(11);
+    });
+    expect(changedVisibleInScale).toBe(1);
+    expect(layer.visibleInScale).toBe(true);
+});
+
+it("support the minResolution/maxResolution attribute", async () => {
+    const layer = new LayerImpl({
+        id: "testId",
+        title: "A",
+        minResolution: 300,
+        maxResolution: 500,
+        olLayer: createTestOlLayer()
+    });
+    const { map } = await setupMap({
+        layers: [layer]
+    });
+
+    expect(layer.visibleInScale).toBe(false);
+
+    await waitFor(() => {
+        map.olMap.getView().setResolution(499);
+    });
+
+    expect(layer.visibleInScale).toBe(true);
+    expect(layer.olLayer.getMaxResolution()).toBe(layer.maxResolution);
 });
 
 it("supports access to the olLayer", async () => {

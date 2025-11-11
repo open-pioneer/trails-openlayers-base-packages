@@ -209,6 +209,7 @@ function BasemapItemContent(props: { item: SelectOption }) {
                     >
                         <span>
                             <LuInfo
+                                className="basemap-layer-item-icon-info"
                                 aria-label={intl.formatMessage({
                                     id: "layerNotVisible"
                                 })}

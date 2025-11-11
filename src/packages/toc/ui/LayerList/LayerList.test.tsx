@@ -26,6 +26,39 @@ import { expect, it } from "vitest";
 import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
 
+it("reacts to changes in the layer description", async () => {
+    const { map, Wrapper } = await setup({
+        layers: [
+            {
+                id: "layer1",
+                title: "Layer 1",
+                minZoom: 9,
+                maxZoom: 16,
+                olLayer: createTestOlLayer()
+            }
+        ]
+    });
+
+    const layer = map.layers.getLayerById("layer1");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+    {
+        const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
+        expect(icons).toHaveLength(0);
+    }
+    //set map out of layer visibility
+    await waitFor(async () => {
+        map.olView.setZoom(5);
+    });
+    const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
+    expect(icons).toHaveLength(1);
+});
+
 it("should show layers in the correct order", async () => {
     const { map, Wrapper } = await setup({
         layers: [
