@@ -95,6 +95,7 @@ export {
     type ZoomOptions
 } from "./model/MapModel";
 export { type LayerCollection } from "./model/LayerCollection";
+export { type Overlay, type OverlayProperties, type Overlays } from "./model/Overlays";
 
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";

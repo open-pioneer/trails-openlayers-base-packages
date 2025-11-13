@@ -1,0 +1,31 @@
+.sidebar {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    transition: width 300ms ease-out 0s;
+}
+
+.right-bottom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: white;
+}
+
+.zoom-controls {
+    position: absolute;
+    z-index: 1000;
+    bottom: 2rem;
+    right: 1rem;
+}
+
+.ol-control.ol-zoom {
+    left: unset;
+    right: 0.5em;
+}
+
+/* TODO: Update default styles? */
+.basemap-switcher {
+    width: 100%;
+}
