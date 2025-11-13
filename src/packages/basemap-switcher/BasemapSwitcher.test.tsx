@@ -28,7 +28,7 @@ const defaultBasemapConfig = [
     }
 ];
 
-it("should successfully show info for the user", async () => {
+it("should successfully show info for the user if a layer is not visible", async () => {
     const { map } = await setupMap({
         layers: [
             {

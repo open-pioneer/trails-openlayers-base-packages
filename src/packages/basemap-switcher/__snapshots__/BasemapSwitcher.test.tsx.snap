@@ -6,7 +6,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
   data-part="root"
   data-scope="select"
   dir="ltr"
-  id="select:_r_b_"
+  id="select:_r_c_"
 >
   <div
     class="chakra-select__control css-17j1053"
@@ -14,31 +14,71 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
     data-scope="select"
     data-state="closed"
     dir="ltr"
-    id="select:_r_b_:control"
+    id="select:_r_c_:control"
   >
     <button
-      aria-controls="select:_r_b_:content"
+      aria-controls="select:_r_c_:content"
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-invalid="false"
-      aria-labelledby="select:_r_b_:label"
+      aria-labelledby="select:_r_c_:label"
       aria-required="false"
       class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
       data-part="trigger"
       data-scope="select"
       data-state="closed"
       dir="ltr"
-      id="select:_r_b_:trigger"
+      id="select:_r_c_:trigger"
       role="combobox"
       type="button"
     >
       <span
-        class="chakra-select__valueText css-8p5s8n"
+        class="chakra-select__valueText css-amxqtw"
         data-part="value-text"
         data-scope="select"
         dir="ltr"
       >
-        OSM
+        <span>
+          OSM
+        </span>
+        <div
+          class="css-eggl6h"
+        >
+          <span
+            class="chakra-tooltip__trigger"
+            data-part="trigger"
+            data-scope="tooltip"
+            data-state="closed"
+            dir="ltr"
+            id="tooltip:_r_d_:trigger"
+          >
+            <svg
+              aria-label="layerNotAvailable"
+              class="basemap-layer-item-icon-info"
+              color="red"
+              fill="none"
+              height="1em"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              style="color: red;"
+              viewBox="0 0 24 24"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+              />
+              <path
+                d="M12 9v4"
+              />
+              <path
+                d="M12 17h.01"
+              />
+            </svg>
+          </span>
+        </div>
       </span>
     </button>
     <div
@@ -76,7 +116,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
     data-part="root"
     data-scope="select"
     dir="ltr"
-    id="select:_r_2_"
+    id="select:_r_3_"
   >
     <div
       class="chakra-select__control css-17j1053"
@@ -84,14 +124,14 @@ exports[`should successfully create a basemap switcher component 1`] = `
       data-scope="select"
       data-state="open"
       dir="ltr"
-      id="select:_r_2_:control"
+      id="select:_r_3_:control"
     >
       <button
-        aria-controls="select:_r_2_:content"
+        aria-controls="select:_r_3_:content"
         aria-expanded="true"
         aria-haspopup="listbox"
         aria-invalid="false"
-        aria-labelledby="select:_r_2_:label"
+        aria-labelledby="select:_r_3_:label"
         aria-required="false"
         class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
         data-part="trigger"
@@ -99,17 +139,19 @@ exports[`should successfully create a basemap switcher component 1`] = `
         data-scope="select"
         data-state="open"
         dir="ltr"
-        id="select:_r_2_:trigger"
+        id="select:_r_3_:trigger"
         role="combobox"
         type="button"
       >
         <span
-          class="chakra-select__valueText css-8p5s8n"
+          class="chakra-select__valueText css-amxqtw"
           data-part="value-text"
           data-scope="select"
           dir="ltr"
         >
-          emptyBasemapLabel
+          <span>
+            emptyBasemapLabel
+          </span>
         </span>
       </button>
       <div

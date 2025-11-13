@@ -50,12 +50,14 @@ exports[`should successfully create a toc component 1`] = `
             type="button"
           >
             <span
-              class="chakra-select__valueText css-8p5s8n"
+              class="chakra-select__valueText css-amxqtw"
               data-part="value-text"
               data-scope="select"
               dir="ltr"
             >
-              Base layer
+              <span>
+                Base layer
+              </span>
             </span>
           </button>
           <div

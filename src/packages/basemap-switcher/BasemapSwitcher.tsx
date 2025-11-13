@@ -6,8 +6,9 @@ import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useState } from "react";
-import { LuTriangleAlert, LuInfo } from "react-icons/lu";
+import { FC, useMemo } from "react";
+import { type IconType } from "react-icons/lib";
+import { LuInfo, LuTriangleAlert } from "react-icons/lu";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -18,7 +19,7 @@ export const NO_BASEMAP_ID = "___NO_BASEMAP___";
 /**
  * Properties for single select options.
  */
-export interface SelectOption {
+interface SelectOption {
     /**
      * The id of the basemap for the select option.
      */
@@ -31,6 +32,7 @@ export interface SelectOption {
 
     /**
      * The layer object for the select option.
+     * Undefined is used for "no basemap".
      */
     layer: Layer | undefined;
 }
@@ -76,7 +78,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
-    const [currentItem, setCurrentItem] = useState<SelectOption | undefined>();
 
     const activateLayer = (layerId: string[]) => {
         map.layers.activateBaseLayer(layerId[0] === NO_BASEMAP_ID ? undefined : layerId[0]);
@@ -103,27 +104,20 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             options.push(emptyOption);
         }
         const optionsListCollection = createListCollection({ items: options });
-
-        const selectedOption = [activeBaseLayer?.id ?? NO_BASEMAP_ID];
+        const selectedOption = optionsListCollection.find(activeBaseLayer?.id ?? NO_BASEMAP_ID);
+        if (!selectedOption) {
+            throw new Error("Internal error: selected option not found in list.");
+        }
 
         return { optionsListCollection, selectedOption };
     }, [allowSelectingEmptyBasemap, emptyBasemapLabel, map]);
-
-    let triggerItem;
-    if (currentItem) {
-        triggerItem = <BasemapItemContent item={currentItem} />;
-    } else {
-        triggerItem = null;
-    }
 
     return (
         <Box {...containerProps}>
             <Select.Root
                 collection={optionsListCollection}
-                value={selectedOption}
-                onValueChange={(option) =>
-                    option && (activateLayer(option.value), setCurrentItem(option.items[0]))
-                }
+                value={[selectedOption.value]}
+                onValueChange={(option) => option && activateLayer(option.value)}
                 className="basemap-switcher-select"
                 lazyMount={true}
                 unmountOnExit={true}
@@ -134,7 +128,9 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                         aria-labelledby={ariaLabelledBy}
                         className="basemap-switcher-select-trigger"
                     >
-                        <Select.ValueText display="flex">{triggerItem}</Select.ValueText>
+                        <Select.ValueText display="flex" alignItems="center">
+                            <BasemapItemContent option={selectedOption} />
+                        </Select.ValueText>
                     </Select.Trigger>
                     <Select.IndicatorGroup>
                         <Select.Indicator />
@@ -167,63 +163,65 @@ function BasemapItem(props: { item: SelectOption }) {
             pointerEvents="auto"
             className="basemap-switcher-option"
         >
-            <BasemapItemContent item={item} />
+            <BasemapItemContent option={item} />
         </Select.Item>
     );
 }
 
-function BasemapItemContent(props: { item: SelectOption }) {
-    const { item } = props;
+function BasemapItemContent(props: { option: SelectOption }) {
+    const { option } = props;
     const intl = useIntl();
-    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
-    const visibleInScale = useVisibleInScale(item.layer);
+    const loadState = useReactiveSnapshot(() => option.layer?.loadState, [option.layer]);
+    const visibleInScale = useReactiveSnapshot(() => option.layer?.visibleInScale, [option.layer]);
+
+    const { problem, opacity } = useMemo(() => {
+        let problem = undefined;
+        let opacity = undefined;
+        if (option.layer) {
+            if (loadState === "error") {
+                problem = (
+                    <ProblemIndicator
+                        Icon={LuTriangleAlert}
+                        color="red"
+                        message={intl.formatMessage({ id: "layerNotAvailable" })}
+                    />
+                );
+            } else if (!visibleInScale) {
+                problem = (
+                    <ProblemIndicator
+                        Icon={LuInfo}
+                        message={intl.formatMessage({ id: "layerNotVisible" })}
+                    />
+                );
+                opacity = 0.5;
+            }
+        }
+        return { problem, opacity };
+    }, [option.layer, loadState, visibleInScale, intl]);
 
     return (
         <>
-            <Text opacity={!visibleInScale ? 0.5 : 1}>{item.label}</Text>
-            {item.layer && item.layer?.loadState === "error" && (
-                <Box ml={2}>
-                    <Tooltip
-                        content={notAvailableLabel}
-                        aria-label={notAvailableLabel}
-                        positioning={{ placement: "right" }}
-                    >
-                        <span>
-                            <LuTriangleAlert
-                                color={"red"}
-                                aria-label={intl.formatMessage({
-                                    id: "layerNotAvailable"
-                                })}
-                            />
-                        </span>
-                    </Tooltip>
-                </Box>
-            )}
-            {item.layer && !visibleInScale && item.layer?.loadState !== "error" && (
-                <Box ml={2}>
-                    <Tooltip
-                        content={notVisibleLabel}
-                        aria-label={notVisibleLabel}
-                        positioning={{ placement: "right" }}
-                    >
-                        <span>
-                            <LuInfo
-                                className="basemap-layer-item-icon-info"
-                                aria-label={intl.formatMessage({
-                                    id: "layerNotVisible"
-                                })}
-                            />
-                        </span>
-                    </Tooltip>
-                </Box>
-            )}
+            <Text as="span" opacity={opacity}>
+                {option.label}
+            </Text>
+            {problem}
         </>
     );
 }
 
-function useVisibleInScale(layer: Layer | undefined): boolean {
-    return useReactiveSnapshot(() => {
-        return !!layer && layer.visibleInScale;
-    }, [layer]);
+function ProblemIndicator(props: { Icon: IconType; message: string; color?: string }) {
+    const { Icon, message, color } = props;
+    return (
+        <Box ml={2}>
+            <Tooltip content={message} aria-label={message} positioning={{ placement: "right" }}>
+                <span>
+                    <Icon
+                        className="basemap-layer-item-icon-info"
+                        aria-label={message}
+                        color={color}
+                    />
+                </span>
+            </Tooltip>
+        </Box>
+    );
 }
