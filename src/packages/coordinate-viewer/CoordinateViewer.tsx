@@ -1,20 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text } from "@chakra-ui/react";
-import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { PackageIntl } from "@open-pioneer/runtime";
-import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
-
-const DEFAULT_PRECISION = 4;
-const DEFAULT_DISPLAY_FORMAT = "decimal";
+import { FC, useEffect, useMemo, useState } from "react";
+import { formatCoordinates } from "./formatCoordinates";
 
 /**
  * These are special properties for the CoordinateViewer.
@@ -47,17 +43,21 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { precision, displayProjectionCode, format } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const map = useMapModelValue(props);
-    const mapProjectionCode = useReactiveSnapshot(() => {
-        return map?.projection.getCode() ?? "";
-    }, [map]);
-    let { coordinates } = useCoordinates(map.olMap);
-    coordinates =
-        coordinates && displayProjectionCode
-            ? transformCoordinates(coordinates, mapProjectionCode, displayProjectionCode)
-            : coordinates;
-    const coordinatesString = useCoordinatesString(coordinates, precision, format);
-    const projectionString = displayProjectionCode ? displayProjectionCode : mapProjectionCode;
-    const displayString = coordinatesString ? coordinatesString + " " + projectionString : "";
+    const intl = useIntl();
+    const { coordinates, projectionCode } = useCoordinates(map, displayProjectionCode);
+
+    const coordinatesString = useMemo(() => {
+        if (!coordinates) {
+            return "";
+        }
+        return formatCoordinates(coordinates, precision, intl, format);
+    }, [coordinates, precision, format, intl]);
+
+    let displayString = "";
+    if (coordinatesString) {
+        displayString = `${coordinatesString} ${projectionCode}`;
+    }
+
     return (
         <Box {...containerProps}>
             <Text className="coordinate-viewer-text">{displayString}</Text>
@@ -65,87 +65,27 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     );
 };
 
-/* Separate function for easier testing */
-export function useCoordinatesString(
-    coordinates: number[] | undefined,
-    precision: number | undefined,
-    format: CoordinateViewerProps["format"]
-): string {
-    const intl = useIntl();
-    const coordinatesString = coordinates
-        ? formatCoordinates(coordinates, precision, intl, format)
-        : "";
-    return coordinatesString;
-}
-
-function useCoordinates(map: OlMap): { coordinates: Coordinate | undefined } {
+function useCoordinates(map: MapModel, displayProjectionCode: string | undefined) {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
+    const mapProjectionCode = useReactiveSnapshot(() => {
+        return map?.projection.getCode() ?? "";
+    }, [map]);
 
     useEffect(() => {
-        const eventsKey: EventsKey = map.on("pointermove", (evt) => {
+        const eventsKey: EventsKey = map.olMap.on("pointermove", (evt) => {
             setCoordinates(evt.coordinate);
         });
         return () => unByKey(eventsKey);
     }, [map]);
 
-    return { coordinates };
-}
-
-function formatCoordinates(
-    coordinates: number[],
-    configuredPrecision: number | undefined,
-    intl: PackageIntl,
-    configuredFormat: CoordinateViewerProps["format"]
-) {
-    if (coordinates[0] == null || coordinates[1] == null) {
-        return "";
-    }
-
-    const precision = configuredPrecision ?? DEFAULT_PRECISION;
-    const format = configuredFormat ?? DEFAULT_DISPLAY_FORMAT;
-    const [x, y] = coordinates;
-
-    let str;
-    if (format === "degree" && isFinite(x) && isFinite(y)) {
-        const [xHour, xMin, xSek] = toDegree(x, intl, precision);
-        const [yHour, yMin, ySek] = toDegree(y, intl, precision);
-
-        const xString = `${Math.abs(xHour)}°${xMin}'${xSek}"${0 <= xHour ? "(E)" : "(W)"}`;
-        const yString = `${Math.abs(yHour)}°${yMin}'${ySek}"${0 <= yHour ? "(N)" : "(S)"}`;
-
-        str = xString + " " + yString;
-    } else {
-        const xString = intl.formatNumber(x, {
-            maximumFractionDigits: precision,
-            minimumFractionDigits: precision
-        });
-        const yString = intl.formatNumber(y, {
-            maximumFractionDigits: precision,
-            minimumFractionDigits: precision
-        });
-        str = xString + " " + yString;
-    }
-    return str;
-}
-
-function toDegree(
-    coordPart: number,
-    intl: PackageIntl,
-    precision: number
-): [number, number, string] {
-    const cHour = Math.floor(coordPart);
-    const cNach = coordPart - cHour;
-
-    const cMin = Math.floor(60 * cNach);
-    const cMinNach = 60 * cNach - cMin;
-
-    const cSek = 60 * cMinNach;
-    const cSekRounded = intl.formatNumber(cSek, {
-        maximumFractionDigits: precision,
-        minimumFractionDigits: precision
-    });
-
-    return [cHour, cMin, cSekRounded];
+    const finalCoordinates = useMemo(() => {
+        if (coordinates && displayProjectionCode) {
+            return transformCoordinates(coordinates, mapProjectionCode, displayProjectionCode);
+        }
+        return coordinates;
+    }, [coordinates, mapProjectionCode, displayProjectionCode]);
+    const projectionCode = displayProjectionCode ? displayProjectionCode : mapProjectionCode;
+    return { coordinates: finalCoordinates, projectionCode };
 }
 
 function transformCoordinates(
