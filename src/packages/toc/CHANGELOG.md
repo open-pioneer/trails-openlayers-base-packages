@@ -1,5 +1,25 @@
 # @open-pioneer/toc
 
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- c38b619: Layers that are not visible in the current resolution of the map are indicated with an icon and disabled text (but are still selectable by the user).
+- 10338fa: Update Chakra to 3.29.0
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+- Updated dependencies [fce7fa9]
+- Updated dependencies [c38b619]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+    - @open-pioneer/map@1.1.0
+    - @open-pioneer/basemap-switcher@1.1.0
+
 ## 1.0.0
 
 ### Minor Changes
