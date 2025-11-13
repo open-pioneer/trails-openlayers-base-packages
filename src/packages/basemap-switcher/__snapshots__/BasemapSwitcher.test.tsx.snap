@@ -42,7 +42,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
           OSM
         </span>
         <div
-          class="css-eggl6h"
+          class="basemap-switcher-option-problem-indicator css-eggl6h"
         >
           <span
             class="chakra-tooltip__trigger"
@@ -54,7 +54,6 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
           >
             <svg
               aria-label="layerNotAvailable"
-              class="basemap-layer-item-icon-info"
               color="red"
               fill="none"
               height="1em"

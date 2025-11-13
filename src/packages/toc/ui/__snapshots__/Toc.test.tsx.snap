@@ -159,11 +159,9 @@ exports[`should successfully create a toc component 1`] = `
               dir="ltr"
               id="checkbox:_r_4_:label"
             >
-              <p
-                class="css-whh5e5"
-              >
+              <span>
                 Layer 2
-              </p>
+              </span>
             </span>
           </label>
           <div
@@ -223,11 +221,9 @@ exports[`should successfully create a toc component 1`] = `
               dir="ltr"
               id="checkbox:_r_7_:label"
             >
-              <p
-                class="css-whh5e5"
-              >
+              <span>
                 Layer 1
-              </p>
+              </span>
             </span>
           </label>
           <div

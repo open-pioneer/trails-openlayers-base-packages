@@ -59,7 +59,7 @@ it("should successfully show info for the user if a layer is not visible", async
         throw new Error("Layer OSM missing in basemap options");
     }
 
-    const icons = osmOption.querySelectorAll(".basemap-layer-item-icon-info");
+    const icons = osmOption.querySelectorAll(".basemap-switcher-option-problem-indicator svg");
     expect(icons).toHaveLength(0);
 
     // set map out of layer visibility
@@ -71,8 +71,9 @@ it("should successfully show info for the user if a layer is not visible", async
     {
         const options = await getCurrentOptions();
         const osmOption = options.find((option) => option.textContent === "OSM");
-        const icons = osmOption!.querySelectorAll(".basemap-layer-item-icon-info");
+        const icons = osmOption!.querySelectorAll(".basemap-switcher-option-problem-indicator svg");
         expect(icons).toHaveLength(1);
+        expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
     }
 });
 

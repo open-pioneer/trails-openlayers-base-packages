@@ -212,14 +212,10 @@ function BasemapItemContent(props: { option: SelectOption }) {
 function ProblemIndicator(props: { Icon: IconType; message: string; color?: string }) {
     const { Icon, message, color } = props;
     return (
-        <Box ml={2}>
+        <Box ml={2} className="basemap-switcher-option-problem-indicator">
             <Tooltip content={message} aria-label={message} positioning={{ placement: "right" }}>
                 <span>
-                    <Icon
-                        className="basemap-layer-item-icon-info"
-                        aria-label={message}
-                        color={color}
-                    />
+                    <Icon aria-label={message} color={color} />
                 </span>
             </Tooltip>
         </Box>

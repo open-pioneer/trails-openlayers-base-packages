@@ -26,40 +26,6 @@ import { expect, it } from "vitest";
 import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
 
-it("reacts to changes in the layer description", async () => {
-    const { map, Wrapper } = await setup({
-        layers: [
-            {
-                id: "layer1",
-                title: "Layer 1",
-                minZoom: 9,
-                maxZoom: 16,
-                olLayer: createTestOlLayer()
-            }
-        ]
-    });
-
-    const layer = map.layers.getLayerById("layer1");
-    if (!layer) {
-        throw new Error("test layer not found!");
-    }
-
-    const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: Wrapper
-    });
-    {
-        const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
-        expect(icons).toHaveLength(0);
-    }
-    // set map out of layer visibility
-    await act(async () => {
-        map.olView.setZoom(5);
-        await nextTick();
-    });
-    const icons = container.querySelectorAll(".toc-layer-item-content-icon-info");
-    expect(icons).toHaveLength(1);
-});
-
 it("should show layers in the correct order", async () => {
     const { map, Wrapper } = await setup({
         layers: [
@@ -440,7 +406,7 @@ it("reacts to changes of the layer load state", async () => {
 
     const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
     const button = queryByRole<HTMLInputElement>(container, "button");
-    let icons = container.querySelectorAll(".toc-layer-item-content-icon");
+    let icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
 
     expect(checkbox).toBeTruthy();
     expect(checkbox.disabled).toBe(false);
@@ -452,10 +418,11 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-content-icon");
+    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
     expect(checkbox.disabled).toBe(true);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
+    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
 
     // and back
     await act(async () => {
@@ -463,10 +430,45 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-content-icon");
+    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
     expect(checkbox.disabled).toBe(false);
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
+});
+
+it("updates problem indicators when there are visibility issues", async () => {
+    const { map, Wrapper } = await setup({
+        layers: [
+            {
+                id: "layer1",
+                title: "Layer 1",
+                minZoom: 9,
+                maxZoom: 16,
+                olLayer: createTestOlLayer()
+            }
+        ]
+    });
+
+    const layer = map.layers.getLayerById("layer1");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+    {
+        const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+        expect(icons).toHaveLength(0);
+    }
+    // set map out of layer visibility
+    await act(async () => {
+        map.olView.setZoom(5);
+        await nextTick();
+    });
+    const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    expect(icons).toHaveLength(1);
+    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
 });
 
 it("supports a hierarchy of layers", async () => {
