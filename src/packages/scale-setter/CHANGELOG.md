@@ -1,5 +1,20 @@
 # @open-pioneer/scale-setter
 
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- 10338fa: Update Chakra to 3.29.0
+
+### Patch Changes
+
+- Updated dependencies [fce7fa9]
+- Updated dependencies [10338fa]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+    - @open-pioneer/map@1.1.0
+
 ## 1.0.0
 
 ### Minor Changes
