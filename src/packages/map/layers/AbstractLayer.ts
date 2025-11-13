@@ -206,24 +206,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The minimum resolution (inclusive) at which this layer will be visible.
-     */
-    set minResolution(value) {
-        this.#olLayer.setMinResolution(value);
-    }
-
-    /**
      * The maximum resolution (exclusive) below which this layer will be visible.
      */
     get maxResolution() {
         return this.#maxResolution.value;
-    }
-
-    /**
-     * The maximum resolution (exclusive) below which this layer will be visible.
-     */
-    set maxResolution(value) {
-        this.#olLayer.setMaxResolution(value);
     }
 
     /**
@@ -234,13 +220,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The minimum view zoom level (exclusive) above which this layer will be visible.
-     */
-    set minZoom(value) {
-        this.#olLayer.setMinZoom(value);
-    }
-
-    /**
      * The maximum view zoom level (inclusive) at which this layer will be visible.
      */
     get maxZoom() {
@@ -248,17 +227,38 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The maximum view zoom level (inclusive) at which this layer will be visible.
-     */
-    set maxZoom(value) {
-        this.#olLayer.setMaxZoom(value);
-    }
-
-    /**
      * Whether the layer is visible in the current map scale or not.
      */
     get visibleInScale(): boolean {
         return this.#visibleInScale.value;
+    }
+
+    /**
+     * The minimum resolution (inclusive) at which this layer will be visible.
+     */
+    setMinResolution(value: number): void {
+        this.#olLayer.setMinResolution(value);
+    }
+
+    /**
+     * The maximum resolution (exclusive) below which this layer will be visible.
+     */
+    setMaxResolution(value: number): void {
+        this.#olLayer.setMaxResolution(value);
+    }
+
+    /**
+     * The minimum view zoom level (exclusive) above which this layer will be visible.
+     */
+    setMinZoom(value: number): void {
+        this.#olLayer.setMinZoom(value);
+    }
+
+    /**
+     * The maximum view zoom level (inclusive) at which this layer will be visible.
+     */
+    setMaxZoom(value: number): void {
+        this.#olLayer.setMaxZoom(value);
     }
 
     /**

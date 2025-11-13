@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { watch } from "@conterra/reactivity-core";
+import { watch, watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
@@ -12,101 +12,11 @@ import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
-import { waitFor } from "@testing-library/dom";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
 afterEach(() => {
     vi.restoreAllMocks();
-});
-
-it("support backward reactivity of minZoom", async () => {
-    const layer = new LayerImpl({
-        id: "testId",
-        title: "A",
-        minZoom: 10,
-        maxZoom: 16,
-        olLayer: createTestOlLayer()
-    });
-
-    await waitFor(() => {
-        layer.minZoom = 5;
-    });
-
-    expect(layer.olLayer.getMinZoom()).toBe(5);
-});
-
-it("support reactivity of minZoom attribute", async () => {
-    const layer = new LayerImpl({
-        id: "testId",
-        title: "A",
-        minZoom: 10,
-        maxZoom: 16,
-        olLayer: createTestOlLayer()
-    });
-
-    let changedMinZoom = 0;
-    watch(
-        () => [layer.minZoom],
-        () => {
-            ++changedMinZoom;
-        }
-    );
-    await waitFor(() => {
-        layer.olLayer.setMinZoom(5);
-    });
-
-    expect(changedMinZoom).toBe(1);
-});
-
-it("support the minZoom/maxZoom attribute", async () => {
-    const layer = new LayerImpl({
-        id: "testId",
-        title: "A",
-        minZoom: 10,
-        maxZoom: 16,
-        olLayer: createTestOlLayer()
-    });
-    const { map } = await setupMap({
-        layers: [layer]
-    });
-
-    let changedVisibleInScale = 0;
-    watch(
-        () => [layer.visibleInScale],
-        () => {
-            ++changedVisibleInScale;
-        }
-    );
-
-    expect(layer.visibleInScale).toBe(false);
-    await waitFor(() => {
-        map.olMap.getView().setZoom(11);
-    });
-    expect(changedVisibleInScale).toBe(1);
-    expect(layer.visibleInScale).toBe(true);
-});
-
-it("support the minResolution/maxResolution attribute", async () => {
-    const layer = new LayerImpl({
-        id: "testId",
-        title: "A",
-        minResolution: 300,
-        maxResolution: 500,
-        olLayer: createTestOlLayer()
-    });
-    const { map } = await setupMap({
-        layers: [layer]
-    });
-
-    expect(layer.visibleInScale).toBe(false);
-
-    await waitFor(() => {
-        map.olMap.getView().setResolution(499);
-    });
-
-    expect(layer.visibleInScale).toBe(true);
-    expect(layer.olLayer.getMaxResolution()).toBe(layer.maxResolution);
 });
 
 it("supports access to the olLayer", async () => {
@@ -246,7 +156,7 @@ it("tracks the layer source's state", async () => {
     }
 });
 
-describe("performs a health check", () => {
+describe("health checks", () => {
     it("when specified as URL, success", async () => {
         const testUrl = "http://example.org/health";
         const mockedFetch = vi.fn().mockResolvedValue(
@@ -457,6 +367,112 @@ describe("performs a health check", () => {
         expect(layer.olLayer.getSourceState()).toBe("error");
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no event emitted because state was initially error
+    });
+});
+
+describe("visibility restrictions", () => {
+    it("support {min,max}Zoom and {min,max}Resolution properties", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minZoom: 10,
+            maxZoom: 16,
+            olLayer: createTestOlLayer()
+        });
+
+        // minZoom, maxZoom, minResolution, maxResolution are aliases for OL properties
+        layer.setMinZoom(5);
+        expect(layer.olLayer.getMinZoom()).toBe(5);
+
+        layer.setMaxZoom(23);
+        expect(layer.olLayer.getMaxZoom()).toBe(23);
+
+        layer.setMinResolution(300);
+        expect(layer.olLayer.getMinResolution()).toBe(300);
+
+        layer.setMaxResolution(600);
+        expect(layer.olLayer.getMaxResolution()).toBe(600);
+    });
+
+    it("support reactivity of attributes", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minZoom: 10,
+            maxZoom: 16,
+            olLayer: createTestOlLayer()
+        });
+
+        const props = [
+            ["minZoom", () => layer.minZoom, (v: number) => layer.setMinZoom(v)],
+            ["maxZoom", () => layer.maxZoom, (v: number) => layer.setMaxZoom(v)],
+            ["minResolution", () => layer.minResolution, (v: number) => layer.setMinResolution(v)],
+            ["maxResolution", () => layer.maxResolution, (v: number) => layer.setMaxResolution(v)]
+        ] as const;
+
+        for (const [propName, getter, setter] of props) {
+            const changeEvents: unknown[] = [];
+            const handle = watchValue(
+                () => getter(),
+                (v) => {
+                    changeEvents.push(v);
+                },
+                SYNC_DISPATCH
+            );
+
+            setter(123);
+            expect(changeEvents, `Prop: '${propName}'`).toEqual([123]);
+
+            handle.destroy();
+        }
+    });
+
+    it("support the minZoom/maxZoom attribute", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minZoom: 10,
+            maxZoom: 16,
+            olLayer: createTestOlLayer()
+        });
+        const { map } = await setupMap({
+            layers: [layer]
+        });
+
+        let changedVisibleInScale = 0;
+        watch(
+            () => [layer.visibleInScale],
+            () => {
+                ++changedVisibleInScale;
+            }
+        );
+
+        expect(layer.visibleInScale).toBe(false);
+
+        map.olMap.getView().setZoom(11);
+        await vi.waitFor(() => expect(changedVisibleInScale).toBe(1));
+
+        expect(layer.visibleInScale).toBe(true);
+    });
+
+    it("support the minResolution/maxResolution attribute", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minResolution: 300,
+            maxResolution: 500,
+            olLayer: createTestOlLayer()
+        });
+        const { map } = await setupMap({
+            layers: [layer]
+        });
+
+        expect(layer.visibleInScale).toBe(false);
+
+        map.olMap.getView().setResolution(499);
+        await vi.waitFor(() => {
+            expect(layer.visibleInScale).toBe(true);
+        });
     });
 });
 
