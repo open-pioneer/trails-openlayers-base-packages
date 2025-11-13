@@ -1,6 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
+import {
+    computed,
+    reactive,
+    Reactive,
+    ReadonlyReactive,
+    synchronized
+} from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
@@ -51,9 +57,15 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #healthCheck?: string | HealthCheckFunction;
 
     #visible: ReadonlyReactive<boolean>;
+    #minResolution: ReadonlyReactive<number>;
+    #maxResolution: ReadonlyReactive<number>;
+    #minZoom: ReadonlyReactive<number>;
+    #maxZoom: ReadonlyReactive<number>;
     #loadState: Reactive<LayerLoadState>;
 
     #stateWatchResource: Resource | undefined;
+
+    #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
         config: SimpleLayerConfig,
@@ -72,9 +84,76 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return () => unByKey(key);
             }
         );
+        this.#minResolution = synchronized(
+            () => this.#olLayer.getMinResolution(),
+            (cb) => {
+                const key = this.#olLayer.on("change:minResolution", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#maxResolution = synchronized(
+            () => this.#olLayer.getMaxResolution(),
+            (cb) => {
+                const key = this.#olLayer.on("change:maxResolution", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#minZoom = synchronized(
+            () => this.#olLayer.getMinZoom(),
+            (cb) => {
+                const key = this.#olLayer.on("change:minZoom", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#maxZoom = synchronized(
+            () => this.#olLayer.getMaxZoom(),
+            (cb) => {
+                const key = this.#olLayer.on("change:maxZoom", cb);
+                return () => unByKey(key);
+            }
+        );
+
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+
+        this.#visibleInScale = computed(() => {
+            const map = this.nullableMap; // handle case where not in the map yet
+            if (!map) {
+                return true; // or false? doesn't really matter
+            }
+
+            const zoom = map.zoomLevel;
+            const resolution = map.resolution;
+            if (zoom == null || resolution == null) {
+                return false;
+            }
+
+            const parent = this.parent;
+            if (parent && parent.type === "group" && !parent.visibleInScale) {
+                return false;
+            }
+
+            if (resolution < this.minResolution || resolution >= this.maxResolution) {
+                return false;
+            }
+
+            return zoom > this.minZoom && zoom <= this.maxZoom;
+        });
+
+        if (config.maxResolution) {
+            this.#olLayer.setMaxResolution(config.maxResolution);
+        }
+        if (config.minResolution) {
+            this.#olLayer.setMinResolution(config.minResolution);
+        }
+
+        if (config.maxZoom) {
+            this.#olLayer.setMaxZoom(config.maxZoom);
+        }
+        if (config.minZoom) {
+            this.#olLayer.setMinZoom(config.minZoom);
+        }
     }
 
     override destroy() {
@@ -117,6 +196,69 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get loadState(): LayerLoadState {
         return this.#loadState.value;
+    }
+
+    /**
+     * The minimum resolution (inclusive) at which this layer will be visible.
+     */
+    get minResolution() {
+        return this.#minResolution.value;
+    }
+
+    /**
+     * The maximum resolution (exclusive) below which this layer will be visible.
+     */
+    get maxResolution() {
+        return this.#maxResolution.value;
+    }
+
+    /**
+     * The minimum view zoom level (exclusive) above which this layer will be visible.
+     */
+    get minZoom() {
+        return this.#minZoom.value;
+    }
+
+    /**
+     * The maximum view zoom level (inclusive) at which this layer will be visible.
+     */
+    get maxZoom() {
+        return this.#maxZoom.value;
+    }
+
+    /**
+     * Whether the layer is visible in the current map scale or not.
+     */
+    get visibleInScale(): boolean {
+        return this.#visibleInScale.value;
+    }
+
+    /**
+     * The minimum resolution (inclusive) at which this layer will be visible.
+     */
+    setMinResolution(value: number): void {
+        this.#olLayer.setMinResolution(value);
+    }
+
+    /**
+     * The maximum resolution (exclusive) below which this layer will be visible.
+     */
+    setMaxResolution(value: number): void {
+        this.#olLayer.setMaxResolution(value);
+    }
+
+    /**
+     * The minimum view zoom level (exclusive) above which this layer will be visible.
+     */
+    setMinZoom(value: number): void {
+        this.#olLayer.setMinZoom(value);
+    }
+
+    /**
+     * The maximum view zoom level (inclusive) at which this layer will be visible.
+     */
+    setMaxZoom(value: number): void {
+        this.#olLayer.setMaxZoom(value);
     }
 
     /**

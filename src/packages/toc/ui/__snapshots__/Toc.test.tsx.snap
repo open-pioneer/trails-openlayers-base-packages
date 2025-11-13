@@ -50,12 +50,14 @@ exports[`should successfully create a toc component 1`] = `
             type="button"
           >
             <span
-              class="chakra-select__valueText css-176t9sc"
+              class="chakra-select__valueText css-amxqtw"
               data-part="value-text"
               data-scope="select"
               dir="ltr"
             >
-              Base layer
+              <span>
+                Base layer
+              </span>
             </span>
           </button>
           <div
@@ -157,7 +159,9 @@ exports[`should successfully create a toc component 1`] = `
               dir="ltr"
               id="checkbox:_r_4_:label"
             >
-              Layer 2
+              <span>
+                Layer 2
+              </span>
             </span>
           </label>
           <div
@@ -217,7 +221,9 @@ exports[`should successfully create a toc component 1`] = `
               dir="ltr"
               id="checkbox:_r_7_:label"
             >
-              Layer 1
+              <span>
+                Layer 1
+              </span>
             </span>
           </label>
           <div

@@ -1,4 +1,5 @@
 messages:
   emptyBasemapLabel: Ohne Hintergrundkarte
   layerNotAvailable: Layer nicht verfügbar
+  layerNotVisible: Layer in diesem Maßstab nicht sichtbar
   selected: selektiert

@@ -7,7 +7,8 @@ import {
     Flex,
     Icon,
     IconButton,
-    Spacer
+    Spacer,
+    Text
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
@@ -17,14 +18,15 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { LuTriangleAlert, LuChevronDown, LuChevronRight } from "react-icons/lu";
+import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState } from "./hooks";
+import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
 import { displayItemForLayer } from "../../utils/displayLayer";
+import type { IconType } from "react-icons/lib";
 
 /**
  * Renders a single layer as a list item.
@@ -33,6 +35,7 @@ import { displayItemForLayer } from "../../utils/displayLayer";
  */
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
+
     const intl = useIntl();
     const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
     const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
@@ -40,9 +43,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
     const layerGroupId = useId();
-    const isAvailable = useLoadState(layer) !== "error";
     const listMode = useListMode(layer)?.listMode;
-    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -52,16 +53,24 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         };
     }, [layer]);
 
-    const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
-    let hasNestedChildren = !!nestedChildren;
+    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(layer, intl);
+    const ariaLabel = useMemo(() => {
+        let label = title;
+        if (problemLabel) {
+            label += " " + problemLabel;
+        }
+        return label;
+    }, [title, problemLabel]);
 
+    const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
+    //all children hidden => do not render collapse button and child entries
+    let hasNestedChildren = !!nestedChildren;
+    if (allChildrenHidden || listMode === "hide-children") {
+        hasNestedChildren = false;
+    }
 
     if (!display) {
         return null;
-    } 
-    //all children hidden => do not render collapse button and child entries
-    if (allChildrenHidden || listMode === "hide-children") {
-        hasNestedChildren = false;
     }
 
     return (
@@ -94,9 +103,9 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
                     // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
+                    aria-label={ariaLabel}
                     checked={isVisible}
-                    disabled={!isAvailable}
+                    disabled={disabled}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
@@ -105,24 +114,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         )
                     }
                 >
-                    {title}
+                    <Text as="span" opacity={opacity}>
+                        {title}
+                    </Text>
                 </Checkbox>
-                {!isAvailable && (
-                    <Tooltip
-                        content={notAvailableLabel}
-                        positioning={{ placement: "right" }}
-                        openDelay={500}
-                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
-                    >
-                        <span>
-                            <LuTriangleAlert
-                                className="toc-layer-item-content-icon"
-                                color={"red"}
-                                aria-label={notAvailableLabel}
-                            />
-                        </span>
-                    </Tooltip>
-                )}
+                {problemIndicator}
                 <Spacer />
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
@@ -134,29 +130,6 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         </Box>
     );
 });
-
-function useNestedChildren(
-    layerGroupId: string,
-    title: string,
-    layer: AnyLayer,
-    intl: PackageIntl
-) {
-    const childLayers = useChildLayers(layer);
-    const children = useMemo(() => {
-        if (childLayers?.length) {
-            return (
-                <LayerList
-                    id={layerGroupId}
-                    layers={childLayers}
-                    ml={4}
-                    aria-label={intl.formatMessage({ id: "childgroupLabel" }, { title: title })}
-                />
-            );
-        }
-        return undefined;
-    }, [layerGroupId, intl, title, childLayers]);
-    return children;
-}
 
 function CollapseButton(props: {
     layerTitle: string;
@@ -198,6 +171,21 @@ function CollapseButton(props: {
     );
 }
 
+function ProblemIndicator(props: { message: string; Icon: IconType; color?: string }) {
+    const { message, Icon, color } = props;
+    return (
+        <Tooltip
+            content={message}
+            positioning={{ placement: "right" }}
+            contentProps={{ className: "toc-layer-item-problem-indicator-tooltip" }}
+        >
+            <span className="toc-layer-item-problem-indicator">
+                <Icon aria-label={message} color={color} />
+            </span>
+        </Tooltip>
+    );
+}
+
 // Creates a toc item and registers it with the shared toc model.
 function useTocItem(layer: AnyLayer, display: boolean) {
     const tocModel = useTocModel();
@@ -223,11 +211,60 @@ function useTocItem(layer: AnyLayer, display: boolean) {
     return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
 
+function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
+    const isAvailable = useLoadState(layer) !== "error";
+    const visibleInScale = useVisibleInScale(layer);
+
+    return useMemo(() => {
+        let problemIndicator;
+        let problemLabel;
+        let opacity;
+        let disabled;
+        if (!isAvailable) {
+            const label = intl.formatMessage({ id: "layerNotAvailable" });
+            problemIndicator = (
+                <ProblemIndicator message={label} Icon={LuTriangleAlert} color="red" />
+            );
+            problemLabel = label;
+            disabled = true;
+        } else if (!visibleInScale) {
+            const label = intl.formatMessage({ id: "layerNotVisible" });
+            problemIndicator = <ProblemIndicator message={label} Icon={LuInfo} />;
+            problemLabel = label;
+            opacity = 0.5;
+        }
+        return { problemIndicator, problemLabel, opacity, disabled };
+    }, [isAvailable, visibleInScale, intl]);
+}
+
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
     return useReactiveSnapshot(
         () => layer.attributes.toc as LayerTocAttributes | undefined,
         [layer]
     );
+}
+
+function useNestedChildren(
+    layerGroupId: string,
+    title: string,
+    layer: AnyLayer,
+    intl: PackageIntl
+) {
+    const childLayers = useChildLayers(layer);
+    const children = useMemo(() => {
+        if (childLayers?.length) {
+            return (
+                <LayerList
+                    id={layerGroupId}
+                    layers={childLayers}
+                    ml={4}
+                    aria-label={intl.formatMessage({ id: "childgroupLabel" }, { title: title })}
+                />
+            );
+        }
+        return undefined;
+    }, [layerGroupId, intl, title, childLayers]);
+    return children;
 }
 
 function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
@@ -243,7 +280,6 @@ function getClassNameForLayer(layer: AnyLayer) {
 
 /**
  * Checks if at least on child layer of the given layer exists and should be displayed.
- * @param layer
  * @returns true if at least one child layer's display mode is not `hide`
  */
 function hasShownChildren(layer: AnyLayer): boolean {
@@ -256,5 +292,3 @@ function hasShownChildren(layer: AnyLayer): boolean {
         });
     }
 }
-
-
