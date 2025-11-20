@@ -1,5 +1,38 @@
 # @open-pioneer/map
 
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+- c38b619: Adds optional configuration properties to all `Layers` to restrict the visibility of layers to a range of zoom levels or resolutions.
+  The visibility can be restricted either to a `minResolution` and `maxResolution` or to a `minZoom` and `maxZoom`.
+  Using only a minimum or maximum limit is possible.
+  Missing properties are considered as no limitation.
+
+    ```js
+    layerFactory.create({
+        type: WMTSLayer,
+        isBaseLayer: true,
+        title: "Basemap",
+        name: "basemap",
+        minZoom: 10,
+        maxZoom: 16
+    });
+    ```
+
+    The boolean property `visibleInScale` of a layer indicates the visibility of this layer depending on the current resolution of the map.
+
+    Restrictions of a `GroupLayer` are inherited to child layers.
+    If no restrictions are configured for a child layer, its visibility limitations are equal to the parent `GroupLayer`.
+    By configuring additional limits for the child layer, its visibility can be further restricted.
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+
 ## 1.0.0
 
 ### Major Changes
