@@ -20,7 +20,7 @@ exports[`should successfully create a search component 1`] = `
       role="log"
     />
     <div
-      class="react-select__control css-4dx2zs"
+      class="react-select__control css-o9cw7e"
     >
       <div
         class="search-value-container react-select__value-container css-1ch6166"

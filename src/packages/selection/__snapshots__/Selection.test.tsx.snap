@@ -38,7 +38,7 @@ exports[`should successfully create a selection component and select the first s
         aria-invalid="false"
         aria-labelledby="select:_r_0_:label"
         aria-required="false"
-        class="chakra-select__trigger css-jjrwqe"
+        class="chakra-select__trigger css-lwaeyv"
         data-part="trigger"
         data-scope="select"
         data-state="closed"
