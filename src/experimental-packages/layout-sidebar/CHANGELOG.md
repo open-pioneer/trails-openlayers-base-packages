@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+
 ## 1.0.0
 
 ### Minor Changes
