@@ -119,6 +119,7 @@ overrides:
   "source-map@<0.6.1": ">=0.6.1"
   "stylis@<4.3.5": ">= 4.3.5"
   "regenerator-runtime@<=0.13.11": "^0.14.0"
+  "csstype@<3.2.3": ">=3.2.3"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
   "@ark-ui/react": "5.27.1"
