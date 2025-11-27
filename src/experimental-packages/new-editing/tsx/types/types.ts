@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 export type StatePair<S> = [S, StateSetter<S>];
 export type StateSetter<S> = FunctionalSetter<S> & ValueSetter<S>;

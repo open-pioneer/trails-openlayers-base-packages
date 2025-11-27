@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Flex, Button, Spacer } from "@open-pioneer/chakra-integration";
+import { Flex, Button, Spacer } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { PiTrash } from "react-icons/pi";
 import { useCallback, useMemo, useState, type ReactElement } from "react";

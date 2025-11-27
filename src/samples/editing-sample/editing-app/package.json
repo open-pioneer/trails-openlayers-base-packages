@@ -2,7 +2,7 @@
     "name": "editing-app",
     "private": true,
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
@@ -10,11 +10,11 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
-        "dexie": "catalog:",
         "new-editing": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
+        "react-icons": "catalog:",
+        "dexie": "^4.2.1"
     },
     "version": "0.0.1"
 }

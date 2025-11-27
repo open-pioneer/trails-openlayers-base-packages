@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { NotificationService } from "@open-pioneer/notifier";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -26,6 +26,7 @@ export function useEditingCallbacks(
                 if (editingStep.id === "create-modify") {
                     const { feature, template } = editingStep;
                     try {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         await editingHandler.addFeature(feature, template, projection!);
                         showNotifier("create", true);
                         setEditingStep({ id: "none" });
@@ -36,6 +37,7 @@ export function useEditingCallbacks(
                 } else if (editingStep.id === "update-modify") {
                     const { feature, olLayer: layer } = editingStep;
                     try {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         await editingHandler.updateFeature(feature, layer, projection!);
                         showNotifier("update", true);
                         setEditingStep({ id: "none" });
@@ -51,6 +53,7 @@ export function useEditingCallbacks(
                 if (editingStep.id === "update-modify") {
                     const { feature, olLayer: layer } = editingStep;
                     try {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         await editingHandler.deleteFeature(feature, layer, projection!);
                         showNotifier("delete", true);
                         setEditingStep({ id: "none" });

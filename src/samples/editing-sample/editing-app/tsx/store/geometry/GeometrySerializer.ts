@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { GeoJSON } from "ol/format";
 import { Circle, type Geometry } from "ol/geom";
@@ -82,9 +82,13 @@ export class GeometrySerializer {
 
     private static toEnvelope(extent: Extent): Envelope {
         return {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             minX: extent[0]!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             minY: extent[1]!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             maxX: extent[2]!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             maxY: extent[3]!
         };
     }

@@ -4,9 +4,7 @@
     "main": "index.ts",
     "private": true,
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
-        "@open-pioneer/notifier": "catalog:",
-        "react-color": "catalog:",
-        "@types/react-color": "catalog:"
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/notifier": "catalog:"
     }
 }

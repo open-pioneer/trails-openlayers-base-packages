@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { VStack } from "@open-pioneer/chakra-integration";
+import { VStack } from "@chakra-ui/react";
 import type { Feature } from "ol";
 import type { Layer } from "ol/layer";
 import { useEffect, useMemo, type ReactElement } from "react";

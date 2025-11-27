@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
@@ -7,7 +7,7 @@ import {
     PopoverContent,
     PopoverTrigger,
     useDisclosure
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
 
 import { useCallback, type ReactElement } from "react";
 import { CirclePicker, type ColorResult } from "react-color";

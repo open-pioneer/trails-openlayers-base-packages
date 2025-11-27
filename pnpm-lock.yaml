@@ -417,6 +417,15 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/experimental-packages/new-editing:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
+
   src/packages/basemap-switcher:
     dependencies:
       '@chakra-ui/react':
@@ -1357,6 +1366,48 @@ importers:
         specifier: 'catalog:'
         version: 1.5.1
     publishDirectory: dist
+
+  src/samples/editing-sample/editing-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:^
+        version: link:../../../packages/map-ui-components
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))
+      '@open-pioneer/scale-bar':
+        specifier: workspace:^
+        version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/scale-viewer
+      dexie:
+        specifier: ^4.2.1
+        version: 4.2.1
+      new-editing:
+        specifier: workspace:^
+        version: link:../../../experimental-packages/new-editing
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.2.0)
 
   src/samples/experimental-sidebar/sidebar-app:
     dependencies:
@@ -3712,6 +3763,9 @@ packages:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
     engines: {node: '>=0.10'}
     hasBin: true
+
+  dexie@4.2.1:
+    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -8082,6 +8136,8 @@ snapshots:
 
   detect-libc@1.0.3:
     optional: true
+
+  dexie@4.2.1: {}
 
   dir-glob@3.0.1:
     dependencies:
