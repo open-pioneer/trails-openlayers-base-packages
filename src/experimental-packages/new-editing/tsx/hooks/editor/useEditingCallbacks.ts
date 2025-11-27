@@ -44,8 +44,6 @@ export function useEditingCallbacks(
                     } catch (error) {
                         showNotifier("update", false, error);
                         console.error("Error updating feature", feature, error);
-                    } finally {
-                        layer?.getSource()?.refresh();
                     }
                 }
             },
