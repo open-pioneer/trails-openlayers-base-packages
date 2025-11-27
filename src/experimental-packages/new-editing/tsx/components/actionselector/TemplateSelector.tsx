@@ -13,7 +13,7 @@ export function TemplateSelector({
     onClick
 }: TemplateSelectorProps): ReactElement {
     return (
-        <Table.Root variant="simple" size="sm">
+        <Table.Root variant="line" size="sm">
             <Table.Body>
                 {templates.map((template) => (
                     <TemplateRow

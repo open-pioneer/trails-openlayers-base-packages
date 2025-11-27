@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, Field, Input, NativeSelectRoot, NativeSelectField, Textarea } from "@chakra-ui/react";
+import {
+    Checkbox,
+    Field,
+    Input,
+    NativeSelectRoot,
+    NativeSelectField,
+    Textarea
+} from "@chakra-ui/react";
 
 import { ChangeEvent, useCallback, type ReactElement } from "react";
 
@@ -93,7 +100,9 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
                     <Checkbox.Root checked={!!value} onCheckedChange={onCheckBoxChange}>
                         <Checkbox.HiddenInput />
                         <Checkbox.Control />
-                        <Checkbox.Label>{fieldInput.checkBoxLabel ?? fieldInput.label}</Checkbox.Label>
+                        <Checkbox.Label>
+                            {fieldInput.checkBoxLabel ?? fieldInput.label}
+                        </Checkbox.Label>
                     </Checkbox.Root>
                 </Field.Root>
             );

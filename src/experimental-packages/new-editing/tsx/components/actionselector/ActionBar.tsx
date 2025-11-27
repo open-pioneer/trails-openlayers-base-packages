@@ -39,25 +39,13 @@ export function ActionBar({
             >
                 <GoCheckCircle size={25} />
             </IconButton>
-            <IconButton
-                aria-label={ariaLabels.abortButton}
-                disabled={!canAbort}
-                onClick={onAbort}
-            >
+            <IconButton aria-label={ariaLabels.abortButton} disabled={!canAbort} onClick={onAbort}>
                 <GoXCircle size={25} />
             </IconButton>
-            <IconButton
-                aria-label={ariaLabels.undoButton}
-                disabled={!canUndo}
-                onClick={onUndo}
-            >
+            <IconButton aria-label={ariaLabels.undoButton} disabled={!canUndo} onClick={onUndo}>
                 <LuUndo size={25} />
             </IconButton>
-            <IconButton
-                aria-label={ariaLabels.redoButton}
-                disabled={!canRedo}
-                onClick={onRedo}
-            >
+            <IconButton aria-label={ariaLabels.redoButton} disabled={!canRedo} onClick={onRedo}>
                 <LuRedo size={25} />
             </IconButton>
         </HStack>

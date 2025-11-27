@@ -19,8 +19,8 @@ import type { Callback, VoidCallback } from "../../types/types";
 export function useEditingActions(): EditingState {
     const undoManager = useMemo(() => new UndoManager<Coordinate>(), []);
     const ignoreNextEdit = useRef(false);
-    const numberOfVertices = useRef<number>();
-    const eventsKey = useRef<EventsKey | undefined>();
+    const numberOfVertices = useRef<number | undefined>(undefined);
+    const eventsKey = useRef<EventsKey | undefined>(undefined);
 
     const [capabilities, setCapabilities] = useState(INITIAL_CAPABILITIES);
     const actionHandler = useMemo<EditingActionHandler>(() => ({}), []);

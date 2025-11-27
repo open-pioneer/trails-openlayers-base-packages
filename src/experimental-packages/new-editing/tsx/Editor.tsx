@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModel, type MapModelProps } from "@open-pioneer/map";
+import { useMapModelValue, type MapModelProps } from "@open-pioneer/map";
 import type { ReactElement, ReactNode } from "react";
 
 import { ActionSelector } from "./components/actionselector/ActionSelector";
@@ -25,6 +25,7 @@ import type { FeatureTemplate } from "./model/FeatureTemplate";
 import type { Callback } from "./types/types";
 
 export function Editor({
+    map,
     templates,
     editableLayerIds,
     editingHandler,
@@ -33,13 +34,11 @@ export function Editor({
     snappableLayerIds = editableLayerIds,
     onEditingStepChange,
     children,
-    map,
-    mapId,
     ...interactionOptions
 }: EditorProps): ReactElement {
     const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
 
-    const { map: mapModel } = useMapModel({ map, mapId });
+    const mapModel = useMapModelValue({ map });
     const onActionChange = useOnActionChangeCallback(mapModel, editableLayerIds, setEditingStep);
     const snappingSources = useSnappingSources(mapModel, snappableLayerIds);
 
