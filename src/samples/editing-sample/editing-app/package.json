@@ -10,11 +10,11 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
+        "@open-pioneer/toc": "workspace:^",
         "new-editing": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:",
-        "dexie": "^4.2.1"
+        "react-icons": "catalog:"
     },
     "version": "0.0.1"
 }

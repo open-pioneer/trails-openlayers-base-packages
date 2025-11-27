@@ -1393,9 +1393,9 @@ importers:
       '@open-pioneer/scale-viewer':
         specifier: workspace:^
         version: link:../../../packages/scale-viewer
-      dexie:
-        specifier: ^4.2.1
-        version: 4.2.1
+      '@open-pioneer/toc':
+        specifier: workspace:^
+        version: link:../../../packages/toc
       new-editing:
         specifier: workspace:^
         version: link:../../../experimental-packages/new-editing
@@ -3763,9 +3763,6 @@ packages:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
     engines: {node: '>=0.10'}
     hasBin: true
-
-  dexie@4.2.1:
-    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -8136,8 +8133,6 @@ snapshots:
 
   detect-libc@1.0.3:
     optional: true
-
-  dexie@4.2.1: {}
 
   dir-glob@3.0.1:
     dependencies:
