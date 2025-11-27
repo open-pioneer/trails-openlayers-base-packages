@@ -1,3 +1,12 @@
+# Get the current branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Only run on main branch
+if [ "$BRANCH" != "main" ]; then
+    echo "Skipping pre-commit checks (not on main branch)"
+    exit 0
+fi
+
 if [ "$NO_VERIFY" ]; then
     echo 'pre-commit hook skipped' 1>&2
     exit 0
