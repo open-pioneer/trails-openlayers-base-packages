@@ -9,15 +9,4 @@ skipDevDependencies: true
 # You can list packages here that do not cause issues when they are present multiple times in your project.
 # You SHOULD NOT list central dependencies here, such as react or any trails packages.
 allowed:
-  - "ansi-styles"
-  - "chalk"
-  - "color-convert"
-  - "color-name"
-  - "escape-string-regexp"
-  - "has-flag"
   - "react-is"
-  - "regenerator-runtime"
-  - "source-map"
-  - "stylis"
-  - "supports-color"
-  - "tslib"

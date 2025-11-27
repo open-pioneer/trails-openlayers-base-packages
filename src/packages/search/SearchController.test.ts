@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, expect, vi, it } from "vitest";
 import { SearchController } from "./SearchController";
@@ -6,6 +6,7 @@ import { SearchSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
 import { isAbortError } from "@open-pioneer/core";
 import { get as getProjection } from "ol/proj";
+import { MapModel } from "@open-pioneer/map";
 
 const FAKE_REQUEST_TIMER = 0;
 const CITY_SOURCE = new FakeCitySource(FAKE_REQUEST_TIMER);
@@ -168,20 +169,32 @@ it("expect search source to get current map projection in 'options'", async () =
     expect(seenProjections).toEqual(["EPSG:3857"]);
 });
 
+it("expect search source to get map model in 'options'", async () => {
+    let seenMapModel: any;
+    const dummySource: SearchSource = {
+        label: "Dummy Source",
+        async search(_inputValue, options) {
+            seenMapModel = options.map;
+            return [];
+        }
+    };
+    const { controller } = setup([dummySource]);
+    await controller.search("foo");
+    expect(seenMapModel).toBeDefined();
+    expect(seenMapModel).toHaveProperty("projection");
+});
+
 function setup(sources: SearchSource[]) {
     // Map Model mock (just as needed for the controller)
     let mapProjection = getProjection("EPSG:4326");
-    const mapModel: any = {
-        olMap: {
-            getView() {
-                return {
-                    getProjection() {
-                        return mapProjection;
-                    }
-                };
+    const mapModel = {
+        get projection() {
+            if (!mapProjection) {
+                throw new Error("mocked map projection is null");
             }
+            return mapProjection;
         }
-    };
+    } satisfies Partial<MapModel> as MapModel;
     const controller = new SearchController(mapModel, sources);
     controller.searchTypingDelay = 10;
 

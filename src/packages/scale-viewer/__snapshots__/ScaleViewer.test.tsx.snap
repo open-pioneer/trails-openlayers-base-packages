@@ -2,13 +2,20 @@
 
 exports[`should successfully create a scale viewer component 1`] = `
 <div
-  class="scale-viewer css-0"
+  aria-label="regionLabel"
+  class="scale-viewer"
   data-testid="scale-viewer"
-  data-theme="light"
+  role="region"
 >
+  <span
+    aria-atomic="true"
+    aria-live="polite"
+    class="css-cfk6a1"
+  >
+    scaleLabel
+  </span>
   <p
-    class="chakra-text css-0"
-    data-theme="light"
+    aria-hidden="true"
   >
     1:
     336,409
@@ -18,13 +25,20 @@ exports[`should successfully create a scale viewer component 1`] = `
 
 exports[`should successfully create a scale viewer component with additional css classes and box properties 1`] = `
 <div
-  class="scale-viewer test test1 test2 css-0"
+  aria-label="regionLabel"
+  class="scale-viewer test test1 test2"
   data-testid="scale-viewer"
-  data-theme="light"
+  role="region"
 >
+  <span
+    aria-atomic="true"
+    aria-live="polite"
+    class="css-cfk6a1"
+  >
+    scaleLabel
+  </span>
   <p
-    class="chakra-text css-0"
-    data-theme="light"
+    aria-hidden="true"
   >
     1:
     336,409

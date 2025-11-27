@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel } from "@open-pioneer/map";
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
@@ -64,12 +64,9 @@ export class SpatialBookmarkViewModel {
         // minx, miny, maxx, maxy
         const olExtent = this.map.olView.calculateExtent();
         const projection = this.map.projection.getCode();
-        const extent: Extent = {
-            minX: olExtent[0]!,
-            minY: olExtent[1]!,
-            maxX: olExtent[2]!,
-            maxY: olExtent[3]!
-        };
+        const [minX = 0, minY = 0, maxX = 0, maxY = 0] = olExtent;
+        const extent: Extent = { minX, minY, maxX, maxY };
+
         const bookmark: Bookmark = {
             id: uuid4v(),
             title,

@@ -2,140 +2,120 @@
 
 exports[`should successfully create a selection component and select the first selection source 1`] = `
 <div
-  class="chakra-stack selection css-ldoqu4"
+  class="chakra-stack selection css-ui72bc"
   data-testid="selection"
-  data-theme="light"
 >
   <div
-    class="chakra-form-control css-1kxonj9"
-    data-theme="light"
-    role="group"
+    class="selection-source chakra-select__root css-3jlqt6"
+    data-part="root"
+    data-scope="select"
+    dir="ltr"
+    id="select:_r_0_"
   >
     <label
-      class="chakra-form__label css-g6pte"
-      data-theme="light"
-      for="field-:r0:"
-      id="field-:r0:-label"
+      class="chakra-select__label css-p3rj3s"
+      data-part="label"
+      data-scope="select"
+      dir="ltr"
+      for="select:_r_0_:select"
+      id="select:_r_0_:label"
     >
       selectSource
     </label>
     <div
-      class="selection-source react-select react-select--has-value css-79elbk"
-      data-theme="light"
+      class="chakra-select__control css-17j1053"
+      data-part="control"
+      data-scope="select"
+      data-state="closed"
+      dir="ltr"
+      id="select:_r_0_:control"
     >
-      <span
-        class="css-1f43avz-a11yText-A11yText"
-        id="react-select-2-live-region"
-      />
-      <span
-        aria-atomic="false"
-        aria-live="polite"
-        aria-relevant="additions text"
-        class="css-1f43avz-a11yText-A11yText"
-        role="log"
-      />
-      <div
-        class="react-select__control css-156sfem"
-        data-theme="light"
+      <button
+        aria-controls="select:_r_0_:content"
+        aria-description="disabledTooltip"
+        aria-expanded="false"
+        aria-haspopup="listbox"
+        aria-invalid="false"
+        aria-labelledby="select:_r_0_:label"
+        aria-required="false"
+        class="chakra-select__trigger css-lwaeyv"
+        data-part="trigger"
+        data-scope="select"
+        data-state="closed"
+        dir="ltr"
+        id="select:_r_0_:trigger"
+        role="combobox"
+        type="button"
       >
-        <div
-          class="react-select__value-container react-select__value-container--has-value css-j93siq"
-          data-theme="light"
+        <span
+          class="chakra-select__valueText css-176t9sc"
+          data-part="value-text"
+          data-scope="select"
+          dir="ltr"
         >
           <div
-            class="selection-source-value selection-source-value--disabled react-select__single-value react-select__single-value--is-disabled css-1xa1gs2"
-            data-theme="light"
+            class="selection-source-value selection-source-value--disabled css-1x05v4l"
           >
+            Fake Selection Source #1
             <div
-              class="css-1x05v4l"
-              data-theme="light"
+              class="css-eggl6h"
             >
-              <div
-                class="css-1v4xcoh"
-                data-theme="light"
+              <span
+                class="chakra-tooltip__trigger"
+                data-part="trigger"
+                data-scope="tooltip"
+                data-state="closed"
+                dir="ltr"
+                id="tooltip:_r_1_:trigger"
               >
-                <span
-                  class="css-0"
-                  data-theme="light"
+                <svg
+                  aria-label="sourceNotAvailable"
+                  class="chakra-icon warning-icon css-15t492g"
+                  fill="none"
+                  focusable="false"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    aria-label="sourceNotAvailable"
-                    class="chakra-icon warning-icon css-f11o2j"
-                    data-theme="light"
-                    fill="none"
-                    focusable="false"
-                    height="1em"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                    />
-                    <line
-                      x1="12"
-                      x2="12"
-                      y1="9"
-                      y2="13"
-                    />
-                    <line
-                      x1="12"
-                      x2="12.01"
-                      y1="17"
-                      y2="17"
-                    />
-                  </svg>
-                </span>
-              </div>
-              Fake Selection Source #1
+                  <path
+                    d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+                  />
+                  <path
+                    d="M12 9v4"
+                  />
+                  <path
+                    d="M12 17h.01"
+                  />
+                </svg>
+              </span>
             </div>
           </div>
-          <input
-            aria-autocomplete="list"
-            aria-expanded="false"
-            aria-haspopup="true"
-            aria-readonly="true"
-            aria-required="false"
-            class="css-mohuvp-dummyInput-DummyInput"
-            id="field-:r0:"
-            inputmode="none"
-            role="combobox"
-            tabindex="0"
-            value=""
-          />
-        </div>
+        </span>
+      </button>
+      <div
+        class="chakra-select__indicatorGroup css-1fx1ifu"
+      >
         <div
-          class="react-select__indicators css-hfbj6y"
-          data-theme="light"
+          aria-hidden="true"
+          class="chakra-select__indicator css-1atg1ut"
+          data-part="indicator"
+          data-scope="select"
+          data-state="closed"
+          dir="ltr"
         >
-          <hr
-            aria-orientation="vertical"
-            class="chakra-divider react-select__indicator-separator css-hxuk4g"
-            data-theme="light"
-          />
-          <div
-            aria-hidden="true"
-            class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-            data-theme="light"
+          <svg
+            class="css-s3mb0o"
+            viewBox="0 0 24 24"
           >
-            <svg
-              aria-hidden="true"
-              class="chakra-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              role="presentation"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
         </div>
       </div>
     </div>

@@ -1,16 +1,16 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { ButtonProps } from "@chakra-ui/react";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
-import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
+import { FC, RefAttributes } from "react";
+import { LuCornerUpLeft, LuCornerUpRight } from "react-icons/lu";
 import { useHistoryViewModel } from "./ViewHistoryModel";
-import { ButtonProps } from "@open-pioneer/chakra-integration";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 
@@ -19,12 +19,11 @@ export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
  *
  * This component composes {@link History}.
  */
-export const HistoryForward: FC<HistoryForwardProps> = forwardRef(function HistoryForward(
-    props: HistoryForwardProps,
-    ref: ForwardedRef<HTMLButtonElement>
+export const HistoryForward: FC<HistoryForwardProps> = function HistoryForward(
+    props: HistoryForwardProps
 ) {
-    return <History viewDirection="forward" ref={ref} {...props} />;
-});
+    return <History viewDirection="forward" {...props} />;
+};
 
 export type HistoryBackwardProps = HistoryForwardProps;
 
@@ -33,12 +32,11 @@ export type HistoryBackwardProps = HistoryForwardProps;
  *
  * This component composes {@link History}.
  */
-export const HistoryBackward: FC<HistoryBackwardProps> = forwardRef(function HistoryBackward(
-    props: HistoryBackwardProps,
-    ref: ForwardedRef<HTMLButtonElement>
+export const HistoryBackward: FC<HistoryBackwardProps> = function HistoryBackward(
+    props: HistoryBackwardProps
 ) {
-    return <History viewDirection="backward" ref={ref} {...props} />;
-});
+    return <History viewDirection="backward" {...props} />;
+};
 
 export interface HistoryProps
     extends CommonComponentProps,
@@ -62,13 +60,10 @@ export interface HistoryProps
 /**
  * Provides a button by which the user can navigate forward or backward in the view history of the map.
  */
-export const History: FC<HistoryProps> = forwardRef(function History(
-    props: HistoryProps,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
+export const History: FC<HistoryProps> = function History(props: HistoryProps) {
     const intl = useIntl();
-    const { buttonProps, viewDirection } = props;
-    const { map } = useMapModel(props);
+    const { buttonProps, viewDirection, ref } = props;
+    const map = useMapModelValue(props);
     const viewModel = useHistoryViewModel(map);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, viewDirection);
     const { containerProps } = useCommonComponentProps(classNames("view", defaultClassName), props);
@@ -105,11 +100,11 @@ export const History: FC<HistoryProps> = forwardRef(function History(
                 label={buttonLabel}
                 icon={buttonIcon}
                 onClick={navigate}
-                isDisabled={!canNavigate}
+                disabled={!canNavigate}
             />
         )
     );
-});
+};
 
 function getDirectionProps(intl: PackageIntl, viewDirection: "forward" | "backward") {
     switch (viewDirection) {
@@ -117,13 +112,13 @@ function getDirectionProps(intl: PackageIntl, viewDirection: "forward" | "backwa
             return {
                 defaultClassName: "view-forward",
                 buttonLabel: intl.formatMessage({ id: "view-forward.title" }),
-                buttonIcon: <FiCornerUpRight />
+                buttonIcon: <LuCornerUpRight />
             };
         case "backward":
             return {
                 defaultClassName: "view-backward",
                 buttonLabel: intl.formatMessage({ id: "view-backward.title" }),
-                buttonIcon: <FiCornerUpLeft />
+                buttonIcon: <LuCornerUpLeft />
             };
     }
 }

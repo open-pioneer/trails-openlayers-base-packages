@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -8,4 +8,13 @@
  *
  * @internal
  */
-export { MapRegistryImpl } from "./MapRegistryImpl";
+export { MapRegistry } from "./MapRegistry";
+
+/**
+ * Exported for the `@open-pioneer/map-test-utils` package.
+ *
+ * This API is unstable.
+ *
+ * @internal
+ */
+export { LayerFactory } from "./LayerFactory";

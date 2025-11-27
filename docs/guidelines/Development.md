@@ -2,14 +2,14 @@
 
 ## Workflow
 
--   In general use a pull request to contribute code or documentation changes
-    -   Pull requests must be reviewed (see definitions of done)
-    -   Exceptions: direct commits for trivial changes (typos in documentation, administrative work)
--   Commits are squashed when PRs are merged
--   Include a changeset entry with your PR when appropriate
--   Remove auto-generated commit messages from PR
-    -   Exceptions: `Co-authored-by: ...`
--   Project Board: <https://github.com/orgs/open-pioneer/projects/5>
+- In general use a pull request to contribute code or documentation changes
+    - Pull requests must be reviewed (see definitions of done)
+    - Exceptions: direct commits for trivial changes (typos in documentation, administrative work)
+- Commits are squashed when PRs are merged
+- Include a changeset entry with your PR when appropriate
+- Remove auto-generated commit messages from PR
+    - Exceptions: `Co-authored-by: ...`
+- Project Board: <https://github.com/orgs/open-pioneer/projects/5>
 
 ## Definitions of done
 
@@ -33,30 +33,30 @@
 
 ## Documentation
 
--   Use [this template](../templates/package-README.md) to start documenting a new package.
--   Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
--   (There is no need to document for each component wether additional CSS classes can be passed using the `className` prop. This is documented in the UI concept documentation.)
+- Use [this template](../templates/package-README.md) to start documenting a new package.
+- Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
+- (There is no need to document for each component wether additional CSS classes can be passed using the `className` prop. This is documented in the UI concept documentation.)
 
 ## Code style
 
--   Be strict about TypeScript, especially in public interfaces
--   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
--   If creating a new package that has a name that consists of multiple words, use a dash to connect the words.
--   If adding own CSS classes, always use the package or component name as a prefix in the class name (seperated using a dash). Example: "<b>measurement-</b>tooltip"
+- Be strict about TypeScript, especially in public interfaces
+- Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
+- If creating a new package that has a name that consists of multiple words, use a dash to connect the words.
+- If adding own CSS classes, always use the package or component name as a prefix in the class name (separated using a dash). Example: "<b>measurement-</b>tooltip"
 
 ## Tests
 
--   Tests must have a clear name.
--   Keep tests short and focused.
--   Tests must be readable and easy to understand.
--   Keep tests deterministic (i.e. non-flaky).
--   Regression tests: consider including the issue id.
+- Tests must have a clear name.
+- Keep tests short and focused.
+- Tests must be readable and easy to understand.
+- Keep tests deterministic (i.e. non-flaky).
+- Regression tests: consider including the issue id.
 
 ## Git / IDE-Setup
 
--   Use eslint & prettier rules (reconfigure if necessary)
--   Use utf-8 text encoding
--   Use unix line endings. On windows, configure git's `autocrlf` feature:
+- Use eslint & prettier rules (reconfigure if necessary)
+- Use utf-8 text encoding
+- Use unix line endings. On windows, configure git's `autocrlf` feature:
 
     ```bash
     $ git config --global core.autocrlf input
@@ -64,17 +64,17 @@
 
     See also <https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration>.
 
--   Keep a linear history, e.g. by configuring git to always rebase when pulling:
+- Keep a linear history, e.g. by configuring git to always rebase when pulling:
 
     ```bash
     $ git config --global pull.rebase true
     ```
 
--   Paths of JavaScript modules can get rather long on windows in combination with PNPM.
-    If you see weird errors (I/O errors, file not found, etc.) when you're trying to install dependencies
-    or run the development server, try moving the git repository to a shorter path on disk (less nesting, shorter name).
+- Paths of JavaScript modules can get rather long on windows in combination with PNPM.
+  If you see weird errors (I/O errors, file not found, etc.) when you're trying to install dependencies
+  or run the development server, try moving the git repository to a shorter path on disk (less nesting, shorter name).
 
--   Either use eslint's autofix feature or your IDE to ensure that your files contain license headers.
+- Either use eslint's autofix feature or your IDE to ensure that your files contain license headers.
 
     The following snippet can be used in VSCode.
     Create a snippet via "Ctrl+Shift+P --> Configure User Snippets" (either globally or in this project).

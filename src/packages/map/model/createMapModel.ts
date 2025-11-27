@@ -1,20 +1,23 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { batch } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { MapBrowserEvent } from "ol";
 import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
 import Attribution from "ol/control/Attribution";
 import { getCenter } from "ol/extent";
+import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
-import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
-import { MapBrowserEvent } from "ol";
-import { MapModelImpl } from "./MapModelImpl";
-import { MapConfig } from "../api";
-import { registerProjections } from "../projections";
-import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
-import { HttpService } from "@open-pioneer/http";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
+import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
+import { registerProjections } from "../utils/projections";
+import { MapConfig } from "./MapConfig";
+import { MapModel } from "./MapModel";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -31,19 +34,22 @@ const LOG = createLogger("map:createMapModel");
 export async function createMapModel(
     mapId: string,
     mapConfig: MapConfig,
+    intl: PackageIntl,
     httpService: HttpService
-): Promise<MapModelImpl> {
-    return await new MapModelFactory(mapId, mapConfig, httpService).createMapModel();
+): Promise<MapModel> {
+    return await new MapModelFactory(mapId, mapConfig, intl, httpService).createMapModel();
 }
 
 class MapModelFactory {
     private mapId: string;
     private mapConfig: MapConfig;
+    private intl: PackageIntl;
     private httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig, httpService: HttpService) {
+    constructor(mapId: string, mapConfig: MapConfig, intl: PackageIntl, httpService: HttpService) {
         this.mapId = mapId;
         this.mapConfig = mapConfig;
+        this.intl = intl;
         this.httpService = httpService;
     }
 
@@ -56,17 +62,18 @@ class MapModelFactory {
         };
 
         if (!mapOptions.controls) {
-            mapOptions.controls = [new Attribution({ collapsible: false })];
+            mapOptions.controls = [createDefaultAttribution(this.intl)];
         }
 
         if (!mapOptions.interactions) {
-            const shiftCtrlKeysOnly = (mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) => {
+            const shiftCtrlKeysOnly = (
+                mapBrowserEvent: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>
+            ) => {
                 const originalEvent = mapBrowserEvent.originalEvent;
                 return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
             };
-            /*
-             * setting altShiftDragRotate to false disables or excludes DragRotate interaction
-             * */
+
+            // setting altShiftDragRotate to false disables or excludes DragRotate interaction
             mapOptions.interactions = defaultInteractions({
                 dragPan: true,
                 altShiftDragRotate: false,
@@ -97,25 +104,29 @@ class MapModelFactory {
         }
 
         const olMap = new OlMap(mapOptions);
+        const mapModel = new MapModel(
+            {
+                id: mapId,
+                olMap,
+                initialExtent,
+                httpService: this.httpService
+            },
+            INTERNAL_CONSTRUCTOR_TAG
+        );
 
-        const mapModel = new MapModelImpl({
-            id: mapId,
-            olMap,
-            initialExtent,
-            httpService: this.httpService
-        });
-
-        try {
-            if (mapConfig.layers) {
-                for (const layerConfig of mapConfig.layers) {
-                    mapModel.layers.addLayer(layerConfig);
+        return batch(() => {
+            try {
+                if (mapConfig.layers) {
+                    for (const layerConfig of mapConfig.layers) {
+                        mapModel.layers.addLayer(layerConfig);
+                    }
                 }
+                return mapModel;
+            } catch (e) {
+                mapModel.destroy();
+                throw e;
             }
-            return mapModel;
-        } catch (e) {
-            mapModel.destroy();
-            throw e;
-        }
+        });
     }
 
     private initializeViewOptions(view: View | ViewOptions) {
@@ -188,6 +199,7 @@ class MapModelFactory {
 
     private initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
         }
 
@@ -197,4 +209,15 @@ class MapModelFactory {
         }
         return projection;
     }
+}
+
+function createDefaultAttribution(intl: PackageIntl): Attribution {
+    const attr = new Attribution({ collapsible: false });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const element = (attr as any).element as HTMLElement | undefined;
+    if (element) {
+        element.role = "region";
+        element.ariaLabel = intl.formatMessage({ id: "attribution.label" });
+    }
+    return attr;
 }

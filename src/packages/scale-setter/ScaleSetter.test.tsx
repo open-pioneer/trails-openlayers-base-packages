@@ -1,16 +1,18 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { reactive } from "@conterra/reactivity-core";
+import { LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
-import { get, getPointResolution } from "ol/proj";
-import { ScaleSetter } from "./ScaleSetter";
-import View from "ol/View";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import userEvent, { UserEvent } from "@testing-library/user-event";
-import { act } from "react";
 import TileLayer from "ol/layer/Tile";
+import { get, getPointResolution } from "ol/proj";
 import { OSM } from "ol/source";
+import View from "ol/View";
+import { ReactNode } from "react";
+import { expect, it } from "vitest";
+import { ScaleSetter } from "./ScaleSetter";
+import { useReactiveValue } from "@open-pioneer/reactivity";
 
 const defaultBasemapConfig = [
     {
@@ -26,14 +28,9 @@ const defaultBasemapConfig = [
 ];
 
 it("should successfully create a scale Setter component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, Wrapper } = await setup();
 
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
     // scale Setter is mounted
     const { setterDiv, setterButton } = await waitForScaleSetter();
@@ -44,14 +41,10 @@ it("should successfully create a scale Setter component", async () => {
 });
 
 it("should successfully create a scale setter component with additional css classes and box properties", async () => {
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <ScaleSetter mapId={mapId} className="test test1 test2" data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    const { map, Wrapper } = await setup();
+    render(<ScaleSetter map={map} className="test test1 test2" data-testid="scale-setter" />, {
+        wrapper: Wrapper
+    });
 
     // scale setter is mounted
     const { setterDiv } = await waitForScaleSetter();
@@ -77,8 +70,7 @@ it("should successfully render the scale in the correct locale", async () => {
         throw new Error("projection not found");
     }
 
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
+    const { map, changeLocale, Wrapper } = await setup();
     const olMap = map.olMap;
     olMap.setView(
         new View({
@@ -88,37 +80,28 @@ it("should successfully render the scale in the correct locale", async () => {
         })
     );
 
-    const injectedServices = createServiceOptions({ registry });
-    const result = render(
-        <PackageContextProvider services={injectedServices} locale="en">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    changeLocale("en");
+    const result = render(<ScaleSetter map={map} data-testid="scale-setter" />, {
+        wrapper: Wrapper
+    });
 
     const { setterButton } = await waitForScaleSetter();
     expect(setterButton.textContent).toBe("1 : 21,026");
 
-    result.rerender(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
-    expect(setterButton.textContent).toBe("1 : 21.026");
+    changeLocale("de");
+    result.rerender(<ScaleSetter map={map} data-testid="scale-setter" />);
+    await waitFor(() => expect(setterButton.textContent).toBe("1 : 21.026"));
 });
 
 it("should successfully update the map scale and label when selection changes", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
     const olMap = map.olMap;
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+
+    render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
+
     const { setterButton } = await waitForScaleSetter();
     const setterOptions = await getMenuOptions(user, setterButton);
     if (setterOptions[0] == undefined) {
@@ -139,21 +122,18 @@ it("should successfully update the map scale and label when selection changes", 
         center!
     );
     const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-    expect(scale.toString()).toBe(setterOptions[0]!.value);
+    const setterValue = getValueForOption(setterOptions[0]!);
+    expect(scale).toBe(setterValue);
 });
 
 it("should successfully update the label when map scale changes after creation", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper, changeLocale } = await setup({
         layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
+    changeLocale("de");
+
     const olMap = map.olMap;
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
     const { setterButton } = await waitForScaleSetter();
     if (olMap.getView() == undefined || olMap.getView().getZoom() == undefined) {
@@ -163,9 +143,7 @@ it("should successfully update the label when map scale changes after creation",
     const initialLabel = setterButton.textContent;
     expect(initialLabel).toBeTruthy();
 
-    await act(async () => {
-        olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
-    });
+    olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
 
     // Wait until the label changes.. There seems to be some instability in this test.
     await waitFor(() => {
@@ -192,15 +170,10 @@ it("should successfully update the label when map scale changes after creation",
 
 it("should use default scales when nothing is set", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: defaultBasemapConfig
     });
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
     const { setterButton } = await waitForScaleSetter();
     const setterOptions = await getMenuOptions(user, setterButton);
@@ -217,15 +190,12 @@ it("should use default scales when nothing is set", async () => {
 it("should use given scales when something is set", async () => {
     const user = userEvent.setup();
     const scales = [10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 500, 10];
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: defaultBasemapConfig
     });
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} scales={scales} data-testid="scale-setter" />
-        </PackageContextProvider>
-    );
+    render(<ScaleSetter map={map} scales={scales} data-testid="scale-setter" />, {
+        wrapper: Wrapper
+    });
 
     const { setterButton } = await waitForScaleSetter();
     const setterOptions = await getMenuOptions(user, setterButton);
@@ -251,24 +221,22 @@ async function waitForScaleSetter() {
 async function getMenuOptions(
     user: UserEvent,
     setterButton: HTMLButtonElement
-): Promise<HTMLButtonElement[]> {
-    const menu = document.body.querySelector(
-        "div.scale-setter-menuoptions"
-    ) as HTMLDivElement | null;
-    if (!menu) {
-        // The menu root should always be present after mounting; the contents are created lazily when
-        // the menu gets opened.
-        throw new Error("Menu node not found");
-    }
+): Promise<HTMLDivElement[]> {
+    //options are mounted lazily after dropdown is opened
+    await user.click(setterButton);
 
-    if (!isVisible(menu)) {
-        await user.click(setterButton);
-    }
+    const menu = await waitFor(() => {
+        const menu = document.body.querySelector(
+            "div.scale-setter-menuoptions"
+        ) as HTMLDivElement | null;
+        if (!menu) {
+            throw new Error("Menu node not found");
+        }
+        return menu;
+    });
 
     const items = await waitFor(async () => {
-        const items = Array.from(
-            menu.querySelectorAll(".scale-setter-option")
-        ) as HTMLButtonElement[];
+        const items = Array.from(menu.querySelectorAll(".scale-setter-option")) as HTMLDivElement[];
         if (!items.length) {
             throw new Error("Menu does not have any options");
         }
@@ -277,14 +245,35 @@ async function getMenuOptions(
     return items;
 }
 
-function getOptionValues(setterOptions: HTMLButtonElement[]) {
+async function setup(opts?: { layers?: LayerConfig[] }) {
+    const { map } = await setupMap({ layers: opts?.layers });
+    const locale = reactive<string>();
+    const Wrapper = (props: { children?: ReactNode }) => {
+        const currentLocale = useReactiveValue(locale);
+        return (
+            <PackageContextProvider locale={currentLocale}>{props.children}</PackageContextProvider>
+        );
+    };
+
+    function changeLocale(newLocale: string) {
+        locale.value = newLocale;
+    }
+
+    return { map, changeLocale, Wrapper };
+}
+
+function getOptionValues(setterOptions: HTMLDivElement[]) {
     const optionValues: number[] = [];
     setterOptions.forEach((option) => {
-        optionValues.push(parseInt(option.value));
+        const setterValue = getValueForOption(option);
+        optionValues.push(setterValue);
     });
     return optionValues;
 }
 
-function isVisible(node: HTMLElement) {
-    return node.style.visibility !== "hidden" && node.style.display !== "none";
+function getValueForOption(setterOption: HTMLDivElement): number {
+    const valueStr = setterOption.getAttribute("data-value"); //chakra's data-value attribute stores raw value of scale denominator
+    const value = valueStr ? parseInt(valueStr) : Number.NaN;
+
+    return value;
 }

@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import OlMap from "ol/Map";
@@ -11,12 +11,13 @@ import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
 it("should successfully create a measurement component", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} data-testid="measurement"></Measurement>
+        <PackageContextProvider services = {injectedServices}>
+            <Measurement map={map} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -29,12 +30,13 @@ it("should successfully create a measurement component", async () => {
 });
 
 it("should successfully create a measurement component with additional css class", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services = {injectedServices}>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -45,12 +47,13 @@ it("should successfully create a measurement component with additional css class
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services = {injectedServices}>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -69,13 +72,13 @@ it("should successfully select a measurement from the select dropdown", async ()
 });
 
 it("should successfully add tooltip overlays to the map", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
-    const injectedServices = createServiceOptions({ registry });
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services = {injectedServices}>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -98,13 +101,13 @@ it("should successfully add tooltip overlays to the map", async () => {
 });
 
 it("should successfully activate draw interaction for the right geometry type", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
-    const injectedServices = createServiceOptions({ registry });
+    const { map, layerFactory } = await setupMap();
+    const injectedServices = {
+        "map.LayerFactory": layerFactory
+    };
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services = {injectedServices}>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 

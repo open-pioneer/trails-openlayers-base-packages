@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Reactive, batch, computed, reactive, watch } from "@conterra/reactivity-core";
 import { Resource, createLogger } from "@open-pioneer/core";
@@ -37,7 +37,10 @@ export class AppModel {
             throw new Error("No demos defined.");
         }
 
-        const demo = demos[0]!;
+        const demo = demos[0];
+        if (!demo) {
+            throw new Error("No demo found.");
+        }
         this.#currentDemo = reactive([demo, demo.createModel()]);
 
         this.#applyStateFromUrl();
@@ -46,6 +49,10 @@ export class AppModel {
 
     destroy(): void {
         this.#currentDemo.value[1].destroy?.();
+    }
+
+    get map(): MapModel {
+        return this.#mapModel;
     }
 
     get currentDemo(): Demo {

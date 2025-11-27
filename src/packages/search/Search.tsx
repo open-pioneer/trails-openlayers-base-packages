@@ -1,8 +1,8 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, useToken } from "@open-pioneer/chakra-integration";
+import { Box, chakra, Portal, useToken } from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import {
@@ -32,7 +32,17 @@ import {
     ValueContainer
 } from "./CustomComponents";
 import { SearchController, SuggestionGroup } from "./SearchController";
-import { SearchResult, SearchSource } from "./api";
+import {
+    SearchClearEvent,
+    SearchApi,
+    SearchDisposedEvent,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent,
+    SearchSource,
+    SearchClearTrigger
+} from "./api";
+import { SearchApiImpl } from "./SearchApiImpl";
 
 const LOG = createLogger("search:Search");
 
@@ -56,17 +66,6 @@ export interface SearchGroupOption {
 
     /** Set of options that belong to this group. */
     options: SearchOption[];
-}
-
-/**
- * Event type emitted when the user selects an item.
- */
-export interface SearchSelectEvent {
-    /** The source that returned the {@link result}. */
-    source: SearchSource;
-
-    /** The search result selected by the user. */
-    result: SearchResult;
 }
 
 /**
@@ -104,16 +103,35 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
     /**
      * This event handler will be called when the user clears the search input.
      */
-    onClear?: () => void;
+    onClear?: (event: SearchClearEvent) => void;
+
+    /**
+     * Callback that is triggered once when the search is initialized.
+     * The search API can be accessed by the `api` property of the {@link SearchReadyEvent}.
+     */
+    onReady?: (event: SearchReadyEvent) => void;
+
+    /**
+     * Callback that is triggered once when the search is disposed and unmounted.
+     */
+    onDisposed?: (event: SearchDisposedEvent) => void;
 }
 
 /**
  * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
  */
 export const Search: FC<SearchProps> = (props) => {
-    const { sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
+    const {
+        sources,
+        searchTypingDelay,
+        maxResultsPerGroup,
+        onSelect,
+        onClear,
+        onReady,
+        onDisposed
+    } = props;
     const { containerProps } = useCommonComponentProps("search", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
     const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
@@ -123,12 +141,29 @@ export const Search: FC<SearchProps> = (props) => {
     const ariaMessages = useAriaMessages(intl);
     const components = useCustomComponents();
 
+    const portalDiv = useRef<HTMLDivElement>(null);
+
     const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
         // Only update the input if the user actually typed something.
         // This keeps the input content if the user focuses another element or if the menu is closed.
         if (actionMeta.action === "input-change") {
             onInputChanged(newValue);
         }
+    });
+
+    const clearInput = useEvent((trigger: SearchClearTrigger) => {
+        // Updates the input field
+        onInputChanged("");
+
+        // the next two lines are a workaround for the open bug in react-select regarding the
+        // cursor not being shown after clearing, although the component is focussed:
+        // https://github.com/JedWatson/react-select/issues/3871
+        if (trigger === "user") {
+            selectRef.current?.blur();
+            selectRef.current?.focus();
+        }
+
+        onClear?.({ trigger: trigger });
     });
 
     const handleSelectChange = useEvent(
@@ -145,15 +180,7 @@ export const Search: FC<SearchProps> = (props) => {
                     }
                     break;
                 case "clear":
-                    // Updates the input field
-                    onInputChanged("");
-
-                    // the next two lines are a workaround for the open bug in react-select regarding the
-                    // cursor not being shown after clearing, although the component is focussed:
-                    // https://github.com/JedWatson/react-select/issues/3871
-                    selectRef.current?.blur();
-                    selectRef.current?.focus();
-                    onClear?.();
+                    clearInput("user");
                     break;
                 default:
                     LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
@@ -161,6 +188,8 @@ export const Search: FC<SearchProps> = (props) => {
             }
         }
     );
+
+    useSearchApi(onReady, onDisposed, clearInput);
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -173,9 +202,8 @@ export const Search: FC<SearchProps> = (props) => {
                 onInputChange={handleInputChange}
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 ariaLiveMessages={ariaMessages}
-                tagColorScheme="trails"
                 selectedOptionStyle="color"
-                selectedOptionColorScheme="trails"
+                selectedOptionColorPalette="colorPalette"
                 chakraStyles={chakraStyles}
                 isClearable={true}
                 placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
@@ -187,8 +215,11 @@ export const Search: FC<SearchProps> = (props) => {
                 components={components}
                 onChange={handleSelectChange}
                 value={selectedOption}
-                menuPosition="fixed"
+                menuPortalTarget={portalDiv.current}
             />
+            <Portal>
+                <chakra.div ref={portalDiv} className="search-component-menu" />
+            </Portal>
         </Box>
     );
 };
@@ -263,13 +294,31 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
  * Customizes components styles within the select component.
  */
 function useChakraStyles() {
-    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken(
-        "colors",
-        ["trails.100", "trails.50", "trails.500"],
-        ["#d5e5ec", "#eaf2f5", "#1A202C"]
-    );
+    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
+        "colorPalette.100",
+        "colorPalette.50",
+        "colorPalette.500"
+    ]);
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
+            control: (provided) => ({
+                ...provided,
+                paddingInline: 0
+            }),
+            inputContainer: (provided) => ({
+                ...provided,
+                gridTemplateAreas: "'area area area'",
+                display: "grid"
+            }),
+            indicatorsContainer: (provided) => ({
+                ...provided,
+                // pointerEvents none can sneak in via chakra theme from <Select />
+                pointerEvents: "auto"
+            }),
+            input: (provided) => ({
+                ...provided,
+                gridArea: "area"
+            }),
             groupHeading: (provided) => ({
                 ...provided,
                 backgroundColor: groupHeadingBg,
@@ -281,7 +330,7 @@ function useChakraStyles() {
             option: (provided) => ({
                 ...provided,
                 backgroundColor: "inherit",
-                _focus: {
+                _highlighted: {
                     backgroundColor: focussedItemBg
                 },
                 _selected: {
@@ -305,13 +354,10 @@ function useController(
     sources: SearchSource[],
     searchTypingDelay: number | undefined,
     maxResultsPerGroup: number | undefined,
-    map: MapModel | undefined
+    map: MapModel
 ) {
     const [controller, setController] = useState<SearchController | undefined>(undefined);
     useEffect(() => {
-        if (!map) {
-            return;
-        }
         const controller = new SearchController(map, sources);
         setController(controller);
         return () => {
@@ -408,7 +454,7 @@ function useSearchState(controller: SearchController | undefined) {
 
     // Stores the promise for the current search.
     // Any results from outdated searches are ignored.
-    const currentSearch = useRef<Promise<unknown>>();
+    const currentSearch = useRef<Promise<unknown>>(undefined);
     const startSearch = useEvent((query: string) => {
         if (!controller) {
             currentSearch.current = undefined;
@@ -479,4 +525,35 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
         })
     );
     return options;
+}
+
+// Note: `clearInput` must be stable because only the initial value is used to construct the API instance at this time.
+function useSearchApi(
+    onReady: ((event: SearchReadyEvent) => void) | undefined,
+    onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
+    clearInput: (trigger: SearchClearTrigger) => void
+) {
+    const apiRef = useRef<SearchApi>(null);
+    if (!apiRef.current) {
+        apiRef.current = new SearchApiImpl(clearInput);
+    }
+
+    const api = apiRef.current;
+
+    const readyTrigger = useEvent(() => {
+        onReady?.({
+            api
+        });
+    });
+
+    const disposeTrigger = useEvent(() => {
+        onDisposed?.({});
+    });
+
+    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
+    // useEvent() returns a stable function reference.
+    useEffect(() => {
+        readyTrigger();
+        return disposeTrigger;
+    }, [readyTrigger, disposeTrigger]);
 }

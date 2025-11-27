@@ -1,22 +1,21 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
 import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
 it("should successfully create a zoom-in and zoom-out buttons", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <ZoomIn mapId={mapId} data-testid="zoom-in" />
-            <ZoomOut mapId={mapId} data-testid="zoom-out" />
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="map" />
+            <ZoomIn map={map} data-testid="zoom-in" />
+            <ZoomOut map={map} data-testid="zoom-out" />
         </PackageContextProvider>
     );
 
@@ -33,15 +32,14 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="map" />
             <Zoom
                 data-testid="zoom"
-                mapId={mapId}
+                map={map}
                 className="testClass1 testClass2"
                 zoomDirection="in"
             />
@@ -59,16 +57,14 @@ it("should successfully create a zoom component with additional css classes", as
 });
 
 it("should zoom in and zoom out when clicked", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
+    const { map } = await setupMap();
     const user = userEvent.setup();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <ZoomIn data-testid="zoom-in" mapId={mapId} />
-            <ZoomOut data-testid="zoom-out" mapId={mapId} />
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="map" />
+            <ZoomIn data-testid="zoom-in" map={map} />
+            <ZoomOut data-testid="zoom-out" map={map} />
         </PackageContextProvider>
     );
 

@@ -1,14 +1,15 @@
 messages:
   coordinateInput:
-    ariaLabel: Coordinate input
-    copyPlaceholder: Copy
-    clearPlaceholder: Clear
+    ariaLabel: "Coordinate input: Press Enter to submit input"
+    copyLabel: Copy coordinates
+    clearLabel: Clear input
   tooltip:
     basic: "Invalid input"
-    space: "Invalid input: Please enter the coordinates seperated by a space."
+    space: "Invalid input: Please enter the coordinates separated by a space."
     spaceOne: "Invalid input: Please use exactly one space to separate the coordinates."
     2coords: "Invalid input: Please enter two numbers."
     invalidNumbers: "Invalid input: Please enter two valid numbers."
     extent: "The coordinates are not in the bounds of the reference system. Please change the projection or coordinates."
     projection: "The projection is not working. Please change to another projection."
-  selected: selected
+  projections:
+    ariaLabel: Select projection

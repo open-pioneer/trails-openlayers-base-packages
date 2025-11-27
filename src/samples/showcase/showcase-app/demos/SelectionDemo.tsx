@@ -1,14 +1,7 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
-import {
-    FormatOptions,
-    ResultColumn,
-    ResultList,
-    ResultListInput,
-    ResultListSelectionChangeEvent
-} from "@open-pioneer/result-list";
 import {
     Selection,
     SelectionCompleteEvent,
@@ -20,6 +13,13 @@ import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import VectorSource from "ol/source/Vector";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -51,7 +51,7 @@ class DemoModelImpl implements DemoModel {
         open: false
     });
 
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     constructor(options: SharedDemoOptions) {
@@ -60,7 +60,7 @@ class DemoModelImpl implements DemoModel {
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
 
-        this.description = intl.formatMessage({ id: "demos.selectionResultList.description" });
+        this.description = intl.formatRichMessage({ id: "demos.selectionResultList.description" });
         this.mainWidget = (
             <Selection
                 sources={[this.#selectionSource]}
@@ -146,6 +146,7 @@ class DemoModelImpl implements DemoModel {
         const input: ResultListInput = {
             columns: columns,
             data: results,
+            labelProperty: "name",
             formatOptions: formatOptions
         };
 

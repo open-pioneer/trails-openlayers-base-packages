@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult } from "./api";
@@ -82,13 +82,14 @@ export class SearchController {
         signal: AbortSignal
     ): Promise<SuggestionGroup | undefined> {
         const label = source.label;
-        const projection = this.#mapModel.olMap.getView().getProjection();
+        const projection = this.#mapModel.projection;
         try {
             const maxResults = this.#maxResultsPerSource;
             let results = await source.search(searchTerm, {
                 maxResults,
                 signal,
-                mapProjection: projection
+                mapProjection: projection,
+                map: this.#mapModel
             });
             if (results.length > maxResults) {
                 results = results.slice(0, maxResults);

@@ -1,30 +1,32 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    Alert,
-    AlertIcon,
-    Box,
     Button,
     ButtonProps,
+    Center,
+    Field,
     Flex,
+    Icon,
+    IconButton,
+    IconButtonProps,
     Input,
     List,
     Spacer,
     Text,
-    Tooltip,
-    VStack,
-    Center
-} from "@open-pioneer/chakra-integration";
+    VStack
+} from "@chakra-ui/react";
+import { Alert } from "@open-pioneer/chakra-snippets/alert";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { LocalStorageService } from "@open-pioneer/local-storage";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
-import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
+import { LuMap, LuTrash } from "react-icons/lu";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarksViewModel";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 type UIMode = "list" | "create" | "delete";
 
@@ -34,7 +36,7 @@ export interface SpatialBookmarksProps extends CommonComponentProps, MapModelPro
  * A component that allows the user to manage a set of spatial bookmarks.
  */
 export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const localStorageService = useService<LocalStorageService>(
         "local-storage.LocalStorageService"
     );
@@ -81,10 +83,12 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
 
     const deleteContent = () => (
         <VStack>
-            <Alert rounded="md" status="warning">
-                <AlertIcon />
-                {intl.formatMessage({ id: "bookmark.alert.delete" })}
-            </Alert>
+            <Alert
+                rounded="md"
+                status="warning"
+                title={intl.formatMessage({ id: "bookmark.alert.delete" })}
+                role="alert"
+            />
             <RemoveControls
                 intl={intl}
                 onClear={clearBookmarks}
@@ -95,27 +99,29 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
 
     const createContent = () => (
         <VStack>
-            <Alert rounded="md" status="info">
-                <AlertIcon />
-                {intl.formatMessage({ id: "bookmark.alert.create" })}
-            </Alert>
-            <Input
-                aria-label={intl.formatMessage({ id: "bookmark.input.label" })}
-                placeholder={intl.formatMessage({ id: "bookmark.input.placeholder" })}
-                value={bookmarkName}
-                onChange={(event) => {
-                    setBookmarkName(event.target.value);
-                }}
-                onKeyDown={(e) => {
-                    // add bookmark only, if valid bookmark name exists
-                    if (e.key === "Enter") {
-                        addBookmark();
-                    }
-                }}
-                isRequired
-                isInvalid={!isValidBookmarkName}
-                autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+            <Alert
+                rounded="md"
+                status="info"
+                title={intl.formatMessage({ id: "bookmark.alert.create" })}
+                role="alert"
             />
+            <Field.Root invalid={!isValidBookmarkName} required>
+                <Input
+                    aria-label={intl.formatMessage({ id: "bookmark.input.label" })}
+                    placeholder={intl.formatMessage({ id: "bookmark.input.placeholder" })}
+                    value={bookmarkName}
+                    onChange={(event) => {
+                        setBookmarkName(event.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                        // add bookmark only, if valid bookmark name exists
+                        if (e.key === "Enter") {
+                            addBookmark();
+                        }
+                    }}
+                    autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+                />
+            </Field.Root>
             <CreateControls
                 intl={intl}
                 isInvalid={!isValidBookmarkName}
@@ -133,10 +139,12 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
             {bookmarks.length ? (
                 createList(bookmarks, viewModel, intl, listItemNodes)
             ) : (
-                <Alert rounded="md" status="info">
-                    <AlertIcon />
-                    {intl.formatMessage({ id: "bookmark.alert.noSaved" })}
-                </Alert>
+                <Alert
+                    rounded="md"
+                    status="info"
+                    title={intl.formatMessage({ id: "bookmark.alert.noSaved" })}
+                    role="alert"
+                />
             )}
             <ListControls
                 intl={intl}
@@ -168,10 +176,6 @@ function createList(
     intl: PackageIntl,
     listRef: React.MutableRefObject<HTMLElement[]>
 ) {
-    const deleteBtnLabel = intl.formatMessage({
-        id: "bookmark.button.deleteOne"
-    });
-
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
             key={bookmark.id}
@@ -180,12 +184,12 @@ function createList(
             bookmark={bookmark}
             onActivate={() => viewModel.activateBookmark(bookmark)}
             onDelete={() => viewModel.deleteBookmark(bookmark.id)}
-            deleteBtnLabel={deleteBtnLabel}
+            intl={intl}
         />
     ));
 
     return (
-        <List
+        <List.Root
             as="ul"
             className="spatial-bookmark-list"
             role="listbox"
@@ -195,12 +199,12 @@ function createList(
             flexShrink={1}
             flexGrow={1}
             p={1} // Some padding for children's box shadow
-            spacing={1}
+            gap={1}
             overflowY="auto"
             listStyleType="none"
         >
             {bookmarkItems}
-        </List>
+        </List.Root>
     );
 }
 
@@ -212,13 +216,13 @@ const ARROW_INDEX_MAP: Record<string, number> = {
 
 function BookmarkItem(props: {
     index: number;
-    listItemNodes: React.MutableRefObject<HTMLElement[]>;
+    listItemNodes: React.RefObject<HTMLElement[]>;
     bookmark: Bookmark;
     onActivate: () => void;
     onDelete: () => void;
-    deleteBtnLabel: string;
-}): JSX.Element {
-    const { index, listItemNodes, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
+    intl: PackageIntl;
+}): ReactNode {
+    const { index, listItemNodes, bookmark, onDelete, onActivate, intl } = props;
     const title = bookmark.title;
     const onKeyDown = (evt: KeyboardEvent) => {
         const key = evt.key;
@@ -236,18 +240,19 @@ function BookmarkItem(props: {
                 return;
             }
 
-            let nextIndex = (index + ARROW_INDEX_MAP[key]!) % len;
+            let nextIndex = (index + ARROW_INDEX_MAP[key]) % len;
             if (nextIndex < 0) {
                 nextIndex = len - 1;
             }
             listItemNodes.current[nextIndex]?.focus();
         }
     };
+
     return (
-        <Box
+        <List.Item
             as="li"
             p={1}
-            ref={(el: HTMLDivElement | null) => {
+            ref={(el: HTMLElement | null) => {
                 if (!el) {
                     listItemNodes.current.splice(index, 1);
                     return;
@@ -261,36 +266,53 @@ function BookmarkItem(props: {
             cursor="pointer"
             outline={0}
             _hover={{ background: "trails.50" }}
-            _focusVisible={{ boxShadow: "outline" }}
+            focusVisibleRing="outside"
             onKeyDown={onKeyDown}
             onClick={onActivate}
+            aria-label={intl.formatMessage({ id: "bookmark.ariaLabel" }, { title: title })}
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <Center>
-                    <PiMapTrifold />
+                    <Icon>
+                        <LuMap />
+                    </Icon>
                 </Center>
-                <Text ps={2} noOfLines={1}>
+                <Text ps={2} maxLines={1}>
                     {title}
                 </Text>
                 <Spacer />
-                <Tooltip key={index} hasArrow label={deleteBtnLabel} placement="right">
-                    <Button
+                <Tooltip
+                    key={index}
+                    showArrow
+                    content={intl.formatMessage({
+                        id: "bookmark.button.deleteOne.tooltip"
+                    })}
+                    positioning={{
+                        placement: "right"
+                    }}
+                >
+                    <IconButton
                         className="spatial-bookmarks-item-delete"
-                        aria-label={deleteBtnLabel}
                         borderRadius="full"
-                        iconSpacing={0}
                         padding={0}
-                        colorScheme="red"
-                        variant="ghost"
-                        leftIcon={<PiTrashSimpleLight />}
+                        colorPalette="red"
+                        variant="plain"
                         onClick={(event) => {
                             onDelete();
                             event.stopPropagation();
                         }}
-                    />
+                        aria-label={intl.formatMessage(
+                            { id: "bookmark.button.deleteOne.ariaLabel" },
+                            { title: title }
+                        )}
+                    >
+                        <Icon>
+                            <LuTrash />
+                        </Icon>
+                    </IconButton>
                 </Tooltip>
             </Flex>
-        </Box>
+        </List.Item>
     );
 }
 
@@ -299,22 +321,23 @@ function ListControls(props: {
     bookmarks: Bookmark[];
     showCreate: () => void;
     showDelete: () => void;
-}): JSX.Element {
+}): ReactNode {
     const { intl, bookmarks, showCreate, showDelete } = props;
 
     return (
         <ButtonContainer>
-            <DialogButton
-                isDisabled={bookmarks.length === 0}
-                colorScheme="red"
-                width={undefined}
-                iconSpacing={0}
-                leftIcon={<PiTrashSimpleLight />}
-                onClick={showDelete}
+            <DialogIconButton
                 aria-label={intl.formatMessage({ id: "bookmark.button.deleteAll" })}
+                disabled={bookmarks.length === 0}
+                colorPalette="red"
+                onClick={showDelete}
                 variant="outline"
-            />
-            <DialogButton onClick={showCreate} width="100%">
+            >
+                <Icon>
+                    <LuTrash />
+                </Icon>
+            </DialogIconButton>
+            <DialogButton onClick={showCreate}>
                 {intl.formatMessage({ id: "bookmark.button.create" })}
             </DialogButton>
         </ButtonContainer>
@@ -347,7 +370,7 @@ function CreateControls(props: {
             <DialogButton variant="outline" onClick={() => onCancel()}>
                 {intl.formatMessage({ id: "bookmark.button.cancel" })}
             </DialogButton>
-            <DialogButton isDisabled={isInvalid} onClick={() => onSave()}>
+            <DialogButton disabled={isInvalid} onClick={() => onSave()}>
                 {intl.formatMessage({ id: "bookmark.button.save" })}
             </DialogButton>
         </ButtonContainer>
@@ -356,26 +379,24 @@ function CreateControls(props: {
 
 function ButtonContainer(props: { children: ReactNode }) {
     return (
-        <Flex width="100%" flexDirection="row" mt={2} gap={1} flexGrow={0} flexShrink={0}>
+        <Flex width="100%" flexDirection="row" mt={2} gap={2} flexGrow={0} flexShrink={0}>
             {props.children}
         </Flex>
     );
 }
 
-function DialogButton(props?: ButtonProps): JSX.Element {
-    return <Button width="100%" {...props} />;
+function DialogButton(props?: ButtonProps): ReactNode {
+    return <Button flex="1 1 auto" {...props} />;
 }
 
-function useViewModel(map: MapModel | undefined, localStorageService: LocalStorageService) {
+function DialogIconButton(props: IconButtonProps): ReactNode {
+    return <IconButton flex="0 0 auto" px={4} {...props} />;
+}
+
+function useViewModel(map: MapModel, localStorageService: LocalStorageService) {
     const [viewModel, setViewModel] = useState<SpatialBookmarkViewModel>();
     useEffect(() => {
-        let viewModel: SpatialBookmarkViewModel | undefined;
-        if (!map) {
-            viewModel = undefined;
-        } else {
-            viewModel = new SpatialBookmarkViewModel(map, localStorageService);
-        }
-
+        const viewModel = new SpatialBookmarkViewModel(map, localStorageService);
         setViewModel(viewModel);
         return () => viewModel?.destroy();
     }, [map, localStorageService]);

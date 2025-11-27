@@ -1,6 +1,8 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { reactive, watch } from "@conterra/reactivity-core";
 import { Resource } from "@open-pioneer/core";
+import { MapBrowserEvent } from "ol";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
@@ -26,9 +28,10 @@ export class DragController {
     private tooltip: Tooltip;
     private interactionResources: InteractionResource[] = [];
     private olMap: OlMap;
-    private isActive: boolean = true;
+    private isActive = reactive(true);
     private tooltipMessage: string;
     private tooltipDisabledMessage: string;
+    private tooltipSync: Resource | undefined;
 
     constructor(
         olMap: OlMap,
@@ -46,6 +49,18 @@ export class DragController {
         this.olMap = olMap;
         this.tooltipMessage = tooltipMessage;
         this.tooltipDisabledMessage = tooltipDisabledMessage;
+
+        this.tooltipSync = watch(
+            () => [this.isActive.value, this.tooltipText],
+            ([isActive, tooltipText]) => {
+                this.tooltip.setText(tooltipText);
+                viewPort.classList.toggle(ACTIVE_CLASS, isActive);
+                viewPort.classList.toggle(INACTIVE_CLASS, !isActive);
+            },
+            {
+                immediate: true
+            }
+        );
     }
 
     initViewport(olMap: OlMap) {
@@ -63,31 +78,38 @@ export class DragController {
      * Method for destroying the controller when it is no longer needed
      */
     destroy() {
+        this.tooltipSync?.destroy();
+        this.tooltipSync = undefined;
+
         this.tooltip.destroy();
         this.interactionResources.forEach((interaction) => {
             interaction.destroy();
         });
     }
 
+    /**
+     * The current tooltip text shown to the user.
+     */
+    get tooltipText(): string {
+        const isActive = this.isActive.value;
+        return isActive ? this.tooltipMessage : this.tooltipDisabledMessage;
+    }
+
     setActive(isActive: boolean) {
-        if (this.isActive === isActive) return;
-        const viewPort = this.olMap.getViewport();
+        if (this.isActive.value === isActive) {
+            return;
+        }
+
         if (isActive) {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.addInteraction(interaction.interaction)
             );
-            this.tooltip.setText(this.tooltipMessage);
-            viewPort.classList.remove(INACTIVE_CLASS);
-            viewPort.classList.add(ACTIVE_CLASS);
-            this.isActive = true;
+            this.isActive.value = true;
         } else {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.removeInteraction(interaction.interaction)
             );
-            this.tooltip.setText(this.tooltipDisabledMessage);
-            viewPort.classList.remove(ACTIVE_CLASS);
-            viewPort.classList.add(INACTIVE_CLASS);
-            this.isActive = false;
+            this.isActive.value = false;
         }
     }
 
@@ -132,12 +154,9 @@ export class DragController {
         viewPort: HTMLElement,
         interactionResources: InteractionResource[]
     ): InteractionResource {
-        const condition = function (mapBrowserEvent: {
-            originalEvent: MouseEvent;
-            dragging: unknown;
-        }) {
-            const originalEvent = /** @type {MouseEvent} */ mapBrowserEvent.originalEvent;
-            return originalEvent.button == 2;
+        const condition = function (mapBrowserEvent: MapBrowserEvent) {
+            const originalEvent = mapBrowserEvent.originalEvent;
+            return "button" in originalEvent && originalEvent.button == 2;
         };
         const drag = new DragPan({
             condition: condition

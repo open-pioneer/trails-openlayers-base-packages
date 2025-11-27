@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Highlight, MapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent, SearchSource } from "@open-pioneer/search";
@@ -28,14 +28,14 @@ class DemoModelImpl implements DemoModel {
     #mapModel: MapModel;
     #highlight: Highlight | undefined;
 
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     constructor(intl: PackageIntl, mapModel: MapModel, httpService: HttpService) {
         this.#searchSource = new PhotonGeocoder("Photon Geocoder", ["city", "street"], httpService);
         this.#mapModel = mapModel;
 
-        this.description = intl.formatMessage({ id: "demos.searchAndHighlight.description" });
+        this.description = intl.formatRichMessage({ id: "demos.searchAndHighlight.description" });
         this.mainWidget = (
             <Search
                 sources={[this.#searchSource]}

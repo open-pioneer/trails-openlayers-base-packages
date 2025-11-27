@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { vi } from "vitest";
@@ -50,19 +50,19 @@ export function mockErrorGeolocation() {
 }
 
 export async function setup() {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry, layerFactory } = await setupMap();
     const map = await registry.expectMapModel(mapId);
 
     return {
         map,
-        controller: new GeolocationController(map, (error) => {
+        controller: new GeolocationController(map, layerFactory, (error) => {
             console.error("Unexpected error", error);
         })
     };
 }
 
 export async function setupWithCustomProperties() {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry, layerFactory } = await setupMap();
     const map = await registry.expectMapModel(mapId);
     const maxZoom: number = getCustomMaxZoom();
     const positionFeatureStyle: Style = getCustomPositionStyle();
@@ -71,6 +71,7 @@ export async function setupWithCustomProperties() {
 
     const controller = new GeolocationController(
         map,
+        layerFactory,
         (error) => {
             console.error("Unexpected error", error);
         },

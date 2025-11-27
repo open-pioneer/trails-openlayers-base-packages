@@ -4,6 +4,7 @@ on:
   push:
   pull_request:
 jobs:
+  # Performs quality checks
   checks:
     # Don't run for pull requests from this repository to avoid duplicate builds (push also triggers build).
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
@@ -12,14 +13,15 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Run tests
         run: pnpm ci:test
 
+  # Builds samples and documentation and uploads contents of ./dist/ as an artifact ("build")
   build_site:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build samples and documentation"
@@ -27,10 +29,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Build samples
         run: pnpm build
@@ -43,12 +45,13 @@ jobs:
         run: pnpm build-license-report;
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build
           path: dist/
           retention-days: ${{ github.ref == 'refs/heads/main' && 7 || 1 }}
 
+  # Builds all publishable packages
   build_packages:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build packages"
@@ -56,15 +59,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
       - name: Build packages
         run: pnpm build-packages
 
-  call_version:
+  # Publishes packages using changesets
+  version:
     if: github.ref == 'refs/heads/main'
     name: "Publish or create version PR"
     uses: "./.github/workflows/version.yml"
@@ -74,6 +78,7 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  # Deploys demo site
   deploy:
     if: github.ref == 'refs/heads/main'
     name: "Deploy site"
@@ -82,12 +87,13 @@ jobs:
     needs:
       - checks
       - build_site
+      - version
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Load artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build
           path: dist/
@@ -101,18 +107,9 @@ jobs:
           mv dist/www/* site/;
           mv dist/docs site/docs;
 
-      - name: Setup git
-        shell: bash
-        run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-demo@main
         with:
-          repository-name: open-pioneer/trails-demo
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          git-config-name: "github-actions[bot]"
-          git-config-email: "41898282+github-actions[bot]@users.noreply.github.com"
-          folder: site
-          target-folder: openlayers-base-packages
+          src-repo: openlayers-base-packages
+          target-path: ${{ needs.version.outputs.published == 'true' && 'latest' || 'dev' }}
+          token: ${{ secrets.DEMO_DEPLOY_TOKEN }}

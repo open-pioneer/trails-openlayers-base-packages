@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/spatial-bookmarks",
-    "version": "0.8.0",
+    "version": "1.1.0",
     "description": "This package provides a UI component that allows the user to store, manage, and easily navigate between different map extents by creating bookmarks.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,8 +17,8 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@chakra-ui/icons": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/local-storage": "catalog:",
         "@open-pioneer/map": "workspace:^",
@@ -35,7 +35,6 @@
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
         "@open-pioneer/test-utils": "catalog:",
-        "@types/uuid": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

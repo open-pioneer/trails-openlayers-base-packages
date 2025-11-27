@@ -1,20 +1,19 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapContainer } from "./MapContainer";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { Box } from "@chakra-ui/react";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { MapAnchor } from "./MapAnchor";
-import { Box } from "@open-pioneer/chakra-integration";
+import { MapContainer } from "./MapContainer";
 
 it("should successfully create a map anchor component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor />
             </MapContainer>
         </PackageContextProvider>
@@ -31,19 +30,17 @@ it("should successfully create a map anchor component", async () => {
 
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
-        class="map-anchor css-yv0wkm"
-        data-theme="light"
+        class="map-anchor css-ufi58a"
       />
     `);
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor className="test test1 test2" />
             </MapContainer>
         </PackageContextProvider>
@@ -65,12 +62,11 @@ it("should successfully create a map anchor component with additional css classe
 });
 
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor position="top-left" />
             </MapContainer>
         </PackageContextProvider>
@@ -87,12 +83,11 @@ it('should successfully create a map anchor component with prop `position="top-l
 });
 
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor position="bottom-right" />
             </MapContainer>
         </PackageContextProvider>
@@ -108,13 +103,33 @@ it('should successfully create a map anchor component with prop `position="botto
     }
 });
 
-it("should successfully create a map anchor component with ReactNode as children", async () => {
-    const { mapId, registry } = await setupMap();
+it('should successfully create a map anchor component with prop `position="v-center-h-center"`', async () => {
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
+                <MapAnchor position="center" />
+            </MapContainer>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
+    }
+});
+
+it("should successfully create a map anchor component with ReactNode as children", async () => {
+    const { map } = await setupMap();
+
+    const { container } = render(
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor>
                     <Box className="chakra-ui-box">Chakra UI Box</Box>
                 </MapAnchor>
@@ -143,12 +158,11 @@ it("should successfully create a map anchor component with ReactNode as children
 });
 
 it("should successfully create multiple map anchor components", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor className="testabc" />
                 <MapAnchor className="testdef" />
             </MapContainer>

@@ -1,27 +1,30 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { Feature } from "ol";
+import { FeatureLike } from "ol/Feature";
 import OlMap from "ol/Map";
 import { Coordinate } from "ol/coordinate";
-import { Extent, createEmpty, extend, getArea, getCenter } from "ol/extent";
+import { createEmpty, extend, Extent, getArea, getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
+import { Type } from "ol/geom/Geometry";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
+import mapMarkerUrl from "../assets/images/mapMarker.png?url";
+import { SimpleLayer } from "../layers/SimpleLayer";
+import { LayerDependencies } from "../layers/shared/internals";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
 import {
     DisplayTarget,
     Highlight,
     HighlightOptions,
     HighlightStyle,
     HighlightZoomOptions,
+    MapModel,
     ZoomOptions
-} from "../api/MapModel";
-import mapMarkerUrl from "../assets/images/mapMarker.png?url";
-import { FeatureLike } from "ol/Feature";
-import { TOPMOST_LAYER_Z } from "../api";
-import { Type } from "ol/geom/Geometry";
+} from "./MapModel";
 
 type HighlightStyleType = keyof HighlightStyle;
 
@@ -30,14 +33,17 @@ const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export class Highlights {
+    private map: MapModel;
     private olMap: OlMap;
 
     private olLayer: VectorLayer<VectorSource, Feature>;
+    private layer: SimpleLayer;
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 
-    constructor(olMap: OlMap) {
-        this.olMap = olMap;
+    constructor(map: MapModel, layerDeps: LayerDependencies) {
+        this.map = map;
+        this.olMap = this.map.olMap;
         this.olSource = new VectorSource({
             features: undefined
         });
@@ -48,14 +54,22 @@ export class Highlights {
                 return resolveStyle(feature, resolution);
             }
         });
+        this.layer = new SimpleLayer(
+            {
+                title: "highlight-layer",
+                internal: true,
+                olLayer: this.olLayer
+            },
+            layerDeps,
+            INTERNAL_CONSTRUCTOR_TAG
+        );
+        map.layers.addLayer(this.layer, { at: "topmost" });
+
         this.activeHighlights = new Set();
-        this.olLayer.setZIndex(TOPMOST_LAYER_Z);
-        this.olMap.addLayer(this.olLayer);
     }
 
     /**
-     * Getter for Hightlightlayer
-     * @returns Highlights.olLayer
+     * Returns the layer used for highlights.
      */
     getLayer() {
         return this.olLayer;
@@ -140,7 +154,12 @@ export class Highlights {
 
         let extent = createEmpty();
         for (const geometry of geometries) {
-            extent = extend(extent, geometry!.getExtent());
+            extent = extend(extent, geometry.getExtent());
+        }
+
+        const bufferParameter = options?.buffer;
+        if (typeof bufferParameter === "number") {
+            extent = calculateBufferedExtent(extent, bufferParameter);
         }
 
         const center = getCenter(extent);

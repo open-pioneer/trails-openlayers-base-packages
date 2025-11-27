@@ -5,65 +5,89 @@ APIs provided by this package can be used to configure, embed and access the map
 
 ## Usage
 
-To use the map in your app, follow these two steps:
+To use a map in your app, follow these steps:
 
--   Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
--   Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
+- Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
+- Create a map and set a configuration (see [Map configuration](#map-configuration)).
+
+There are two different ways to create a map ( see [Map creation](#map-creation) )
+
+- Implement a `MapConfigProvider` (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)).
+- Directly create a `MapModel` instance (see [Direct mapModel](#create-a-mapmodel-instance-directly))
 
 To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
 ### Map container component
 
 To integrate a `MapContainer` in an app, add the component to your React component, where you want the map to appear.
-On the component specify the `mapId` of the map that you want to add.
+A `MapContainer` requires a `map` reference to be specified to know which map to display.
+The `map` reference can be specified directly on the component (prop `map`) or by using the `DefaultMapProvider` (see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider)).
 
 Make sure that the parent component has an appropriate width and height (for example `100%`).
 The `MapContainer` fills the entire available space.
 
-Example: Integration of a map container with a given map ID:
+Example: Integration of a map container with a given map (for an example with `DefaultMapProvider` see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider):
 
 ```jsx
-import { Box } from "@open-pioneer/chakra-integration";
-import { MapContainer } from "@open-pioneer/map";
-
+import { Box } from "@chakra-ui/react";
+import { MapContainer, useMapModel } from "@open-pioneer/map";
 // ...
 function AppUI() {
+    const { map } = useMapModelValue();
+
     return (
         <Box height="100%" overflow="hidden">
-            <MapContainer mapId="..." />
+            <MapContainer map={map} />
         </Box>
     );
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#map-configuration)).
+> NOTE: If you use `useMapModelValue` There must be a `map.MapConfigProvider` or the map has to be created by you directly (see [Map creation](#map-creation)).
 
-The component itself uses the map registry service to create the map using the provided `mapId`.
+The component itself uses the map registry service to create the map using the provided `map`.
 
 #### Changing the map view's padding
 
 The MapContainer provides a prop `viewPadding` that allows to set the map's view padding
 (see [padding property on OL View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)).
-This prop musst be used to set the views padding instead of directly setting the padding on the
-OL map's view to ensure that map anchor are positioned correctly.
+This prop must be used to set the view's padding instead of directly setting the padding on the
+OL map's view to ensure that map anchors are positioned correctly.
 
 Additionally, using the prop `viewPaddingChangeBehavior` it is possible to specify how the map behaves when the view padding changes.
-Possible values are `none` (no nothing), `preserve-center`(ensures that the center point remains the same
-by animating the view) and `preserve-extent` ´(ensures that the extent remains the same by zooming).
+Possible values are `none` (do nothing), `preserve-center` (ensures that the center point remains the same
+by animating the view) and `preserve-extent` (ensures that the extent remains the same by zooming).
+
+By default, the focus outline of the map container also respects the view padding.
+If you want to disable the focus outline, you can use the following css style:
+
+```css
+.map-container-root:has(> .map-container:focus-visible) .map-anchors::after {
+    outline: none;
+}
+```
+
+In this case, you will need to create an appropriate focus outline style for the map container yourself.
 
 ### Map anchor component
 
 To pass custom React components onto the map, the following anchor-points are provided:
 
--   `top-left`
--   `top-right`
--   `bottom-left`
--   `bottom-right`
+- `manual`
+- `top-left`
+- `top-right`
+- `top-center`
+- `bottom-left`
+- `bottom-right`
+- `bottom-center`
+- `left-center`
+- `right-center`
+- `center`
 
 Example: Integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
 
 ```jsx
-<MapContainer mapId="...">
+<MapContainer map={map}>
     <MapAnchor position="bottom-right" horizontalGap={25} verticalGap={25}>
         ... {/** add map anchor content like other React components */}
     </MapAnchor>
@@ -86,12 +110,107 @@ This behavior can be disabled by setting the `stopEvents` property to `false`:
 </MapAnchor>
 ```
 
-### Map configuration
+### Using the DefaultMapProvider
 
-Register a service providing `map.MapConfigProvider` to configure the contents of a map.
-Such a provider is typically located in an app.
+You can use the `DefaultMapProvider` to globally specify the `map` in your application's UI.
+The `map` is passed to all subcomponents, including the `MapContainer`.
+Thus, it is not necessary to provide the `map` on each component separately.
 
-Example: Configuration to register a service providing `map.MapConfigProvider`.
+Example:
+
+```tsx
+import { DefaultMapProvider } from "@open-pioneer/map";
+
+<DefaultMapProvider map={map}>
+    {/* no need to repeat the map in this subtree, unless you want to use a different one */}
+    <MapContainer />
+    <Toc />
+    <ComplexChild />
+</DefaultMapProvider>;
+```
+
+If an app only contains a single map, the map provider can surround the whole application's UI.
+If multiple maps are used, the provider can be placed around the respective map components that should interact with the corresponding app.
+
+It is possible to override the `map` on each component if some components in the tree should use a different map.
+
+### Map creation
+
+There are two different ways to create a map Model. Either by implementing a `MapConfigProvider`
+(see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)) or by directly creating a `MapModel` instance
+(see [Create a MapModel instance directly](#create-a-mapmodel-instance-directly))).
+The latter approach is useful if you manage your app state with an app model and want to
+control the map model programmatically. The MapconfigProvider approach is more declarative and useful
+if you want to configure the map once and don't need to change it often depending on your app state.
+
+#### Create a MapModel instance directly
+
+It can be usefull to create a `MapModel` instance directly, for example if you want to manage your app
+state with an app model and want to control the map model programmatically. E.g. if you want to add or remove layers
+after a user interaction.
+Here is an example of how to create a `MapModel` instance directly in an app model.
+
+```tsx
+import { ServiceOptions } from "@open-pioneer/runtime";
+interface References {
+    mapRegistry: MapRegistry;
+}
+export class AppModel implements Service {
+    declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
+    constructor({ references }: ServiceOptions<References>) {
+        this._mapRegistry = references.mapRegistry;
+        this._mapRegistry
+            .createMapModel("myMapModelId", {
+                /* map config */
+            })
+            .then((map) => {
+                // use the map model instance
+            });
+    }
+}
+```
+
+The map config is the same as in the `MapConfigProvider` (see [Map configuration](#map-configuration)).
+
+To get the mapRegistry service, you need to add a reference to the build config:
+
+```js
+// build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
+export default defineBuildConfig({
+    services: {
+        AppModel: {
+            provides: "example.AppModel",
+            references: {
+                mapRegistry: "map.MapRegistry"
+            }
+        }
+    }
+});
+```
+
+It is also possible to destroy the map model instance again by calling `mapModel.destroy()`.
+
+### Implement a MapConfigProvider
+
+Another way to create a map is to implement a `MapConfigProvider`.
+The MapconfigProvider approach is more declarative and useful
+if you want to configure the map once and don't need to change it often depending on your app state.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            /* map config */
+        };
+    }
+}
+```
+
+You need to register the service in your app's build config:
 
 ```js
 // build.config.mjs
@@ -110,18 +229,23 @@ export default defineBuildConfig({
 });
 ```
 
-The service itself needs to implement the `MapConfigProvider` interface.
+### Map configuration
+
+Independent of the way the map is created (either via `MapConfigProvider` or directly), a map configuration must be provided.
 The following map options are supported:
 
--   `initialView`,
--   `projection`,
--   `layers` (see [Layer configuration](#layer-configuration)),
--   `advanced`
+- `initialView`,
+- `projection`,
+- `layers` (see [Layer configuration](#layer-configuration)),
+- `advanced`
 
 Always use the provided map model to access the map initially.
 Use `.olMap` only, when the raw instance is required.
 
 If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
+
+We will show some example configurations with a MapConfigProvider implementation.
+These configurations can also be used when creating a MapModel instance directly.
 
 Example: Implementation of the service with `initialView.kind = position`.
 
@@ -201,37 +325,57 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer classes provided by this package.
+Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer types provided by this package.
 For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
-> **Layer Order**
->
-> By default, layers are displayed in the order in which they are defined in the `layers` array.
-> The later a layer is listed in the array, the higher up it is displayed in the map.
->
-> Base layers are excluded from this rule: they are always displayed below all operational layers.
+Layers are constructed via the `LayerFactory`.
+You can access the layer factory from within a `MapConfigProvider` or inject it via `"map.LayerFactory"`.
+
+Example: Create a layer using the layer factory.
+
+```ts
+const layerFactory = ...;
+layerFactory.create({
+    type: SimpleLayer, // Layer type: mandatory
+
+    // Any properties supported by the layer type
+    title: "OSM",
+    id: "osm",
+    isBaseLayer: true,
+    olLayer: new TileLayer({
+        source: new OSM()
+    })
+}),
+```
 
 Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
                     // minimal layer configuration
+                    type: SimpleLayer,
                     title: "OSM",
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
                     // layer configuration with optional properties
+                    type: SimpleLayer,
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
                     title: "OSM with UUID",
                     olLayer: new TileLayer({
@@ -250,14 +394,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
+> **Layer Order**
+>
+> By default, layers are displayed in the order in which they are defined in the `layers` array.
+> The later a layer is listed in the array, the higher up it is displayed in the map.
+>
+> Base layers are excluded from this rule: they are always displayed below all operational layers.
+
 Based on the example above, you can set different properties using the layer API (such as setting visibility, update custom metadata (`attributes`)).
 
 Example: How to set different properties.
 
 ```js
-import { useMapModel } from "@open-pioneer/map";
+import { useMapModelValue } from "@open-pioneer/map";
 
-const { map } = useMapModel(mapId);
+const map = useMapModelValue();
 const layer = map.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
 
 layer.setDescription("new description");
@@ -273,8 +424,8 @@ An optional property `healthCheck` allows to determine the availability status o
 
 It is possible to provide
 
--   either a URL to perform a test request check the returned HTTP status
--   or a `HealthCheckFunction` performing a custom check and returning the state
+- either a URL to perform a test request check the returned HTTP status
+- or a `HealthCheckFunction` performing a custom check and returning the state
 
 **Important**: The availability of a layer is only checked once during initialization to reduce the load on server side. If a service becomes available again later, the application will need to be reloaded in order to update the availability status.
 
@@ -284,15 +435,21 @@ Example: Check of layer availability ("health check")
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "1",
                     title: "Layer 1",
                     olLayer: new TileLayer({
@@ -304,7 +461,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: false,
                     visible: true
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "2",
                     title: "Layer 2",
                     olLayer: new TileLayer({
@@ -349,7 +507,7 @@ export const MAP_ID = "main";
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
             initialView: {
@@ -361,7 +519,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
                     olLayer: new MapboxVectorLayer({
                         styleUrl:
@@ -387,7 +546,7 @@ Example: How to configure a vector tile layer:
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
             initialView: {
@@ -399,7 +558,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Pendleratlas",
                     visible: true,
                     olLayer: new VectorTileLayer({
@@ -452,7 +612,7 @@ registerProjections({
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -461,7 +621,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:31466",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -535,7 +696,7 @@ Example: How to create the WMTS source from the services capabilities:
 // YOUR-APP/SomeFile.ts
 
 // Imports:
-import { MapModel, registerProjections } from "@open-pioneer/map";
+import { MapModel, LayerFactory, SimpleLayer, registerProjections } from "@open-pioneer/map";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 
@@ -549,6 +710,8 @@ registerProjections({
 const mapModel: MapModel = ... // retrieved via MapRegistry service
 await mapModel.whenDisplayed();
 
+const layerFactory: LayerFactory = ...; // injected
+
 const response = await httpService.fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
 const responseText = await response.text();
 
@@ -560,7 +723,8 @@ const wmtsOptions = optionsFromCapabilities(wmtsResult, {
 });
 
 if (wmtsOptions) {
-    mapModel.layers.addLayer(new SimpleLayer({
+    mapModel.layers.addLayer(layerFactory.create({
+        type: SimpleLayer,
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
@@ -581,14 +745,19 @@ Example: Create WMS layer configuration
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, WMSLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    WMSLayer
+} from "@open-pioneer/map";
 
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -597,7 +766,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new WMSLayer({
+                layerFactory.create({
+                    type: WMSLayer,
                     title: "Schulstandorte",
                     url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
 
@@ -630,21 +800,29 @@ The hierarchy of the layers, which results from the (nested) groups, is rendered
 Example: Create (nested) group layers
 
 ```ts
+import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
+
+const layerFactory = ...; // injected
+
 // Create group layer with a nested sub group
-const group = new GroupLayer({
+const group = layerFactory.create({
+    type: GroupLayer,
     id: "group",
     title: "a group layer",
     layers: [
-        new SimpleLayer({
+        layerFactory.create({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: olLayer1
         }),
-        new GroupLayer({
+        layerFactory.create({
+            type: GroupLayer,
             id: "subgroup",
             title: "a nested group layer",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "submember",
                     title: "subgroup member",
                     olLayer: olLayer2
@@ -659,8 +837,8 @@ const childLayers = group.layers; // Access child layers
 
 > Limitations:
 >
-> -   Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
-> -   Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
+> - Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+> - Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
 
 #### Register additional projections
 
@@ -698,20 +876,24 @@ This package allows interacting with maps and their layers through multiple inte
 
 The most important API items are as follows:
 
--   The `MapRegistry` service (inject via `"map.MapRegistry"`).
-    This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
+- The `MapRegistry` service (inject via `"map.MapRegistry"`).
+  This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
 
-    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)`.
+    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)` (or `useMapModelValue()` if using the DefaultMapProvider).
 
--   The `MapModel` represents a map in an application.
-    Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
-    The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
+- The `MapModel` represents a map in an application.
+  Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
+  The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
 
     > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using the `olMap` directly, treat it carefully and as a shared resource.
 
--   The `Layer` interface and its various implementations.
-    This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
-    Layers may also have `.sublayers`, which support the same basic properties as other layer types.
+- The `LayerFactory` is used to create layer instances (`LayerFactory.create()`).
+  The layer factory is a service that can be injected via `"map.LayerFactory"`.
+  Your `MapConfigProvider` implementation also receives a reference to the layer factory for convenience.
+
+- The `Layer` interface and its various implementations.
+  This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
+  Layers may also have `.sublayers`, which support the same basic properties as other layer types.
 
     As is the case in `MapModel`, one can retrieve the raw OpenLayers `olLayer` from a layer instance (the same restrictions apply, see above).
 
@@ -721,16 +903,16 @@ For example, other application components may not react to raw property changes 
 
 This point is especially important for the map model's central features:
 
--   Map composition (access and configuration of layers, base layers, removing layers)
--   Layer visibility
--   Custom layer metadata (`attributes`)
+- Map composition (access and configuration of layers, base layers, removing layers)
+- Layer visibility
+- Custom layer metadata (`attributes`)
 
 In those cases, the properties or methods provided by this package should always be used:
 
--   `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
--   `map.layers.getAllLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
--   `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
--   `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
+- `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
+- `map.layers.getLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
+- `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
+- `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
 
 #### Layer classes
 
@@ -844,27 +1026,39 @@ export class TestService {
 
 #### Using the map model in React components
 
-To access the map model instance, use the React hook `useMapModel`.
+To access the map model instance, use the React hooks `useMapModel` or `useMapModelValue`.
 
-Example: Center map to given coordinates using the map model.
+- `useMapModelValue` returns the map model specified by a `DefaultMapProvider` parent.
+  This is a convenient API to avoid passing the map model as a prop everywhere:
 
-```js
-import { useMapModel } from "@open-pioneer/map";
-import { MAP_ID } from "./MapConfigProviderImpl";
+    ```tsx
+    function YourComponent() {
+        const map = useMapModelValue(); // requires a <DefaultMapProvider /> parent somewhere in the React tree
+    }
+    ```
 
-export function AppUI() {
-    // mapState.map may be undefined initially, if the map is still configuring.
-    // the object may may also be in an "error" state.
-    const mapState = useMapModel(MAP_ID);
+- `useMapModel` takes a `mapId` and returns a result.
+  The result will ultimately resolve to either a map model or an error (if initialization of the map failed).
 
-    const centerBerlin = () => {
-        const olMap = mapState.map?.olMap;
-        if (olMap) {
-            olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
-        }
-    };
-}
-```
+    Example: Center map to given coordinates using the map model.
+
+    ```js
+    import { useMapModel } from "@open-pioneer/map";
+    import { MAP_ID } from "./MapConfigProviderImpl";
+
+    export function AppUI() {
+        // mapState.map may be undefined initially, if the map is still configuring.
+        // the object may may also be in an "error" state.
+        const mapState = useMapModel(MAP_ID);
+
+        const centerBerlin = () => {
+            const olMap = mapState.map?.olMap;
+            if (olMap) {
+                olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
+            }
+        };
+    }
+    ```
 
 ## License
 

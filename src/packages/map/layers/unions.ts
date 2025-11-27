@@ -1,0 +1,77 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import { type LayerBaseType } from "..";
+import { type GroupLayer } from "./GroupLayer";
+import { type SublayerBaseType } from "./shared/SublayerBaseType";
+import { type SimpleLayer } from "./SimpleLayer";
+import { type WMSSublayer } from "./wms/WMSSublayer";
+import { type WMSLayer } from "./WMSLayer";
+import { type WMTSLayer } from "./WMTSLayer";
+
+/**
+ * Supported layer type identifiers.
+ *
+ * NOTE: More layer types may be added in future versions.
+ *
+ * @group Layers
+ */
+export type LayerTypes = "simple" | "wms" | "wmts" | "group";
+
+/**
+ * Supported sublayer type identifiers.
+ *
+ * NOTE: More sublayer types may be added in future versions.
+ *
+ * @group Layers
+ */
+export type SublayerTypes = "wms-sublayer";
+
+/**
+ * Supported layer type identifiers for both operational layers and sublayers.
+ *
+ * @group Layers
+ */
+export type AnyLayerTypes = LayerTypes | SublayerTypes;
+
+/**
+ * Union type for all layers (extending {@link LayerBaseType}).
+ *
+ * NOTE: More layer implementations may be added in future versions.
+ *
+ * @group Layers
+ */
+export type Layer = SimpleLayer | WMSLayer | WMTSLayer | GroupLayer;
+
+/**
+ * Union type for all sublayers (extending {@link SublayerBaseType}.
+ *
+ * NOTE: More sublayer implementations may be added in future versions.
+ *
+ * @group Layers
+ */
+export type Sublayer = WMSSublayer;
+
+/**
+ * Union for all types of layers
+ *
+ * @group Layers
+ */
+export type AnyLayer = Layer | Sublayer;
+
+/**
+ * Type guard for checking if the layer is a {@link Sublayer}.
+ *
+ * @group Layers
+ */
+export function isSublayer(layer: AnyLayer): layer is Sublayer {
+    return "parentLayer" in layer;
+}
+
+/**
+ * Type guard for checking if the layer is a {@link Layer} (and not a {@link Sublayer}).
+ *
+ * @group Layers
+ */
+export function isLayer(layer: AnyLayer): layer is Layer {
+    return "olLayer" in layer;
+}

@@ -1,6 +1,16 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, GroupLayer } from "@open-pioneer/map";
+import {
+    GroupLayer,
+    LayerFactory,
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
+import { LayerTocAttributes } from "@open-pioneer/toc";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -14,7 +24,7 @@ export const MAP_ID = "main";
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -23,7 +33,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -33,7 +44,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: WMTSLayer,
+                    isBaseLayer: true,
+                    title: "Orthofotos NRW",
+                    url: "https://www.wmts.nrw.de/geobasis/wmts_nw_dop/1.0.0/WMTSCapabilities.xml",
+                    name: "nw_dop",
+                    minZoom: 10,
+                    maxZoom: 16,
+                    matrixSet: "EPSG_3857_16",
+                    sourceOptions: {
+                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf"</a>`
+                    }
+                }),
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
@@ -49,17 +74,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     },
                     olLayer: createTopPlusOpenLayer("web_grau")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
+                    minZoom: 10,
+                    maxZoom: 16,
                     visible: false,
                     // valid URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web_light")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
@@ -67,11 +96,15 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new GroupLayer({
+                layerFactory.create({
+                    type: GroupLayer,
                     id: "group_edu",
                     title: "Bildung",
+                    minZoom: 8,
+                    maxZoom: 14,
                     layers: [
-                        new SimpleLayer({
+                        layerFactory.create({
+                            type: SimpleLayer,
                             title: "Kindertagesstätten",
                             id: "kitas",
                             visible: true,
@@ -79,23 +112,28 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                             olLayer: createKitasLayer()
                         }),
-                        createSchulenLayer()
+                        createSchulenLayer(layerFactory)
                     ]
                 }),
-                new GroupLayer({
+                layerFactory.create({
+                    type: GroupLayer,
                     title: "Verkehr",
                     id: "group_transport",
+                    minZoom: 8,
+                    maxZoom: 16,
                     layers: [
-                        new SimpleLayer({
+                        layerFactory.create({
+                            type: SimpleLayer,
                             title: "Haltestellen Stadt Rostock",
-                            id: "bustops",
+                            id: "busstops",
                             visible: true,
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
-                            isBaseLayer: false
+                            isBaseLayer: false,
+                            internal: false
                         }),
-                        createStrassenLayer()
+                        createStrassenLayer(layerFactory)
                     ]
                 })
             ]
@@ -187,8 +225,9 @@ function createKitasLayer() {
     });
 }
 
-function createSchulenLayer() {
-    return new WMSLayer({
+function createSchulenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Schulstandorte",
         id: "schools",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
@@ -215,10 +254,19 @@ function createSchulenLayer() {
     });
 }
 
-function createStrassenLayer() {
-    return new WMSLayer({
+function createStrassenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
+        id: "streets",
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        minZoom: 10,
+        maxZoom: 13,
+        attributes: {
+            toc: {
+                listMode: "show"
+            } satisfies LayerTocAttributes
+        },
         sublayers: [
             {
                 name: "1",

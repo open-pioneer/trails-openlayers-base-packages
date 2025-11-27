@@ -1,32 +1,31 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Point } from "ol/geom";
-import { Mock, MockInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { disableReactActWarnings } from "test-utils";
+import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
-let errorSpy!: MockInstance;
-beforeEach(() => {
-    errorSpy = vi.spyOn(console, "error");
-});
-
-function doNothing() {}
-
 it("expect result list to be created successfully", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -37,13 +36,13 @@ it("expect result list to be created successfully", async () => {
 });
 
 it("expect result list column and row count to match data/metadata", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -57,7 +56,7 @@ it("expect result list column and row count to match data/metadata", async () =>
 });
 
 it("expect empty data text to be shown", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
     const emptyData: ResultListInput = {
         data: [],
         columns: dummyColumns
@@ -66,8 +65,8 @@ it("expect empty data text to be shown", async () => {
     let error;
     try {
         render(
-            <PackageContextProvider services={injectedServices}>
-                <ResultList input={emptyData} mapId={mapId} data-testid="result-list" />
+            <PackageContextProvider>
+                <ResultList input={emptyData} map={map} data-testid="result-list" />
             </PackageContextProvider>
         );
     } catch (_e) {
@@ -82,9 +81,7 @@ it("expect empty data text to be shown", async () => {
 });
 
 it("expect empty metadata to throw error", async () => {
-    const { mapId, injectedServices } = await createResultList();
-
-    errorSpy.mockImplementation(doNothing);
+    const { map } = await setup();
 
     const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
@@ -93,17 +90,15 @@ it("expect empty metadata to throw error", async () => {
 
     expect(() => {
         render(
-            <PackageContextProvider services={injectedServices}>
-                <ResultList input={emptyMetadata} mapId={mapId} data-testid="result-list" />
+            <PackageContextProvider>
+                <ResultList input={emptyMetadata} map={map} data-testid="result-list" />
             </PackageContextProvider>
         );
     }).toThrowErrorMatchingSnapshot();
-
-    expect(errorSpy).toHaveBeenCalledOnce();
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     const getPropertyValueMock = vi.fn((_feature) => {
         return "virtual property";
@@ -133,8 +128,8 @@ it("expect getPropertyValue to be used correctly", async () => {
     };
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <ResultList input={resultListInput} mapId={mapId} data-testid="result-list" />
+        <PackageContextProvider>
+            <ResultList input={resultListInput} map={map} data-testid="result-list" />
         </PackageContextProvider>
     );
 
@@ -142,17 +137,17 @@ it("expect getPropertyValue to be used correctly", async () => {
 
     expect(getPropertyValueMock).toHaveBeenCalled();
     expect(getPropertyValueMock).toHaveBeenCalledWith(dummyFeatureData[0]);
-    expect(allRows.item(0).children[1]?.textContent).toEqual("virtual property");
+    expect(allRows[0]!.children[1]?.textContent).toEqual("virtual property");
 });
 
 it("expect changes of data and metadata to change full table", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -165,10 +160,10 @@ it("expect changes of data and metadata to change full table", async () => {
     expect(allRows.length).toEqual(dummyFeatureData.length);
 
     renderResult.rerender(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureDataAlt, columns: dummyMetaDataAlt }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -186,13 +181,13 @@ it("expect changes of data and metadata to change full table", async () => {
 });
 
 it("expect selection column to be added", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -205,13 +200,13 @@ it("expect selection column to be added", async () => {
 });
 
 it("expect all rows to be selected and deselected", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -219,7 +214,7 @@ it("expect all rows to be selected and deselected", async () => {
 
     const { selectAllSelect, selectRowCheckboxes } = await waitForResultList();
     expect(selectAllSelect).toBeDefined();
-    expect(selectRowCheckboxes).toBeDefined();
+    expect(selectRowCheckboxes.length).toBeGreaterThan(0);
 
     expect(selectAllSelect!.checked).toBeFalsy();
     selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
@@ -227,26 +222,29 @@ it("expect all rows to be selected and deselected", async () => {
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
-
-    expect(selectAllSelect!.checked).toBeTruthy();
-    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+    await waitFor(() => {
+        expect(selectAllSelect!.checked).toBeTruthy();
+        selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+    });
 
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
-
-    expect(selectAllSelect!.checked).toBeFalsy();
-    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    await waitFor(() => {
+        expect(selectAllSelect!.checked).toBeFalsy();
+        selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    });
 });
 
 it("expect only single rows to be selected and deselected by radio buttons", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
+    const user = userEvent.setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 selectionMode={"single"}
                 data-testid="result-list"
             />
@@ -260,30 +258,27 @@ it("expect only single rows to be selected and deselected by radio buttons", asy
 
     selectRowRadios.forEach((radio) => expect(radio.checked).toBeFalsy());
 
-    const first = selectRowRadios.item(0);
-
-    act(() => {
-        fireEvent.click(first);
+    await user.type(selectRowRadios[0]!, "{Space}");
+    await waitFor(() => {
+        expect(selectRowRadios[0]!.checked).toBeTruthy();
     });
 
-    expect(first.checked).toBeTruthy();
-
-    act(() => {
-        fireEvent.click(selectRowRadios.item(1));
+    await user.type(selectRowRadios[1]!, "{Space}");
+    await waitFor(() => {
+        expect(selectRowRadios[1]!.checked).toBeTruthy();
+        expect(selectRowRadios[0]!.checked).toBeFalsy();
     });
-
-    expect(selectRowRadios.item(0).checked).toBeFalsy();
-    expect(selectRowRadios.item(1).checked).toBeTruthy();
 });
 
 it("expect only single rows to be selected and deselected by checkboxes", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
+    const user = userEvent.setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
-                mapId={mapId}
+                map={map}
                 selectionMode="single"
                 selectionStyle="checkbox"
                 data-testid="result-list"
@@ -298,25 +293,19 @@ it("expect only single rows to be selected and deselected by checkboxes", async 
 
     selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
 
-    act(() => {
-        fireEvent.click(selectRowCheckboxes.item(0));
-    });
+    await user.type(selectRowCheckboxes[0]!, "{Space}");
+    expect(selectRowCheckboxes[0]!.checked).toBeTruthy();
 
-    expect(selectRowCheckboxes.item(0).checked).toBeTruthy();
-
-    act(() => {
-        fireEvent.click(selectRowCheckboxes.item(1));
-    });
-
-    expect(selectRowCheckboxes.item(0).checked).toBeFalsy();
-    expect(selectRowCheckboxes.item(1).checked).toBeTruthy();
+    await user.type(selectRowCheckboxes[1]!, "{Space}");
+    expect(selectRowCheckboxes[0]!.checked).toBeFalsy();
+    expect(selectRowCheckboxes[1]!.checked).toBeTruthy();
 });
 
 it("expect result list display all data types except dates", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
@@ -325,7 +314,7 @@ it("expect result list display all data types except dates", async () => {
                         numberOptions: { maximumFractionDigits: 3 }
                     }
                 }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -355,7 +344,7 @@ it("expect result list display all data types except dates", async () => {
 });
 
 it("expect result list display date in given format", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
         dateStyle: "medium",
@@ -374,15 +363,13 @@ it("expect result list display date in given format", async () => {
                     dateOptions: dateTimeFormatOptions
                 }
             }}
-            mapId={mapId}
+            map={map}
             data-testid="result-list"
         />
     );
 
     const renderResult = render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            {resultListComp}
-        </PackageContextProvider>
+        <PackageContextProvider locale="de">{resultListComp}</PackageContextProvider>
     );
 
     const { allRows } = await waitForResultList();
@@ -391,27 +378,25 @@ it("expect result list display date in given format", async () => {
     expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));
 
     renderResult.rerender(
-        <PackageContextProvider services={injectedServices} locale="en">
-            {resultListComp}
-        </PackageContextProvider>
+        <PackageContextProvider locale="en">{resultListComp}</PackageContextProvider>
     );
-    await waitForResultList(); // TODO: Workaround to hide react warning due to useEffect (use disableReactWarning helper after printing merge)
+    await waitForResultList();
 
     dateFormatter = Intl.DateTimeFormat("en-US", dateTimeFormatOptions);
     expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));
 });
 
 it("expect render function to be applied", async () => {
-    const { mapId, injectedServices } = await createResultList();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyDateFeatureData,
                     columns: dummyColumnsWithRenderFunc
                 }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -423,14 +408,15 @@ it("expect render function to be applied", async () => {
     expect(dateCell!.textContent).toMatchSnapshot();
 });
 
-it("expect result-list throws selection-change-Event", async () => {
-    const { mapId, injectedServices } = await createResultList();
+it("expect result-list throws selection change event", async () => {
+    const { map } = await setup();
+    const user = userEvent.setup();
 
     const selectionChangeListener = vi.fn();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
-                mapId={mapId}
+                map={map}
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 data-testid="result-list"
                 onSelectionChange={selectionChangeListener}
@@ -440,26 +426,17 @@ it("expect result-list throws selection-change-Event", async () => {
 
     const { selectAllSelect } = await waitForResultList();
 
-    //Selection All
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
+    // Select all
+    await user.type(selectAllSelect!, "{Space}");
+
     let features = getSelectionsEvent(selectionChangeListener, 0).features;
-    const realIds = features.map((feature: BaseFeature) => feature.id);
-    const eventIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
-
-    // Result-List has Array of selected Features
+    const expectedIds = features.map((feature: BaseFeature) => feature.id);
+    const actualIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
     expect(features).toEqual(dummyFeatureData);
+    expect(actualIds).toEqual(expectedIds);
 
-    //getFeatureIds method returns the correct Ids
-    expect(eventIds).toEqual(realIds);
-
-    //Deselect All
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
-
-    // Result-List has empty Array
+    // Deselect All
+    await user.type(selectAllSelect!, "{Space}");
     features = getSelectionsEvent(selectionChangeListener, 1).features;
     expect(features).toEqual([]);
 
@@ -472,18 +449,16 @@ it("expect result-list throws selection-change-Event", async () => {
 });
 
 it("should not zoom the map further than the default maxZoom", async () => {
-    const { mapId, registry, injectedServices } = await createResultList();
-
-    const map = await registry.expectMapModel(mapId);
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
                     columns: dummyColumns
                 }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -497,20 +472,17 @@ it("should not zoom the map further than the default maxZoom", async () => {
 });
 
 it("should not zoom the map further than the configured maxZoom", async () => {
-    const { mapId, registry, injectedServices } = await createResultList();
-
-    const map = await registry.expectMapModel(mapId);
+    const { map } = await setup();
 
     const zoomOptions: ZoomOptions = { maxZoom: 11 };
-
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
                     columns: dummyColumns
                 }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
                 zoomOptions={zoomOptions}
             />
@@ -524,21 +496,19 @@ it("should not zoom the map further than the configured maxZoom", async () => {
 });
 
 it("should be possible to disable zooming altogether", async () => {
-    const { mapId, registry, injectedServices } = await createResultList();
-
-    const map = await registry.expectMapModel(mapId);
+    const { map } = await setup();
 
     /** mapZoom before data is loaded into result-list */
     const mapZoomBefore = map.olMap.getView().getZoom();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
                     columns: dummyColumns
                 }}
-                mapId={mapId}
+                map={map}
                 data-testid="result-list"
                 enableZoom={false}
             />
@@ -557,10 +527,9 @@ function getSelectionsEvent(listener: Mock, call: number) {
     return listener.mock.calls![call]![0];
 }
 
-async function createResultList() {
-    const { mapId, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
-    return { mapId, registry, injectedServices };
+async function setup() {
+    const { map } = await setupMap();
+    return { map };
 }
 
 async function waitForResultList() {
@@ -571,22 +540,26 @@ async function waitForResultList() {
             throw new Error("Result list not rendered");
         }
 
-        const allHeaderElements =
-            resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
-
-        const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
-        const allCells = resultListDiv.querySelectorAll<HTMLElement>("tbody td");
+        const allHeaderElements = Array.from(
+            resultListDiv.querySelectorAll<HTMLTableCellElement>("thead tr th")
+        );
+        const allRows = Array.from(resultListDiv.querySelectorAll<HTMLElement>("tbody tr"));
+        const allCells = Array.from(resultListDiv.querySelectorAll<HTMLElement>("tbody td"));
 
         const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
             ".result-list-select-all-checkbox input"
         );
 
-        const selectRowCheckboxes = resultListDiv.querySelectorAll<HTMLInputElement>(
-            ".result-list-select-row-checkbox input"
+        const selectRowCheckboxes = Array.from(
+            resultListDiv.querySelectorAll<HTMLInputElement>(
+                ".result-list-select-row-checkbox input[type='checkbox']"
+            )
         );
 
-        const selectRowRadios = resultListDiv.querySelectorAll<HTMLInputElement>(
-            ".result-list-select-row-container .chakra-radio__input"
+        const selectRowRadios = Array.from(
+            resultListDiv.querySelectorAll<HTMLInputElement>(
+                ".result-list-select-row-container input[type='radio']"
+            )
         );
 
         return {

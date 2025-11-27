@@ -6,21 +6,29 @@ on:
       NPM_TOKEN:
         required: true
 
+    outputs:
+      published:
+        description: "A string (true or false) that indicates whether packages were published"
+        value: ${{ jobs.version.outputs.published}}
+
 jobs:
   version:
     runs-on: ubuntu-latest
     permissions: write-all
     timeout-minutes: 15
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
-      - name: Create Release Pull Request or Publish to npm
+      - id: changesets
+        name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:
           version: "pnpm run ci:version"

@@ -1,14 +1,15 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
+import { chakra } from "@chakra-ui/react";
 import classNames from "classnames";
+import { ReactNode } from "react";
 
 export function ColumnResizer(props: {
     onDoubleClick: React.MouseEventHandler<HTMLElement>;
     onMouseDown: React.MouseEventHandler<HTMLElement>;
     onTouchStart: React.TouchEventHandler<HTMLElement>;
     isResizing: boolean;
-}): JSX.Element {
+}): ReactNode {
     const { onDoubleClick, onMouseDown, onTouchStart, isResizing } = props;
     return (
         <chakra.span
@@ -16,6 +17,7 @@ export function ColumnResizer(props: {
                 "result-list-resizer",
                 isResizing && "result-list-resizer--is-resizing"
             )}
+            aria-hidden="true"
             onDoubleClick={onDoubleClick}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}

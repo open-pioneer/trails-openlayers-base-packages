@@ -1,38 +1,25 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
 /// <reference types="vitest" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react-swc";
-import { resolve } from "node:path";
+import glob from "fast-glob";
+import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
-// Minimum browser versions supported by generated JS/CSS
-// See also:
-// - https://vitejs.dev/config/build-options.html#build-target
-// - https://esbuild.github.io/api/#target
-const targets = ["chrome92", "edge92", "firefox91", "safari14"];
-
-const sampleSites = [
-    "samples/map-sample",
-    "samples/ogc-api-sample",
-    "samples/showcase",
-    "samples/editing-sample",
-
-    "samples/test-basemap-switcher",
-    "samples/test-toc",
-    "samples/test-highlight-and-zoom",
-    "samples/test-menu-fix",
-    "samples/test-result-list",
-    "samples/test-printing-api",
-
-    "samples/experimental-sidebar"
-];
+// Find sites under src/samples with an index.html and build them all.
+const sampleSites = glob
+    .sync("samples/*/index.html", {
+        cwd: "src"
+    })
+    .map((indexHtml) => dirname(indexHtml));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const devMode = mode === "development";
+    const testMode = mode === "test"; // set by vitest
 
     // Allowed values are "DEBUG", "INFO", "WARN", "ERROR"
     const logLevel = devMode ? "INFO" : "WARN";
@@ -50,7 +37,11 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: resolve(__dirname, "dist/www"),
             emptyOutDir: true,
-            target: targets
+
+            // Minimum browser versions supported by generated JS/CSS
+            // See also:
+            // - https://vitejs.dev/config/build-options.html#build-target
+            target: "baseline-widely-available"
         },
 
         plugins: [
@@ -70,17 +61,16 @@ export default defineConfig(({ mode }) => {
             react({
                 // react swc plugin transpiles during development.
                 // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
-                devTarget: "es2022"
+                devTarget: "es2024"
             }),
             eslint()
         ],
 
         // Ignore irrelevant deprecations
-        // https://github.com/vitejs/vite/issues/18164
         css: {
             preprocessorOptions: {
                 scss: {
-                    silenceDeprecations: ["legacy-js-api", "import"]
+                    silenceDeprecations: ["import"]
                 }
             }
         },
@@ -88,14 +78,22 @@ export default defineConfig(({ mode }) => {
         // define global constants
         // See also: https://vitejs.dev/config/shared-options.html#define
         define: {
-            __LOG_LEVEL__: JSON.stringify(logLevel)
+            __LOG_LEVEL__: JSON.stringify(logLevel),
+            __PRINT_DEPRECATIONS__: !testMode // hide in tests (TODO)
         },
 
         // https://vitest.dev/config/
         test: {
             globals: true,
             environment: "happy-dom",
-            setupFiles: ["testing/global-setup.ts"]
+            setupFiles: ["testing/global-setup.ts"],
+            server: {
+                deps: {
+                    // Workaround to fix some import issues, see
+                    // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
+                    inline: [/@open-pioneer[/\\]/, /ol\//]
+                }
+            }
         }
 
         // disable hot reloading

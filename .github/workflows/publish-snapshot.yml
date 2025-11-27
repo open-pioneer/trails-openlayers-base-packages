@@ -1,6 +1,12 @@
 name: Publish snapshot
 on:
   workflow_dispatch:
+    inputs:
+      snapshot-tag:
+        type: string
+        description: Name of the snapshot build tag. Use "dev" for the main branch and "dev-XYZ" for other branches.
+        default: dev
+        required: true
 jobs:
   build_packages:
     name: "Build and publish"
@@ -8,31 +14,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
 
-      # Bumps versions in package.json (see https://github.com/changesets/changesets/blob/main/docs/snapshot-releases.md)
-      # The changes should not be committed to any branch: the "releases" are not part of the version history.
-      - name: Version packages
-        run: pnpm changeset version --snapshot dev
-
-      # Note: must happen after versioning because the updated package.json files will be copied into dist/
-      - name: Build packages
-        run: pnpm build-packages
-
-      - name: Publish packages
-        run: |
-          echo "Published packages" >> publish.log
-          echo "==================" >> publish.log
-          echo "" >> publish.log
-
-          # Stdout of publish contains the published package names and versions
-          pnpm publish -r --access public --tag dev --no-git-checks | tee -a publish.log
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: List packages
-        run: 
-          cat publish.log
-        
+      - name: "Publish packages"
+        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@main
+        with:
+          snapshot-tag: ${{ inputs.snapshot-tag }}
+          npm-token: ${{ secrets.NPM_TOKEN }}

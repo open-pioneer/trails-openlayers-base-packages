@@ -26,7 +26,10 @@ messages:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"
     map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
+    widgets: "Open tools"
+    search: "Search"
     toolbar: "Maptools"
+    results: "Results"
   layerNotVisibleReason: "Matching layer is not visible."
   foundResults: Found {resultsCount, plural,
     =0 {no results}

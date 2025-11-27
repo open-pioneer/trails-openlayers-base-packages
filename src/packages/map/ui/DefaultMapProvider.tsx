@@ -1,28 +1,15 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createContext, useContext, useMemo } from "react";
-import { MapModelProps } from "./useMapModel";
+import { createContext, useContext } from "react";
+import { MapModel } from "../model/MapModel";
+import { MapModelProps } from "./hooks/useMapModel";
 
-const DefaultMapContext = createContext<MapModelProps | undefined>(undefined);
+const DefaultMapContext = createContext<MapModel | undefined>(undefined);
 DefaultMapContext.displayName = "DefaultMapContext";
 
 /**
  * Configures the given map as the default map for all child components.
  * Child components do not need to specify the map explicitly, unless they wish to use a different one.
- *
- * The map can be specified either by its id (`mapId`) or by a direct reference to the map model (`map`).
- * Specifying both `mapId` and `map` at the same time will result in an error.
- *
- * @example
- *
- * Using map id:
- *
- * ```tsx
- * <DefaultMapProvider mapId="my-map">
- *   <MapContainer />
- *   <Toc />
- * </DefaultMapProvider>
- * ```
  *
  * @example
  *
@@ -34,19 +21,17 @@ DefaultMapContext.displayName = "DefaultMapContext";
  *   <Toc />
  * </DefaultMapProvider>
  * ```
+ *
+ * @group UI Components and Hooks
  */
-export function DefaultMapProvider(props: MapModelProps & { children?: React.ReactNode }) {
-    const { mapId, map, children } = props;
-    const value = useMemo((): MapModelProps => ({ mapId, map }), [mapId, map]);
-    if (mapId != null && map != null) {
-        throw new Error(
-            `Cannot specify both 'mapId' and 'map' in DefaultMapProvider at the same time.`
-        );
+export function DefaultMapProvider(
+    props: Required<MapModelProps> & { children?: React.ReactNode }
+) {
+    const { map, children } = props;
+    if (map == null) {
+        throw new Error(`DefaultMapProvider requires the 'map' property.`);
     }
-    if (mapId == null && map == null) {
-        throw new Error(`Either 'mapId' or 'map' must be specified in DefaultMapProvider.`);
-    }
-    return <DefaultMapContext.Provider value={value}>{children}</DefaultMapContext.Provider>;
+    return <DefaultMapContext.Provider value={map}>{children}</DefaultMapContext.Provider>;
 }
 
 /**
@@ -54,6 +39,6 @@ export function DefaultMapProvider(props: MapModelProps & { children?: React.Rea
  *
  * @internal
  */
-export function useDefaultMapProps(): MapModelProps | undefined {
+export function useDefaultMap(): MapModel | undefined {
     return useContext(DefaultMapContext);
 }

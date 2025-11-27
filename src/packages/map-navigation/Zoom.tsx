@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ButtonProps } from "@open-pioneer/chakra-integration";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { ButtonProps } from "@chakra-ui/react";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef, useState } from "react";
-import { FiMinus, FiPlus } from "react-icons/fi";
+import { FC, RefAttributes, useState } from "react";
+import { LuMinus, LuPlus } from "react-icons/lu";
 
 export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
 
@@ -17,9 +17,9 @@ export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
  *
  * This component composes {@link Zoom}.
  */
-export const ZoomIn: FC<ZoomInProps> = forwardRef(function ZoomIn(props, ref) {
-    return <Zoom zoomDirection="in" ref={ref} {...props} />;
-});
+export const ZoomIn: FC<ZoomInProps> = function ZoomIn(props) {
+    return <Zoom zoomDirection="in" {...props} />;
+};
 
 export type ZoomOutProps = ZoomInProps;
 
@@ -28,9 +28,9 @@ export type ZoomOutProps = ZoomInProps;
  *
  * This component composes {@link Zoom}.
  */
-export const ZoomOut: FC<ZoomOutProps> = forwardRef(function ZoomOut(props, ref) {
-    return <Zoom zoomDirection="out" ref={ref} {...props} />;
-});
+export const ZoomOut: FC<ZoomOutProps> = function ZoomOut(props) {
+    return <Zoom zoomDirection="out" {...props} />;
+};
 
 export interface ZoomProps
     extends CommonComponentProps,
@@ -54,12 +54,9 @@ export interface ZoomProps
 /**
  * Provides a button by which the user can zoom in or zoom out of the map.
  */
-export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
-    props: ZoomProps,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
-    const { buttonProps, zoomDirection } = props;
-    const { map } = useMapModel(props);
+export const Zoom: FC<ZoomProps> = function Zoom(props: ZoomProps) {
+    const { buttonProps, zoomDirection, ref } = props;
+    const map = useMapModelValue(props);
     const intl = useIntl();
     const [disabled, setDisabled] = useState<boolean>(false);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
@@ -71,12 +68,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
             return;
         }
         setDisabled(true);
-        const view = map?.olView;
-        let currZoom = map?.zoomLevel;
 
-        const maxZoom = view?.getMaxZoom() || Number.MAX_SAFE_INTEGER;
-        const minZoom = view?.getMinZoom() || 0;
-        if (view && currZoom !== undefined) {
+        const view = map.olView;
+        const maxZoom = view.getMaxZoom() || Number.MAX_SAFE_INTEGER;
+        const minZoom = view.getMinZoom() || 0;
+
+        let currZoom = map.zoomLevel;
+        if (currZoom != null) {
             if (zoomDirection === "in" && currZoom < maxZoom) {
                 ++currZoom;
             } else if (zoomDirection === "out" && currZoom > minZoom) {
@@ -97,7 +95,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
             {...containerProps}
         />
     );
-});
+};
 
 function getDirectionProps(intl: PackageIntl, zoomDirection: "in" | "out") {
     switch (zoomDirection) {
@@ -105,13 +103,13 @@ function getDirectionProps(intl: PackageIntl, zoomDirection: "in" | "out") {
             return {
                 defaultClassName: "zoom-in",
                 buttonLabel: intl.formatMessage({ id: "zoom-in.title" }),
-                buttonIcon: <FiPlus />
+                buttonIcon: <LuPlus />
             };
         case "out":
             return {
                 defaultClassName: "zoom-out",
                 buttonLabel: intl.formatMessage({ id: "zoom-out.title" }),
-                buttonIcon: <FiMinus />
+                buttonIcon: <LuMinus />
             };
     }
 }

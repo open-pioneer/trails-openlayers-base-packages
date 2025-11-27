@@ -1,10 +1,10 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { Box } from "@chakra-ui/react";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useRef } from "react";
 import { ScaleLine } from "ol/control";
-import { Box } from "@open-pioneer/chakra-integration";
+import { FC, useEffect, useRef } from "react";
 
 /**
  * These are the properties supported by the {@link ScaleBar}.
@@ -19,11 +19,11 @@ export interface ScaleBarProps extends CommonComponentProps, MapModelProps {
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
     const { displayMode = "line" } = props;
     const { containerProps } = useCommonComponentProps("scale-bar", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const scaleBarElem = useRef(null);
 
     useEffect(() => {
-        if (scaleBarElem.current && map) {
+        if (scaleBarElem.current) {
             const olMap = map.olMap;
             const scaleLine = new ScaleLine({
                 units: "metric",
@@ -37,5 +37,5 @@ export const ScaleBar: FC<ScaleBarProps> = (props) => {
         }
     }, [displayMode, map]);
 
-    return <Box {...containerProps} ref={scaleBarElem}></Box>;
+    return <Box {...containerProps} ref={scaleBarElem} backgroundColor="whiteAlpha.800" />;
 };

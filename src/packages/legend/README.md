@@ -6,10 +6,10 @@ The legend UI shows entries for layers that are currently visible (enabled) in t
 
 ## Usage
 
-To add the component to your app, insert the following snippet with a reference to a map ID:
+To add the component to your app, insert the following snippet (with a reference to a map):
 
 ```jsx
-<Legend mapId="map_id" />
+<Legend map={map} />
 ```
 
 ### Configuring legend content for layers
@@ -31,11 +31,12 @@ Examples:
 import { CustomLegend } from "./CustomLegend"; // import react component to show as layer's legend
 // ...
 
-async getMapConfig(): Promise<MapConfig> {
+async getMapConfig({ layerFactory }): Promise<MapConfig> {
     return {
         // ...
         layers: [
-            new SimpleLayer({
+            layerFactory.create({
+                type: SimpleLayer,
                 id: "topplus_open",
                 title: "TopPlus Open",
                 isBaseLayer: true,
@@ -48,7 +49,8 @@ async getMapConfig(): Promise<MapConfig> {
                     }
                 }
             }),
-            new SimpleLayer({
+            layerFactory.create({
+                type: SimpleLayer,
                 title: "Kindertagesstätten",
                 visible: true,
                 olLayer: createKitasLayer(),
@@ -69,13 +71,17 @@ If a configuration is done, it supersedes the automatic legend retrieval.
 Showing legend entries is also supported for **sublayers** (configuration and automatic retrieval).
 The legend content for sublayers is shown plain and without hierarchical structure in the Legend UI.
 
+#### Internal layers
+
+If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend widget. Even if a legend is configured it will not be displayed. The `internal` property also affects other UI widgets (e.g. Toc).
+
 ### Showing legend for basemap
 
 By default, the legend for the active basemap is not shown.
 To show the legend for the active basemap, set the `showBaseLayers` prop to `true`:
 
 ```jsx
-<Legend mapId="map_id" showBaseLayers={true} />
+<Legend map={map} showBaseLayers={true} />
 ```
 
 ## License

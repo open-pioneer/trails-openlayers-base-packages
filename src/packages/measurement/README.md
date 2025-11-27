@@ -6,10 +6,12 @@ The UI contains a dropdown to switch between distance and area measurements and 
 
 ## Usage
 
-To integrate the measurement in your app, insert the following snippet and reference a map ID:
+To integrate the measurement in your app, insert the following snippet (and reference a map):
 
 ```tsx
-<Measurement mapId="map_id" />
+<Measurement
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Configuring feature styles
@@ -17,7 +19,7 @@ To integrate the measurement in your app, insert the following snippet and refer
 To configure the style of the features drawn on the map, configure the optional `activeFeatureStyle` (for features that are currently being drawn) or `finishedFeatureStyle` (for completed features) properties:
 
 ```tsx
-<Measurement mapId="map_id" activeFeatureStyle={...} finishedFeatureStyle={...} />
+<Measurement map={map} activeFeatureStyle={...} finishedFeatureStyle={...} />
 ```
 
 Both properties support arbitrary OpenLayers [`StyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html#~StyleLike) values: you can configure either a single [Style](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html) instance, an array of them or a function computing such values.
@@ -51,11 +53,7 @@ const RED_STYLE = new Style({
 function AppUI() {
     return (
         // ...
-        <Measurement
-            mapId={MAP_ID}
-            activeFeatureStyle={RED_STYLE}
-            finishedFeatureStyle={BLACK_STYLE}
-        />
+        <Measurement map={map} activeFeatureStyle={RED_STYLE} finishedFeatureStyle={BLACK_STYLE} />
     );
 }
 ```

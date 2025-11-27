@@ -1,8 +1,9 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, expect, vi, it } from "vitest";
 import { DragController } from "./DragController";
 import OlMap from "ol/Map";
+import { waitFor } from "@testing-library/react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -32,16 +33,20 @@ it("expect interactions, tooltip and cursor correspond to controller state", asy
     if (dragBox === undefined || dragPan === undefined)
         throw new Error("at least one interaction not found");
 
-    expect(olMap.getInteractions().getArray()).contains(dragBox);
-    expect(olMap.getInteractions().getArray()).contains(dragPan);
-    expect(olMap.getViewport().classList.contains("selection-active")).toBeTruthy();
+    await waitFor(() => {
+        expect(olMap.getInteractions().getArray()).contains(dragBox);
+        expect(olMap.getInteractions().getArray()).contains(dragPan);
+        expect(olMap.getViewport().classList.contains("selection-active")).toBeTruthy();
+    });
     expect(activeTooltip.textContent).toBe(tooltipTest);
 
     controller.setActive(false);
 
-    expect(olMap.getInteractions().getArray()).not.contains(dragBox);
-    expect(olMap.getInteractions().getArray()).not.contains(dragPan);
-    expect(olMap.getViewport().classList.contains("selection-inactive")).toBeTruthy();
+    await waitFor(() => {
+        expect(olMap.getInteractions().getArray()).not.contains(dragBox);
+        expect(olMap.getInteractions().getArray()).not.contains(dragPan);
+        expect(olMap.getViewport().classList.contains("selection-inactive")).toBeTruthy();
+    });
     expect(activeTooltip.textContent).toBe(disabledTooltipText);
 });
 

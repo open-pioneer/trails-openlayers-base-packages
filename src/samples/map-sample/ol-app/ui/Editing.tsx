@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, HStack, Text } from "@open-pioneer/chakra-integration";
+import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import {
     Resource,
     createAbortError,
@@ -9,7 +9,7 @@ import {
     isAbortError
 } from "@open-pioneer/core";
 import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, MapModel, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -82,14 +82,10 @@ function useEditingViewModel(kind: EditingKind): EditingViewModel | undefined {
     const editingService = useService<EditingService>("editing.EditingService");
     const intl = useIntl();
     const appModel = useService<AppModel>("ol-app.AppModel");
-    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
+    const map = useMapModelValue(); // uses default map configured in AppUI.tsx
 
     const [viewModel, setViewModel] = useState<EditingViewModel>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const vm = new EditingViewModel(
             notificationService,
             editingService,

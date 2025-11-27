@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/map-ui-components",
     "description": "Contains ui components that can used together with the map",
-    "version": "0.8.0",
+    "version": "1.1.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
@@ -17,10 +17,11 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "classnames": "catalog:",
-        "react": "catalog:"
+        "react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",

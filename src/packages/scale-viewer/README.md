@@ -4,10 +4,12 @@ This package provides a UI component to show the actual map scale to the user.
 
 ## Usage
 
-To integrate the scale viewer in your app, insert the following snippet and reference a map ID:
+To integrate the scale viewer in your app, insert the following snippet (and reference a map):
 
 ```jsx
-<ScaleViewer mapId="map_id" />
+<ScaleViewer
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ## License

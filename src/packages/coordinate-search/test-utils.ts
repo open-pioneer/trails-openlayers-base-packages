@@ -1,17 +1,26 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { act, fireEvent } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 
-export function showDropdown(projSelect: HTMLElement) {
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
+export async function showDropdown(selectTrigger: HTMLElement) {
     act(() => {
-        fireEvent.keyDown(projSelect, { key: "ArrowDown" });
+        if (selectTrigger.dataset.state !== "open") {
+            fireEvent.click(selectTrigger);
+        }
+    });
+
+    await waitFor(() => {
+        const dropDownDiv = document.querySelector(".coordinate-input-select-content");
+        if (!dropDownDiv) {
+            throw new Error("Dropdown did not mount");
+        }
     });
 }
 
 export function getCurrentOptions() {
     return Array.from(
-        document.getElementsByClassName("coordinate-input-select__option")
+        document.getElementsByClassName("coordinate-input-select-item")
     ) as HTMLElement[];
 }
 
@@ -24,7 +33,7 @@ export function getCurrentOptionValues(options: HTMLElement[]) {
 }
 
 export function getClearButton(coordinateSearchGroup: Element) {
-    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
+    const buttonDiv = coordinateSearchGroup.querySelector(".coordinate-input-field-attachment");
     if (!buttonDiv) {
         throw new Error("buttons not rendered");
     }
@@ -36,7 +45,7 @@ export function getClearButton(coordinateSearchGroup: Element) {
 }
 
 export function getCopyButton(coordinateSearchGroup: Element) {
-    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
+    const buttonDiv = coordinateSearchGroup.querySelector(".coordinate-input-field-attachment");
     if (!buttonDiv) {
         throw new Error("buttons not rendered");
     }

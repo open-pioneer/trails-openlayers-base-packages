@@ -31,7 +31,6 @@ allowedLicenses:
 #      - custom: "./licenses/some-package-license.txt"
 #
 # `custom` makes the path relative to this directory instead of the package's directory.
-
 overrideLicenses:
   # 'license' missing in package.json but LICENSE file exists:
   - name: "react-universal-interface"
@@ -50,12 +49,6 @@ overrideLicenses:
       - "./lib/zlib/README"
 
   # readme contains license text
-  - name: "react-remove-scroll-bar"
-    version: "2.3.6"
-    licenseFiles:
-      - "./README.md"
-
-  # readme contains license text
   - name: "lerc"
     version: "3.0.0"
     licenseFiles:
@@ -71,14 +64,6 @@ overrideLicenses:
     licenseFiles:
       - custom: "./licenses/toggle_selection_mit"
 
-  # Declares 'license': 'MIT' in package.json but does not contain a license file.
-  # Author merged our pull request and confirmed the license (no new release yet):
-  # https://github.com/theKashey/react-style-singleton/pull/7
-  - name: "react-style-singleton"
-    version: "2.2.1"
-    licenseFiles:
-      - custom: "./licenses/react_style_singleton_mit"
-
   # Readme contains original MIT license which got lost during fork / development at some point
   # Retrieved on 2023-09-27 from https://github.com/mapbox/jsonlint
   # See also commit: https://github.com/mapbox/jsonlint/commit/21c821af6c176bc0b8d240d715d416223d1deb7b
@@ -88,33 +73,50 @@ overrideLicenses:
     licenseFiles:
       - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
 
-  # NPM artifact does not ship with a license; github repository tagged with the released version
-  # does contain it however:
-  # https://github.com/JedWatson/react-select/blob/17ab36ec89e6e2b05071cdafecb44421f1e91334/LICENSE
-  # The full license text was retrieved on 2024-01-04
-  - name: "react-select"
-    version: "5.8.0"
-    licenseFiles:
-      - custom: "./licenses/react_select_mit"
-
-  # Missing license document in npm artifact.
-  # Licenses added after 3.0 release via pull request.
-  # License text downloaded on 2023-11-15.
-  #
-  # See https://github.com/colorjs/color-rgba/pull/6
-  - name: "color-rgba"
-    version: "3.0.0"
-    licenseFiles:
-      - custom: "./licenses/color_rgba_mit"
-
   # License md present but package.json license field invalid.
   - name: "rgbcolor"
     version: "1.0.1"
     license: "MIT"
 
-  # License missing from shipped NPM package; it was later added to the git repository.
-  #
-  - name: "@icons/material"
-    version: "0.2.4"
+# List of additional licenses that are used by the project but are not dependencies itself.
+# E.g. licenses of projects used by react-icons.
+# To specify licenses with a custom file that is not part of the original package,
+# configure the license like this:
+#
+#   - name: "some-package"
+#     version: "1.0.6"
+#     license: "MIT"
+#     licenseFiles:
+#      - custom: "./licenses/some-package-license.txt"
+#
+# `name`can be chosen freely, it does not have to match a package name.
+# `custom` makes the path relative to this directory instead of the package's directory and is required here.
+# `version`is optional.
+additionalLicenses:
+  # Lucide icons are used in the project and loaded by `react-icons`.
+  # License file retrieved on 2025-07-07 from https://github.com/lucide-icons/lucide/blob/main/LICENSE
+  - name: "Lucide"
+    license: "ISC"
     licenseFiles:
-      - custom: "./licenses/icons_material_mit"
+      - custom: "./licenses/lucide_isc"
+
+  # Feather is used by Tabler Icons (see below).
+  # License file retrieved on 2025-07-07 from https://github.com/feathericons/feather/blob/main/LICENSE
+  - name: "Feather"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/feather_mit"
+
+  # Tabler Icons is used in the project and loaded by `react-icons`.
+  # License file retrieved on 2025-07-07 from https://github.com/tabler/tabler-icons/blob/main/LICENSE
+  - name: "Tabler Icons"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/tabler_icons_mit"
+
+  # Heroicons (currently only used by Chakra UI snippets)
+  # License file retrieved on 2025-07-07 from https://github.com/tailwindlabs/heroicons/blob/master/LICENSE
+  - name: "Heroicons"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/heroicons_mit"

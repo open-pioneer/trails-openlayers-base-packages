@@ -1,17 +1,19 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
+import { chakra } from "@chakra-ui/react";
 import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { ReactNode, useEffect, useMemo, useRef, useState, CSSProperties } from "react";
-import { MapModel, MapPadding } from "../api";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
-import { MapModelProps, useMapModel } from "./useMapModel";
-import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
+import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
+import { MapModel, MapPadding } from "../model/MapModel";
 const LOG = createLogger("map:MapContainer");
 
+/**
+ * @group UI Components and Hooks
+ */
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {
     /**
      * Sets the map's padding directly.
@@ -38,6 +40,8 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * Optional role property.
      *
      * This property is directly applied to the map's container div element.
+     *
+     * @default "application"
      */
     role?: string;
 
@@ -62,45 +66,32 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
  * Displays the map with the given id.
  *
  * There can only be at most one MapContainer for every map.
+ *
+ * @group UI Components and Hooks
  */
 export function MapContainer(props: MapContainerProps) {
     const {
         viewPadding,
         viewPaddingChangeBehavior,
         children,
-        role,
+        role = "application",
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
-    const { containerProps } = useCommonComponentProps("map-container", props);
+    const { containerProps } = useCommonComponentProps("map-container-root", props);
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
-    const modelState = useMapModel(props);
-    const map = modelState.map;
+    const map = useMapModelValue(props);
 
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        if (modelState.kind === "loading") {
-            return;
-        }
-
-        if (modelState.kind === "rejected") {
-            LOG.error(`Cannot display the map. Caused by `, modelState.error);
-            return;
-        }
-
-        if (!map) {
-            LOG.error(`No configuration available for the configured map.`);
-            return;
-        }
-
         // Mount the map into the DOM
         if (mapContainer.current) {
             const resource = registerMapTarget(map, mapContainer.current);
             return () => resource?.destroy();
         }
-    }, [modelState, map]);
+    }, [map]);
 
     // Wait for mount to make sure that the map anchors host is available
     useEffect(() => {
@@ -113,44 +104,40 @@ export function MapContainer(props: MapContainerProps) {
             position: "relative",
 
             // set css variables according to view padding
-            [PADDING_TOP.definition]:
-                viewPadding?.top != undefined ? viewPadding.top + "px" : "0px",
-            [PADDING_BOTTOM.definition]:
-                viewPadding?.bottom != undefined ? viewPadding.bottom + "px" : "0px",
-            [PADDING_LEFT.definition]:
-                viewPadding?.left != undefined ? viewPadding.left + "px" : "0px",
-            [PADDING_RIGHT.definition]:
-                viewPadding?.right != undefined ? viewPadding.right + "px" : "0px"
-        } as CSSProperties;
+            "--map-padding-top": `${viewPadding?.top ?? 0}px`,
+            "--map-padding-bottom": `${viewPadding?.bottom ?? 0}px`,
+            "--map-padding-left": `${viewPadding?.left ?? 0}px`,
+            "--map-padding-right": `${viewPadding?.right ?? 0}px`
+        };
     }, [viewPadding]);
 
     return (
-        <chakra.div
-            {...containerProps}
-            role={role}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledBy}
-            ref={mapContainer}
-            style={styleProps}
-            //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-            tabIndex={0}
-        >
-            {ready && map && (
-                <MapContainerReady
-                    olMap={map.olMap}
-                    mapAnchorsHost={mapAnchorsHost.current!}
-                    viewPadding={viewPadding}
-                    viewPaddingChangeBehavior={viewPaddingChangeBehavior}
-                >
-                    {children}
-                </MapContainerReady>
-            )}
+        <chakra.div {...containerProps} css={styleProps}>
+            {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
             <chakra.div
-                ref={mapAnchorsHost}
-                className="map-anchors"
-                /* note: zero sized, children have a size and are positioned relative to the map-container */
-            >
-                {/* Map anchors will be mounted here via portal */}
+                className="map-container"
+                ref={mapContainer}
+                role={role}
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledBy}
+                h="100%"
+                w="100%"
+                tabIndex={0}
+            />
+
+            {/* Contains user widgets (map anchors and raw children). These are separate from the map so they don't interfere with mouse/keyboard events. */}
+            <chakra.div ref={mapAnchorsHost} className="map-anchors">
+                {ready && map && (
+                    <MapContainerReady
+                        olMap={map.olMap}
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        mapAnchorsHost={mapAnchorsHost.current!}
+                        viewPadding={viewPadding}
+                        viewPaddingChangeBehavior={viewPaddingChangeBehavior}
+                    >
+                        {children}
+                    </MapContainerReady>
+                )}
             </chakra.div>
         </chakra.div>
     );
@@ -166,7 +153,7 @@ function MapContainerReady(
         MapContainerProps,
         "mapId" | "map" | "className"
     >
-): JSX.Element {
+): ReactNode {
     const {
         olMap,
         mapAnchorsHost,

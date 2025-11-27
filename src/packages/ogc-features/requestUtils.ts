@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Extent } from "ol/extent";
 import FeatureFormat from "ol/format/Feature";
@@ -68,7 +68,7 @@ export interface FeatureResponse {
  */
 export async function queryFeatures(
     fullURL: string,
-    featureFormat: FeatureFormat | undefined,
+    featureFormat: FeatureFormat | null,
     httpService: HttpService,
     signal: AbortSignal | undefined
 ): Promise<FeatureResponse> {

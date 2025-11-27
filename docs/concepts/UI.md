@@ -28,7 +28,7 @@ Those css classes will be appended to the default class name when the component 
 Add class name `my-class` to the component:
 
 ```tsx
-<ScaleViewer mapId={MAP_ID} className="my-class" />
+<ScaleViewer map={map} className="my-class" />
 ```
 
 Renders as (for example):
@@ -39,10 +39,10 @@ Renders as (for example):
 </div>
 ```
 
-### React `forwardRef`
+### React `ref` support
 
-If a component is a simple wrapper around another DOM element (such as a button), it will provide a reference to the underlying DOM element via `forwardRef`.
-You can use the `ref` property on the component to access the DOM element.
+If a component is a simple wrapper around another DOM element (such as a button), it will provide a reference to the underlying DOM element via a `ref` prop.
+You can use the `ref` property on the component to access the DOM element:
 
 **Example**
 
@@ -55,9 +55,10 @@ zoomButton.current!.focus()
 
 return (
     {/* ... */}
-    <ZoomIn mapId={MAP_ID} ref={zoomButton} />
+    <ZoomIn map={map} ref={zoomButton} />
     {/* ... */}
 );
 ```
 
-More information: [React `forwardRef`](https://react.dev/reference/react/forwardRef)
+This pattern previously required the `forwardRef` function, but since React 19 we can simply accept a `ref` prop directly (
+see [React `forwardRef`](https://react.dev/reference/react/forwardRef)).

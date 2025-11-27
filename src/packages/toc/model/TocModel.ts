@@ -1,53 +1,7 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createContext, Provider, useContext } from "react";
-
-const TocModelContext = createContext<TocModel | undefined>(undefined);
-
-/**
- * Provider for the toc's shared model.
- * Used at the root of the component.
- */
-export const TocModelProvider: Provider<TocModel> = TocModelContext.Provider as Provider<TocModel>;
-
-/**
- * Returns the shared model for the current toc component.
- */
-export function useTocModel(): TocModel {
-    const model = useContext(TocModelContext);
-    if (!model) {
-        throw new Error("Internal error: TocModel not found in context.");
-    }
-    return model;
-}
-
-/**
- * Shared model used by the toc and all its sub-components.
- *
- * @internal
- */
-export interface TocModel {
-    /**
-     * Return the global widget options.
-     *
-     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
-     */
-    readonly options: TocWidgetOptions;
-
-    /**
-     * Returns the item that corresponds with the `layerId`.
-     */
-    getItem(layerId: string): TocItem | undefined;
-
-    /**
-     * Returns the list of all items.
-     */
-    getItems(): TocItem[];
-
-    // Used by toc item components to register themselves
-    registerItem(item: TocItem): void;
-    unregisterItem(item: TocItem): void;
-}
+import { reactive, Reactive, reactiveMap } from "@conterra/reactivity-core";
+import { TocItem } from "./types";
 
 /**
  * Global toc widget options.
@@ -72,28 +26,72 @@ export interface TocWidgetOptions {
 }
 
 /**
- * Represents an item in the toc.
- *
- * Currently items register themselves in the model when they are mounted
- * and remove themselves when they are unmounted.
+ * Shared model used by the Toc and all its sub-components.
+ * Extends the external TocAPI with private, internal properties.
  *
  * @internal
  */
-export interface TocItem {
-    /**
-     * Identifier of the layer that corresponds with the list item.
-     */
-    readonly layerId: string;
+export class TocModel {
+    #options: Reactive<TocWidgetOptions>;
+
+    // Indexed by layerId
+    #items = reactiveMap<string, TocItem>();
+
+    constructor(initialOptions: TocWidgetOptions) {
+        this.#options = reactive(initialOptions);
+    }
 
     /**
-     * true if list item is expanded.
-     */
-    readonly isExpanded: boolean;
-
-    /**
-     * Expands or collapses the list item.
+     * Return the global widget options.
      *
-     * Note: not all list items support this operation.
+     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
+     * See {@link updateOptions}.
      */
-    setExpanded(expanded: boolean): void;
+    get options() {
+        return this.#options.value;
+    }
+
+    getItemById(id: string): TocItem | undefined {
+        return this.#items.get(id);
+    }
+
+    getItemByLayerId(layerId: string): TocItem | undefined {
+        return this.getItemById(layerId); // happens to be the same at the moment
+    }
+
+    getItems(): TocItem[] {
+        return Array.from(this.#items.values());
+    }
+
+    // Used by toc item components to register themselves
+    registerItem(item: TocItem): void {
+        if (this.#items.has(item.id)) {
+            throw new Error(`Item with layerId '${item.layerId}' already registered.`);
+        }
+        this.#items.set(item.id, item);
+    }
+
+    // Used by toc item components to register themselves
+    unregisterItem(item: TocItem): void {
+        if (this.#items.get(item.id) !== item) {
+            throw new Error(`Item with layerId '${item.layerId}' not registered.`);
+        }
+        this.#items.delete(item.id);
+    }
+
+    updateOptions(options: TocWidgetOptions) {
+        this.#options.value = options;
+    }
+}
+
+export function createOptions(
+    autoShowParents?: boolean | undefined,
+    collapsibleGroups?: boolean | undefined,
+    isCollapsed?: boolean | undefined
+): TocWidgetOptions {
+    return {
+        autoShowParents: autoShowParents ?? true,
+        collapsibleGroups: collapsibleGroups ?? false,
+        initiallyCollapsed: isCollapsed ?? false
+    };
 }

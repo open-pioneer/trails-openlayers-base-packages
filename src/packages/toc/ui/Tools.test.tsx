@@ -1,110 +1,120 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
-import TileLayer from "ol/layer/Tile";
+import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
 import userEvent from "@testing-library/user-event";
-import { GroupLayerImpl } from "@open-pioneer/map/model/layers/GroupLayerImpl";
-import { SimpleLayerImpl } from "@open-pioneer/map/model/layers/SimpleLayerImpl";
+import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
 
 it("Should successfully create a toc with default tool component", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: [
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc" showTools={true} />
+        <PackageContextProvider>
+            <Toc map={map} data-testid="toc" showTools={true} showBasemapSwitcher={false} />
         </PackageContextProvider>
     );
 
     const toolsDiv = await findTools();
     expect(toolsDiv).toMatchSnapshot();
 
-    const toolsMenu = await findMenu();
+    const toolsMenu = await findMenu(toolsDiv.tools);
     expect(toolsMenu).toMatchSnapshot();
 });
 
 it("Should successfully hide all layers in toc", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: [
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
     const operationalLayers = map.layers.getOperationalLayers();
-    const injectedServices = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc" showTools={true} />
+        <PackageContextProvider>
+            <Toc map={map} data-testid="toc" showTools={true} />
         </PackageContextProvider>
     );
 
-    await findTools();
+    const { tools } = await findTools();
 
-    const itemButton = await screen.findByLabelText("tools.hideAllLayers");
-    expect(itemButton.tagName).toBe("BUTTON");
+    const hideAllMenuItem = await waitFor(() => {
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        return screen.findByLabelText("tools.hideAllLayers");
+    });
+
+    expect(hideAllMenuItem.tagName).toBe("DIV"); //menu item is a div not a button
 
     expect(operationalLayers.length).toBe(2);
     expect(operationalLayers[0]?.visible).toBe(true);
     expect(operationalLayers[1]?.visible).toBe(true);
 
-    await userEvent.click(itemButton);
+    await userEvent.click(hideAllMenuItem);
 
     expect(operationalLayers[0]?.visible).toBe(false);
     expect(operationalLayers[1]?.visible).toBe(false);
 });
 
 it("Should collapse all layer items in toc", async () => {
-    const olLayer1 = new TileLayer({});
-    const olLayer2 = new TileLayer({});
-    const grouplayer = new GroupLayerImpl({
+    const olLayer1 = createTestOlLayer();
+    const olLayer2 = createTestOlLayer();
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            createTestLayer({
+                type: GroupLayer,
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayerImpl({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
@@ -114,15 +124,14 @@ it("Should collapse all layer items in toc", async () => {
         ]
     });
 
-    const { mapId, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: [grouplayer]
     });
-    const injectedServices = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Toc
-                mapId={mapId}
+                map={map}
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}
@@ -132,38 +141,48 @@ it("Should collapse all layer items in toc", async () => {
         </PackageContextProvider>
     );
 
-    const { tocDiv } = await findTools();
+    const { tocDiv, tools } = await findTools();
 
     const collapsibles = tocDiv.querySelectorAll(".toc-collapsible-item");
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: auto;")).toBeTruthy();
+        expect(collapsible.getAttribute("data-state")).toBe("open");
     }
 
-    const collapseAllButton = await screen.findByLabelText("tools.collapseAllGroups");
-    expect(collapseAllButton.tagName).toBe("BUTTON");
-    await userEvent.click(collapseAllButton);
-    //collapse sets heigth to 0
+    const collapseAllMenuItem = await waitFor(() => {
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        return screen.findByLabelText("tools.collapseAllGroups");
+    });
+
+    expect(collapseAllMenuItem.tagName).toBe("DIV"); //menu item is a div not a button
+    await userEvent.click(collapseAllMenuItem);
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: 0")).toBeTruthy();
+        expect(collapsible.getAttribute("data-state")).toBe("closed");
     }
 });
 
 it("Should not display collapse all button", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: [
             {
                 title: "SimpleLayer 1",
                 id: "simplelayer-1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Toc
-                mapId={mapId}
+                map={map}
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}
@@ -191,9 +210,18 @@ async function findTools() {
     return { tools, tocDiv };
 }
 
-async function findMenu() {
+async function findMenu(tools: Element) {
     const menu = await waitFor(() => {
-        const menu = document.querySelector(".tools-menu");
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        const menu = document.querySelector(".toc-tools-menu");
         if (!menu) {
             throw new Error("Menu not found");
         }

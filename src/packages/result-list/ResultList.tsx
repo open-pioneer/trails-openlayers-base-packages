@@ -1,11 +1,12 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
+import { Box } from "@chakra-ui/react";
+import { FormatNumberOptions } from "@formatjs/intl";
 import {
     BaseFeature,
     HighlightOptions,
     MapModelProps,
-    useMapModel,
+    useMapModelValue,
     ZoomOptions
 } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -13,7 +14,6 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
-import { FormatNumberOptions } from "@formatjs/intl";
 
 /**
  * Configures a column in the result list component.
@@ -109,6 +109,14 @@ export interface ResultListInput {
     columns: ResultColumn[];
 
     /**
+     * Property of the features in the result list that is used to enrich aria labels with context.
+     *
+     * The feature's id is used by default or as fallback if this option is not configured or the
+     * property does not exist on the feature.
+     */
+    labelProperty?: string;
+
+    /**
      * The data shown by the result list component.
      * Every feature will be rendered as an individual row.
      */
@@ -193,8 +201,9 @@ export interface ResultListProps extends CommonComponentProps, MapModelProps {
 export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
+    const map = useMapModelValue(props);
     const {
-        input: { data, columns, formatOptions },
+        input: { data, columns, labelProperty, formatOptions },
         memoizeRows = false,
         onSelectionChange,
         enableZoom = true,
@@ -204,8 +213,6 @@ export const ResultList: FC<ResultListProps> = (props) => {
         selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
         highlightOptions
     } = props;
-
-    const { map } = useMapModel(props);
 
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -225,15 +232,13 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 tableWidth: tableWidth,
                 formatOptions: formatOptions,
                 selectionMode,
-                selectionStyle
+                selectionStyle,
+                labelProperty
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle, labelProperty]
     );
 
     useEffect(() => {
-        if (!map) {
-            return;
-        }
         if (enableZoom) {
             map.zoom(data, zoomOptions);
         }
@@ -257,7 +262,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     );
 };
 
-function useTableWidth(tableRef: RefObject<HTMLDivElement> | null) {
+function useTableWidth(tableRef: RefObject<HTMLDivElement | null>) {
     const [tableWidth, setTableWidth] = useState<number>();
 
     useEffect(() => {

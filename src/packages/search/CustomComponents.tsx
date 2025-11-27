@@ -1,7 +1,9 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { SearchIcon } from "@chakra-ui/icons";
-import { CloseButton, chakra } from "@open-pioneer/chakra-integration";
+import { LuSearch } from "react-icons/lu";
+import { chakra, Icon, IconButton } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { LuX } from "react-icons/lu";
 import {
     ClearIndicatorProps,
     GroupProps,
@@ -17,7 +19,7 @@ import {
 } from "chakra-react-select";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { UIEvent } from "react";
+import { UIEvent, useMemo } from "react";
 import { SearchGroupOption, SearchOption } from "./Search";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
@@ -74,7 +76,11 @@ export function ValueContainer({
     };
     return (
         <chakraComponents.ValueContainer {...containerProps}>
-            {!!children && <SearchIcon style={{ position: "absolute", left: 8 }}></SearchIcon>}
+            {!!children && (
+                <Icon position="absolute" left="8px" boxSize="1.25em">
+                    <LuSearch />
+                </Icon>
+            )}
             {children}
         </chakraComponents.ValueContainer>
     );
@@ -124,18 +130,24 @@ function CustomClearIndicator(props: {
     };
 
     return (
-        <CloseButton
-            role="button"
-            size="md"
-            mr={1}
-            aria-label={clearButtonLabel}
-            onClick={clickHandler}
-            // needed for correct touch handling; select control would otherwise preventDefault()
-            onTouchEnd={clickHandler}
-            // Stop select component from opening the menu.
-            // It will otherwise flash briefly because of a mouse down listener in the select.
-            onMouseDown={(e) => e.preventDefault()}
-        />
+        <Tooltip content={clearButtonLabel}>
+            <IconButton
+                size="sm"
+                variant="ghost"
+                mr="1px"
+                aria-label={clearButtonLabel}
+                onClick={clickHandler}
+                // needed for correct touch handling; select control would otherwise preventDefault()
+                onTouchEnd={clickHandler}
+                // Stop select component from opening the menu.
+                // It will otherwise flash briefly because of a mouse down listener in the select.
+                onMouseDown={(e) => e.preventDefault()}
+            >
+                <Icon>
+                    <LuX />
+                </Icon>
+            </IconButton>
+        </Tooltip>
     );
 }
 
@@ -153,13 +165,16 @@ export function HighlightOption(props: OptionProps<SearchOption, false, SearchGr
         ...props,
         className: classNames(props.className, "search-option")
     };
-    return (
-        <chakraComponents.Option {...optionProps}>
+
+    const highlightedLabel = useMemo(() => {
+        return (
             <chakra.div className="search-option-label">
                 {userInput.trim().length > 0 ? getHighlightedLabel(label, userInput) : label}
             </chakra.div>
-        </chakraComponents.Option>
-    );
+        );
+    }, [label, userInput]);
+
+    return <chakraComponents.Option {...optionProps}>{highlightedLabel}</chakraComponents.Option>;
 }
 
 function getHighlightedLabel(label: string, userInput: string) {

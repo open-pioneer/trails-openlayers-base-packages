@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { expect, it, vi } from "vitest";
 import { MeasurementsChangeEvent } from "./Measurement";
@@ -13,9 +13,11 @@ import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
 import { Feature, View } from "ol";
 import VectorSource from "ol/source/Vector";
+import { setupMap } from "@open-pioneer/map-test-utils";
+import { waitFor } from "@testing-library/dom";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
-    const { olMap, controller } = setup();
+    const { olMap, controller } = await setup();
 
     controller.startMeasurement("distance");
     expect(hasActiveDrawInteraction(olMap)).toBe(true);
@@ -25,8 +27,8 @@ it("should successfully start measurement, and activate or deactivate draw inter
 });
 
 it("should measure a line / distance", async () => {
-    const { olMap, controller } = setup();
-    const layer = controller.getVectorLayer();
+    const { olMap, controller } = await setup();
+    const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
 
     const drawnGeometry = doDraw(olMap, layer, [
@@ -46,8 +48,8 @@ it("should measure a line / distance", async () => {
 });
 
 it("should measure a polygon / area", async () => {
-    const { olMap, controller } = setup();
-    const layer = controller.getVectorLayer();
+    const { olMap, controller } = await setup();
+    const layer = controller.getOlVectorLayer();
     controller.startMeasurement("area");
 
     const drawnGeometry = doDraw(olMap, layer, [
@@ -72,14 +74,14 @@ it("should measure a polygon / area", async () => {
 });
 
 it("should respect the map's current projection (EPSG:3857)", async () => {
-    const { olMap, controller } = setup();
+    const { olMap, controller } = await setup();
     olMap.setView(
         new View({
             projection: "EPSG:3857"
         })
     );
 
-    const layer = controller.getVectorLayer();
+    const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
 
     // This is roughly 100 meters according to scale bar and measurement widget in browser
@@ -96,14 +98,14 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
 });
 
 it("should respect the map's current projection (EPSG:4326)", async () => {
-    const { olMap, controller } = setup();
+    const { olMap, controller } = await setup();
     olMap.setView(
         new View({
             projection: "EPSG:4326"
         })
     );
 
-    const layer = controller.getVectorLayer();
+    const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
 
     doDraw(olMap, layer, [
@@ -118,7 +120,7 @@ it("should respect the map's current projection (EPSG:4326)", async () => {
 });
 
 it("should show active tooltip on draw start and finished tooltip on draw end", async () => {
-    const { olMap, controller } = setup();
+    const { olMap, controller } = await setup();
     controller.startMeasurement("distance");
 
     const draw = getDrawInteraction(olMap);
@@ -143,15 +145,16 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 });
 
 it("uses the configured style for the finished features", async () => {
-    const { controller } = setup();
-    const layer = controller.getVectorLayer();
+    const { controller } = await setup();
+    const layer = controller.getOlVectorLayer();
 
     controller.setFinishedFeatureStyle(style1);
-    expect(layer.getStyle()).toBe(style1);
+    const layerStyle = layer.getStyle();
+    expect(layerStyle).toBe(style1);
 });
 
 it("uses the configured style for the active features", async () => {
-    const { olMap, controller } = setup();
+    const { olMap, controller } = await setup();
     controller.setActiveFeatureStyle(style1);
     controller.startMeasurement("distance");
 
@@ -164,14 +167,14 @@ it("uses the configured style for the active features", async () => {
 });
 
 it("should add predefined measurement to vector source", async () => {
-    const { controller } = setup();
+    const { controller } = await setup();
     const predefinedMeasurementGeom = new LineString([
         [398657.97, 5755696.26],
         [402570.98, 5757547.78]
     ]);
     controller.setPredefinedMeasurements([predefinedMeasurementGeom]);
 
-    const layer = controller.getVectorLayer();
+    const layer = controller.getOlVectorLayer();
     const source = layer.getSource();
     //source stores features => check the feature's geometry
     const measurementFromSource = source
@@ -183,7 +186,7 @@ it("should add predefined measurement to vector source", async () => {
 });
 
 it("should not add a predefined measurement to vector source a second time", async () => {
-    const { controller } = setup();
+    const { controller } = await setup();
     const predefinedMeasurementGeomA = new LineString([
         [398657.97, 5755696.26],
         [402570.98, 5757547.78]
@@ -195,7 +198,7 @@ it("should not add a predefined measurement to vector source a second time", asy
     controller.setPredefinedMeasurements([predefinedMeasurementGeomA]);
     controller.setPredefinedMeasurements([predefinedMeasurementGeomA, predefinedMeasurementGeomB]);
 
-    const layer = controller.getVectorLayer();
+    const layer = controller.getOlVectorLayer();
     const source = layer.getSource();
     //source stores features => check the feature's geometry
     const matches = source
@@ -207,7 +210,7 @@ it("should not add a predefined measurement to vector source a second time", asy
 });
 
 it("should remove previous predefine measurement from vector source", async () => {
-    const { controller } = setup();
+    const { controller } = await setup();
     const predefinedMeasurementGeomA = new LineString([
         [398657.97, 5755696.26],
         [402570.98, 5757547.78]
@@ -219,7 +222,7 @@ it("should remove previous predefine measurement from vector source", async () =
     controller.setPredefinedMeasurements([predefinedMeasurementGeomA, predefinedMeasurementGeomB]);
     controller.setPredefinedMeasurements([predefinedMeasurementGeomA]); //predefinedMeasurementGeomB should not be on vector source anymore
 
-    const layer = controller.getVectorLayer();
+    const layer = controller.getOlVectorLayer();
     const source = layer.getSource();
     //source stores features => check the feature's geometry
     const index = source
@@ -231,7 +234,7 @@ it("should remove previous predefine measurement from vector source", async () =
 });
 
 it("should raise add/remove events if predefined measurements are added/deleted", async () => {
-    const { controller } = setup();
+    const { controller } = await setup();
     const predefinedMeasurementGeom = new LineString([
         [398657.97, 5755696.26],
         [402570.98, 5757547.78]
@@ -250,8 +253,8 @@ it("should raise add/remove events if predefined measurements are added/deleted"
 });
 
 it("should raise add/remove events if user adds/clears measurements", async () => {
-    const { olMap, controller } = setup();
-    const layer = controller.getVectorLayer();
+    const { olMap, controller } = await setup();
+    const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
 
     const handlerFn = vi.fn();
@@ -269,11 +272,12 @@ it("should raise add/remove events if user adds/clears measurements", async () =
     expect(events[0]?.geometry).toBeInstanceOf(LineString);
 });
 
-it("should add name property to measurement layer", async () => {
-    const { controller } = setup();
-    const layer = controller.getVectorLayer();
+it("should add title to measurement layer", async () => {
+    const { controller, map } = await setup();
+    const olLayer = controller.getOlVectorLayer();
+    const layer = map.layers.getLayerByRawInstance(olLayer);
 
-    expect(layer.getProperties()["name"]).toBe("measurement-layer");
+    expect(layer?.title).toBe("measurement-layer");
 });
 
 /**
@@ -356,13 +360,15 @@ function getFirstFeature(layer: VectorLayer<VectorSource, Feature>) {
     return layer.getSource()?.getFeatures()[0]?.getGeometry();
 }
 
-function setup() {
-    const olMap = new OlMap();
+async function setup() {
+    const { map, layerFactory } = await setupMap();
+
+    const olMap = map.olMap;
 
     // Sometimes needed by Draw interaction (returns null otherwise) :(
     olMap.getPixelFromCoordinate = () => [0, 0];
 
-    const controller = new MeasurementController(olMap, {
+    const controller = new MeasurementController(map, layerFactory, {
         getContinueMessage() {
             return "Click to continue drawing";
         },
@@ -374,7 +380,19 @@ function setup() {
         }
     });
 
-    return { olMap, controller };
+    await waitForZIndex(controller.getOlVectorLayer());
+
+    return { map, olMap, controller };
+}
+
+async function waitForZIndex(olLayer: VectorLayer) {
+    return await waitFor(() => {
+        const zIndex = olLayer.getZIndex();
+        if (zIndex === undefined || zIndex === null) {
+            throw new Error("No z-index was assigned");
+        }
+        return zIndex;
+    });
 }
 
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement {

@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/result-list",
-    "version": "0.8.0",
+    "version": "1.1.0",
     "description": "This package provides a UI component to display features and their attributes.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,21 +17,25 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@chakra-ui/icons": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-use": "catalog:"
+        "react-use": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
         "@open-pioneer/test-utils": "catalog:",
+        "test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

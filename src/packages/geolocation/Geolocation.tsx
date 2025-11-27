@@ -1,16 +1,16 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { ButtonProps } from "@chakra-ui/react";
+import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { StyleLike } from "ol/style/Style";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
-import { MdMyLocation } from "react-icons/md";
+import { FC, RefAttributes, useEffect, useState } from "react";
+import { LuLocateFixed } from "react-icons/lu";
 import { GeolocationController, OnErrorCallback } from "./GeolocationController";
-import { ButtonProps } from "@open-pioneer/chakra-integration";
 
 /**
  * These are properties supported by the {@link Geolocation} component.
@@ -46,12 +46,9 @@ export interface GeolocationProps
     trackingOptions?: PositionOptions;
 }
 
-export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation(
-    props: GeolocationProps,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
-    const { maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
-    const { map } = useMapModel(props);
+export const Geolocation: FC<GeolocationProps> = function Geolocation(props: GeolocationProps) {
+    const { maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions, ref } = props;
+    const map = useMapModelValue(props);
     const controller = useController(
         map,
         maxZoom,
@@ -60,15 +57,14 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         accuracyFeatureStyle
     );
     return controller && <GeolocationImpl {...props} controller={controller} ref={ref} />;
-});
+};
 
 // This is a separate component so we can act like the controller is always present.
 // This is the case in practice (except for the initial loading phase where the component is not-yet-mounted).
-const GeolocationImpl = forwardRef(function GeolocationImpl(
-    props: GeolocationProps & { controller: GeolocationController },
-    ref: ForwardedRef<HTMLButtonElement>
+const GeolocationImpl = function GeolocationImpl(
+    props: GeolocationProps & { controller: GeolocationController }
 ) {
-    const { controller, buttonProps } = props;
+    const { controller, buttonProps, ref } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
     const { isLoading, isActive } = useReactiveSnapshot(() => {
         return {
@@ -103,18 +99,18 @@ const GeolocationImpl = forwardRef(function GeolocationImpl(
             ref={ref}
             buttonProps={buttonProps}
             label={label}
-            icon={<MdMyLocation />}
+            icon={<LuLocateFixed />}
             onClick={() => toggleActiveState()}
-            isActive={isActive}
-            isLoading={isLoading}
-            isDisabled={!controller.supported}
+            active={isActive}
+            loading={isLoading}
+            disabled={!controller.supported}
             {...containerProps}
         />
     );
-});
+};
 
 function useController(
-    map: MapModel | undefined,
+    map: MapModel,
     maxZoom: number | undefined,
     trackingOptions: PositionOptions | undefined,
     positionFeatureStyle: StyleLike | undefined,
@@ -122,12 +118,9 @@ function useController(
 ): GeolocationController | undefined {
     const intl = useIntl();
     const notificationService = useService<NotificationService>("notifier.NotificationService");
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
     const [controller, setController] = useState<GeolocationController>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const onError: OnErrorCallback = (error) => {
             const title = intl.formatMessage({ id: "error" });
             const description = (() => {
@@ -150,14 +143,14 @@ function useController(
             });
         };
 
-        const geolocationController = new GeolocationController(map, onError, trackingOptions);
+        const geolocationController = new GeolocationController(map, layerFactory, onError, trackingOptions);
         setController(geolocationController);
 
         return () => {
             geolocationController.destroy();
             setController(undefined);
         };
-    }, [map, trackingOptions, intl, notificationService]);
+    }, [map, trackingOptions, intl, notificationService, layerFactory]);
     useEffect(() => {
         controller?.setPositionFeatureStyle(positionFeatureStyle);
     }, [controller, positionFeatureStyle]);

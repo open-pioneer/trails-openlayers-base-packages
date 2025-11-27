@@ -1,7 +1,48 @@
 @import "ol/ol.css";
 
 /* Move attribution according to map view's padding */
-.map-container .ol-viewport .ol-attribution {
+.map-container-root .map-container .ol-viewport .ol-attribution {
     bottom: var(--map-padding-bottom);
     right: var(--map-padding-right);
+}
+
+.map-container-root .map-anchors {
+    pointer-events: none;
+    overflow: hidden;
+
+    position: absolute;
+    top: var(--map-padding-top);
+    bottom: var(--map-padding-bottom);
+    left: var(--map-padding-left);
+    right: var(--map-padding-right);
+
+    transition-property: left, right, top, bottom;
+    transition-duration: 200ms;
+    transition-timing-function: ease-in-out;
+}
+
+.map-container-root .map-anchors .map-anchor {
+    z-index: 1;
+    overflow: hidden;
+
+    position: absolute;
+    /* positioned absolute in .map-anchors, but actual coordinates are currently set via JS */
+}
+
+.map-container-root .map-anchors > * {
+    pointer-events: auto;
+}
+
+/* Set map focus style on map-anchor container to respect map padding inset 0*/
+.map-container-root:has(> .map-container:focus-visible) .map-anchors::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    outline: var(--chakra-colors-trails-solid) solid 2px;
+    outline-offset: -2px;
+}
+
+.map-container:focus-visible {
+    outline: none;
 }

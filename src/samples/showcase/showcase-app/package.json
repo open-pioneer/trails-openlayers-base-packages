@@ -6,7 +6,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/coordinate-search": "workspace:^",
         "@open-pioneer/editing": "workspace:^",
@@ -31,6 +31,7 @@
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:"

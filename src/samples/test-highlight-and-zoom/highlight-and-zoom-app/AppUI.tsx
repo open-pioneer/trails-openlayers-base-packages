@@ -1,18 +1,18 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     HStack,
     ListItem,
     Stack,
-    StackDivider,
     Text,
-    UnorderedList,
-    VStack
-} from "@open-pioneer/chakra-integration";
+    VStack,
+    Center,
+    List
+} from "@chakra-ui/react";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
@@ -76,11 +76,14 @@ export function AppUI() {
         if (map && !highlightMap.current.has(id)) {
             if (ownStyle) {
                 const highlight = map.highlightAndZoom(resultGeometries, {
-                    "highlightStyle": ownHighlightStyle
+                    highlightStyle: ownHighlightStyle,
+                    buffer: 1.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);
             } else {
-                const highlight = map.highlightAndZoom(resultGeometries, {});
+                const highlight = map.highlightAndZoom(resultGeometries, {
+                    buffer: 1.1
+                });
                 if (highlight) highlightMap.current.set(id, highlight);
             }
         }
@@ -101,144 +104,148 @@ export function AppUI() {
     }
 
     return (
-        <Flex height="100%" direction="column" overflow="hidden">
-            <TitledSection
-                title={
-                    <Box textAlign="center" py={1}>
-                        <SectionHeading size={"md"}>
-                            OpenLayers Base Packages - Highlight and Zoom
-                        </SectionHeading>
-                    </Box>
-                }
-            >
-                <Flex flex="1" direction="column" position="relative">
-                    <MapContainer mapId={MAP_ID}>
-                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
-                            <Box
-                                backgroundColor="whiteAlpha.900"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                            >
-                                <Text align="center">Test Controls:</Text>
-                                <Stack
-                                    align="center"
-                                    divider={<StackDivider borderColor="gray.200" />}
-                                    pt={5}
+        map && (
+            <Flex height="100%" direction="column" overflow="hidden">
+                <TitledSection
+                    title={
+                        <Box textAlign="center" py={1}>
+                            <SectionHeading size={"md"}>
+                                OpenLayers Base Packages - Highlight and Zoom
+                            </SectionHeading>
+                        </Box>
+                    }
+                >
+                    <Flex flex="1" direction="column" position="relative">
+                        <MapContainer map={map}>
+                            <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                                <Box
+                                    backgroundColor="whiteAlpha.900"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
                                 >
-                                    <Checkbox
-                                        onChange={(value) => {
-                                            setOwnStyle(value.target.checked);
-                                        }}
-                                    >
-                                        Own Style
-                                    </Checkbox>
-                                </Stack>
-                                <Stack pt={5}>
-                                    <HStack align="center">
-                                        <Button
-                                            width={105}
-                                            onClick={() =>
-                                                handleClick(map, pointGeometries, "point")
-                                            }
+                                    <Center>
+                                        <Text>Test Controls:</Text>
+                                    </Center>
+                                    <Stack align="center" pt={5}>
+                                        <Checkbox
+                                            checked={ownStyle}
+                                            onCheckedChange={(e) => setOwnStyle(!!e.checked)}
                                         >
-                                            Points
-                                        </Button>
-                                        <Button onClick={() => removeHighlight("point")}>
-                                            Remove
-                                        </Button>
-                                    </HStack>
-                                    <HStack>
-                                        <Button
-                                            width={105}
-                                            onClick={() => handleClick(map, lineGeometries, "line")}
-                                        >
-                                            LineString
-                                        </Button>
-                                        <Button onClick={() => removeHighlight("line")}>
-                                            Remove
-                                        </Button>
-                                    </HStack>
-                                    <HStack>
-                                        <Button
-                                            width={105}
-                                            onClick={() =>
-                                                handleClick(map, polygonGeometries, "polygon")
-                                            }
-                                        >
-                                            Polygons
-                                        </Button>
-                                        <Button onClick={() => removeHighlight("polygon")}>
-                                            Remove
-                                        </Button>
-                                    </HStack>
-                                    <HStack>
-                                        <Button
-                                            width={105}
-                                            onClick={() => handleClick(map, mixedGeometries, "mix")}
-                                        >
-                                            Mixed
-                                        </Button>
-                                        <Button onClick={() => removeHighlight("mix")}>
-                                            Remove
-                                        </Button>
-                                    </HStack>
-                                    <Button onClick={() => reset(map)}>Reset All</Button>
-                                </Stack>
-                            </Box>
-                        </MapAnchor>
-                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                            <VStack
-                                backgroundColor="whiteAlpha.900"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                                maxWidth="400px"
-                            >
-                                <Text as="b">Description</Text>
-                                <Text>
-                                    This application can be used to test adding highlight or marker,
-                                    zoom to their extent, and removing highlight and marker. The
-                                    highlight and zoom for point, line string and polygon geometries
-                                    in two different styles can be tested.
-                                </Text>
-                                <UnorderedList>
-                                    <ListItem>
-                                        Clicking on {"'Points'"} adds markers for point geometries.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'LineString'"} adds highlight for linestring
-                                        geometries.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'Polygon'"} adds highlight for polygon
-                                        geometries.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'Mixed'"} adds highlight for geometries of
-                                        different types.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'Remove'"} will remove the marker or highlight
-                                        added by the button on the left.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'Reset All'"} removes all highlights and
-                                        markers from the map.
-                                    </ListItem>
-                                    <ListItem>
-                                        Clicking on {"'Own Style'"} activates highlighting with
-                                        customstyle.
-                                    </ListItem>
-                                </UnorderedList>
-                            </VStack>
-                        </MapAnchor>
-                    </MapContainer>
-                </Flex>
-            </TitledSection>
-        </Flex>
+                                            Own Style
+                                        </Checkbox>
+                                    </Stack>
+                                    <Stack pt={5}>
+                                        <HStack align="center">
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, pointGeometries, "point")
+                                                }
+                                            >
+                                                Points
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("point")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, lineGeometries, "line")
+                                                }
+                                            >
+                                                LineString
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("line")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, polygonGeometries, "polygon")
+                                                }
+                                            >
+                                                Polygons
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("polygon")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, mixedGeometries, "mix")
+                                                }
+                                            >
+                                                Mixed
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("mix")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <Button onClick={() => reset(map)}>Reset All</Button>
+                                    </Stack>
+                                </Box>
+                            </MapAnchor>
+                            <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                                <VStack
+                                    backgroundColor="whiteAlpha.900"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    maxWidth="400px"
+                                >
+                                    <Text as="b">Description</Text>
+                                    <Text>
+                                        This application can be used to test adding highlight or
+                                        marker, zoom to their extent, and removing highlight and
+                                        marker. The highlight and zoom for point, line string and
+                                        polygon geometries in two different styles can be tested.
+                                    </Text>
+                                    <List.Root marginStart="1em">
+                                        <ListItem>
+                                            Clicking on {"'Points'"} adds markers for point
+                                            geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'LineString'"} adds highlight for
+                                            linestring geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Polygon'"} adds highlight for polygon
+                                            geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Mixed'"} adds highlight for geometries of
+                                            different types.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Remove'"} will remove the marker or
+                                            highlight added by the button on the left.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Reset All'"} removes all highlights and
+                                            markers from the map.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Own Style'"} activates highlighting with
+                                            customstyle.
+                                        </ListItem>
+                                    </List.Root>
+                                </VStack>
+                            </MapAnchor>
+                        </MapContainer>
+                    </Flex>
+                </TitledSection>
+            </Flex>
+        )
     );
 }
 

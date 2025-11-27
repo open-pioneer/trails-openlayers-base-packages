@@ -1,0 +1,1278 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+/*
+ * no xml parser in happy dom
+ * @vitest-environment jsdom
+ */
+import { effect, watch } from "@conterra/reactivity-core";
+import { on } from "@conterra/reactivity-events";
+import { throwAbortError } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
+import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
+import { waitFor } from "@testing-library/dom";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { Group } from "ol/layer";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { GroupLayer } from "../layers/GroupLayer";
+import { SimpleLayer } from "../layers/SimpleLayer";
+import { AnyLayer, Layer } from "../layers/unions";
+import { WMSLayer } from "../layers/WMSLayer";
+import { WMTSLayer } from "../layers/WMTSLayer";
+import { createMapModel } from "./createMapModel";
+import { MapConfig } from "./MapConfig";
+import { MapModel } from "./MapModel";
+
+const THIS_DIR = dirname(fileURLToPath(import.meta.url));
+const WMTS_CAPAS = readFileSync(
+    resolve(THIS_DIR, "../layers/wms/test-data/SimpleWMSCapas.xml"),
+    "utf-8"
+);
+
+const MOCKED_HTTP_SERVICE = {
+    fetch: vi.fn()
+};
+
+const SYNC_DISPATCH = { dispatch: "sync" } as const;
+
+let model: MapModel | undefined;
+afterEach(() => {
+    vi.restoreAllMocks();
+    model?.destroy();
+    model = undefined;
+});
+
+it("makes the map layers accessible", async () => {
+    model = await create("foo", {
+        layers: [
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Some base layer",
+                visible: false,
+                olLayer: dummyLayer(),
+                isBaseLayer: true
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                title: "OSM",
+                description: "OSM layer",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Empty tile",
+                visible: false,
+                olLayer: dummyLayer()
+            })
+        ]
+    });
+
+    const layers = model.layers.getOperationalLayers();
+    expect(layers.map(getLayerProps)).toMatchInlineSnapshot(`
+      [
+        {
+          "description": "OSM layer",
+          "title": "OSM",
+          "visible": true,
+        },
+        {
+          "description": "",
+          "title": "Empty tile",
+          "visible": false,
+        },
+      ]
+    `);
+
+    // Z-Index is assigned internally based on the display order of layers.
+    // Validate relative order: OSM should be below "Empty tile"
+    await waitForZIndex(layers[0]!);
+    const sortedLayers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expectLayerOrder(sortedLayers);
+
+    const baseLayers = model.layers.getBaseLayers();
+    expect(baseLayers.length).toBe(1);
+
+    const allLayers = model.layers.getLayers();
+    expect(allLayers).toEqual([...baseLayers, ...layers]);
+    // Basemap + OSM + TopPlus Open + "highlight-layer" = 4
+    expect(model.olMap.getAllLayers().length).toBe(4);
+});
+
+it("supports ordered retrieval of layers", async () => {
+    model = await create("foo", {
+        layers: [
+            createTestLayer({
+                type: SimpleLayer,
+                title: "OSM",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Empty tile",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Base",
+                isBaseLayer: true,
+                olLayer: createTestOlLayer()
+            })
+        ]
+    });
+
+    const layers = model.layers.getLayers({ sortByDisplayOrder: true });
+    const titles = layers.map((l) => l.title);
+    expect(titles).toMatchInlineSnapshot(`
+      [
+        "Base",
+        "OSM",
+        "Empty tile",
+      ]
+    `);
+
+    const operationalLayers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    const operationalLayerTitles = operationalLayers.map((l) => l.title);
+    expect(operationalLayerTitles).toMatchInlineSnapshot(`
+      [
+        "OSM",
+        "Empty tile",
+      ]
+    `);
+});
+
+it("only returns internal layer if explicitly specified", async () => {
+    model = await create("foo", {
+        layers: [
+            createTestLayer({
+                title: "internal",
+                description: "internal layer",
+                internal: true,
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                title: "other",
+                visible: false,
+                olLayer: dummyLayer()
+            })
+        ]
+    });
+
+    let layers = model.layers.getLayers();
+    expect(layers.length).toBe(1);
+    layers = model.layers.getLayers({ includeInternalLayers: true });
+    expect(layers.length).toBe(3); // Expect 3 because internal map highlight layer is added automatically
+
+    layers = model.layers.getAllLayers();
+    expect(layers.length).toBe(1);
+    layers = model.layers.getAllLayers({ includeInternalLayers: true });
+    expect(layers.length).toBe(3);
+
+    layers = model.layers.getItems();
+    expect(layers.length).toBe(1);
+    layers = model.layers.getItems({ includeInternalLayers: true });
+    expect(layers.length).toBe(3);
+
+    layers = model.layers.getOperationalLayers();
+    expect(layers.length).toBe(1);
+    layers = model.layers.getOperationalLayers({ includeInternalLayers: true });
+    expect(layers.length).toBe(3);
+});
+
+it("generates automatic unique ids for layers", async () => {
+    model = await create("foo", {
+        layers: [
+            createTestLayer({
+                type: SimpleLayer,
+                title: "OSM",
+                description: "OSM layer",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Empty tile",
+                visible: false,
+                olLayer: dummyLayer()
+            })
+        ]
+    });
+
+    const ids = model.layers.getLayers().map((l) => l.id);
+    const verifyId = (id: unknown, message: string) => {
+        expect(id, message).toBeTypeOf("string");
+        expect((id as string).length, message).toBeGreaterThan(0);
+    };
+
+    verifyId(ids[0], "id 0");
+    verifyId(ids[1], "id 1");
+    expect(ids[0]).not.toEqual(ids[1]);
+});
+
+it("supports adding custom layer instances", async () => {
+    MOCKED_HTTP_SERVICE.fetch.mockImplementation(async (req: string) => {
+        if (req.includes("GetCapabilities")) {
+            // just valid enough to suppress error messages
+            return new Response(WMTS_CAPAS, { status: 200 });
+        }
+        throw new Error("unexpected request");
+    });
+
+    model = await create("foo", {
+        layers: [
+            createTestLayer({
+                type: SimpleLayer,
+                id: "l1",
+                title: "L1",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer({
+                type: SimpleLayer,
+                id: "l2",
+                title: "L2",
+                olLayer: dummyLayer()
+            }),
+            createTestLayer(
+                {
+                    type: WMSLayer,
+                    id: "l3",
+                    title: "L3",
+                    url: "https://example.com"
+                },
+                { fetch: vi.fn().mockImplementation(async () => new Response("", { status: 200 })) }
+            )
+        ]
+    });
+
+    const l1 = model.layers.getLayerById("l1");
+    expect(l1).toBeInstanceOf(SimpleLayer);
+
+    const l2 = model.layers.getLayerById("l2");
+    expect(l2).toBeInstanceOf(SimpleLayer);
+
+    const l3 = model.layers.getLayerById("l3");
+    expect(l3).toBeInstanceOf(WMSLayer);
+});
+
+it("destroys child layers when parent group layer is removed", async () => {
+    const groupMember = createTestLayer({
+        type: SimpleLayer,
+        id: "member",
+        title: "group member",
+        olLayer: dummyLayer()
+    });
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "group test",
+        layers: [groupMember]
+    });
+    // Register dummy event handlers
+    const groupFn = vi.fn();
+    const memberFn = vi.fn();
+    on(groupMember.destroyed, memberFn, SYNC_DISPATCH);
+    on(groupLayer.destroyed, groupFn, SYNC_DISPATCH);
+
+    model = await create("foo", {
+        layers: [groupLayer]
+    });
+
+    model.layers.removeLayerById("group"); // Remove group layer
+    // Destroy event should be emitted for each (child) layer
+    expect(memberFn).toHaveBeenCalledOnce();
+    expect(groupFn).toHaveBeenCalledOnce();
+});
+
+describe("layer lookup", () => {
+    it("supports lookup by layer id", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "l-1",
+                    title: "OSM",
+                    olLayer: dummyLayer()
+                }),
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "l-2",
+                    title: "Empty tile",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layers = model.layers;
+        const l1 = layers.getLayerById("l-1");
+        expect(l1!.id).toBe("l-1");
+
+        const l2 = layers.getLayerById("l-2");
+        expect(l2!.id).toBe("l-2");
+
+        const l3 = layers.getLayerById("l-3");
+        expect(l3).toBeUndefined();
+    });
+
+    it("supports lookup by layer id for members of a group layer", async () => {
+        const child = createTestLayer({
+            type: SimpleLayer,
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child]
+        });
+
+        model = await create("foo", {
+            layers: [group]
+        });
+
+        const memberLayer = model.layers.getLayerById("member");
+        expect(memberLayer).toBe(child);
+        const groupLayer = model.layers.getLayerById("group");
+        expect(groupLayer).toBe(group);
+    });
+
+    it("results in an error, if using the same layer id twice", async () => {
+        await expect(async () => {
+            model = await create("foo", {
+                layers: [
+                    createTestLayer({
+                        type: SimpleLayer,
+                        id: "l-1",
+                        title: "OSM",
+                        olLayer: dummyLayer()
+                    }),
+                    createTestLayer({
+                        type: SimpleLayer,
+                        id: "l-1",
+                        title: "Empty tile",
+                        olLayer: dummyLayer()
+                    })
+                ]
+            });
+        }).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: Layer id 'l-1' is not unique. Either assign a unique id yourself or skip configuring 'id' for an automatically generated id.]`
+        );
+    });
+
+    it("supports reverse lookup from OpenLayers layer", async () => {
+        const rawL1 = dummyLayer();
+        const rawL2 = dummyLayer();
+
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "l-1",
+                    title: "OSM",
+                    olLayer: rawL1
+                })
+            ]
+        });
+
+        const l1 = model.layers.getLayerByRawInstance(rawL1);
+        expect(l1?.id).toBe("l-1");
+
+        const l2 = model.layers.getLayerByRawInstance(rawL2);
+        expect(l2).toBeUndefined();
+    });
+
+    it("supports reverse lookup from OpenLayers layer for members of a group layer", async () => {
+        const olLayer = dummyLayer();
+
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: GroupLayer,
+                    id: "group",
+                    title: "group test",
+                    layers: [
+                        createTestLayer({
+                            type: SimpleLayer,
+                            id: "member",
+                            title: "group member",
+                            olLayer: olLayer
+                        })
+                    ]
+                })
+            ]
+        });
+
+        const memberLayer = model.layers.getLayerByRawInstance(olLayer);
+        expect(memberLayer).toBeDefined();
+        const olGroup = model.olMap.getLayers().getArray()[1]; // Get raw OpenLayers group layer
+        const groupLayer = model.layers.getLayerByRawInstance(olGroup!);
+        expect(olGroup instanceof Group).toBeTruthy();
+        expect(groupLayer).toBeDefined();
+    });
+
+    it("should un-index layers that are member of group layer", async () => {
+        const olLayer = dummyLayer();
+
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: GroupLayer,
+                    id: "group",
+                    title: "group test",
+                    layers: [
+                        createTestLayer({
+                            type: SimpleLayer,
+                            id: "member",
+                            title: "group member",
+                            olLayer: olLayer
+                        })
+                    ]
+                })
+            ]
+        });
+
+        let memberLayer = model.layers.getLayerByRawInstance(olLayer);
+        expect(memberLayer).toBeDefined();
+        memberLayer = model.layers.getLayerById("member") as Layer;
+        expect(memberLayer).toBeDefined();
+
+        // Remove group layer and check if group members are not indexed anymore
+        model.layers.removeLayerById("group");
+        memberLayer = model.layers.getLayerByRawInstance(olLayer);
+        expect(memberLayer).toBeUndefined();
+        memberLayer = model.layers.getLayerById("member") as Layer;
+        expect(memberLayer).toBeUndefined();
+    });
+
+    it("registering the same OpenLayers layer twice throws an error", async () => {
+        const rawL1 = dummyLayer();
+
+        await expect(async () => {
+            model = await create("foo", {
+                layers: [
+                    createTestLayer({
+                        type: SimpleLayer,
+                        id: "l-1",
+                        title: "OSM",
+                        olLayer: rawL1
+                    }),
+                    createTestLayer({
+                        type: SimpleLayer,
+                        id: "l-2",
+                        title: "OSM",
+                        olLayer: rawL1
+                    })
+                ]
+            });
+        }).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: OlLayer used by layer 'l-2' has already been used in map.]`
+        );
+    });
+});
+
+describe("adding and removing layers", () => {
+    it("supports adding a layer to the model (default)", async () => {
+        model = await create("foo", {
+            layers: []
+        });
+        expect(model.layers.getLayers()).toHaveLength(0);
+
+        let changed = 0;
+        watch(
+            () => [model!.layers.getLayers()],
+            () => {
+                ++changed;
+            },
+            SYNC_DISPATCH
+        );
+
+        const layer = createTestLayer({
+            type: SimpleLayer,
+            title: "foo",
+            olLayer: dummyLayer(),
+            visible: false
+        });
+        model.layers.addLayer(layer);
+        expect(changed).toBe(1);
+        expect(getLayerProps(layer)).toMatchInlineSnapshot(`
+          {
+            "description": "",
+            "title": "foo",
+            "visible": false,
+          }
+        `);
+        expect(model.layers.getLayers()).toHaveLength(1);
+        expect(model.layers.getLayers()[0]).toBe(layer);
+    });
+
+    it("supports adding a layer to the model (top)", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy1",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layer = createTestLayer({
+            type: SimpleLayer,
+            title: "foo",
+            olLayer: dummyLayer(),
+            visible: false
+        });
+        model.layers.addLayer(layer, { at: "top" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[layers.length - 1]).toBe(layer);
+
+        // Validate relative order: dummy1 should be below foo
+        await waitForZIndex(layer);
+        expectLayerOrder(layers);
+    });
+
+    it("supports adding a layer to the model (bottom)", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy1",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layer = createTestLayer({
+            type: SimpleLayer,
+            title: "foo",
+            olLayer: dummyLayer()
+        });
+        model.layers.addLayer(layer, { at: "bottom" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[0]).toBe(layer);
+
+        // Validate relative order: foo should be below dummy1
+        await waitForZIndex(layer);
+        expectLayerOrder(layers);
+    });
+
+    it("supports adding a layer to the model (above / below)", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: dummyLayer()
+                }),
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy2",
+                    id: "dummy2",
+                    olLayer: dummyLayer()
+                }),
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy3",
+                    id: "dummy3",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layerAbove = createTestLayer({
+            type: SimpleLayer,
+            title: "above 1",
+            olLayer: dummyLayer()
+        });
+        const layerBelow = createTestLayer({
+            type: SimpleLayer,
+            title: "below 3",
+            olLayer: dummyLayer()
+        });
+
+        model.layers.addLayer(layerAbove, { at: "above", reference: "dummy1" });
+        model.layers.addLayer(layerBelow, { at: "below", reference: "dummy3" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(5);
+        expect(layers[1]).toBe(layerAbove);
+        expect(layers[3]).toBe(layerBelow);
+
+        // Validate relative order: dummy1 < above 1 < dummy2 < below 3 < dummy3
+        await waitForZIndex(layerAbove);
+        expectLayerOrder(layers);
+    });
+
+    it("supports adding a layer to the model (topmost)", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
+            title: "topmost1",
+            olLayer: dummyLayer()
+        });
+        const layerTopMost2 = createTestLayer({
+            type: SimpleLayer,
+            title: "topmost2",
+            olLayer: dummyLayer()
+        });
+
+        model.layers.addLayer(layerTopMost, { at: "topmost" });
+        let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        await waitForZIndex(layerTopMost);
+        // Validate relative order: dummy1 should be below topmost1
+        expectLayerOrder(layers);
+
+        model.layers.addLayer(layerTopMost2, { at: "topmost" }); // Should be above topmost1
+        layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost2);
+        expect(layers[layers.length - 2]).toBe(layerTopMost);
+        await waitForZIndex(layerTopMost2);
+        // Validate relative order: dummy1 < topmost1 < topmost2
+        expectLayerOrder(layers);
+
+        const oldZIndex = layerTopMost2.olLayer.getZIndex();
+        model.layers.removeLayerById(layerTopMost.id); // Remove (first) topmost
+        layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost2);
+        await waitForUpdatedZIndex(layerTopMost2, oldZIndex);
+        // Validate relative order: dummy1 should be below topmost2
+        expectLayerOrder(layers);
+    });
+
+    it("it throws error if reference layer is not a top level operational layer", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy",
+                    id: "dummy",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const baseLayer = createTestLayer({
+            type: SimpleLayer,
+            title: "base",
+            id: "base",
+            isBaseLayer: true,
+            olLayer: dummyLayer()
+        });
+        const childLayer = createTestLayer({
+            type: SimpleLayer,
+            title: "child",
+            id: "child",
+            olLayer: dummyLayer()
+        });
+        const groupLayer = createTestLayer({
+            type: GroupLayer,
+            title: "group",
+            id: "group",
+            layers: [childLayer]
+        });
+
+        model.layers.addLayer(baseLayer);
+        model.layers.addLayer(groupLayer);
+
+        const otherLayer = createTestLayer({
+            type: SimpleLayer,
+            title: "other1",
+            id: "other1",
+            olLayer: dummyLayer()
+        });
+        expect(() => {
+            model!.layers.addLayer(otherLayer, { at: "below", reference: baseLayer });
+        }).toThrowError("base layer");
+
+        const otherLayer2 = createTestLayer({
+            type: SimpleLayer,
+            title: "other2",
+            id: "other2",
+            olLayer: dummyLayer()
+        });
+        expect(() => {
+            model!.layers.addLayer(otherLayer2, { at: "above", reference: childLayer });
+        }).toThrowError("child layer");
+    });
+
+    it("supports removing a layer from the model (old API)", async () => {
+        const layer = createTestLayer({
+            type: SimpleLayer,
+            id: "l-1",
+            title: "OSM",
+            olLayer: dummyLayer()
+        });
+        model = await create("foo", {
+            layers: [layer]
+        });
+
+        const ids: (string | undefined)[] = [];
+        effect(() => {
+            ids.push(model?.layers.getLayerById("l-1")?.id);
+        }, SYNC_DISPATCH);
+
+        expect(ids).toEqual(["l-1"]);
+        expect(layer.isDestroyed).toBe(false);
+
+        model.layers.removeLayerById("l-1");
+        expect(layer.isDestroyed).toBe(true); // destroyed (backwards compat)
+        expect(ids).toEqual(["l-1", undefined]);
+    });
+
+    it("supports removing a layer from the model", async () => {
+        const layer = createTestLayer({
+            type: SimpleLayer,
+            id: "l-1",
+            title: "OSM",
+            olLayer: dummyLayer()
+        });
+        model = await create("foo", {
+            layers: [layer]
+        });
+
+        const ids: (string | undefined)[] = [];
+        effect(() => {
+            ids.push(model?.layers.getLayerById("l-1")?.id);
+        }, SYNC_DISPATCH);
+
+        expect(ids).toEqual(["l-1"]);
+
+        const result = model.layers.removeLayer("l-1")!;
+        expect(result).toBe(layer);
+        expect(layer.isDestroyed).toBe(false); // not destroyed
+        expect(ids).toEqual(["l-1", undefined]);
+
+        model.destroy();
+        // still not destroyed since layer was no longer owned by the map
+        expect(layer.isDestroyed).toBe(false);
+    });
+
+    it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
+        model = await create("foo", {});
+
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
+            title: "topmost",
+            olLayer: dummyLayer()
+        });
+        const layerOther = createTestLayer({
+            type: SimpleLayer,
+            title: "other",
+            olLayer: dummyLayer()
+        });
+
+        model.layers.addLayer(layerTopMost, { at: "topmost" });
+        let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        await waitForZIndex(layerTopMost);
+        // Single topmost layer should have a z-index assigned
+        expect(layerTopMost.olLayer.getZIndex()).toBeGreaterThan(0);
+
+        model.layers.addLayer(layerOther, { at: "top" }); //top should be below topmost
+        layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        expect(layers[layers.length - 2]).toBe(layerOther);
+        await waitForZIndex(layerOther);
+        // Validate relative order: other should be below topmost
+        expectLayerOrder(layers);
+    });
+
+    it("supports adding a layer to the model (above/below with topmost layer as reference)", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy",
+                    id: "dummy",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
+            title: "topmost",
+            id: "topmost",
+            olLayer: dummyLayer()
+        });
+        const layerTopMostBelow = createTestLayer({
+            type: SimpleLayer,
+            title: "topmostbelow",
+            id: "topmostbelow",
+            olLayer: dummyLayer()
+        });
+        const layerTopMostAbove = createTestLayer({
+            type: SimpleLayer,
+            title: "topmostabove",
+            id: "topmostabove",
+            olLayer: dummyLayer()
+        });
+        const layerOther = createTestLayer({
+            type: SimpleLayer,
+            title: "other",
+            id: "other",
+            olLayer: dummyLayer()
+        });
+        model.layers.addLayer(layerTopMost, { at: "topmost" });
+        model.layers.addLayer(layerTopMostBelow, { at: "below", reference: layerTopMost });
+        model.layers.addLayer(layerOther, { at: "top" });
+        let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        expect(layers[layers.length - 2]).toBe(layerTopMostBelow);
+        await waitForZIndex(layerOther);
+        // Validate relative order: dummy < other < topmostbelow < topmost
+        expectLayerOrder(layers);
+
+        model.layers.addLayer(layerTopMostAbove, { at: "above", reference: layerTopMostBelow });
+        layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
+        expect(layers[layers.length - 3]).toBe(layerTopMostBelow);
+        await waitForZIndex(layerTopMostAbove);
+        // Validate relative order: dummy < other < topmostbelow < topmostabove < topmost
+        expectLayerOrder(layers);
+
+        const oldZIndexTopMostAbove = layerTopMostAbove.olLayer.getZIndex();
+        model.layers.removeLayerById(layerTopMostBelow.id);
+        layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers[layers.length - 1]).toBe(layerTopMost);
+        expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
+        await waitForUpdatedZIndex(layerTopMostAbove, oldZIndexTopMostAbove);
+        // Validate relative order: dummy < other < topmostabove < topmost
+        expectLayerOrder(layers);
+    });
+});
+
+describe("base layers", () => {
+    it("supports configuration and manipulation of base layers", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "b-1",
+                    title: "Base Layer 1",
+                    isBaseLayer: true,
+                    olLayer: dummyLayer()
+                }),
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "b-2",
+                    title: "Base Layer 2",
+                    isBaseLayer: true,
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layers = model.layers;
+        const b1 = layers.getLayerById("b-1")! as SimpleLayer;
+        const b2 = layers.getLayerById("b-2")! as SimpleLayer;
+
+        let events = 0;
+        watch(
+            () => [model!.layers.getActiveBaseLayer()],
+            () => {
+                ++events;
+            },
+            SYNC_DISPATCH
+        );
+
+        expect(layers.getActiveBaseLayer()).toBe(b1); // first base layer wins initially
+        layers.activateBaseLayer(b1.id);
+        expect(layers.getActiveBaseLayer()).toBe(b1); // noop
+        expect(events).toBe(0); // no change
+        expect(b1.visible).toBe(true);
+        expect(b1.olLayer.getVisible()).toBe(true);
+        expect(b2.visible).toBe(false);
+        expect(b2.olLayer.getVisible()).toBe(false);
+
+        layers.activateBaseLayer(b2.id);
+        expect(layers.getActiveBaseLayer()).toBe(b2);
+        expect(events).toBe(1); // change event
+        expect(b1.visible).toBe(false);
+        expect(b1.olLayer.getVisible()).toBe(false);
+        expect(b2.visible).toBe(true);
+        expect(b2.olLayer.getVisible()).toBe(true);
+
+        layers.activateBaseLayer(undefined);
+        expect(layers.getActiveBaseLayer()).toBeUndefined();
+        expect(events).toBe(2);
+        expect(b1.visible).toBe(false);
+        expect(b1.olLayer.getVisible()).toBe(false);
+        expect(b2.visible).toBe(false);
+        expect(b2.olLayer.getVisible()).toBe(false);
+    });
+
+    it("supports removal of base layers", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "b-1",
+                    title: "Base Layer 1",
+                    isBaseLayer: true,
+                    olLayer: dummyLayer()
+                }),
+                createTestLayer({
+                    type: SimpleLayer,
+                    id: "b-2",
+                    title: "Base Layer 2",
+                    isBaseLayer: true,
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layers = model.layers;
+        const b1 = layers.getLayerById("b-1")!;
+        const b2 = layers.getLayerById("b-2")!;
+        expect(layers.getBaseLayers().length).toBe(2);
+
+        let events = 0;
+        watch(
+            () => [model!.layers.getLayers()],
+            () => {
+                ++events;
+            },
+            SYNC_DISPATCH
+        );
+
+        expect(layers.getActiveBaseLayer()).toBe(b1);
+
+        // Switches to b2
+        layers.removeLayerById(b1.id);
+        expect(layers.getBaseLayers().length).toBe(1);
+        expect(layers.getActiveBaseLayer()).toBe(b2);
+        expect(events).toBe(1);
+
+        // Switches to undefined
+        layers.removeLayerById(b2.id);
+        expect(layers.getActiveBaseLayer()).toBe(undefined);
+        expect(events).toBe(2);
+    });
+});
+
+describe("child access", () => {
+    it("it should return all layers including children", async () => {
+        const base = createTestLayer({
+            type: SimpleLayer,
+            id: "base",
+            title: "baselayer",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        const child = createTestLayer({
+            type: SimpleLayer,
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child]
+        });
+
+        model = await create("foo", {
+            layers: [base, group]
+        });
+
+        const allLayers = model.layers.getRecursiveLayers().map((layer) => layer.id);
+
+        // base & group & child, parents after children
+        expect(allLayers).toMatchInlineSnapshot(`
+      [
+        "base",
+        "member",
+        "group",
+      ]
+    `);
+    });
+
+    it("it should return all operational layers including children", async () => {
+        const base = createTestLayer({
+            type: SimpleLayer,
+            id: "base",
+            title: "baselayer",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        const child = createTestLayer({
+            type: SimpleLayer,
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child]
+        });
+
+        model = await create("foo", {
+            layers: [base, group]
+        });
+
+        const allOperationalLayers = model.layers
+            .getRecursiveLayers({ filter: "operational" })
+            .map((layer) => layer.id);
+
+        // group & child
+        expect(allOperationalLayers).toMatchInlineSnapshot(`
+      [
+        "member",
+        "group",
+      ]
+    `);
+        expect(allOperationalLayers.length).toBe(2);
+    });
+
+    it("it should return all layers including children ordered by display order (asc)", async () => {
+        const base = createTestLayer({
+            type: SimpleLayer,
+            id: "base",
+            title: "baselayer",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        const child = createTestLayer({
+            type: SimpleLayer,
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child]
+        });
+
+        model = await create("foo", {
+            layers: [group, base] // order reversed to test sorting
+        });
+
+        const allLayers = model.layers.getRecursiveLayers({
+            sortByDisplayOrder: true
+        });
+        expect(allLayers.length).toBe(3);
+        expect(allLayers[0]).toBe(base);
+        expect(allLayers[1]).toBe(child);
+        expect(allLayers[2]).toBe(group);
+    });
+
+    it("it should return internal layer only if explicitly specified ", async () => {
+        const base = createTestLayer({
+            id: "base",
+            title: "baselayer",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        const child = createTestLayer({
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child],
+            internal: true
+        });
+
+        model = await create("foo", {
+            layers: [group, base] // order reversed to test sorting
+        });
+
+        let allLayers = model.layers.getRecursiveLayers(); // No internal layers by default
+        expect(allLayers.length).toBe(1); // Only one because children of internal layers are not considered
+        expect(allLayers[0]).toBe(base);
+
+        allLayers = model.layers.getRecursiveLayers({
+            includeInternalLayers: true,
+            sortByDisplayOrder: true
+        });
+        expect(allLayers.length).toBe(4); // Expect 4 because internal map highlight layer is added automatically
+        expect(allLayers[0]).toBe(base);
+        expect(allLayers[1]).toBe(child);
+        expect(allLayers[2]).toBe(group);
+    });
+});
+
+it("supports connecting and disconnecting layers", async () => {
+    const simple = createTestLayer({
+        type: SimpleLayer,
+        title: "Simple",
+        olLayer: dummyLayer()
+    });
+    const group = createTestLayer({
+        type: GroupLayer,
+        title: "Group",
+        layers: [
+            createTestLayer({
+                type: SimpleLayer,
+                title: "Group Child",
+                olLayer: dummyLayer()
+            })
+        ]
+    });
+
+    const wmts = createTestLayer(
+        {
+            type: WMTSLayer,
+            title: "foo",
+            name: "layer-7328",
+            matrixSet: "EPSG:3857",
+            url: "https://example.com/wmts-service/Capabilities.xml"
+        },
+        {
+            fetch: throwAbortError
+        }
+    );
+    const wms = createTestLayer(
+        {
+            type: WMSLayer,
+            title: "Layer",
+            url: "https://example.com/wms-service",
+            sublayers: [
+                {
+                    name: "sublayer-1",
+                    title: "Sublayer 1",
+                    sublayers: [
+                        {
+                            name: "sublayer-2",
+                            title: "Sublayer 2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            fetch: vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
+        }
+    );
+
+    // Initially no map
+    const layers = [simple, group, wmts, wms];
+    expectNoMap(layers);
+
+    // Construct model with given layers, layers are attached
+    const map = await create("foo", {
+        layers: [simple, group, wmts, wms]
+    });
+    expectMap(layers, map);
+
+    // Remove again --> layers no longer attached
+    for (const layer of layers) {
+        map.layers.removeLayer(layer);
+    }
+    expectNoMap(layers);
+
+    // Attach layers again
+    for (const layer of layers) {
+        map.layers.addLayer(layer);
+    }
+    expectMap(layers, map);
+});
+
+function expectNoMap(layers: AnyLayer[] | undefined) {
+    if (!layers) {
+        return;
+    }
+
+    for (const layer of layers) {
+        expect(() => layer.map, `layer should not have a map: ${layer.title}`).toThrow();
+        expectNoMap(layer.children?.getItems());
+    }
+}
+
+function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModel) {
+    if (!layers) {
+        return;
+    }
+
+    for (const layer of layers) {
+        const actualMap = layer.map;
+        expect(actualMap, `layer should have a map: ${layer.title}`).toBe(expectedMap);
+        expectMap(layer.children?.getItems(), expectedMap);
+    }
+}
+
+function getLayerProps(layer: Layer) {
+    return {
+        title: layer.title,
+        description: layer.description,
+        visible: layer.visible
+    };
+}
+
+async function waitForZIndex(layer: Layer) {
+    return await waitFor(() => {
+        const zIndex = layer?.olLayer.getZIndex();
+        if (zIndex == null) {
+            throw new Error("No z-index was assigned");
+        }
+        return zIndex;
+    });
+}
+
+async function waitForUpdatedZIndex(layer: Layer, oldZIndex?: number) {
+    return await waitFor(async () => {
+        const currentZIndex = await waitForZIndex(layer);
+        if (currentZIndex !== oldZIndex) {
+            return currentZIndex;
+        } else {
+            throw new Error("z-index is unchanged");
+        }
+    });
+}
+
+/**
+ * Validates that layers have the expected relative z-index order.
+ * Layers should be provided in ascending order (bottom to top).
+ * The function checks that each layer's z-index is greater than the previous layer's z-index.
+ */
+function expectLayerOrder(layers: Layer[]) {
+    const zIndices = layers.map((layer) => ({
+        title: layer.title,
+        zIndex: layer.olLayer.getZIndex()
+    }));
+
+    for (let i = 1; i < zIndices.length; i++) {
+        const prev = zIndices[i - 1]!;
+        const curr = zIndices[i]!;
+        expect(
+            curr.zIndex,
+            `Layer "${curr.title}" (z-index: ${curr.zIndex}) should be above "${prev.title}" (z-index: ${prev.zIndex})`
+        ).toBeGreaterThan(prev.zIndex!);
+    }
+}
+
+function create(mapId: string, mapConfig: MapConfig) {
+    return createMapModel(mapId, mapConfig, createIntl(), MOCKED_HTTP_SERVICE as HttpService);
+}
+
+function dummyLayer() {
+    return createTestOlLayer();
+}

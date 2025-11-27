@@ -1,0 +1,307 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+/**
+ * @vitest-environment node
+ */
+import { watch } from "@conterra/reactivity-core";
+import { on } from "@conterra/reactivity-events";
+import { afterEach, expect, it, vi } from "vitest";
+import { MapModel } from "../model/MapModel";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
+import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
+import { GroupLayerCollection } from "./group/GroupLayerCollection";
+import { ATTACH_TO_MAP } from "./shared/internals";
+import { SublayersCollection } from "./shared/SublayersCollection";
+
+const SYNC_DISPATCH = { dispatch: "sync" } as const;
+
+afterEach(() => {
+    vi.restoreAllMocks();
+});
+
+it("emits a destroy event when destroyed", async () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "Foo"
+    });
+
+    let destroyed = 0;
+    on(
+        layer.destroyed,
+        () => {
+            destroyed++;
+        },
+        SYNC_DISPATCH
+    );
+
+    layer.destroy();
+    expect(destroyed).toBe(1);
+});
+
+it("destroys all sublayers when destroyed", async () => {
+    const nestedSublayer = new SublayerImpl({
+        title: "Nested Sublayer"
+    });
+    const sublayer = new SublayerImpl({
+        title: "Sublayer",
+        sublayer: nestedSublayer
+    });
+    const layer = new LayerImpl({
+        title: "Foo",
+        sublayer: sublayer
+    });
+
+    // Calls destroy on all items in `this.sublayers`
+    layer.destroy();
+
+    expect(sublayer.$destroyCalled).toBe(true);
+    expect(nestedSublayer.$destroyCalled).toBe(true);
+});
+
+it("throws when 'map' is accessed before the layer has been attached", async () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "Foo"
+    });
+    expect(() => layer.map).toThrowErrorMatchingInlineSnapshot(
+        `[Error: Layer 'a' has not been attached to a map yet.]`
+    );
+});
+
+it("supports access to the map", async () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "Foo"
+    });
+    const map = {} as any;
+    layer.__attach(map);
+    expect(layer.map).toBe(map);
+});
+
+it("supports the title attribute", async () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A"
+    });
+    expect(layer.title).toBe("A");
+
+    let changedTitle = 0;
+    watch(
+        () => [layer.title],
+        () => {
+            ++changedTitle;
+        },
+        SYNC_DISPATCH
+    );
+
+    layer.setTitle("B");
+    expect(layer.title).toBe("B");
+    expect(changedTitle).toBe(1);
+});
+
+it("supports the description attribute", async () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A"
+    });
+    expect(layer.description).toBe("");
+
+    let changedDescription = 0;
+    watch(
+        () => [layer.description],
+        () => {
+            ++changedDescription;
+        },
+        SYNC_DISPATCH
+    );
+
+    layer.setDescription("Description");
+    expect(layer.description).toBe("Description");
+    expect(changedDescription).toBe(1);
+});
+
+it("supports arbitrary additional attributes", async () => {
+    const hidden = Symbol("hidden");
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A",
+        attributes: {
+            foo: "bar",
+            [hidden]: "hidden"
+        }
+    });
+
+    // String and symbol properties are supported
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "foo": "bar",
+        Symbol(hidden): "hidden",
+      }
+    `);
+
+    let changedAttributes = 0;
+    watch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        },
+        SYNC_DISPATCH
+    );
+
+    layer.updateAttributes({
+        foo: "baz",
+        additional: "new-value",
+        [hidden]: "still-hidden"
+    });
+
+    // Symbols are also applied on update
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "additional": "new-value",
+        "foo": "baz",
+        Symbol(hidden): "still-hidden",
+      }
+    `);
+    expect(changedAttributes).toBe(1);
+});
+
+it("supports deletion of attributes", async () => {
+    const hidden = Symbol("hidden");
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A",
+        attributes: {
+            foo: "bar",
+            bar: "foo",
+            [hidden]: "hidden"
+        }
+    });
+
+    // String and symbol properties are supported
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "bar": "foo",
+        "foo": "bar",
+        Symbol(hidden): "hidden",
+      }
+    `);
+
+    let changedAttributes = 0;
+    watch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        },
+        SYNC_DISPATCH
+    );
+
+    layer.deleteAttribute("foo");
+    layer.deleteAttribute(hidden);
+    layer.deleteAttribute("foo"); // already delete, will not trigger change event
+
+    // Symbols are also applied on update
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "bar": "foo",
+      }
+    `);
+    expect(changedAttributes).toBe(2);
+});
+
+it("supports initial empty attribute object and empty attribute object after updating/deleting", async () => {
+    const hidden = Symbol("hidden");
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A"
+    });
+
+    let changedAttributes = 0;
+    watch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        },
+        SYNC_DISPATCH
+    );
+    // check layer attributes is empty object
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {}
+    `);
+
+    // update layer attributes
+    layer.updateAttributes({
+        [hidden]: "still-hidden"
+    });
+    expect(layer.attributes).toMatchInlineSnapshot(`
+    {
+      Symbol(hidden): "still-hidden",
+    }
+    `);
+    expect(changedAttributes).toBe(1);
+
+    // delete layer attributes and check, if layer attributes is empty object
+    layer.deleteAttribute(hidden);
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {}
+    `);
+    expect(changedAttributes).toBe(2);
+});
+
+abstract class SharedParent extends AbstractLayerBase {
+    // xxx lying to the compiler (not a real sublayer)
+    private _sublayers: SublayersCollection<any> | undefined;
+
+    constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
+        super(options);
+        if (options.sublayer) {
+            this._sublayers = new SublayersCollection([options.sublayer], INTERNAL_CONSTRUCTOR_TAG);
+        }
+    }
+
+    __attach(map: MapModel): void {
+        this[ATTACH_TO_MAP](map);
+    }
+
+    get visible(): boolean {
+        throw new Error("Method not implemented.");
+    }
+
+    get legend(): string | undefined {
+        return undefined;
+    }
+
+    get layers(): GroupLayerCollection | undefined {
+        return undefined;
+    }
+
+    get sublayers() {
+        return this._sublayers;
+    }
+
+    setVisible(_: boolean): void {
+        throw new Error("Method not implemented.");
+    }
+}
+
+class LayerImpl extends SharedParent {
+    type = "simple" as const;
+}
+
+class SublayerImpl extends SharedParent {
+    type = "wms-sublayer" as const;
+
+    $destroyCalled = false;
+
+    destroy(): void {
+        super.destroy();
+        this.$destroyCalled = true;
+    }
+
+    get parent(): never {
+        throw new Error("not implemented");
+    }
+
+    get parentLayer(): never {
+        throw new Error("not implemented");
+    }
+}

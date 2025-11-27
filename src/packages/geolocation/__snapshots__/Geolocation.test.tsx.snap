@@ -4,35 +4,64 @@ exports[`should successfully create a geolocation component with a button 1`] = 
 <button
   aria-label="locateNotSupported"
   aria-pressed="false"
-  class="chakra-button tool-button geolocation tool-button--disabled css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button geolocation tool-button--disabled css-19gwppe"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="geolocation"
-  data-theme="light"
+  dir="ltr"
   disabled=""
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="currentColor"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-width="0"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M0 0h24v24H0z"
-        fill="none"
-      />
-      <path
-        d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
-      />
-    </svg>
-  </span>
+    <line
+      x1="2"
+      x2="5"
+      y1="12"
+      y2="12"
+    />
+    <line
+      x1="19"
+      x2="22"
+      y1="12"
+      y2="12"
+    />
+    <line
+      x1="12"
+      x2="12"
+      y1="2"
+      y2="5"
+    />
+    <line
+      x1="12"
+      x2="12"
+      y1="19"
+      y2="22"
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r="7"
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r="3"
+    />
+  </svg>
 </button>
 `;

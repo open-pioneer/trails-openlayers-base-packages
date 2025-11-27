@@ -1,6 +1,11 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
@@ -27,7 +32,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         this.vectorSourceFactory = references.vectorSourceFactory;
     }
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
             initialView: {
@@ -39,7 +44,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "OSM",
                     visible: true,
                     isBaseLayer: true,
@@ -47,7 +53,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "inspire-us-kindergarten",
                     title: "Kindertageseinrichtungen in NRW",
                     visible: true,
@@ -67,7 +74,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         })
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "ogc_katasterbezirk",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
@@ -82,14 +90,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         })
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Abschnitte / Äste mit Unfällen (Mapbox Style)",
                     visible: false,
                     olLayer: new MapboxVectorLayer({
                         styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs"
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Pendleratlas",
                     visible: true,
                     olLayer: new VectorTileLayer({

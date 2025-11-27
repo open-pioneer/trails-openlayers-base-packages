@@ -1,8 +1,9 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { get as getProjection, Projection, transform } from "ol/proj";
 import { createLogger } from "@open-pioneer/core";
+import { Coordinate } from "ol/coordinate";
 const LOG = createLogger("coordinate-search");
 
 export interface ParseSuccess {
@@ -40,12 +41,17 @@ export function parseCoordinates(
     }
 
     const splitCoords = input.split(" ");
-    if (splitCoords.length != 2 || splitCoords[0] == "" || splitCoords[1] == "") {
+    if (
+        splitCoords[0] == undefined ||
+        splitCoords[1] == undefined ||
+        splitCoords[0] == "" ||
+        splitCoords[1] == ""
+    ) {
         return err("tooltip.2coords");
     }
 
-    const coordsString1 = numberParser.parseNumber(splitCoords[0]!);
-    const coordsString2 = numberParser.parseNumber(splitCoords[1]!);
+    const coordsString1 = numberParser.parseNumber(splitCoords[0]);
+    const coordsString2 = numberParser.parseNumber(splitCoords[1]);
 
     const coords: [number, number] = [coordsString1, coordsString2];
     if (coords.some((number) => Number.isNaN(number))) {
@@ -58,7 +64,7 @@ export function parseCoordinates(
 
         if (
             !checkIfCoordsInProjectionsExtent(
-                getProjection("EPSG:4326")!,
+                getProjection("EPSG:4326"),
                 transform(coords, projection, "EPSG:4326")
             )
         ) {
@@ -81,8 +87,11 @@ function err(kind: ParseError["kind"]): ParseError {
 }
 
 /* validate if the coordinates fit to the extent of the selected projection */
-function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number[]): boolean {
-    const extent = projection.getExtent();
+function checkIfCoordsInProjectionsExtent(
+    projection: Projection | null,
+    coords: Coordinate
+): boolean {
+    const extent = projection?.getExtent();
     if (!extent || extent.length !== 4) {
         // Some projections don't have an extent, cannot validate.
         return true;
@@ -92,10 +101,12 @@ function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number
     }
 
     return (
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
         extent[0]! <= coords[0]! &&
         extent[1]! <= coords[1]! &&
         extent[2]! >= coords[0]! &&
         extent[3]! >= coords[1]!
+        /* eslint-enable @typescript-eslint/no-non-null-assertion */
     );
 }
 

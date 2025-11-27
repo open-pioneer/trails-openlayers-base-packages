@@ -1,27 +1,25 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
 import {
-    createServiceOptions,
     setupMap,
     waitForMapMount,
-    SimpleMapOptions
+    SimpleMapOptions,
+    createTestOlLayer
 } from "@open-pioneer/map-test-utils";
-import TileLayer from "ol/layer/Tile";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("successfully creates a map", async () => {
-    const { mapId, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base" />
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base" />
         </PackageContextProvider>
     );
 
@@ -29,7 +27,6 @@ it("successfully creates a map", async () => {
     await waitForMapMount();
 
     // Div is registered as map target
-    const map = await registry.expectMapModel(mapId);
     const container = renderResult.container.querySelector(".map-container");
     expect(container?.tagName).toBe("DIV");
     expect(map?.container).toBe(container);
@@ -43,15 +40,13 @@ it("successfully creates a map", async () => {
 
 it("reports an error if two map containers are used for the same map", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId); // fully create map before rendering for simplicity
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <MapContainer mapId={mapId} />
+                <MapContainer map={map} />
+                <MapContainer map={map} />
             </div>
         </PackageContextProvider>
     );
@@ -76,29 +71,24 @@ it("reports an error if two map containers are used for the same map", async () 
 });
 
 it("successfully creates a map with given configuration", async () => {
-    const options: SimpleMapOptions = {
+    const options = {
         layers: [
             {
                 title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    visible: false
-                })
+                olLayer: createTestOlLayer()
             },
             {
                 title: "TopPlus Open Grau",
-                olLayer: new TileLayer({
-                    visible: false
-                })
+                olLayer: createTestOlLayer()
             }
         ]
-    };
-    const { mapId, registry } = await setupMap(options);
+    } satisfies SimpleMapOptions;
+    const { map } = await setupMap(options);
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <div data-testid="base">
-                <MapContainer mapId={mapId} />
+                <MapContainer map={map} />
             </div>
         </PackageContextProvider>
     );
@@ -107,20 +97,18 @@ it("successfully creates a map with given configuration", async () => {
     await waitForMapMount();
 
     // Div is registered as map target
-    const map = await registry.expectMapModel(mapId);
-    const layers = map.layers.getAllLayers();
+    const layers = map.layers.getLayers();
     expect(layers[0]?.title).toBe("TopPlus Open");
     expect(layers[1]?.title).toBe("TopPlus Open Grau");
 });
 
 it("supports configuring role and aria labels", async () => {
-    const { mapId, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer
-                mapId={mapId}
-                role="application"
+                map={map}
+                role="region"
                 /* note: don't mix aria label and aria-labelledby in a real application; this just tests that props are forwarded */
                 aria-label="foo"
                 aria-labelledby="does-not-exist"
@@ -132,7 +120,7 @@ it("supports configuring role and aria labels", async () => {
     await waitForMapMount();
 
     const container = renderResult.container.querySelector(".map-container")!;
-    expect(container.role).toBe("application");
+    expect(container.role).toBe("region");
     expect(container.getAttribute("aria-label")).toBe("foo");
     expect(container.getAttribute("aria-labelledby")).toEqual("does-not-exist");
 });

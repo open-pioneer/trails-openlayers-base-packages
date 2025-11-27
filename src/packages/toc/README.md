@@ -6,10 +6,12 @@ Unavailable operational layers are marked with an icon and will be deactivated f
 
 ## Usage
 
-To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
+To integrate the TOC (table of contents) in your app, insert the following snippet (and reference a map):
 
 ```tsx
-<Toc mapId="map_id" />
+<Toc
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Tools
@@ -18,13 +20,13 @@ Additional tools are available for operational layers.
 To show the toolset menu, set the `showTools` property to `true`.
 
 ```tsx
-<Toc mapId="map_id" showTools={true} />
+<Toc map={map} showTools={true} />
 ```
 
 The default tools provided by the TOC are:
 
--   A button to hide all layers (sets `visibility` to false, enabled by default)
--   A button to collapse all groups (enabled by default if groups are collapsible)
+- A button to hide all layers (sets `visibility` to false, enabled by default)
+- A button to collapse all groups (enabled by default if groups are collapsible)
 
 These tools can be configured by using the `toolsConfig` property.
 
@@ -35,14 +37,14 @@ By default, the TOC shows the basemap switcher as an embedded element.
 To hide the basemap switcher, set the `showBasemapSwitcher` property to `false`:
 
 ```tsx
-<Toc mapId="map_id" showBasemapSwitcher={false} />
+<Toc map={map} showBasemapSwitcher={false} />
 ```
 
 To configure the embedded basemap switcher, use the `basemapSwitcherProps` property:
 
 ```tsx
 <Toc
-    mapId="map_id"
+    map={map}
     basemapSwitcherProps={{
         allowSelectingEmptyBasemap: true
     }}
@@ -84,10 +86,90 @@ If enabled, a toggle button appears next to parent nodes by which the user can e
 
 ```tsx
 <Toc
-    mapId={MAP_ID}
+    map={map}
     collapsibleGroups={true}
     initiallyCollapsed={true} // Whether groups are collapsed by default. Defaults to false.
 />
+```
+
+### Hide certain layers in Toc
+
+Layers that are marked as `internal` are not considered by the Toc.
+
+```typescript
+//internal layer will not be displayed in the Toc
+const internalLayer = layerFactory.create({
+    type: SimpleLayer,
+    id: "layer1",
+    title: "layer 1",
+    olLayer: myOlLayer,
+    internal: true
+});
+```
+
+The layer's `internal` state also affects other UI widgets (e.g. Legend). If the layer should be hidden specifically in the Toc (but not in other widgets) the `listMode` attribute can be used to hide the layer item.
+
+```typescript
+//use listMode to hide the layer specifically in Toc
+const hiddenLayer = layerFactory.create({
+    type: SimpleLayer,
+    id: "layer1",
+    title: "layer 1",
+    olLayer: myOlLayer,
+    attributes: {
+        toc: {
+            listMode: "hide"
+        }
+    }
+});
+```
+
+Valid values for `listMode` are:
+
+- `"show"` layer item is displayed in Toc
+- `"hide"` layer item is not rendered in Toc
+- `"hide-children"` layer item for the layer itself is displayed in Toc but no layer items for child layers (e.g. sublayers of a group) are rendered
+
+The `listMode` always has precedence over the layer's `internal` property. For example, if the `listMode` is `"show"` the layer item is displayed even if `internal` is `true`.
+
+### Using the Toc API to manipulate Toc Items programmatically
+
+The Toc API allows programmatic access to the Toc.
+
+Currently, the Toc API allows accessing the individual Toc items.  
+Toc items can be expanded/collapsed and provide access to the corresponding DOM element.
+
+```tsx
+import { Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
+import { Button } from "@chakra-ui/react";
+
+const tocApi = useRef<TocApi>(undefined);
+
+// Expand or collapse group layer with the Toc API
+function toggleTocItem(layerId: string) {
+    if (!tocApi.current) {
+        return; // toc not ready yet
+    }
+
+    const layerItem = tocApi.current.getItemByLayerId(layerId);
+    if (!layerItem) {
+        return; // item not found
+    }
+
+    console.log("Current html element", layerItem.htmlElement); // access DOM element (e.g. for scrolling)
+    const newState = !layerItem.isExpanded;
+    layerItem.setExpanded(newState);
+}
+
+<Toc
+    // get API object from ready event and store it somewhere
+    onReady={(e) => { tocApi.current = e.api; }}
+
+    // don't use the API object after the toc has been destroyed
+    onDisposed={() => { tocApi.current = undefined; }}
+/>
+
+<Button onClick={() => toggleTocItem("myGroupLayer")}>Toggle group layer</Button>
 ```
 
 ## License

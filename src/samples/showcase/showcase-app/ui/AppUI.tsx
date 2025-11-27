@@ -1,19 +1,21 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode, useMemo } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
+import { ReactNode, useEffect, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");
     const appState = useReactiveSnapshot(() => appModel.appState, [appModel]);
+
+    useGlobalLang();
 
     let content: ReactNode;
     switch (appState.kind) {
@@ -45,6 +47,8 @@ function AppContent(props: { state: AppStateReady }) {
         [currentDemoModel]
     );
 
+    const headingId = useId();
+
     const viewPadding = useMemo(() => {
         // adjust map view whether list container (bottom = height of list component)
         return {
@@ -57,14 +61,13 @@ function AppContent(props: { state: AppStateReady }) {
 
     return (
         <>
-            <Notifier position="top-right" />
+            <Notifier />
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
                     <Flex flex="1" direction="column" position="relative">
-                        <DefaultMapProvider mapId={MAP_ID}>
+                        <DefaultMapProvider map={appModel.map}>
                             <MapContainer
                                 viewPadding={viewPadding}
-                                role="main"
                                 aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
                             >
                                 <MapAnchor
@@ -73,17 +76,20 @@ function AppContent(props: { state: AppStateReady }) {
                                     horizontalGap={10}
                                     verticalGap={10}
                                 >
-                                    <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
+                                    <Box
+                                        role="region"
+                                        aria-labelledby={headingId}
+                                        bgColor="white"
+                                        borderRadius={10}
+                                        p={2}
+                                        maxW="500px"
+                                    >
                                         <TitledSection
+                                            key={currentDemo.id}
                                             title={currentDemo.title}
-                                            sectionHeadingProps={{ size: "lg" }}
+                                            sectionHeadingProps={{ id: headingId, size: "lg" }}
                                         >
-                                            <Text
-                                                py={4}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: currentDemoModel.description
-                                                }}
-                                            ></Text>
+                                            <Text py={4}>{currentDemoModel.description}</Text>
                                             {currentDemoModel.mainWidget}
                                         </TitledSection>
                                     </Box>
@@ -91,26 +97,42 @@ function AppContent(props: { state: AppStateReady }) {
                                 <MapAnchor position="bottom-right" horizontalGap={6}>
                                     <VStack p={1}>{currentDemoModel.tools}</VStack>
                                 </MapAnchor>
-                                {currentListContainer && (
-                                    <Box
-                                        className="list-container"
-                                        position="absolute"
-                                        bottom="0"
-                                        backgroundColor="white"
-                                        width="100%"
-                                        height="400px"
-                                        zIndex={1 /* above map */}
-                                        borderTop="2px solid"
-                                        borderColor="trails.100"
-                                    >
-                                        {currentListContainer}
-                                    </Box>
-                                )}
                             </MapContainer>
+                            {currentListContainer && (
+                                <Box
+                                    className="list-container"
+                                    role="region"
+                                    aria-label={intl.formatMessage({ id: "ariaLabels.results" })}
+                                    position="absolute"
+                                    bottom="0"
+                                    backgroundColor="white"
+                                    width="100%"
+                                    height="400px"
+                                    zIndex={1 /* above map */}
+                                    borderTop="2px solid"
+                                    borderColor="trails.100"
+                                >
+                                    {currentListContainer}
+                                </Box>
+                            )}
                         </DefaultMapProvider>
                     </Flex>
                 </TitledSection>
             </Flex>
         </>
     );
+}
+
+/**
+ * Syncs the application's locale into the <html> element.
+ *
+ * This is appropriate when the app implements the entire page anyway; it may introduce
+ * conflicts when the app is embedded into another site.
+ */
+function useGlobalLang() {
+    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
+    const locale = useReactiveSnapshot(() => ctx.getLocale(), [ctx]);
+    useEffect(() => {
+        document.documentElement.lang = locale;
+    }, [locale]);
 }

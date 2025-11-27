@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { Printing } from "./Printing";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { NotificationService } from "@open-pioneer/notifier";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { Printing } from "./Printing";
 import * as PrintingControllerModule from "./PrintingController";
 
 const setFileFormatSpy = vi.fn();
@@ -38,6 +38,7 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.restoreAllMocks();
+    vi.clearAllMocks();
 });
 
 it("should successfully create a printing component", async () => {
@@ -120,22 +121,19 @@ it("should trigger a notification if the map export fails", async () => {
 });
 
 async function createPrinting() {
-    const { mapId, registry } = await setupMap();
+    const { map } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify: notifySpy
     };
 
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const injectedServices: Record<string, unknown> = {};
     injectedServices["notifier.NotificationService"] = notifier;
-
-    // used via useService, but never called because controller was mocked
-    injectedServices["printing.PrintingService"] = {};
+    injectedServices["printing.PrintingService"] = {}; // used via useService, but never called because controller was mocked
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Printing mapId={mapId} data-testid="printing"></Printing>
+            <Printing map={map} data-testid="printing"></Printing>
         </PackageContextProvider>
     );
 }

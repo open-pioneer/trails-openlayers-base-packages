@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel } from "@open-pioneer/map";
 import { View } from "ol";
@@ -68,10 +68,14 @@ export class ViewHistoryModel {
 
     #goto(activeViewId: number) {
         const view = this.olMap.getView();
+        const activeView = this.mapViews.get(activeViewId);
+        if (activeView == null) {
+            throw new Error(`No view found for id ${activeViewId}`);
+        }
         this.olMap.setView(
             new View({
-                center: this.mapViews.get(activeViewId)!.center,
-                resolution: this.mapViews.get(activeViewId)!.resolution,
+                center: activeView.center,
+                resolution: activeView.resolution,
                 projection: view.getProjection()
             })
         );
@@ -145,13 +149,9 @@ const VIEW_MODELS = new WeakMap<MapModel, ViewModelState>();
  *
  * NOTE: May be useful to have this a general solution in the future; but this is the only usage right now.
  */
-export function useHistoryViewModel(map: MapModel | undefined): ViewHistoryModel | undefined {
+export function useHistoryViewModel(map: MapModel): ViewHistoryModel | undefined {
     const [vm, setVm] = useState<ViewHistoryModel>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         let state = VIEW_MODELS.get(map);
         if (state == null) {
             state = {

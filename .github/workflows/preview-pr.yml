@@ -19,7 +19,7 @@ jobs:
       # If you know a smarter way, let us now.
       - name: Wait for other checks to succeed
         if: github.event.action != 'closed'
-        uses: lewagon/wait-on-check-action@v1.3.4
+        uses: lewagon/wait-on-check-action@v1.4.1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           check-name: "Build samples and documentation"
@@ -37,7 +37,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download latest build artifact
         run: |
@@ -61,9 +61,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
-        uses: rossjrw/pr-preview-action@v1.4.7
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@main
         with:
-          source-dir: ./site/www/
-          umbrella-dir: "openlayers-base-packages/pr-previews"
-          deploy-repository: open-pioneer/trails-pr-previews
-          token: ${{ secrets.DEPLOY_TOKEN }}
+          src-repo: "openlayers-base-packages"
+          token: ${{ secrets.DEMO_DEPLOY_TOKEN }}

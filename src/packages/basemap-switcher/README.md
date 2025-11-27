@@ -6,37 +6,41 @@ Unavailable basemaps are marked with an icon and will be deactivated for selecti
 
 ## Usage
 
-To add the component to your app, insert the following snippet with a reference to a map ID:
+To add the component to your app, insert the following snippet:
 
 ```jsx
-<BasemapSwitcher mapId="map_id" />
+<BasemapSwitcher
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap` (default: `false`).
 
 ```jsx
-<BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />
+<BasemapSwitcher map={map} allowSelectingEmptyBasemap />
 ```
 
 ## Accessibility
 
-The package provides only a `HTMLSelectElement`.
+The package provides only a select component.
 To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher.
-Therefore, use one of the following attempts:
+Therefore, use one of the following approaches:
 
--   Wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
--   Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that an anywhere defined label is used as the basemap switcher's label.
--   Use the `aria-label` property of the `BasemapSwitcher` to set an label for the screen reader that is not shown in the UI.
+- Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that another HTML element (e.g. a heading shown above the control) is used as the basemap switcher's label.
+- Use the `aria-label` property of the `BasemapSwitcher` to set a label for the screen reader that is not shown in the UI.
 
 Example:
 
 ```jsx
-<FormControl>
-    <FormLabel ps={1}>
-        <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
-    </FormLabel>
-    <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap></BasemapSwitcher>
-</FormControl>
+<TitledSection
+    title={
+        <SectionHeading id={basemapsHeadingId} mb={2}>
+            {intl.formatMessage({ id: "basemapLabel" })}
+        </SectionHeading>
+    }
+>
+    <BasemapSwitcher map={map} aria-labelledby={basemapsHeadingId} />
+</TitledSection>
 ```
 
 ## License

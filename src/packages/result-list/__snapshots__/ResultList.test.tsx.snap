@@ -4,11 +4,9 @@ exports[`expect empty data text to be shown 1`] = `
 <div
   class="result-list css-u718rw"
   data-testid="result-list"
-  data-theme="light"
 >
   <div
-    class="result-list-no-data-message css-0"
-    data-theme="light"
+    class="result-list-no-data-message"
   >
     noDataMessage
   </div>
@@ -23,441 +21,495 @@ exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
   data-testid="result-list"
-  data-theme="light"
 >
-  <table
-    class="chakra-table result-list-table css-lkg3hs"
-    data-theme="light"
+  <div
+    class="result-list-table-container css-v2kfba"
     style="--header-selection-buttons-size: 70; --col-selection-buttons-size: 70; --header-result-list-col_a-size: 100; --col-result-list-col_a-size: 100; --header-result-list-col_b-size: 50; --col-result-list-col_b-size: 50; --header-result-list-col_c-size: 150; --col-result-list-col_c-size: 150; --header-result-list-col_d-size: 75; --col-result-list-col_d-size: 75; --header-result-list-col_e-size: 50; --col-result-list-col_e-size: 50;"
   >
-    <thead
-      class="css-0"
-      data-theme="light"
+    <table
+      class="chakra-table__root result-list-table css-kj01gx"
     >
-      <tr
-        class="result-list-headers css-0"
-        data-theme="light"
+      <thead
+        class="chakra-table__header"
       >
-        <th
-          aria-sort="none"
-          class="result-list-header css-zdxa4r"
-          data-theme="light"
-          style="width: 50px;"
-          tabindex="0"
+        <tr
+          class="result-list-headers chakra-table__row css-11ot24d"
         >
-          <div
-            class="result-list-select-all-container css-1baulvz"
-            data-theme="light"
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-yk2f60"
+            style="min-width: 50px;"
+            tabindex="0"
           >
+            <div
+              class="result-list-select-all-container css-1baulvz"
+            >
+              <span
+                class="chakra-tooltip__trigger"
+                data-part="trigger"
+                data-scope="tooltip"
+                data-state="closed"
+                dir="ltr"
+                id="tooltip:_r_0_:trigger"
+              >
+                <label
+                  aria-label="selectAllTooltip"
+                  class="result-list-select-all-checkbox chakra-checkbox__root css-if4mqv"
+                  data-part="root"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  for="checkbox:_r_2_:input"
+                  id="_r_1_"
+                >
+                  <input
+                    aria-invalid="false"
+                    aria-labelledby="_r_1_"
+                    id="checkbox:_r_2_:input"
+                    style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                    type="checkbox"
+                    value="on"
+                  />
+                  <div
+                    aria-hidden="true"
+                    class="chakra-checkbox__control css-16983vm"
+                    data-part="control"
+                    data-scope="checkbox"
+                    data-state="unchecked"
+                    dir="ltr"
+                    id="checkbox:_r_2_:control"
+                  >
+                    <svg
+                      class="css-wuqtn7"
+                      data-state="unchecked"
+                      viewBox="0 0 24 24"
+                    />
+                  </div>
+                </label>
+              </span>
+            </div>
             <span
-              class="css-0"
-              data-theme="light"
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            tabindex="0"
+          >
+            Spalte A
+            <span
+              aria-hidden="true"
+              class="result-list-sort-indicator css-1fb0rrh"
+            />
+            <span
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            tabindex="0"
+          >
+            Spalte B
+            <span
+              aria-hidden="true"
+              class="result-list-sort-indicator css-1fb0rrh"
+            />
+            <span
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            tabindex="0"
+          >
+            Spalte C
+            <span
+              aria-hidden="true"
+              class="result-list-sort-indicator css-1fb0rrh"
+            />
+            <span
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            tabindex="0"
+          >
+            Spalte D
+            <span
+              aria-hidden="true"
+              class="result-list-sort-indicator css-1fb0rrh"
+            />
+            <span
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+          <th
+            aria-sort="none"
+            class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            tabindex="0"
+          >
+            Spalte E
+            <span
+              aria-hidden="true"
+              class="result-list-sort-indicator css-1fb0rrh"
+            />
+            <span
+              aria-hidden="true"
+              class="result-list-resizer"
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="result-list-table-body chakra-table__body"
+      >
+        <tr
+          class="result-list-table-row chakra-table__row css-11ot24d"
+        >
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            <div
+              class="result-list-select-row-container css-1baulvz"
             >
               <label
-                class="chakra-checkbox result-list-select-all-checkbox css-1577qb8"
-                data-theme="light"
+                aria-label="ariaLabel.selectSingle"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
+                data-part="root"
+                data-scope="checkbox"
+                data-state="unchecked"
+                dir="ltr"
+                for="checkbox:_r_4_:input"
+                id="_r_3_"
               >
                 <input
-                  class="chakra-checkbox__input"
-                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                  aria-invalid="false"
+                  aria-labelledby="_r_3_"
+                  id="checkbox:_r_4_:input"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
-                  value=""
+                  value="on"
                 />
-                <span
+                <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1dnp747"
-                  data-theme="light"
-                />
+                  class="chakra-checkbox__control css-16983vm"
+                  data-part="control"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  id="checkbox:_r_4_:control"
+                >
+                  <svg
+                    class="css-wuqtn7"
+                    data-state="unchecked"
+                    viewBox="0 0 24 24"
+                  />
+                </div>
               </label>
-            </span>
-          </div>
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-        <th
-          aria-sort="none"
-          class="result-list-header css-y14pq5"
-          data-theme="light"
-          tabindex="0"
-        >
-          Spalte A
-          <span
-            class="result-list-sort-indicator css-1q8b5yy"
-            data-theme="light"
-          />
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-        <th
-          aria-sort="none"
-          class="result-list-header css-y14pq5"
-          data-theme="light"
-          tabindex="0"
-        >
-          Spalte B
-          <span
-            class="result-list-sort-indicator css-1q8b5yy"
-            data-theme="light"
-          />
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-        <th
-          aria-sort="none"
-          class="result-list-header css-y14pq5"
-          data-theme="light"
-          tabindex="0"
-        >
-          Spalte C
-          <span
-            class="result-list-sort-indicator css-1q8b5yy"
-            data-theme="light"
-          />
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-        <th
-          aria-sort="none"
-          class="result-list-header css-y14pq5"
-          data-theme="light"
-          tabindex="0"
-        >
-          Spalte D
-          <span
-            class="result-list-sort-indicator css-1q8b5yy"
-            data-theme="light"
-          />
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-        <th
-          aria-sort="none"
-          class="result-list-header css-y14pq5"
-          data-theme="light"
-          tabindex="0"
-        >
-          Spalte E
-          <span
-            class="result-list-sort-indicator css-1q8b5yy"
-            data-theme="light"
-          />
-          <span
-            class="result-list-resizer css-0"
-            data-theme="light"
-          />
-        </th>
-      </tr>
-    </thead>
-    <tbody
-      class="result-list-table-body css-0"
-      data-theme="light"
-    >
-      <tr
-        class="result-list-table-row css-0"
-        data-theme="light"
-      >
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          <div
-            class="result-list-select-row-container css-1baulvz"
-            data-theme="light"
+            </div>
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
           >
-            <label
-              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
-              data-theme="light"
-            >
-              <input
-                aria-disabled="false"
-                aria-label="ariaLabel.selectSingle"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-theme="light"
-              />
-            </label>
-          </div>
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Test
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          123
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          4.567
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          displayBoolean.true
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit
-        </td>
-      </tr>
-      <tr
-        class="result-list-table-row css-0"
-        data-theme="light"
-      >
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          <div
-            class="result-list-select-row-container css-1baulvz"
-            data-theme="light"
+            Test
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
           >
-            <label
-              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
-              data-theme="light"
-            >
-              <input
-                aria-disabled="false"
-                aria-label="ariaLabel.selectSingle"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-theme="light"
-              />
-            </label>
-          </div>
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Test123
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          434
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          78.567
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          displayBoolean.false
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Mittwoch, 12. Mai 2021 um 23:50:21 Koordinierte Weltzeit
-        </td>
-      </tr>
-      <tr
-        class="result-list-table-row css-0"
-        data-theme="light"
-      >
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          <div
-            class="result-list-select-row-container css-1baulvz"
-            data-theme="light"
+            123
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
           >
-            <label
-              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
-              data-theme="light"
-            >
-              <input
-                aria-disabled="false"
-                aria-label="ariaLabel.selectSingle"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-theme="light"
-              />
-            </label>
-          </div>
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Testabc
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          666
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          8.597
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          displayBoolean.true
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
-        </td>
-      </tr>
-      <tr
-        class="result-list-table-row css-0"
-        data-theme="light"
-      >
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          <div
-            class="result-list-select-row-container css-1baulvz"
-            data-theme="light"
+            4.567
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
           >
-            <label
-              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
-              data-theme="light"
-            >
-              <input
-                aria-disabled="false"
-                aria-label="ariaLabel.selectSingle"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-theme="light"
-              />
-            </label>
-          </div>
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-      </tr>
-      <tr
-        class="result-list-table-row css-0"
-        data-theme="light"
-      >
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        >
-          <div
-            class="result-list-select-row-container css-1baulvz"
-            data-theme="light"
+            displayBoolean.true
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
           >
-            <label
-              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
-              data-theme="light"
+            Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit
+          </td>
+        </tr>
+        <tr
+          class="result-list-table-row chakra-table__row css-11ot24d"
+        >
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            <div
+              class="result-list-select-row-container css-1baulvz"
             >
-              <input
-                aria-disabled="false"
+              <label
                 aria-label="ariaLabel.selectSingle"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-theme="light"
-              />
-            </label>
-          </div>
-        </td>
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-        <td
-          class="result-list-table-row css-xumdn4"
-          data-theme="light"
-        />
-      </tr>
-    </tbody>
-  </table>
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
+                data-part="root"
+                data-scope="checkbox"
+                data-state="unchecked"
+                dir="ltr"
+                for="checkbox:_r_6_:input"
+                id="_r_5_"
+              >
+                <input
+                  aria-invalid="false"
+                  aria-labelledby="_r_5_"
+                  id="checkbox:_r_6_:input"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                  type="checkbox"
+                  value="on"
+                />
+                <div
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-16983vm"
+                  data-part="control"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  id="checkbox:_r_6_:control"
+                >
+                  <svg
+                    class="css-wuqtn7"
+                    data-state="unchecked"
+                    viewBox="0 0 24 24"
+                  />
+                </div>
+              </label>
+            </div>
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            Test123
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            434
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            78.567
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            displayBoolean.false
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            Mittwoch, 12. Mai 2021 um 23:50:21 Koordinierte Weltzeit
+          </td>
+        </tr>
+        <tr
+          class="result-list-table-row chakra-table__row css-11ot24d"
+        >
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            <div
+              class="result-list-select-row-container css-1baulvz"
+            >
+              <label
+                aria-label="ariaLabel.selectSingle"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
+                data-part="root"
+                data-scope="checkbox"
+                data-state="unchecked"
+                dir="ltr"
+                for="checkbox:_r_8_:input"
+                id="_r_7_"
+              >
+                <input
+                  aria-invalid="false"
+                  aria-labelledby="_r_7_"
+                  id="checkbox:_r_8_:input"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                  type="checkbox"
+                  value="on"
+                />
+                <div
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-16983vm"
+                  data-part="control"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  id="checkbox:_r_8_:control"
+                >
+                  <svg
+                    class="css-wuqtn7"
+                    data-state="unchecked"
+                    viewBox="0 0 24 24"
+                  />
+                </div>
+              </label>
+            </div>
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            Testabc
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            666
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            8.597
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            displayBoolean.true
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
+          </td>
+        </tr>
+        <tr
+          class="result-list-table-row chakra-table__row css-11ot24d"
+        >
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            <div
+              class="result-list-select-row-container css-1baulvz"
+            >
+              <label
+                aria-label="ariaLabel.selectSingle"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
+                data-part="root"
+                data-scope="checkbox"
+                data-state="unchecked"
+                dir="ltr"
+                for="checkbox:_r_a_:input"
+                id="_r_9_"
+              >
+                <input
+                  aria-invalid="false"
+                  aria-labelledby="_r_9_"
+                  id="checkbox:_r_a_:input"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                  type="checkbox"
+                  value="on"
+                />
+                <div
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-16983vm"
+                  data-part="control"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  id="checkbox:_r_a_:control"
+                >
+                  <svg
+                    class="css-wuqtn7"
+                    data-state="unchecked"
+                    viewBox="0 0 24 24"
+                  />
+                </div>
+              </label>
+            </div>
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+        </tr>
+        <tr
+          class="result-list-table-row chakra-table__row css-11ot24d"
+        >
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          >
+            <div
+              class="result-list-select-row-container css-1baulvz"
+            >
+              <label
+                aria-label="ariaLabel.selectSingle"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
+                data-part="root"
+                data-scope="checkbox"
+                data-state="unchecked"
+                dir="ltr"
+                for="checkbox:_r_c_:input"
+                id="_r_b_"
+              >
+                <input
+                  aria-invalid="false"
+                  aria-labelledby="_r_b_"
+                  id="checkbox:_r_c_:input"
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                  type="checkbox"
+                  value="on"
+                />
+                <div
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-16983vm"
+                  data-part="control"
+                  data-scope="checkbox"
+                  data-state="unchecked"
+                  dir="ltr"
+                  id="checkbox:_r_c_:control"
+                >
+                  <svg
+                    class="css-wuqtn7"
+                    data-state="unchecked"
+                    viewBox="0 0 24 24"
+                  />
+                </div>
+              </label>
+            </div>
+          </td>
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+          <td
+            class="result-list-table-row chakra-table__cell css-1luypx0"
+          />
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 `;

@@ -1,8 +1,8 @@
 messages:
   coordinateInput:
-    ariaLabel: Koordinateneingabe
-    copyPlaceholder: Kopieren
-    clearPlaceholder: Löschen
+    ariaLabel: "Koordinateneingabe: Eingabetaste zur Bestätigung der Eingabe drücken"
+    copyLabel: Koordinaten kopieren
+    clearLabel: Eingabe leeren
   tooltip:
     basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."
@@ -11,4 +11,5 @@ messages:
     invalidNumbers: "Ungültige Eingabe: Es müssen zwei gültige Zahlen eingegeben werden."
     extent: "Die eingegebenen Koordinaten passen nicht zum Koordinatensystem. Bitte Koordinatensystem oder Koordinaten ändern."
     projection: "Es gibt einen Fehler mit der Projektion. Bitte eine andere Projektion auswählen."
-  selected: selektiert
+  projections:
+    ariaLabel: Projektion auswählen

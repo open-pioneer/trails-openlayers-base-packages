@@ -1,22 +1,20 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/map";
-import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import { useService } from "open-pioneer:react-hooks";
-import { AppModel } from "../AppModel";
+import { Box } from "@chakra-ui/react";
+import { useMapModelValue } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { AppModel } from "../AppModel";
 
 export function SearchComponent() {
-    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
+    const intl = useIntl();
+    const map = useMapModelValue(); // uses default map configured in AppUI.tsx
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useReactiveSnapshot(() => appModel.searchSources.getItems(), [appModel]);
 
     function onSearchResultSelected(event: SearchSelectEvent) {
         console.debug("The user selected the following item: ", event.result);
-        if (!map) {
-            return;
-        }
 
         const geometry = event.result.geometry;
         if (!geometry) {
@@ -38,8 +36,15 @@ export function SearchComponent() {
             borderRadius="lg"
             padding={2}
             boxShadow="lg"
-            mt={5}
             className="search-box"
+            zIndex={3}
+            // Center in parent
+            position="absolute"
+            top={5}
+            left="50%"
+            transform="translateX(-50%)"
+            role="region"
+            aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
         >
             <Search
                 sources={sources}

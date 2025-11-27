@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
@@ -6,20 +6,33 @@ import {
     ExtentConfig,
     InitialViewConfig,
     Layer,
+    LayerCreateOptions,
+    LayerFactory,
     MapConfig,
-    MapConfigProvider,
     MapModel,
+    LayerConfig as MapPackageLayerConfig,
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
-import { MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
+import {
+    LayerFactory as LayerFactoryImpl,
+    MapRegistry as MapRegistryImpl
+} from "@open-pioneer/map/internalTestSupport";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
+import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 
+export type LayerConfig = SimpleLayerConfig | Layer;
+
 export interface SimpleMapOptions {
+    /** ID of the map.
+     * Defaults to "test". */
+    mapId?: string;
+
     /** Center coordinates for the map. */
     center?: { x: number; y: number };
 
@@ -39,7 +52,7 @@ export interface SimpleMapOptions {
     /**
      * Layers used by the map.
      */
-    layers?: (SimpleLayerConfig | Layer)[];
+    layers?: LayerConfig[];
 
     /**
      * Overrides fetching of network resources (such as service capabilities).
@@ -60,7 +73,23 @@ export interface SimpleMapOptions {
      * Disables the default projection when set to true.
      */
     noProjection?: boolean;
+
+    /**
+     * Also returns the map object in the return value.
+     * True by default.
+     *
+     * Use `false` to test the async loading behavior of the registry.
+     */
+    returnMap?: boolean;
 }
+const DUMMY_HTTP_SERVICE = {
+    async fetch() {
+        throw new Error(
+            "Network requests are not implemented (override fetch via map test utils if your test requires network access)."
+        );
+    }
+} satisfies Partial<HttpService> as HttpService;
+const DUMMY_LAYER_FACTORY = createLayerFactory();
 
 /**
  * Waits until the OpenLayers map has been mounted in the parent with the given id.
@@ -99,43 +128,38 @@ export async function waitForInitialExtent(model: MapModel) {
     });
 }
 
+export interface SetupMapResult {
+    mapId: string;
+    registry: MapRegistry;
+    layerFactory: LayerFactory;
+}
+
 /**
  * Creates a simple map registry service with exactly one map configuration.
  *
  * The map is configured by using the `options` parameter.
+ * If `options.returnMap` is `true` (the default), the map model is also returned.
  *
  * Returns the map registry and the id of the configured map.
  */
-export async function setupMap(options?: SimpleMapOptions) {
-    // Always use "test" as mapId for unit tests
-    const mapId = "test";
-
-    const getInitialView = (): InitialViewConfig => {
-        if (options?.extent) {
-            return {
-                kind: "extent",
-                extent: options.extent
-            };
-        }
-        return {
-            kind: "position",
-            center: options?.center ?? { x: 847541, y: 6793584 },
-            zoom: options?.zoom ?? 10
-        };
-    };
-
+export async function setupMap(
+    options?: SimpleMapOptions & { returnMap?: true }
+): Promise<SetupMapResult & { map: MapModel }>;
+export async function setupMap(options?: SimpleMapOptions): Promise<SetupMapResult>;
+export async function setupMap(
+    options?: SimpleMapOptions
+): Promise<SetupMapResult & { map: MapModel | undefined }> {
+    const mapId = options?.mapId ?? "test";
     const mapConfig: MapConfig = {
-        initialView: options?.noInitialView ? undefined : getInitialView(),
+        initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
-            (config) => ("map" in config ? config : new SimpleLayer(config))
+            (config) =>
+                "map" in config
+                    ? config
+                    : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
             // using map as discriminator (no prototype for Layer)
-        ) ?? [
-            new SimpleLayer({
-                title: "OSM",
-                olLayer: new VectorLayer()
-            })
-        ],
+        ) ?? [createTestLayer()],
         advanced: options?.advanced
     };
 
@@ -151,14 +175,83 @@ export async function setupMap(options?: SimpleMapOptions) {
         }
     } satisfies Partial<HttpService> as HttpService;
 
-    const registry = await createService(MapRegistryImpl, {
+    const layerFactory = await createService(LayerFactoryImpl, {
         references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)],
-            httpService: httpService
+            httpService
         }
     });
 
-    return { mapId, registry };
+    const registry = await createService(MapRegistryImpl, {
+        references: {
+            providers: [],
+            httpService,
+            layerFactory
+        }
+    });
+
+    let map: MapModel | undefined;
+    const promise = registry.createMapModel(mapId, mapConfig);
+    if (options?.returnMap !== false) {
+        map = await promise;
+    } else {
+        // Ignore error on this promise (prevents unhandled error in tests)
+        promise.catch(() => undefined);
+    }
+    return { mapId, registry, layerFactory, map };
+}
+
+function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
+    if (options?.extent) {
+        return {
+            kind: "extent",
+            extent: options.extent
+        };
+    }
+    return {
+        kind: "position",
+        center: options?.center ?? { x: 847541, y: 6793584 },
+        zoom: options?.zoom ?? 10
+    };
+}
+
+/** Creates an new layer of the specified type for testing. */
+export function createTestLayer<LayerType extends Layer, Config extends MapPackageLayerConfig>(
+    config: LayerCreateOptions<LayerType, Config>,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): LayerType;
+
+/** Creates a new, basic SimpleLayer for testing. */
+export function createTestLayer(
+    config?: SimpleLayerConfig,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): SimpleLayer;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createTestLayer(config?: any, mapOptions?: Pick<SimpleMapOptions, "fetch">): Layer {
+    // Basic case: If no config is given, use SimpleLayer
+    if (!config) {
+        config = {
+            type: SimpleLayer,
+            title: "Test layer",
+            olLayer: new VectorLayer()
+        } as LayerCreateOptions<SimpleLayer, SimpleLayerConfig>;
+    } else if (!config.type) {
+        config.type = SimpleLayer;
+    }
+
+    const factory = mapOptions?.fetch
+        ? createLayerFactory({ fetch: mapOptions.fetch })
+        : DUMMY_LAYER_FACTORY;
+    return factory.create(config);
+}
+
+/**
+ * Returns a simple, empty OpenLayers layer object.
+ *
+ * Use this if you need any kind of `olLayer` in your test.
+ */
+export function createTestOlLayer(): TileLayer {
+    return new TileLayer();
 }
 
 /**
@@ -166,6 +259,9 @@ export async function setupMap(options?: SimpleMapOptions) {
  * option of the `PackageContextProvider`.
  *
  * This helper method can be used to avoid hard-coding service names used in the implementation.
+ *
+ * @deprecated This function is no longer needed, since most widgets no longer depend on the registry
+ * and accept the `map` directly.
  */
 export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
     return {
@@ -173,18 +269,13 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
     };
 }
 
-class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = "default";
-    mapConfig: MapConfig;
-
-    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig ?? {};
-    }
-
-    getMapConfig(): Promise<MapConfig> {
-        return Promise.resolve(this.mapConfig);
-    }
+function createLayerFactory(httpService?: HttpService): LayerFactory {
+    return new LayerFactoryImpl({
+        intl: {} satisfies Partial<PackageIntl> as PackageIntl,
+        references: { httpService: httpService ?? DUMMY_HTTP_SERVICE },
+        properties: {},
+        referencesMeta: { httpService: { serviceId: "http.HttpService" } }
+    });
 }
 
 function mockVectorLayer() {

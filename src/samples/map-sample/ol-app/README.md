@@ -52,7 +52,10 @@ The map package supports any kind of OpenLayers layer (called `olLayer` by conve
 All OpenLayers layer instances can be integrated by configuring a `SimpleLayer`:
 
 ```ts
-new SimpleLayer({
+const layerFactory = ...; // Injected service
+layerFactory.create({
+    type: SimpleLayer,
+
     // Unique id
     id: "ogc_kataster",
 
@@ -91,7 +94,7 @@ The configured map will ultimately be rendered by the UI, which leads over to th
 
 ```tsx
 // ui/AppUI.tsx
-<MapContainer mapId={MAP_ID} role="main" aria-label={intl.formatMessage({ id: "ariaLabel.map" })}>
+<MapContainer role="main" aria-label={intl.formatMessage({ id: "ariaLabel.map" })}>
     ...
 </MapContainer>
 ```
@@ -106,8 +109,8 @@ The `AppUI` implements a very simple layout mechanism.
 It retrieves a list of currently opened widgets from the `AppModel` (these are simple string ids) and renders them into a single container (`MainContentComponent`).
 The `AppModel` is in charge of managing the list of widgets:
 
--   They can be toggled on or off.
--   When an interaction (such as spatial selection) is enabled, all other widgets are hidden.
+- They can be toggled on or off.
+- When an interaction (such as spatial selection) is enabled, all other widgets are hidden.
 
 The logic for this approach is implemented in the `AppModel` (`toggleMainContent` and other related methods).
 
@@ -171,7 +174,7 @@ export function MapTools() {
         <ToolButton
             label={intl.formatMessage({ id: "tocTitle" })}
             icon={<PiListLight />}
-            isActive={isTocActive}
+            active={isTocActive}
             onClick={() => appModel.toggleMainContent("toc")} // (2)
         />
     );

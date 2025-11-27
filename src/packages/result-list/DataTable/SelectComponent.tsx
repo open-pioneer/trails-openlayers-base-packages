@@ -1,52 +1,103 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, Radio, Tooltip, chakra } from "@open-pioneer/chakra-integration";
-import { ChangeEvent, useId, useMemo } from "react";
+import { chakra, Checkbox } from "@chakra-ui/react";
+import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { memo, ReactNode, useId } from "react";
 
 export interface SelectComponentProps {
     mode?: "checkbox" | "radio";
     toolTipLabel?: string;
 
     className?: string;
-    "aria-label"?: string;
-    isIndeterminate?: boolean;
-    isChecked?: boolean;
-    isDisabled?: boolean;
-    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    ariaLabel?: string;
+    checked: boolean | "indeterminate";
+    disabled?: boolean;
+    onChange?: (newIsChecked: boolean) => void;
 }
 
-export function SelectComponent({
-    mode = "checkbox",
-    toolTipLabel,
-    ...props
-}: SelectComponentProps) {
-    const Component = mode === "checkbox" ? Checkbox : SelectRadio;
-    const renderedComponent = useMemo(() => {
-        return <Component {...props} />;
-    }, [Component, props]);
-    if (!toolTipLabel) {
-        return renderedComponent;
+export function createSelectComponent(props: SelectComponentProps): ReactNode {
+    const { mode = "checkbox", toolTipLabel, ariaLabel = props.toolTipLabel, ...rest } = props;
+
+    let control: ReactNode;
+    switch (mode) {
+        case "checkbox": {
+            control = <SelectCheckbox ariaLabel={ariaLabel} {...rest} />;
+            break;
+        }
+        case "radio": {
+            control = <SelectRadio ariaLabel={ariaLabel} {...rest} />;
+            break;
+        }
     }
 
-    return (
-        <Tooltip label={toolTipLabel} placement="right" closeOnClick={false}>
-            <chakra.span
-            /* 
-                wrap into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
-                not using "shouldWrapChildren" because that also introduces a _focusable_ span (we only want the checkbox)
-            */
+    if (toolTipLabel) {
+        /*
+            wrap tooltip content into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
+        */
+        control = (
+            <Tooltip
+                content={toolTipLabel}
+                positioning={{ placement: "right" }}
+                closeOnClick={false}
             >
-                {renderedComponent}
-            </chakra.span>
-        </Tooltip>
-    );
+                <chakra.span>{control}</chakra.span>
+            </Tooltip>
+        );
+    }
+    return control;
 }
 
-function SelectRadio(props: Omit<SelectComponentProps, "mode">) {
+type SelectComponentInnerProps = Omit<SelectComponentProps, "mode" | "toolTipLabel">;
+
+const SelectCheckbox = memo(function SelectCheckbox({
+    className,
+    ariaLabel,
+    checked,
+    disabled,
+    onChange
+}: SelectComponentInnerProps) {
+    const checkboxId = useId();
+    return (
+        <Checkbox.Root
+            //fix invalid aria-labeledby, this works because we never actually render the label
+            ids={{ root: checkboxId, label: checkboxId }}
+            className={className}
+            aria-label={ariaLabel}
+            checked={checked}
+            disabled={disabled}
+            onCheckedChange={(e) => {
+                onChange?.(!!e.checked); // "indeterminate" not required -> map to true
+            }}
+        >
+            <Checkbox.HiddenInput />
+            <Checkbox.Control>
+                <Checkbox.Indicator />
+            </Checkbox.Control>
+        </Checkbox.Root>
+    );
+});
+
+const SelectRadio = memo(function SelectRadio({
+    className,
+    ariaLabel,
+    checked: checkedProp,
+    disabled,
+    onChange
+}: SelectComponentInnerProps) {
     const id = useId();
-    const { isIndeterminate, ...rest } = props;
-    void isIndeterminate; // ignored, not supported by radio button
+    const checked = !!checkedProp; // indeterminate not supported, default to "true"
 
     /** Name seems to be required for screen reader tabbing support. */
-    return <Radio name={id} {...rest} />;
-}
+    return (
+        <RadioGroup
+            name={id}
+            value={checked ? id : null}
+            onValueChange={(e) => {
+                onChange?.(e.value === id);
+            }}
+        >
+            <Radio className={className} value={id} disabled={disabled} aria-label={ariaLabel} />
+        </RadioGroup>
+    );
+});

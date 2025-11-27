@@ -1,25 +1,23 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import { Button, Flex } from "@open-pioneer/chakra-integration";
-import { useIntl } from "open-pioneer:react-hooks";
+import { Reactive, reactive, watch } from "@conterra/reactivity-core";
+import { Button, Flex } from "@chakra-ui/react";
+import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Layer, MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
-import VectorLayer from "ol/layer/Vector";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Overlay } from "ol";
+import { EventsKey } from "ol/events";
 import { FeatureLike } from "ol/Feature";
 import { Select } from "ol/interaction";
+import VectorLayer from "ol/layer/Vector";
 import { unByKey } from "ol/Observable";
-import { EventsKey } from "ol/events";
-import { Overlay } from "ol";
-import { Resource } from "@open-pioneer/core";
-import { ReactNode } from "react";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { Reactive, reactive } from "@conterra/reactivity-core";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { watch } from "@conterra/reactivity-core";
 import VectorSource from "ol/source/Vector";
+import { useIntl } from "open-pioneer:react-hooks";
+import { ReactNode } from "react";
+import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 
 const EDIT_LAYER_ID: string = "krankenhaus";
 
@@ -40,7 +38,7 @@ export function createEditingDemo(options: SharedDemoOptions): Demo {
 }
 
 class DemoModelImpl implements DemoModel {
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     #mapModel: MapModel;
@@ -51,7 +49,7 @@ class DemoModelImpl implements DemoModel {
 
         this.#mapModel = mapModel;
 
-        this.description = intl.formatMessage({ id: "demos.editing.description" });
+        this.description = intl.formatRichMessage({ id: "demos.editing.description" });
         this.#editingController = new EditingController(
             mapModel,
             editingService,
@@ -285,7 +283,7 @@ class EditingController {
     }
 
     stopEditing() {
-        this.#editingService.stop(MAP_ID);
+        this.#editingService.stop(this.#mapModel);
         this._stopUpdateSelection();
         this.#editingActive.value = false;
     }
@@ -311,7 +309,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
             <Flex px={1} py={1}>
                 <Button
                     mr={2}
-                    isDisabled={editingActive}
+                    disabled={editingActive}
                     onClick={() => {
                         editingController.startCreateWorkflow();
                     }}
@@ -320,7 +318,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
                 </Button>
                 <Button
                     mr={2}
-                    isDisabled={editingActive}
+                    disabled={editingActive}
                     onClick={() => {
                         editingController.startUpdateWorkflow();
                     }}
@@ -328,7 +326,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
                     {intl.formatMessage({ id: "demos.editing.startUpdateButton" })}
                 </Button>
                 <Button
-                    isDisabled={!editingActive}
+                    disabled={!editingActive}
                     onClick={() => {
                         editingController.stopEditing();
                     }}

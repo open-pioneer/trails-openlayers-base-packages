@@ -1,4 +1,15 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-export { Search, type SearchProps, type SearchSelectEvent } from "./Search";
-export type { SearchSource, SearchResult, SearchOptions } from "./api";
+export type {
+    SearchApi,
+    SearchClearEvent,
+    SearchClearTrigger,
+    SearchDisposedEvent,
+    SearchOptions,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent,
+    SearchSource
+} from "./api";
+export { Search, type SearchProps } from "./Search";
+export { SearchApiImpl } from "./SearchApiImpl";

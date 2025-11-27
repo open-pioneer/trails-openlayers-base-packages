@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MockInstance, vi, onTestFinished } from "vitest";
 
@@ -26,7 +26,7 @@ export function disableReactActWarnings() {
     consoleSpy = vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
         if (
             typeof args[0] === "string" &&
-            args[0].startsWith("Warning: An update to %s inside a test was not wrapped in act")
+            args[0].startsWith("An update to %s inside a test was not wrapped in act")
         ) {
             // Hide message
             return;

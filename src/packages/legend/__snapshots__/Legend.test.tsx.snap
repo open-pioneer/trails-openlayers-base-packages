@@ -2,13 +2,11 @@
 
 exports[`should successfully create a legend component 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
-  data-theme="light"
 >
   <ul
-    class="legend-layer-list css-bhb3xr"
-    data-theme="light"
+    class="legend-layer-list chakra-list__root css-96r4vb"
     role="list"
   />
 </div>
@@ -16,32 +14,21 @@ exports[`should successfully create a legend component 1`] = `
 
 exports[`should successfully show legend for Component configuration 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
-  data-theme="light"
 >
   <ul
-    class="legend-layer-list css-bhb3xr"
-    data-theme="light"
+    class="legend-layer-list chakra-list__root css-96r4vb"
     role="list"
   >
     <li
-      class="legend-item layer-layer-1 css-0"
-      data-theme="light"
+      class="legend-item layer-layer-1"
     >
-      <div
-        class="css-0"
-        data-theme="light"
-      >
-        <p
-          class="chakra-text css-0"
-          data-theme="light"
-        >
+      <div>
+        <p>
           Layer 1
         </p>
         <div
-          class="css-0"
-          data-theme="light"
           style="height: 25px; width: 25px; border-color: #4cb3ff; border-width: 3px; border-radius: 50%; display: inline-block;"
         />
       </div>
@@ -52,33 +39,23 @@ exports[`should successfully show legend for Component configuration 1`] = `
 
 exports[`should successfully show legend for imageUrl configuration 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
-  data-theme="light"
 >
   <ul
-    class="legend-layer-list css-bhb3xr"
-    data-theme="light"
+    class="legend-layer-list chakra-list__root css-96r4vb"
     role="list"
   >
     <li
-      class="legend-item layer-layer-1 css-0"
-      data-theme="light"
+      class="legend-item layer-layer-1"
     >
-      <div
-        class="css-0"
-        data-theme="light"
-      >
-        <p
-          class="chakra-text css-0"
-          data-theme="light"
-        >
+      <div>
+        <p>
           Layer 1
         </p>
         <img
           alt="altLabel"
-          class="legend-item__image css-12ffw4m"
-          data-theme="light"
+          class="legend-item__image css-vn2kbv"
           src="https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
         />
       </div>

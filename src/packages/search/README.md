@@ -8,24 +8,27 @@ defined by the implementation of the search source.
 
 ## Usage
 
-To use the search in your app, insert the following snippet and reference a map ID and `sources` (sources to be searched on):
+To use the search in your app, insert the following snippet (and reference a map) and `sources` (sources to be searched on):
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} />
+<Search
+    map={map}
+    sources={searchsources}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 To change the typing delay, add the optional property `searchTypingDelay` (in ms).
 The default value is 200ms.
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={500} />
+<Search map={map} sources={searchsources} searchTypingDelay={500} />
 ```
 
 To limit the maximum number of search results to be displayed per search source (group), configure the optional property `maxResultsPerGroup`.
 The default value is 5.
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} maxResultsPerGroup={10} />
+<Search map={map} sources={searchsources} maxResultsPerGroup={10} />
 ```
 
 To change the placeholder text of the search field, use the optional property `placeholder`:
@@ -34,25 +37,67 @@ To change the placeholder text of the search field, use the optional property `p
 <Search sources={searchsources} placeholder="Search for cities" />
 ```
 
-### Listening to events
+### Listening to events and using the search API
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the selected search result (and its search source)
 from the parameter `SelectSearchEvent`.
 
 ```tsx
-import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/search";
 // ...
 <Search
-    mapId={MAP_ID}
+    map={map}
     sources={datasources}
     onSelect={(event: SearchSelectEvent) => {
         // do something
     }}
-    onClear={() => {
+    onClear={(event: SearchClearEvent) => {
         // do something
     }}
 />;
+```
+
+The search API allows programmatic access to the search component.
+
+Currently, the search API provides a method to clear the search input field.
+To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
+
+```tsx
+import { Search } from "@open-pioneer/search";
+import { Button } from "@chakra-ui/react";
+import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
+import { NotificationService, Notifier } from "@open-pioneer/notifier";
+import { useRef } from "react";
+
+const searchApiRef = useRef<SearchApi>(undefined);
+const sources = [/* your sources */];
+
+// the clear event contains information about the trigger of the clear action (user or API call)
+function onSearchCleared(clearEvent: SearchClearEvent) {
+    console.log(clearEvent.trigger); // "api-reset" if triggered via API
+}
+
+// ...
+<Search
+    sources={sources}
+    onClear={onSearchCleared}
+    onReady={(event: SearchReadyEvent) => {
+        // get the API object from the ready event and store it somewhere
+        searchApiRef.current = event.api;
+    }}
+    onDisposed={() => {
+        searchApiRef.current = undefined;
+    }}
+/>
+
+<Button
+    onClick={() => {
+        searchApiRef.current?.resetInput(); // use the API to clear the search input
+    }}
+>
+    reset search input
+</Button>
 ```
 
 ### Positioning the search bar
@@ -104,7 +149,7 @@ class MySearchSource implements SearchSource {
 const searchsources: SearchSource[] = [new MySearchSource()];
 
 // In your JSX template:
-<Search mapId={MAP_ID} sources={searchsources} />;
+<Search map={map} sources={searchsources} />;
 ```
 
 The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter
