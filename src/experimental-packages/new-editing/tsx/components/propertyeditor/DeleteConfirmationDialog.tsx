@@ -1,14 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogOverlay,
-    Button
-} from "@chakra-ui/react";
+import { Button, Dialog } from "@chakra-ui/react";
 
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
@@ -22,7 +14,6 @@ export function DeleteConfirmationDialog({
     const [isDeleting, setDeleting] = useState(false);
     const cancelButtonRef = useRef<HTMLButtonElement>(null);
     const { formatMessage } = useIntl();
-    const noOp = useCallback(() => {}, []);
 
     const onDeleteClick = useCallback(async () => {
         try {
@@ -44,18 +35,23 @@ export function DeleteConfirmationDialog({
     );
 
     return (
-        <AlertDialog isOpen={isOpen} onClose={noOp} leastDestructiveRef={cancelButtonRef}>
-            <AlertDialogOverlay>
-                <AlertDialogContent>
-                    <AlertDialogHeader fontSize="large" fontWeight="bold">
+        <Dialog.Root
+            open={isOpen}
+            initialFocusEl={() => cancelButtonRef.current}
+            role="alertdialog"
+        >
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+                <Dialog.Content>
+                    <Dialog.Header fontSize="large" fontWeight="bold">
                         {title}
-                    </AlertDialogHeader>
-                    <AlertDialogBody pt={0}>{message}</AlertDialogBody>
-                    <AlertDialogFooter pt={5}>
+                    </Dialog.Header>
+                    <Dialog.Body pt={0}>{message}</Dialog.Body>
+                    <Dialog.Footer pt={5}>
                         <Button
                             mr={3}
                             colorScheme="red"
-                            isLoading={isDeleting}
+                            loading={isDeleting}
                             loadingText={deleteButtonTitle}
                             onClick={onDeleteClick}
                         >
@@ -69,10 +65,10 @@ export function DeleteConfirmationDialog({
                         >
                             {cancelButtonTitle}
                         </Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialogOverlay>
-        </AlertDialog>
+                    </Dialog.Footer>
+                </Dialog.Content>
+            </Dialog.Positioner>
+        </Dialog.Root>
     );
 }
 

@@ -43,7 +43,7 @@ export function ButtonRow({
                     variant="outline"
                     colorScheme="red"
                     aria-label={deleteButtonAriaLabel}
-                    isDisabled={isSaving}
+                    disabled={isSaving}
                     onClick={onDelete}
                 >
                     <PiTrash />
@@ -52,14 +52,14 @@ export function ButtonRow({
             <Spacer />
             <Button
                 width={110}
-                isDisabled={!canSave}
-                isLoading={isSaving}
+                disabled={!canSave}
+                loading={isSaving}
                 loadingText={saveButtonTitle}
                 onClick={onSaveClick}
             >
                 {saveButtonTitle}
             </Button>
-            <Button width={110} variant="outline" isDisabled={isSaving} onClick={onCancel}>
+            <Button width={110} variant="outline" disabled={isSaving} onClick={onCancel}>
                 {cancelButtonTitle}
             </Button>
         </Flex>

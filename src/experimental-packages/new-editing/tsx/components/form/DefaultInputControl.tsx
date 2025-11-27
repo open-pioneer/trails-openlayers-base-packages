@@ -1,13 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Checkbox,
-    FormControl,
-    FormLabel,
-    Input,
-    Select,
-    Textarea
-} from "@chakra-ui/react";
+import { Checkbox, Field, Input, NativeSelectRoot, NativeSelectField, Textarea } from "@chakra-ui/react";
 
 import { ChangeEvent, useCallback, type ReactElement } from "react";
 
@@ -44,8 +37,8 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
     );
 
     const onCheckBoxChange = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            setProperty(fieldName, event.target.checked);
+        (details: { checked: boolean | string }) => {
+            setProperty(fieldName, details.checked === true || details.checked === "true");
         },
         [fieldName, setProperty]
     );
@@ -53,93 +46,97 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
     switch (fieldInput.inputType) {
         case "textField":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
                     <Input
                         type="text"
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
                         value={value?.toString() ?? ""}
                         onChange={onInputChange}
                     />
-                </FormControl>
+                </Field.Root>
             );
 
         case "textArea":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
                     <Textarea
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
                         value={value?.toString()}
                         onChange={onInputChange}
                     />
-                </FormControl>
+                </Field.Root>
             );
 
         case "number":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
                     <NumericInput
                         value={value as number | undefined}
                         onNumberChange={onChange}
                         placeholder={fieldInput.placeholder ?? EM_DASH}
                         min={fieldInput.min}
                         max={fieldInput.max}
-                        precision={fieldInput.precision}
                         step={fieldInput.step}
                         showSteppers={fieldInput.showSteppers}
+                        formatOptions={{ maximumFractionDigits: fieldInput.precision }}
                     />
-                </FormControl>
+                </Field.Root>
             );
 
         case "checkBox":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
-                    <Checkbox isChecked={!!value} onChange={onCheckBoxChange}>
-                        {fieldInput.checkBoxLabel ?? fieldInput.label}
-                    </Checkbox>
-                </FormControl>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Checkbox.Root checked={!!value} onCheckedChange={onCheckBoxChange}>
+                        <Checkbox.HiddenInput />
+                        <Checkbox.Control />
+                        <Checkbox.Label>{fieldInput.checkBoxLabel ?? fieldInput.label}</Checkbox.Label>
+                    </Checkbox.Root>
+                </Field.Root>
             );
 
         case "select":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
-                    <Select
-                        placeholder={EM_DASH}
-                        value={value as string | number | undefined}
-                        onChange={onInputChange}
-                    >
-                        {fieldInput.options?.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </Select>
-                </FormControl>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <NativeSelectRoot>
+                        <NativeSelectField
+                            placeholder={EM_DASH}
+                            value={value as string | number | undefined}
+                            onChange={onInputChange}
+                        >
+                            {fieldInput.options?.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </NativeSelectField>
+                    </NativeSelectRoot>
+                </Field.Root>
             );
 
         case "date":
             return (
-                <FormControl isRequired={fieldInput.required}>
-                    <FormLabel>{fieldInput.label}</FormLabel>
+                <Field.Root required={fieldInput.required}>
+                    <Field.Label>{fieldInput.label}</Field.Label>
                     <Input
                         type="date"
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
                         value={value?.toString()}
                         onChange={onInputChange}
                     />
-                </FormControl>
+                </Field.Root>
             );
 
         case "color":
             return (
-                <FormControl>
-                    <FormLabel>{fieldInput.label}</FormLabel>
+                <Field.Root>
+                    <Field.Label>{fieldInput.label}</Field.Label>
                     <ColorPicker hexColor={value?.toString()} onChange={onChange} />
-                </FormControl>
+                </Field.Root>
             );
     }
 }

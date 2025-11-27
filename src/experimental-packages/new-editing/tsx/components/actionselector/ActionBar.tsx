@@ -34,28 +34,32 @@ export function ActionBar({
         <HStack justify="right" gap={3}>
             <IconButton
                 aria-label={ariaLabels.finishButton}
-                icon={<GoCheckCircle size={25} />}
-                isDisabled={!canFinish}
+                disabled={!canFinish}
                 onClick={onFinish}
-            />
+            >
+                <GoCheckCircle size={25} />
+            </IconButton>
             <IconButton
                 aria-label={ariaLabels.abortButton}
-                icon={<GoXCircle size={25} />}
-                isDisabled={!canAbort}
+                disabled={!canAbort}
                 onClick={onAbort}
-            />
+            >
+                <GoXCircle size={25} />
+            </IconButton>
             <IconButton
                 aria-label={ariaLabels.undoButton}
-                icon={<LuUndo size={25} />}
-                isDisabled={!canUndo}
+                disabled={!canUndo}
                 onClick={onUndo}
-            />
+            >
+                <LuUndo size={25} />
+            </IconButton>
             <IconButton
                 aria-label={ariaLabels.redoButton}
-                icon={<LuRedo size={25} />}
-                isDisabled={!canRedo}
+                disabled={!canRedo}
                 onClick={onRedo}
-            />
+            >
+                <LuRedo size={25} />
+            </IconButton>
         </HStack>
     );
 }

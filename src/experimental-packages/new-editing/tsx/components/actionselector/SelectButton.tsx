@@ -13,12 +13,12 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
         <Button
             variant="outline"
             width="100%"
-            leftIcon={<FaMousePointer />}
             bg={isActive ? "gray.400" : "white"}
             _hover={{ bg: isActive ? "#aebbcb" : "gray.100" }}
             _active={{ bg: "gray.500" }}
             onClick={onClick}
         >
+            <FaMousePointer />
             {formatMessage({ id: "actionSelector.selectButtonTitle" })}
         </Button>
     );

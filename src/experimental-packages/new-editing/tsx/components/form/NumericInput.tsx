@@ -1,13 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    type NumberInputProps
-} from "@chakra-ui/react";
+import { NumberInput } from "@chakra-ui/react";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
 import type { Callback } from "../../types/types";
 
@@ -21,9 +14,10 @@ export function NumericInput({
     min,
     max,
     step,
-    precision,
+    formatOptions,
     ...props
 }: NumericInputProps): ReactElement {
+    const precision = formatOptions?.maximumFractionDigits;
     const [stringValue, setStringValue] = useState(() => toString(value, precision));
     const setNumericValue = useNumericState(value, precision, setStringValue);
 
@@ -44,23 +38,23 @@ export function NumericInput({
     const inputRef = useRef<HTMLInputElement>(null);
 
     return (
-        <NumberInput
+        <NumberInput.Root
             {...props}
             min={min}
             max={max}
             step={step}
-            precision={precision}
+            formatOptions={{ maximumFractionDigits: precision }}
             value={stringValue ?? ""}
-            onChange={onChange}
+            onValueChange={(details) => onChange(details.value, details.valueAsNumber)}
         >
-            <NumberInputField ref={inputRef} placeholder={placeholder} />
+            <NumberInput.Input ref={inputRef} placeholder={placeholder} />
             {showSteppers && (
-                <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                </NumberInputStepper>
+                <NumberInput.Control>
+                    <NumberInput.IncrementTrigger />
+                    <NumberInput.DecrementTrigger />
+                </NumberInput.Control>
             )}
-        </NumberInput>
+        </NumberInput.Root>
     );
 }
 
@@ -88,7 +82,7 @@ function toString(number: number | undefined, precision: number | undefined): st
 
 const EM_DASH = "\u2014";
 
-interface NumericInputProps extends NumberInputProps {
+interface NumericInputProps extends Omit<NumberInput.RootProps, "value" | "onValueChange"> {
     readonly value: number | undefined;
     readonly placeholder?: string;
     readonly showSteppers?: boolean;

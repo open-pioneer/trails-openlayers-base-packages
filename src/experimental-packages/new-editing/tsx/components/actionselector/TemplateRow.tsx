@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { HStack, Td, Text, Tr } from "@chakra-ui/react";
+import { HStack, Table, Text } from "@chakra-ui/react";
 import {
     PiCircleBold,
     PiDotOutlineBold,
@@ -18,7 +18,7 @@ export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps)
     }, [template, onClick]);
 
     return (
-        <Tr
+        <Table.Row
             height="45px"
             cursor="pointer"
             bg={isSelected ? "trails.400" : "white"}
@@ -26,13 +26,13 @@ export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps)
             _active={{ bg: "trails.500" }}
             onClick={onRowClick}
         >
-            <Td>
-                <HStack spacing="4">
+            <Table.Cell>
+                <HStack gap="4">
                     <TemplateIcon template={template} />
                     <Text>{template.name}</Text>
                 </HStack>
-            </Td>
-        </Tr>
+            </Table.Cell>
+        </Table.Row>
     );
 }
 

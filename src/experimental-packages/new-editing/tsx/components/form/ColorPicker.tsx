@@ -1,49 +1,48 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    useDisclosure
-} from "@chakra-ui/react";
+import { Box, Button, Popover } from "@chakra-ui/react";
 
-import { useCallback, type ReactElement } from "react";
+import { useCallback, useState, type ReactElement } from "react";
 import { CirclePicker, type ColorResult } from "react-color";
 import type { Callback } from "../../types/types";
 
 export function ColorPicker({ hexColor, colors, onChange }: ColorPickerProps): ReactElement {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [open, setOpen] = useState(false);
 
     const onChangeComplete = useCallback(
         (color: ColorResult) => {
             onChange(color.hex);
-            onClose();
+            setOpen(false);
         },
-        [onChange, onClose]
+        [onChange]
     );
 
     return (
-        <Popover placement="right-start" isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
-            <PopoverTrigger>
+        <Popover.Root
+            positioning={{ placement: "right-start" }}
+            open={open}
+            onOpenChange={(e) => setOpen(e.open)}
+        >
+            <Popover.Trigger asChild>
                 <Button variant="outline" padding="5px">
                     <Box backgroundColor={hexColor} height="100%" width="100%" margin="5px" />
                 </Button>
-            </PopoverTrigger>
-            <PopoverContent width={200}>
-                <Box margin="5px" padding="5px">
-                    <CirclePicker
-                        width="full"
-                        color={hexColor}
-                        colors={colors}
-                        circleSize={32}
-                        circleSpacing={16}
-                        onChangeComplete={onChangeComplete}
-                    />
-                </Box>
-            </PopoverContent>
-        </Popover>
+            </Popover.Trigger>
+            <Popover.Positioner>
+                <Popover.Content width={200}>
+                    <Box margin="5px" padding="5px">
+                        <CirclePicker
+                            width="full"
+                            color={hexColor}
+                            colors={colors}
+                            circleSize={32}
+                            circleSpacing={16}
+                            onChangeComplete={onChangeComplete}
+                        />
+                    </Box>
+                </Popover.Content>
+            </Popover.Positioner>
+        </Popover.Root>
     );
 }
 
