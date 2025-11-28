@@ -4,11 +4,21 @@ import { SearchApi, SearchClearTrigger } from "./api";
 
 export class SearchApiImpl implements SearchApi {
     #clearInput: (trigger: SearchClearTrigger) => void;
-    constructor(clearInput: (trigger: SearchClearTrigger) => void) {
+    #setInputValue: (newValue: string) => void;
+
+    constructor(
+        clearInput: (trigger: SearchClearTrigger) => void,
+        setInputValue: (newValue: string) => void
+    ) {
         this.#clearInput = clearInput;
+        this.#setInputValue = setInputValue;
     }
 
     resetInput() {
         this.#clearInput("api-reset");
+    }
+
+    setInputValue(inputValue: string) {
+        this.#setInputValue(inputValue);
     }
 }
