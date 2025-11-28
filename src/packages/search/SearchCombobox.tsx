@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
+    Button,
     chakra,
     Combobox,
+    Highlight,
     HStack,
+    InputGroup,
     Portal,
-    Span,
     Spinner,
     useListCollection,
     useToken
@@ -53,6 +55,7 @@ import {
     InputValueChangeDetails,
     ValueChangeDetails
 } from "@chakra-ui/react/dist/types/components/combobox/namespace";
+import { LuLoader, LuSearch, LuX } from "react-icons/lu";
 
 const LOG = createLogger("search:Search");
 
@@ -169,10 +172,10 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
         // the next two lines are a workaround for the open bug in react-select regarding the
         // cursor not being shown after clearing, although the component is focussed:
         // https://github.com/JedWatson/react-select/issues/3871
-        if (trigger === "user") {
-            selectRef.current?.blur();
-            selectRef.current?.focus();
-        }
+        // if (trigger === "user") {
+        //     comboRef.current?.blur();
+        //     comboRef.current?.focus();
+        // }
 
         onClear?.({ trigger: trigger });
     });
@@ -217,11 +220,20 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                     {groupElement[1].map((searchResult, key) => {
                         return (
                             <Combobox.Item key={key} item={searchResult}>
-                                <HStack justify="space-between" textStyle="sm">
-                                    <Span fontWeight="medium" truncate>
+                                {/*<HStack justify="space-between" textStyle="sm">*/}
+                                {/*    <Span fontWeight="medium" truncate>*/}
+                                {/*        {searchResult?.label}*/}
+                                {/*    </Span>*/}
+                                {/*</HStack>*/}
+                                <Combobox.ItemText>
+                                    <Highlight
+                                        ignoreCase
+                                        query={input}
+                                        styles={{ fontWeight: "bolder" }}
+                                    >
                                         {searchResult?.label}
-                                    </Span>
-                                </HStack>
+                                    </Highlight>
+                                </Combobox.ItemText>
                                 <Combobox.ItemIndicator />
                             </Combobox.Item>
                         );
@@ -229,23 +241,49 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                 </Fragment>
             );
         });
-    }, [collection]);
-
-    const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
+    }, [collection, input]);
+    
+    const endIndicator = useMemo(() => {
+        if (search.kind === "loading") {
+            return ( <HStack p="2">
+                <Spinner size="xs" borderWidth="1px" />
+            </HStack>);
+        } else if (input.length > 0) {
+            return (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onInputChanged("")}
+                    mr="0px"
+                >   
+                <LuX/>
+            </Button>); 
+        }
+    }, [input.length, onInputChanged, search.kind]);
+    
     return (
         <Box {...containerProps}>
             <Combobox.Root
                 collection={collection}
-                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 onInputValueChange={(e) => handleInputChange(e)}
-                positioning={{ sameWidth: false, placement: "bottom-start" }}
                 onValueChange={(e) => handleSelectChange(e)}
+                inputValue={input}
+                className="search-conbobox-component"
+                aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
+                // ariaLiveMessages={ariaMessages}
+                // chakraStyles={chakraStyles}
             >
                 <Combobox.Control>
-                    <Combobox.Input placeholder="Type to search" />
+                    <InputGroup startElement={<LuSearch />}>
+                        <Combobox.Input
+                            placeholder={
+                                props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })
+                            }
+                        />
+                    </InputGroup>
                     <Combobox.IndicatorGroup>
-                        <Combobox.ClearTrigger />
-                        <Combobox.Trigger />
+                        {/*<Combobox.ClearTrigger/>*/}
+                        {endIndicator}
                     </Combobox.IndicatorGroup>
                 </Combobox.Control>
 
@@ -253,15 +291,12 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                     <Combobox.Positioner>
                         <Combobox.ItemGroup>
                             <Combobox.Content minW="sm">
-                                <Combobox.Empty>No items found</Combobox.Empty>
                                 {search.kind === "ready" ? (
-                                    searchResults
-                                ) : (
-                                    <HStack p="2">
-                                        <Spinner size="xs" borderWidth="1px" />
-                                        <Span>Loading</Span>
-                                    </HStack>
-                                )}
+                                    <>
+                                        <Combobox.Empty>No items found</Combobox.Empty>
+                                        {searchResults}
+                                    </>
+                                ) : null}
                             </Combobox.Content>
                         </Combobox.ItemGroup>
                     </Combobox.Positioner>
