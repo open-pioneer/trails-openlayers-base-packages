@@ -32,12 +32,17 @@ export function AppUI() {
             return;
         }
 
-        const overlay = map.overlays.addOverlay(
+        const staticOverlay = map.overlays.addOverlay(
             { position: [404747, 5757920], positioning: "center-center" },
             <Box bg={"white"}>This is a static map overlay!</Box>
         );
+        const followPointerOverlay = map.overlays.addOverlay(
+            { positioning: "bottom-right", followPointer: true },
+            <Box bg={"green"}>This overlays follows the pointer!</Box>
+        );
         return () => {
-            overlay.destroy();
+            staticOverlay.destroy();
+            followPointerOverlay.destroy();
         };
     }, [map]);
 

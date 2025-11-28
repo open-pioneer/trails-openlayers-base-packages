@@ -8,10 +8,15 @@ import { ReactNode } from "react";
 import { reactive, Reactive, reactiveSet } from "@conterra/reactivity-core";
 import { v4 as uuid4v } from "uuid";
 import { Options } from "ol/Overlay";
+import { createLogger, Resource } from "@open-pioneer/core";
+import { EventsKey } from "ol/events";
+import { unByKey } from "ol/Observable";
 
 export const GET_CURRENT_OVERLAYS = Symbol("GET_CURRENT_OVERLAYS");
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
 export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
+
+const LOG = createLogger("map:Overlays");
 
 export class Overlays {
     private olMap: OlMap;
@@ -76,6 +81,7 @@ export class Overlay {
     #parent: Overlays;
     #isDestroyed = reactive(false);
     #content: Reactive<ReactNode>;
+    #resources: Resource[];
 
     constructor(id: string, content: ReactNode, properties: OverlayProperties, parent: Overlays) {
         const overlayDiv = document.createElement("div");
@@ -88,8 +94,25 @@ export class Overlay {
         });
         this.#parent = parent;
         this.#content = reactive(content);
+        this.#resources = [];
 
         parent[REGISTER_OVERLAY](this);
+
+        if (properties.followPointer) {
+            //olMap is set after registration
+            const olMap = this.olOverlay.getMap();
+            if (!olMap) {
+                LOG.error(`Error: Overlay ${this.olOverlay.getId()} is not registered at a map.`);
+                return;
+            }
+
+            const pointerMoveKey: EventsKey = olMap.on("pointermove", (e) => {
+                this.setPosition(e.coordinate);
+            });
+            this.#resources.push({
+                destroy: () => unByKey(pointerMoveKey)
+            });
+        }
     }
 
     destroy(): void {
@@ -100,6 +123,7 @@ export class Overlay {
         this.#isDestroyed.value = true;
         this.#parent[UNREGISTER_OVERLAY](this);
         this.olOverlay.dispose();
+        this.#resources.forEach((r) => r.destroy());
     }
 
     get isDestroyed(): boolean {
@@ -124,4 +148,6 @@ export class Overlay {
     }
 }
 
-export interface OverlayProperties extends Omit<Options, "id" | "element"> {}
+export interface OverlayProperties extends Omit<Options, "id" | "element"> {
+    followPointer?: boolean;
+}
