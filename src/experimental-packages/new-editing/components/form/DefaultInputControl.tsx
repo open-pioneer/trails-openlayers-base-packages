@@ -6,7 +6,8 @@ import {
     Input,
     NativeSelectRoot,
     NativeSelectField,
-    Textarea
+    Textarea,
+    NativeSelectIndicator
 } from "@chakra-ui/react";
 
 import { ChangeEvent, useCallback, type ReactElement } from "react";
@@ -54,7 +55,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "text-field":
             return (
                 <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <Input
                         type="text"
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
@@ -67,7 +71,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "text-area":
             return (
                 <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <Textarea
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
                         value={value?.toString()}
@@ -79,7 +86,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "number":
             return (
                 <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <NumericInput
                         value={value as number | undefined}
                         onNumberChange={onChange}
@@ -96,7 +106,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "check-box":
             return (
                 <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <Checkbox.Root checked={!!value} onCheckedChange={onCheckBoxChange}>
                         <Checkbox.HiddenInput />
                         <Checkbox.Control />
@@ -109,8 +122,11 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
 
         case "select":
             return (
-                <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                <Field.Root required={true}>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <NativeSelectRoot>
                         <NativeSelectField
                             placeholder={EM_DASH}
@@ -123,6 +139,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
                                 </option>
                             ))}
                         </NativeSelectField>
+                        <NativeSelectIndicator />
                     </NativeSelectRoot>
                 </Field.Root>
             );
@@ -130,7 +147,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "date":
             return (
                 <Field.Root required={fieldInput.required}>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <Input
                         type="date"
                         placeholder={fieldInput.placeholder ?? fieldInput.label}
@@ -143,7 +163,10 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
         case "color":
             return (
                 <Field.Root>
-                    <Field.Label>{fieldInput.label}</Field.Label>
+                    <Field.Label>
+                        {fieldInput.label}
+                        <Field.RequiredIndicator />
+                    </Field.Label>
                     <ColorPickerInput
                         hexColor={value?.toString()}
                         colors={fieldInput.colors}

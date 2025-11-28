@@ -40,7 +40,7 @@ export function ButtonRow({
                 <Button
                     width={65}
                     variant="outline"
-                    colorScheme="red"
+                    colorPalette="red"
                     aria-label={deleteButtonAriaLabel}
                     disabled={isSaving}
                     onClick={onDelete}
@@ -50,7 +50,7 @@ export function ButtonRow({
             )}
             <Spacer />
             <Button
-                width={110}
+                width={100}
                 disabled={!canSave}
                 loading={isSaving}
                 loadingText={saveButtonTitle}
@@ -58,7 +58,7 @@ export function ButtonRow({
             >
                 {saveButtonTitle}
             </Button>
-            <Button width={110} variant="outline" disabled={isSaving} onClick={onCancel}>
+            <Button width={100} variant="outline" disabled={isSaving} onClick={onCancel}>
                 {cancelButtonTitle}
             </Button>
         </Flex>

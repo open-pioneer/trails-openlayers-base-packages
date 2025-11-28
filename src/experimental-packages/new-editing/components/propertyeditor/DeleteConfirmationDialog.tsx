@@ -45,23 +45,17 @@ export function DeleteConfirmationDialog({
                     <Dialog.Header fontSize="large" fontWeight="bold">
                         {title}
                     </Dialog.Header>
-                    <Dialog.Body pt={0}>{message}</Dialog.Body>
-                    <Dialog.Footer pt={5}>
+                    <Dialog.Body>{message}</Dialog.Body>
+                    <Dialog.Footer>
                         <Button
-                            mr={3}
-                            colorScheme="red"
+                            colorPalette="red"
                             loading={isDeleting}
                             loadingText={deleteButtonTitle}
                             onClick={onDeleteClick}
                         >
                             {deleteButtonTitle}
                         </Button>
-                        <Button
-                            width={110}
-                            variant="outline"
-                            ref={cancelButtonRef}
-                            onClick={onCancel}
-                        >
+                        <Button variant="outline" ref={cancelButtonRef} onClick={onCancel}>
                             {cancelButtonTitle}
                         </Button>
                     </Dialog.Footer>

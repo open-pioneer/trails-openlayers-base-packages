@@ -16,7 +16,7 @@ export function DefaultPropertyForm({
     useUpdateValidity(fieldInputs);
 
     return (
-        <VStack gap={4} align="stretch">
+        <VStack gap={4} align="stretch" px="1px">
             {fieldInputs.map((fieldInput, index) => (
                 <DefaultInputControl key={index} fieldInput={fieldInput} />
             ))}
