@@ -1,0 +1,25 @@
+messages:
+  actionSelector:
+    editFeatureHeading: Edit Feature
+    createFeatureHeading: Create Feature
+    selectButtonTitle: Select
+    finishButtonAriaLabel: Finish drawing
+    abortButtonAriaLabel: Abort drawing
+    undoButtonAriaLabel: Undo
+    redoButtonAriaLabel: Redo
+  propertyEditor:
+    saveButtonTitle: Save
+    cancelButtonTitle: Cancel
+    deleteButtonAriaLabel: Delete
+  deleteConfirmationDialog:
+    title: Delete Feature
+    message: Are you sure you want to delete this feature?
+    deleteButtonTitle: Delete Feature
+    cancelButtonTitle: Cancel
+  notifier:
+    creationSuccess: Feature added
+    creationFailure: Error adding feature
+    updateSuccess: Feature updated
+    updateFailure: Error updating feature
+    deletionSuccess: Feature deleted
+    deletionFailure: Error deleting feature
