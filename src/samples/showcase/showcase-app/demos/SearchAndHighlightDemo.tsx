@@ -2,12 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Highlight, MapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent, SearchSource } from "@open-pioneer/search";
+import { SearchCombobox } from "@open-pioneer/search-combobox";
 import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import { Geometry } from "ol/geom";
 import { ReactNode } from "react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
+import { Flex } from "@chakra-ui/react";
 
 export function createSearchAndHighlightDemo({
     intl,
@@ -37,11 +39,18 @@ class DemoModelImpl implements DemoModel {
 
         this.description = intl.formatRichMessage({ id: "demos.searchAndHighlight.description" });
         this.mainWidget = (
-            <Search
-                sources={[this.#searchSource]}
-                onSelect={this.#onSearchResultSelected}
-                onClear={this.#clearHighlight}
-            />
+            <Flex direction="row" gap={4}>
+                <Search
+                    sources={[this.#searchSource]}
+                    onSelect={this.#onSearchResultSelected}
+                    onClear={this.#clearHighlight}
+                />
+                <SearchCombobox
+                    sources={[this.#searchSource]}
+                    onSelect={this.#onSearchResultSelected}
+                    onClear={this.#clearHighlight}
+                />
+            </Flex>
         );
     }
 

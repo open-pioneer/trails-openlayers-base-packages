@@ -1,0 +1,32 @@
+.search-component .chakra-divider {
+    display: none;
+}
+
+.search-component .search-value-container {
+    cursor: text;
+    padding-left: 30px !important;
+}
+
+.search-component-menu > * {
+    /* Render react-select's menu on top */
+    z-index: var(--chakra-z-index-modal) !important;
+}
+
+.search-component-menu .search-invisible {
+    display: none;
+}
+
+.search-component-menu .search-highlighted-match {
+    font-weight: bold;
+}
+
+/* Exposition only
+
+.search-option {
+}
+
+.search-no-match {
+}
+
+.search-loading-text {
+} */

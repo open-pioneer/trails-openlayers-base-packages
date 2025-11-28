@@ -1190,6 +1190,56 @@ importers:
         version: link:../../testing/test-utils
     publishDirectory: dist
 
+  src/packages/search-combobox:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@open-pioneer/chakra-snippets':
+        specifier: 'catalog:'
+        version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
+      '@open-pioneer/core':
+        specifier: 'catalog:'
+        version: 4.3.0
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
+      chakra-react-select:
+        specifier: 'catalog:'
+        version: 6.1.1(@chakra-ui/react@3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@types/react@19.2.6)(next-themes@0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.2.0)
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: 'catalog:'
+        version: 4.3.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(typescript@5.9.3)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
+    publishDirectory: dist
+
   src/packages/selection:
     dependencies:
       '@chakra-ui/react':
@@ -1633,6 +1683,9 @@ importers:
       '@open-pioneer/search':
         specifier: workspace:^
         version: link:../../../packages/search
+      '@open-pioneer/search-combobox':
+        specifier: workspace:^
+        version: link:../../../packages/search-combobox
       '@open-pioneer/selection':
         specifier: workspace:^
         version: link:../../../packages/selection
