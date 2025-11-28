@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Highlight, MapModel } from "@open-pioneer/map";
-import { Search, SearchSelectEvent, SearchSource } from "@open-pioneer/search";
-import { SearchCombobox } from "@open-pioneer/search-combobox";
+import { Search, SearchCombobox, SearchSelectEvent, SearchSource } from "@open-pioneer/search";
 import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import { Geometry } from "ol/geom";

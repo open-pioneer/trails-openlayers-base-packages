@@ -28,7 +28,6 @@
         "@open-pioneer/scale-setter": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/search": "workspace:^",
-        "@open-pioneer/search-combobox": "workspace:^",
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
