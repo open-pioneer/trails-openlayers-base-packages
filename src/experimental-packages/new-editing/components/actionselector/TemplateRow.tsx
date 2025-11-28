@@ -10,7 +10,6 @@ import {
 } from "react-icons/pi";
 import { useCallback, type ReactElement, type ReactNode } from "react";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
-import type { Callback } from "../../types/types";
 
 export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps): ReactElement {
     const onRowClick = useCallback(() => {
@@ -60,7 +59,7 @@ function TemplateIcon({ template }: TemplateIconProps): ReactNode | undefined {
 interface TemplateRowProps {
     readonly template: FeatureTemplate;
     readonly isSelected: boolean;
-    readonly onClick: Callback<FeatureTemplate>;
+    readonly onClick: (featureTemplate: FeatureTemplate) => void;
 }
 
 interface TemplateIconProps {

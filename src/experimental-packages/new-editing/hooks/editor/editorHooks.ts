@@ -7,10 +7,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { Action } from "../../model/Action";
 import type { EditingStep } from "../../model/EditingStep";
-import type { Callback, StatePair, ValueSetter } from "../../types/types";
+import type { StatePair, ValueSetter } from "../../types/types";
 
 export function useEditingStep(
-    onEditingStepChange: Callback<EditingStep> | undefined
+    onEditingStepChange: ((newStep: EditingStep) => void) | undefined
 ): StatePair<EditingStep> {
     const [editingStep, setEditingStep] = useState<EditingStep>({ id: "none" });
 
@@ -25,7 +25,7 @@ export function useOnActionChangeCallback(
     mapModel: MapModel | undefined,
     editableLayerIds: string[],
     setEditingStep: ValueSetter<EditingStep>
-): Callback<Action | undefined> {
+): (newAction: Action | undefined) => void {
     const editableLayers = useLayers(mapModel, editableLayerIds);
 
     return useCallback(

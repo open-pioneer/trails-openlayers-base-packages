@@ -4,7 +4,6 @@ import { Button, Dialog } from "@chakra-ui/react";
 
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
-import type { AsyncVoidCallback, VoidCallback } from "../../types/types";
 
 export function DeleteConfirmationDialog({
     isOpen,
@@ -74,6 +73,6 @@ export function DeleteConfirmationDialog({
 
 interface DeleteConfirmationDialogProps {
     readonly isOpen: boolean;
-    readonly onDelete: AsyncVoidCallback;
-    readonly onCancel: VoidCallback;
+    readonly onDelete: () => Promise<void>;
+    readonly onCancel: () => void;
 }

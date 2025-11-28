@@ -6,7 +6,6 @@ import { GoCheckCircle, GoXCircle } from "react-icons/go";
 import { LuUndo, LuRedo } from "react-icons/lu";
 
 import { useMemo, type ReactElement } from "react";
-import type { VoidCallback } from "../../types/types";
 
 export function ActionBar({
     canFinish,
@@ -58,8 +57,8 @@ export interface ActionBarProps {
     readonly canUndo: boolean;
     readonly canRedo: boolean;
 
-    readonly onFinish: VoidCallback;
-    readonly onAbort: VoidCallback;
-    readonly onUndo: VoidCallback;
-    readonly onRedo: VoidCallback;
+    readonly onFinish: () => void;
+    readonly onAbort: () => void;
+    readonly onUndo: () => void;
+    readonly onRedo: () => void;
 }

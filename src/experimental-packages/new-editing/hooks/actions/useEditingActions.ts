@@ -14,7 +14,6 @@ import {
     getNumberOfVertices,
     getLastCoordinate
 } from "./geometryHelpers";
-import type { Callback, VoidCallback } from "../../types/types";
 
 export function useEditingActions(): EditingState {
     const undoManager = useMemo(() => new UndoManager<Coordinate>(), []);
@@ -155,8 +154,8 @@ export interface EditingTracker {
 }
 
 export interface EditingActionHandler {
-    onUndo?: VoidCallback;
-    onRedo?: Callback<Coordinate>;
-    onFinishDrawing?: VoidCallback;
-    onAbortDrawing?: VoidCallback;
+    onUndo?: () => void;
+    onRedo?: (coordinate: Coordinate) => void;
+    onFinishDrawing?: () => void;
+    onAbortDrawing?: () => void;
 }

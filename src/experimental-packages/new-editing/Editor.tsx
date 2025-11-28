@@ -22,7 +22,6 @@ import { useEditing, type InteractionOptions } from "./hooks/editing/useEditing"
 import type { EditingHandler } from "./model/EditingHandler";
 import type { EditingStep } from "./model/EditingStep";
 import type { FeatureTemplate } from "./model/FeatureTemplate";
-import type { Callback } from "./types/types";
 
 export function Editor({
     map,
@@ -104,4 +103,4 @@ export interface EditorProps extends InteractionOptions, MapModelProps {
     readonly onEditingStepChange?: OnEditingStepChange;
 }
 
-export type OnEditingStepChange = Callback<EditingStep>;
+export type OnEditingStepChange = (newEditingStep: EditingStep) => void;

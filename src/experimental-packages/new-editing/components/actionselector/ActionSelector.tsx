@@ -10,7 +10,6 @@ import { SelectButton } from "./SelectButton";
 import { TemplateSelector } from "./TemplateSelector";
 import type { Action } from "../../model/Action";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
-import type { Callback } from "../../types/types";
 
 export function ActionSelector({
     templates,
@@ -74,5 +73,5 @@ const ACTION_GEOMETRY_TYPES: GeometryType[] = ["Polygon", "LineString"];
 interface ActionSelectorProps extends ActionBarProps {
     readonly templates: FeatureTemplate[];
     readonly showActionBar: boolean;
-    readonly onActionChange: Callback<Action | undefined>;
+    readonly onActionChange: (newAction: Action | undefined) => void;
 }

@@ -4,7 +4,6 @@ import { Flex, Button, Spacer } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { PiTrash } from "react-icons/pi";
 import { useCallback, useMemo, useState, type ReactElement } from "react";
-import type { AsyncVoidCallback, VoidCallback } from "../../types/types";
 
 export function ButtonRow({
     canSave,
@@ -70,7 +69,7 @@ interface ButtonRowProps {
     readonly canSave: boolean;
     readonly showDeleteButton: boolean;
 
-    readonly onSave: AsyncVoidCallback;
-    readonly onDelete: VoidCallback;
-    readonly onCancel: VoidCallback;
+    readonly onSave: () => Promise<void>;
+    readonly onDelete: () => void;
+    readonly onCancel: () => void;
 }

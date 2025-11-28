@@ -6,7 +6,6 @@ import { useCallback, useState, type ReactElement, type ReactNode } from "react"
 import { ButtonRow } from "./ButtonRow";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import type { AsyncVoidCallback, VoidCallback } from "../../types/types";
 
 export function PropertyEditor({
     children,
@@ -55,7 +54,7 @@ interface PropertyEditorProps extends PropertyEditorCallbacks {
 }
 
 export interface PropertyEditorCallbacks {
-    readonly onSave: AsyncVoidCallback;
-    readonly onDelete: AsyncVoidCallback;
-    readonly onCancel: VoidCallback;
+    readonly onSave: () => Promise<void>;
+    readonly onDelete: () => Promise<void>;
+    readonly onCancel: () => void;
 }

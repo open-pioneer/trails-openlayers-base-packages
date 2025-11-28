@@ -5,7 +5,6 @@ import type { ReactElement } from "react";
 
 import { TemplateRow } from "./TemplateRow";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
-import type { Callback } from "../../types/types";
 
 export function TemplateSelector({
     templates,
@@ -31,5 +30,5 @@ export function TemplateSelector({
 interface TemplateSelectorProps {
     readonly templates: FeatureTemplate[];
     readonly selectedTemplate: FeatureTemplate | undefined;
-    readonly onClick: Callback<FeatureTemplate>;
+    readonly onClick: (featureTemplate: FeatureTemplate) => void;
 }

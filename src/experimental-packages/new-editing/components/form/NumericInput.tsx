@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { NumberInput } from "@chakra-ui/react";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
-import type { Callback } from "../../types/types";
 
 // This component allows its value to be specified as a number. The value is still stored as a
 // string internally to allow non-numeric characters (such as '-', '.', or 'e') to be entered.
@@ -86,5 +85,5 @@ interface NumericInputProps extends Omit<NumberInput.RootProps, "value" | "onVal
     readonly value: number | undefined;
     readonly placeholder?: string;
     readonly showSteppers?: boolean;
-    readonly onNumberChange?: Callback<number | undefined>;
+    readonly onNumberChange?: (newNumber: number | undefined) => void;
 }

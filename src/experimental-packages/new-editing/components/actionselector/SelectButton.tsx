@@ -4,7 +4,6 @@ import { Button } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FaMousePointer } from "react-icons/fa";
 import type { ReactElement } from "react";
-import type { VoidCallback } from "../../types/types";
 
 export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactElement {
     const { formatMessage } = useIntl();
@@ -26,5 +25,5 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
 
 interface SelectButtonProps {
     readonly isActive: boolean;
-    readonly onClick: VoidCallback;
+    readonly onClick: () => void;
 }
