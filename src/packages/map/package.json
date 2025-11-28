@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@types/jsdom": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },

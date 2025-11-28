@@ -20,7 +20,7 @@
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "chakra-react-select": "catalog:",
@@ -30,7 +30,7 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*",
         "test-utils": "workspace:*"

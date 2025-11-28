@@ -17,9 +17,9 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/basemap-switcher": "workspace:^",
+        "@open-pioneer/basemap-switcher": "workspace:*",
         "@chakra-ui/react": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "classnames": "catalog:",
@@ -31,7 +31,7 @@
         "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*",
         "resize-observer-polyfill": "catalog:"

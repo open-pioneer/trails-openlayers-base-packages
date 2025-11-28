@@ -19,7 +19,7 @@
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
@@ -33,8 +33,8 @@
         "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
-        "test-utils": "workspace:^",
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "test-utils": "workspace:*",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
