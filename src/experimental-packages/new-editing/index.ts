@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-export { Editor, type EditorProps, type OnEditingStepChange } from "./tsx/Editor";
+export { Editor, type EditorProps, type OnEditingStepChange } from "./Editor";
 
 export {
     useEditing,
@@ -10,37 +10,37 @@ export {
     type ModifyOptions,
     type SelectOptions,
     type SnapOptions
-} from "./tsx/hooks/editing/useEditing";
+} from "./hooks/editing/useEditing";
 
 export {
     usePropertyFormContext,
     useProperties,
     useProperty
-} from "./tsx/context/usePropertyFormContext";
+} from "./context/usePropertyFormContext";
 
 export type {
     PropertyFormContextType,
     Properties,
     PropertySetter
-} from "./tsx/context/PropertyFormContext";
+} from "./context/PropertyFormContext";
 
 export {
     DefaultPropertyForm,
     type DefaultPropertyFormProps,
     type FieldInputsProvider
-} from "./tsx/components/form/DefaultPropertyForm";
+} from "./components/form/DefaultPropertyForm";
 
 export {
     DefaultInputControl,
     type DefaultInputControlProps
-} from "./tsx/components/form/DefaultInputControl";
+} from "./components/form/DefaultInputControl";
 
 export type {
     EditingHandler,
     AddFeatureHandler,
     DeleteFeatureHandler,
     UpdateFeatureHandler
-} from "./tsx/model/EditingHandler";
+} from "./model/EditingHandler";
 
 export type {
     CheckBoxInput,
@@ -54,6 +54,6 @@ export type {
     SelectInput,
     TextAreaInput,
     TextFieldInput
-} from "./tsx/model/FeatureTemplate";
+} from "./model/FeatureTemplate";
 
-export type { EditingStep } from "./tsx/model/EditingStep";
+export type { EditingStep } from "./model/EditingStep";
