@@ -26,14 +26,18 @@ export function ActionSelector({
     const onButtonClick = useCallback(() => {
         setSelectButtonActive((active) => !active);
         setSelectedTemplate(undefined);
-        onActionChange(!selectButtonIsActive ? "select" : undefined);
+        onActionChange(!selectButtonIsActive ? { type: "update" } : undefined);
     }, [selectButtonIsActive, onActionChange]);
 
     const onTemplateClick = useCallback(
         (newTemplate: FeatureTemplate) => {
             setSelectedTemplate((template) => (template !== newTemplate ? newTemplate : undefined));
             setSelectButtonActive(false);
-            onActionChange(selectedTemplate !== newTemplate ? newTemplate : undefined);
+            onActionChange(
+                selectedTemplate !== newTemplate
+                    ? { type: "create", template: newTemplate }
+                    : undefined
+            );
         },
         [selectedTemplate, onActionChange]
     );

@@ -19,12 +19,12 @@ export type AddFeatureHandler = (
 
 export type UpdateFeatureHandler = (
     feature: Feature,
-    layer: Layer | undefined,
+    olLayer: Layer | undefined,
     projection: Projection
 ) => Promise<void>;
 
 export type DeleteFeatureHandler = (
     feature: Feature,
-    layer: Layer | undefined,
+    olLayer: Layer | undefined,
     projection: Projection
 ) => Promise<void>;

@@ -32,7 +32,6 @@ export function useEditingCallbacks(
                         setEditingStep({ id: "none" });
                     } catch (error) {
                         showNotifier("create", false, error);
-                        console.error("Error creating feature", feature, error);
                     }
                 } else if (editingStep.id === "update-modify") {
                     const { feature, olLayer: layer } = editingStep;
@@ -43,7 +42,6 @@ export function useEditingCallbacks(
                         setEditingStep({ id: "none" });
                     } catch (error) {
                         showNotifier("update", false, error);
-                        console.error("Error updating feature", feature, error);
                     }
                 }
             },
@@ -57,7 +55,6 @@ export function useEditingCallbacks(
                         setEditingStep({ id: "none" });
                     } catch (error) {
                         showNotifier("delete", false, error);
-                        console.error("Error deleting feature", feature, error);
                     } finally {
                         layer?.getSource()?.refresh();
                     }

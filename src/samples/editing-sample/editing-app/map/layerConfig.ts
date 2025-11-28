@@ -34,7 +34,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 {
                     label: "Baumart",
                     fieldName: "baumart",
-                    inputType: "textField",
+                    inputType: "text-field",
                     required: true
                 },
                 {
@@ -88,7 +88,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 {
                     label: "Sanierungszustand",
                     fieldName: "saniert",
-                    inputType: "checkBox",
+                    inputType: "check-box",
                     checkBoxLabel: "Saniert"
                 }
             ]
@@ -325,7 +325,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 {
                     label: "Bemerkung",
                     fieldName: "bemerkung",
-                    inputType: "textArea"
+                    inputType: "text-area"
                 }
             ]
         }

@@ -2,4 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { FeatureTemplate } from "./FeatureTemplate";
 
-export type Action = FeatureTemplate | "select";
+interface CreateAction {
+    readonly type: "create";
+    readonly template: FeatureTemplate;
+}
+
+interface UpdateAction {
+    readonly type: "update";
+}
+
+export type Action = CreateAction | UpdateAction;

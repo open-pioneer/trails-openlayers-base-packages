@@ -51,7 +51,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
     );
 
     switch (fieldInput.inputType) {
-        case "textField":
+        case "text-field":
             return (
                 <Field.Root required={fieldInput.required}>
                     <Field.Label>{fieldInput.label}</Field.Label>
@@ -64,7 +64,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
                 </Field.Root>
             );
 
-        case "textArea":
+        case "text-area":
             return (
                 <Field.Root required={fieldInput.required}>
                     <Field.Label>{fieldInput.label}</Field.Label>
@@ -93,7 +93,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
                 </Field.Root>
             );
 
-        case "checkBox":
+        case "check-box":
             return (
                 <Field.Root required={fieldInput.required}>
                     <Field.Label>{fieldInput.label}</Field.Label>

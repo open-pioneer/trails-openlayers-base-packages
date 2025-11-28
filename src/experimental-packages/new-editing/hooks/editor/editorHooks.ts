@@ -32,10 +32,10 @@ export function useOnActionChangeCallback(
         (action) => {
             if (action == null) {
                 setEditingStep({ id: "none" });
-            } else if (action === "select") {
+            } else if (action.type === "update") {
                 setEditingStep({ id: "update-select", olLayers: editableLayers });
             } else {
-                setEditingStep({ id: "create-draw", template: action });
+                setEditingStep({ id: "create-draw", template: action.template });
             }
         },
         [editableLayers, setEditingStep]

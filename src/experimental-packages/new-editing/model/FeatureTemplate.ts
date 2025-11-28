@@ -24,12 +24,12 @@ interface BaseInput {
 }
 
 export interface TextFieldInput extends BaseInput {
-    readonly inputType: "textField";
+    readonly inputType: "text-field";
     readonly placeholder?: string;
 }
 
 export interface TextAreaInput extends BaseInput {
-    readonly inputType: "textArea";
+    readonly inputType: "text-area";
     readonly placeholder?: string;
 }
 
@@ -44,7 +44,7 @@ export interface NumberInput extends BaseInput {
 }
 
 export interface CheckBoxInput extends BaseInput {
-    readonly inputType: "checkBox";
+    readonly inputType: "check-box";
     readonly checkBoxLabel?: string;
 }
 
