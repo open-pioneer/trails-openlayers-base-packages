@@ -12,7 +12,7 @@ import {
 import { ChangeEvent, useCallback, type ReactElement } from "react";
 
 import { NumericInput } from "./NumericInput";
-import { ColorPicker } from "./ColorPicker";
+import { ColorPickerInput } from "./ColorPickerInput";
 import { useProperty, usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { FieldInput } from "../../model/FeatureTemplate";
 
@@ -144,7 +144,11 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
             return (
                 <Field.Root>
                     <Field.Label>{fieldInput.label}</Field.Label>
-                    <ColorPicker hexColor={value?.toString()} onChange={onChange} />
+                    <ColorPickerInput
+                        hexColor={value?.toString()}
+                        colors={fieldInput.colors}
+                        onChange={onChange}
+                    />
                 </Field.Root>
             );
     }

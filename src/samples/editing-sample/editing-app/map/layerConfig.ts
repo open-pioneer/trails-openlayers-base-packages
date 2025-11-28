@@ -172,10 +172,9 @@ export const LAYER_CONFIG: LayerConfig[] = [
         id: "schutzgebiete",
         title: "Schutzgebiete",
         style(feature) {
-            const color = feature.get("farbe");
             return new Style({
                 fill: new Fill({
-                    color: color != null ? `${color}aa` : "#808080aa"
+                    color: feature.get("farbe") ?? "#808080aa"
                 }),
                 stroke: new Stroke({
                     color: "black",
@@ -251,7 +250,23 @@ export const LAYER_CONFIG: LayerConfig[] = [
                     label: "Farbe",
                     fieldName: "farbe",
                     inputType: "color",
-                    required: true
+                    required: true,
+                    colors: [
+                        "#000000",
+                        "#4A5568",
+                        "#F56565",
+                        "#ED64A6",
+                        "#9F7AEA",
+                        "#6B46C1",
+                        "#4299E1",
+                        "#0BC5EA",
+                        "#00B5D8",
+                        "#38B2AC",
+                        "#48BB78",
+                        "#68D391",
+                        "#ECC94B",
+                        "#DD6B20"
+                    ]
                 }
             ]
         }
