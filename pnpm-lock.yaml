@@ -1711,6 +1711,9 @@ importers:
       '@chakra-ui/react':
         specifier: 'catalog:'
         version: 3.28.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@conterra/reactivity-core':
+        specifier: 'catalog:'
+        version: 0.8.0
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.2)(react@19.2.0)

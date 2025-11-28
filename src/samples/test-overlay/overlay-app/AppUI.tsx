@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Separator, VStack, Text } from "@chakra-ui/react";
+import { Box, Flex, Separator, VStack, Text, Icon } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { useEffect, useId, useMemo } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
@@ -14,6 +14,9 @@ import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { Toolbar } from "./ui/Toolbar";
+import { LuCrosshair } from "react-icons/lu";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { Reactive, reactive } from "@conterra/reactivity-core";
 
 export function AppUI() {
     const intl = useIntl();
@@ -27,6 +30,17 @@ export function AppUI() {
         []
     );
 
+
+    const count = useRef(reactive(0));
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const increment = count.current.value + 1;
+            count.current.value = increment;
+            console.log(increment);
+        }, 1000);
+        return () => clearInterval(interval);
+    });
+
     useEffect(() => {
         if (!map) {
             return;
@@ -37,12 +51,22 @@ export function AppUI() {
             <Box bg={"white"}>This is a static map overlay!</Box>
         );
         const followPointerOverlay = map.overlays.addOverlay(
-            { positioning: "bottom-right", followPointer: true },
-            <Box bg={"green"}>This overlays follows the pointer!</Box>
+            { positioning: "center-center", stopEvent: false, followPointer: true },
+            <Icon size={"2xl"} color={"red.solid"}><LuCrosshair /></Icon>
+        );
+        const updatingTooltip = map.overlays.addOverlay(
+            { positioning: "center-center", stopEvent: false, followPointer: false, position: [406000, 5760000] },
+            <SelfUpdatingTooltip></SelfUpdatingTooltip>
+        );
+        const updatedTooltip = map.overlays.addOverlay(
+            { positioning: "center-center", stopEvent: false, followPointer: false, position: [408000, 5761000] },
+            <ReactiveTooltip count={count.current}></ReactiveTooltip>
         );
         return () => {
             staticOverlay.destroy();
             followPointerOverlay.destroy();
+            updatingTooltip.destroy();
+            updatedTooltip.destroy();
         };
     }, [map]);
 
@@ -127,4 +151,23 @@ function BasemapSwitcherComponent() {
             <BasemapSwitcher aria-labelledby={labelId} allowSelectingEmptyBasemap />
         </VStack>
     );
+}
+
+
+function SelfUpdatingTooltip() {
+    const [date, setDate] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => setDate(new Date()), 1000);
+        return () => clearInterval(interval);
+    }, []); 
+
+    return (<Box bg={"yellow.400"}>{date.toLocaleString()}</Box>);
+}
+
+
+function ReactiveTooltip(props: { count: Reactive<number> }) {
+    const count = useReactiveSnapshot(() => props.count.value, [props]);
+
+    return (<Box bg={"teal.500"}>Count: {count}</Box>);
 }

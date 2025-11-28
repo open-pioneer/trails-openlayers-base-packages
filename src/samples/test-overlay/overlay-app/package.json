@@ -20,6 +20,7 @@
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/basemap-switcher": "workspace:^",
+        "@conterra/reactivity-core": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
