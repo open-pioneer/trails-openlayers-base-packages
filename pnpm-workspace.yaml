@@ -1,8 +1,10 @@
+configDependencies:
+  "@open-pioneer/pnpm-plugin-defaults": 0.1.0+sha512-+m/wk7B8hZPfiFzM82JBYTD6TbrMHPdgPUITBMHzjlqzCo8YfPHc5NAsURCz/YcMBN5tNANDQDfclYhrsjmClQ==
+
 packages:
   - src/**
   - "!**/test-data/**"
   - "!**/dist/**"
-  - .
 
 # https://pnpm.io/catalogs
 catalog:
@@ -125,7 +127,6 @@ overrides:
   "@ark-ui/react": "5.27.1"
   "react-select": "5.10.2"
 
-ignorePatchFailures: false
 patchedDependencies:
   # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
   "react-select@*": "patches/react-select.patch"
@@ -133,7 +134,6 @@ patchedDependencies:
   # - Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
-dangerouslyAllowAllBuilds: false
 onlyBuiltDependencies:
   - "@parcel/watcher"
   - "@swc/core"
@@ -143,12 +143,6 @@ ignoredBuiltDependencies:
   # Seems to work without build scripts; may revisit later if actually needed.
   - core-js
   - unrs-resolver
-
-# Don't automatically link to workspace packages (use e.g. "workspace:^" instead).
-linkWorkspacePackages: false
-autoInstallPeers: true
-dedupePeerDependents: true
-strictPeerDependencies: true
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true
