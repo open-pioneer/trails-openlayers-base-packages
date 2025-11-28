@@ -1,5 +1,24 @@
 # @open-pioneer/basemap-switcher
 
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- c38b619: Layers that are not visible in the current resolution of the map are indicated with an icon and disabled text (but are still selectable by the user).
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+
+### Patch Changes
+
+- c38b619: Show the icon indicator and disabled text of the selected option also in collapsed state, not only in the list of options.
+- Updated dependencies [fce7fa9]
+- Updated dependencies [10338fa]
+- Updated dependencies [a8b8a36]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+    - @open-pioneer/map@1.1.0
+
 ## 1.0.0
 
 ### Minor Changes

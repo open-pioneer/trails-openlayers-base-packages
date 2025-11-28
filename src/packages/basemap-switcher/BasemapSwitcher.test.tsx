@@ -28,6 +28,55 @@ const defaultBasemapConfig = [
     }
 ];
 
+it("should successfully show info for the user if a layer is not visible", async () => {
+    const { map } = await setupMap({
+        layers: [
+            {
+                id: "osm",
+                title: "OSM",
+                isBaseLayer: true,
+                minZoom: 9,
+                maxZoom: 16,
+                visible: true,
+                olLayer: createTestOlLayer()
+            }
+        ]
+    });
+
+    render(
+        <PackageContextProvider>
+            <BasemapSwitcher map={map} data-testid="switcher" />
+        </PackageContextProvider>
+    );
+
+    // basemap switcher is mounted
+    const { switcherSelectTrigger } = await waitForBasemapSwitcher();
+    await showDropdown(switcherSelectTrigger);
+
+    const options = await getCurrentOptions();
+    const osmOption = options.find((option) => option.textContent === "OSM");
+    if (!osmOption) {
+        throw new Error("Layer OSM missing in basemap options");
+    }
+
+    const icons = osmOption.querySelectorAll(".basemap-switcher-option-problem-indicator svg");
+    expect(icons).toHaveLength(0);
+
+    // set map out of layer visibility
+    await act(async () => {
+        map.olView.setZoom(5);
+        await nextTick();
+    });
+
+    {
+        const options = await getCurrentOptions();
+        const osmOption = options.find((option) => option.textContent === "OSM");
+        const icons = osmOption!.querySelectorAll(".basemap-switcher-option-problem-indicator svg");
+        expect(icons).toHaveLength(1);
+        expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
+    }
+});
+
 it("should successfully create a basemap switcher component", async () => {
     const { map } = await setupMap();
 

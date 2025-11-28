@@ -54,7 +54,7 @@ exports[`expect result list to be created successfully 1`] = `
               >
                 <label
                   aria-label="selectAllTooltip"
-                  class="result-list-select-all-checkbox chakra-checkbox__root css-uwx0lo"
+                  class="result-list-select-all-checkbox chakra-checkbox__root css-if4mqv"
                   data-part="root"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -72,7 +72,7 @@ exports[`expect result list to be created successfully 1`] = `
                   />
                   <div
                     aria-hidden="true"
-                    class="chakra-checkbox__control css-1rzwffa"
+                    class="chakra-checkbox__control css-16983vm"
                     data-part="control"
                     data-scope="checkbox"
                     data-state="unchecked"
@@ -184,7 +184,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <label
                 aria-label="ariaLabel.selectSingle"
-                class="result-list-select-row-checkbox chakra-checkbox__root css-uwx0lo"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
                 data-part="root"
                 data-scope="checkbox"
                 data-state="unchecked"
@@ -202,7 +202,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1rzwffa"
+                  class="chakra-checkbox__control css-16983vm"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -255,7 +255,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <label
                 aria-label="ariaLabel.selectSingle"
-                class="result-list-select-row-checkbox chakra-checkbox__root css-uwx0lo"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
                 data-part="root"
                 data-scope="checkbox"
                 data-state="unchecked"
@@ -273,7 +273,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1rzwffa"
+                  class="chakra-checkbox__control css-16983vm"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -326,7 +326,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <label
                 aria-label="ariaLabel.selectSingle"
-                class="result-list-select-row-checkbox chakra-checkbox__root css-uwx0lo"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
                 data-part="root"
                 data-scope="checkbox"
                 data-state="unchecked"
@@ -344,7 +344,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1rzwffa"
+                  class="chakra-checkbox__control css-16983vm"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -397,7 +397,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <label
                 aria-label="ariaLabel.selectSingle"
-                class="result-list-select-row-checkbox chakra-checkbox__root css-uwx0lo"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
                 data-part="root"
                 data-scope="checkbox"
                 data-state="unchecked"
@@ -415,7 +415,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1rzwffa"
+                  class="chakra-checkbox__control css-16983vm"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -458,7 +458,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <label
                 aria-label="ariaLabel.selectSingle"
-                class="result-list-select-row-checkbox chakra-checkbox__root css-uwx0lo"
+                class="result-list-select-row-checkbox chakra-checkbox__root css-if4mqv"
                 data-part="root"
                 data-scope="checkbox"
                 data-state="unchecked"
@@ -476,7 +476,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1rzwffa"
+                  class="chakra-checkbox__control css-16983vm"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"

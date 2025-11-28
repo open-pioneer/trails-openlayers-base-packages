@@ -10,6 +10,7 @@ const mockedFetch = vi.fn();
 
 afterEach(() => {
     vi.restoreAllMocks();
+    vi.clearAllMocks();
 });
 
 const mockedGeoJSON = {

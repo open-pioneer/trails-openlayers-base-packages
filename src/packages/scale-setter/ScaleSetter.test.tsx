@@ -90,7 +90,7 @@ it("should successfully render the scale in the correct locale", async () => {
 
     changeLocale("de");
     result.rerender(<ScaleSetter map={map} data-testid="scale-setter" />);
-    waitFor(() => expect(setterButton.textContent).toBe("1 : 21.026"));
+    await waitFor(() => expect(setterButton.textContent).toBe("1 : 21.026"));
 });
 
 it("should successfully update the map scale and label when selection changes", async () => {

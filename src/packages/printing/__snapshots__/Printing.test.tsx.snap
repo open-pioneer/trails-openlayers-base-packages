@@ -26,7 +26,7 @@ exports[`should successfully create a printing component 1`] = `
         title
       </label>
       <input
-        class="chakra-input css-ee9xfg"
+        class="chakra-input css-16b029e"
         data-part="input"
         data-scope="field"
         id="_r_0_"
@@ -54,7 +54,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select css-1sph0c1"
+          class="chakra-native-select__field printing-select css-1fgm1uu"
           data-part="select"
           data-scope="field"
           id="_r_1_"

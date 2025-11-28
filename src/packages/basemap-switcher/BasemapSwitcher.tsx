@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, createListCollection, Portal, Select } from "@chakra-ui/react";
+import { Box, createListCollection, Portal, Select, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC } from "react";
-import { LuTriangleAlert } from "react-icons/lu";
+import { FC, useMemo } from "react";
+import { type IconType } from "react-icons/lib";
+import { LuInfo, LuTriangleAlert } from "react-icons/lu";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -18,7 +19,7 @@ export const NO_BASEMAP_ID = "___NO_BASEMAP___";
 /**
  * Properties for single select options.
  */
-export interface SelectOption {
+interface SelectOption {
     /**
      * The id of the basemap for the select option.
      */
@@ -31,6 +32,7 @@ export interface SelectOption {
 
     /**
      * The layer object for the select option.
+     * Undefined is used for "no basemap".
      */
     layer: Layer | undefined;
 }
@@ -102,8 +104,10 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             options.push(emptyOption);
         }
         const optionsListCollection = createListCollection({ items: options });
-
-        const selectedOption = [activeBaseLayer?.id ?? NO_BASEMAP_ID];
+        const selectedOption = optionsListCollection.find(activeBaseLayer?.id ?? NO_BASEMAP_ID);
+        if (!selectedOption) {
+            throw new Error("Internal error: selected option not found in list.");
+        }
 
         return { optionsListCollection, selectedOption };
     }, [allowSelectingEmptyBasemap, emptyBasemapLabel, map]);
@@ -112,7 +116,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         <Box {...containerProps}>
             <Select.Root
                 collection={optionsListCollection}
-                value={selectedOption}
+                value={[selectedOption.value]}
                 onValueChange={(option) => option && activateLayer(option.value)}
                 className="basemap-switcher-select"
                 lazyMount={true}
@@ -124,7 +128,9 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                         aria-labelledby={ariaLabelledBy}
                         className="basemap-switcher-select-trigger"
                     >
-                        <Select.ValueText />
+                        <Select.ValueText display="flex" alignItems="center">
+                            <BasemapItemContent option={selectedOption} />
+                        </Select.ValueText>
                     </Select.Trigger>
                     <Select.IndicatorGroup>
                         <Select.Indicator />
@@ -146,9 +152,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 };
 
 function BasemapItem(props: { item: SelectOption }) {
-    const intl = useIntl();
-    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const item = props.item;
+
     return (
         <Select.Item
             item={item}
@@ -158,25 +163,61 @@ function BasemapItem(props: { item: SelectOption }) {
             pointerEvents="auto"
             className="basemap-switcher-option"
         >
-            {item.label}
-            {item.layer?.loadState === "error" && (
-                <Box ml={2}>
-                    <Tooltip
-                        content={notAvailableLabel}
-                        aria-label={notAvailableLabel}
-                        positioning={{ placement: "right" }}
-                    >
-                        <span>
-                            <LuTriangleAlert
-                                color={"red"}
-                                aria-label={intl.formatMessage({
-                                    id: "layerNotAvailable"
-                                })}
-                            />
-                        </span>
-                    </Tooltip>
-                </Box>
-            )}
+            <BasemapItemContent option={item} />
         </Select.Item>
+    );
+}
+
+function BasemapItemContent(props: { option: SelectOption }) {
+    const { option } = props;
+    const intl = useIntl();
+    const loadState = useReactiveSnapshot(() => option.layer?.loadState, [option.layer]);
+    const visibleInScale = useReactiveSnapshot(() => option.layer?.visibleInScale, [option.layer]);
+
+    const { problem, opacity } = useMemo(() => {
+        let problem = undefined;
+        let opacity = undefined;
+        if (option.layer) {
+            if (loadState === "error") {
+                problem = (
+                    <ProblemIndicator
+                        Icon={LuTriangleAlert}
+                        color="red"
+                        message={intl.formatMessage({ id: "layerNotAvailable" })}
+                    />
+                );
+            } else if (!visibleInScale) {
+                problem = (
+                    <ProblemIndicator
+                        Icon={LuInfo}
+                        message={intl.formatMessage({ id: "layerNotVisible" })}
+                    />
+                );
+                opacity = 0.5;
+            }
+        }
+        return { problem, opacity };
+    }, [option.layer, loadState, visibleInScale, intl]);
+
+    return (
+        <>
+            <Text as="span" opacity={opacity}>
+                {option.label}
+            </Text>
+            {problem}
+        </>
+    );
+}
+
+function ProblemIndicator(props: { Icon: IconType; message: string; color?: string }) {
+    const { Icon, message, color } = props;
+    return (
+        <Box ml={2} className="basemap-switcher-option-problem-indicator">
+            <Tooltip content={message} aria-label={message} positioning={{ placement: "right" }}>
+                <span>
+                    <Icon aria-label={message} color={color} />
+                </span>
+            </Tooltip>
+        </Box>
     );
 }

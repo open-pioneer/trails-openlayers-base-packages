@@ -242,6 +242,6 @@ if (false) {
     void check;
 }
 
-function isHtmlImage(htmlElement: HTMLElement): htmlElement is HTMLImageElement {
-    return htmlElement.tagName === "IMG";
+function isHtmlImage(htmlElement: HTMLElement | OffscreenCanvas): htmlElement is HTMLImageElement {
+    return "tagName" in htmlElement && htmlElement.tagName === "IMG";
 }

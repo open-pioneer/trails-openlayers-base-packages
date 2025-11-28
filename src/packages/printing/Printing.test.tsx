@@ -38,6 +38,7 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.restoreAllMocks();
+    vi.clearAllMocks();
 });
 
 it("should successfully create a printing component", async () => {

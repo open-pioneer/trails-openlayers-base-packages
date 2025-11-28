@@ -45,7 +45,7 @@ exports[`should successfully create a coordinate search component 1`] = `
           aria-invalid="false"
           aria-labelledby="select:_r_1_:label"
           aria-required="false"
-          class="coordinate-input-select-trigger chakra-select__trigger css-1qq4sc1"
+          class="coordinate-input-select-trigger chakra-select__trigger css-12wxxq1"
           data-part="trigger"
           data-scope="select"
           data-state="closed"
@@ -99,7 +99,7 @@ exports[`should successfully create a coordinate search component 1`] = `
         <input
           aria-label="coordinateInput.ariaLabel"
           autocomplete="off"
-          class="chakra-input css-n0ozho"
+          class="chakra-input css-1jwcmrs"
           data-part="input"
           data-scope="field"
           id="_r_2_"

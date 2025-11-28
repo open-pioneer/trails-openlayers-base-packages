@@ -30,7 +30,7 @@ exports[`should successfully create a measurement component 1`] = `
       class="chakra-native-select__root css-dup0sm"
     >
       <select
-        class="chakra-native-select__field measurement-select css-1sph0c1"
+        class="chakra-native-select__field measurement-select css-1fgm1uu"
         data-part="select"
         data-scope="field"
         id="_r_0_"
