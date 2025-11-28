@@ -18,7 +18,6 @@ export class SearchApiImpl implements SearchApi {
         this.#clearInput("api-reset");
     }
 
-    // todo write test
     setInputValue(inputValue: string) {
         this.#setInputValue(inputValue);
     }
