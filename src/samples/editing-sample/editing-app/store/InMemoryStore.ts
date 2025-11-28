@@ -17,7 +17,7 @@ export class InMemoryStore {
     }
 
     addFeature(feature: Feature): void {
-        this.features.push(feature);
+        this.features.push(feature.clone());
     }
 
     updateFeature(feature: Feature): void {

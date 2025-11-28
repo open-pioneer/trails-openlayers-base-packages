@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, VStack } from "@chakra-ui/react";
-import { useCallback, useState, type ReactElement, type ReactNode } from "react";
+import { Box, VStack, useDisclosure } from "@chakra-ui/react";
+import { useCallback, type ReactElement, type ReactNode } from "react";
 
 import { ButtonRow } from "./ButtonRow";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
@@ -14,7 +14,7 @@ export function PropertyEditor({
     onCancel
 }: PropertyEditorProps): ReactElement {
     const { mode, isValid, feature, properties } = usePropertyFormContext();
-    const [dialogIsOpen, setDialogIsOpen] = useState(false);
+    const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 
     const onSaveClick = useCallback(async () => {
         feature.setProperties(properties);
@@ -23,8 +23,8 @@ export function PropertyEditor({
 
     const onDeleteClick = useCallback(async () => {
         await onDelete();
-        setDialogIsOpen(false);
-    }, [onDelete]);
+        closeDialog();
+    }, [closeDialog, onDelete]);
 
     return (
         <>
@@ -36,14 +36,14 @@ export function PropertyEditor({
                     canSave={isValid}
                     showDeleteButton={mode === "update"}
                     onSave={onSaveClick}
-                    onDelete={() => setDialogIsOpen(true)}
+                    onDelete={openDialog}
                     onCancel={onCancel}
                 />
             </VStack>
             <DeleteConfirmationDialog
                 isOpen={dialogIsOpen}
                 onDelete={onDeleteClick}
-                onCancel={() => setDialogIsOpen(false)}
+                onCancel={closeDialog}
             />
         </>
     );

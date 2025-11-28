@@ -19,7 +19,7 @@ export class MainMapProvider implements MapConfigProvider {
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             ...MainMapProvider.MAP_SETTINGS,
-            layers: [this.createOSMLayer(layerFactory), ...this.createIDBLayers(layerFactory)]
+            layers: [this.createOSMLayer(layerFactory), ...this.createVectorLayers(layerFactory)]
         };
     }
 
@@ -41,7 +41,7 @@ export class MainMapProvider implements MapConfigProvider {
         });
     }
 
-    private createIDBLayers(layerFactory: LayerFactory): Layer[] {
+    private createVectorLayers(layerFactory: LayerFactory): Layer[] {
         return [...LAYER_CONFIG].reverse().map(({ id, title, style }) => {
             const store = InMemoryStore.getOrCreate(id);
 

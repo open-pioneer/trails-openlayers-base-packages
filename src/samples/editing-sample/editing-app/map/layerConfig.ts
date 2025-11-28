@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { FeatureTemplate } from "new-editing";
 
-import { createRegularPolygon } from "ol/interaction/Draw";
+import { createBox } from "ol/interaction/Draw";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import type { StyleLike } from "ol/style/Style";
 
@@ -350,7 +350,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 aufforstungsjahr: new Date().getFullYear()
             },
             drawOptions: {
-                geometryFunction: createRegularPolygon(4)
+                geometryFunction: createBox()
             },
             fieldInputs: [
                 {

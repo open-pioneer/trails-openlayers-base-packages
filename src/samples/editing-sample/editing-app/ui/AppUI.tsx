@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, HStack } from "@chakra-ui/react";
+
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { Notifier } from "@open-pioneer/notifier";
+import { TitledSection } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
@@ -15,7 +17,6 @@ import { PiPencil } from "react-icons/pi";
 
 import { MAP_ID } from "../map/MainMapProvider";
 import { EditingComponent } from "./EditingComponent";
-import { TitledSection } from "@open-pioneer/react-utils";
 
 export function AppUI(): ReactElement | undefined {
     const [editingIsActive, toggleEditing] = useToolState(true);

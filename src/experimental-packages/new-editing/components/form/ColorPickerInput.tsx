@@ -47,11 +47,6 @@ export function ColorPickerInput({
     );
 }
 
-interface ColorPickerInputProps extends SwatchGroupProps {
-    readonly hexColor: string | undefined;
-    readonly onChange: (newHexColor: string) => void;
-}
-
 function SwatchGroup({ colors }: SwatchGroupProps): ReactElement | undefined {
     if (colors != null && colors.length >= 1) {
         return (
@@ -72,6 +67,11 @@ function SwatchGroup({ colors }: SwatchGroupProps): ReactElement | undefined {
     }
 }
 
+interface ColorPickerInputProps extends SwatchGroupProps {
+    readonly hexColor: string | undefined;
+    readonly onChange: (newHexColor: string) => void;
+}
+
 interface SwatchGroupProps {
-    readonly colors?: string[];
+    readonly colors: string[] | undefined;
 }

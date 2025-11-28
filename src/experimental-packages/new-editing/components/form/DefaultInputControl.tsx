@@ -122,7 +122,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
 
         case "select":
             return (
-                <Field.Root required={true}>
+                <Field.Root required={fieldInput.required}>
                     <Field.Label>
                         {fieldInput.label}
                         <Field.RequiredIndicator />
@@ -162,7 +162,7 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
 
         case "color":
             return (
-                <Field.Root>
+                <Field.Root required={fieldInput.required}>
                     <Field.Label>
                         {fieldInput.label}
                         <Field.RequiredIndicator />
