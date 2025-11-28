@@ -61,6 +61,7 @@ import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/searc
 The search API allows programmatic access to the search component.
 
 Currently, the search API provides a method to clear the search input field.
+Additionally, it provides a method for setting the search input value programmatically without triggering any actions.
 To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
 
 ```tsx
@@ -97,6 +98,13 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
     }}
 >
     reset search input
+</Button>
+<Button
+    onClick={() => {
+        searchApiRef.current?.setInputValue("Münster"); // use the API to set the search input value
+    }}
+>
+    set search input
 </Button>
 ```
 
