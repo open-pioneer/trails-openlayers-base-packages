@@ -175,7 +175,7 @@ describe("search api", () => {
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion()).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).not.toHaveBeenCalled();
     });
 
@@ -202,7 +202,7 @@ describe("search api", () => {
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion()).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
 });
@@ -263,16 +263,21 @@ async function waitForInput() {
     return { searchInput };
 }
 
-async function waitForSuggestion() {
-    const { suggestion } = await waitFor(async () => {
-        const { menuDiv } = await waitForMenu();
-        const suggestion = menuDiv.getElementsByClassName("search-highlighted-match")[0];
+async function waitForSuggestion(timeout?: number) {
+    const { suggestion } = await waitFor(
+        async () => {
+            const { menuDiv } = await waitForMenu();
+            const suggestion = menuDiv.getElementsByClassName("search-highlighted-match")[0];
 
-        if (!suggestion) {
-            throw new Error("Suggestion not found");
+            if (!suggestion) {
+                throw new Error("Suggestion not found");
+            }
+            return { suggestion };
+        },
+        {
+            timeout: timeout
         }
-        return { suggestion };
-    });
+    );
     return { suggestion };
 }
 

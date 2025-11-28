@@ -18,7 +18,7 @@ import {
     SingleValue
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
     ClearIndicator,
     GroupComp,
@@ -393,6 +393,8 @@ type SearchResultsState = SearchResultsReady | SearchResultsLoading;
 /**
  * Keeps track of the current input text, active searches and their results.
  *
+ * Event handlers returned by this hook are stable references.
+ *
  * NOTE: it would be great to merge this state handling with the search controller
  * in a future revision.
  */
@@ -473,20 +475,17 @@ function useSearchState(controller: SearchController | undefined) {
     });
 
     // Called when the user confirms a search result
-    const onResultConfirmed = useCallback((option: SearchOption) => {
+    const onResultConfirmed = useEvent((option: SearchOption) => {
         // Do not start a new search when the user confirms a result
         dispatch({ kind: "select-option", option });
-    }, []);
+    });
 
     // Called when a user types into the input field
-    const onInputChanged = useCallback(
-        (newValue: string) => {
-            // Trigger a new search if the user changes the query by typing
-            dispatch({ kind: "input", query: newValue });
-            startSearch(newValue);
-        },
-        [startSearch]
-    );
+    const onInputChanged = useEvent((newValue: string) => {
+        // Trigger a new search if the user changes the query by typing
+        dispatch({ kind: "input", query: newValue });
+        startSearch(newValue);
+    });
 
     return {
         input: state.query,
@@ -527,7 +526,7 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
     return options;
 }
 
-// Note: `clearInput` must be stable because only the initial value is used to construct the API instance at this time.
+// Note: `clearInput` and `setInputValue` must be stable because only the initial value is used to construct the API instance at this time.
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
