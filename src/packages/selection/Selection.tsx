@@ -11,18 +11,14 @@ import {
     VStack
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
-import { NotificationService } from "@open-pioneer/notifier";
-import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { Geometry } from "ol/geom";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { useIntl } from "open-pioneer:react-hooks";
+import { FC, useCallback, useMemo, useRef } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
-import { DragController } from "./DragController";
-import { SelectionController } from "./SelectionController";
-import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
+import { SelectionResult, SelectionSource } from "./api";
+import { getSourceStatus, SelectionViewModel, useSelectionViewModel } from "./view-model";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -62,47 +58,41 @@ export interface SelectionSourceChangedEvent {
  * A component that allows the user to perform a spatial selection on a given set of {@link SelectionSource}.
  */
 export const Selection: FC<SelectionProps> = (props) => {
-    const intl = useIntl();
     const { sources, onSelectionComplete, onSelectionSourceChanged } = props;
-    const { containerProps } = useCommonComponentProps("selection", props);
-
-    const [currentSource, setCurrentSource] = useCurrentSelectionSource(
+    const map = useMapModelValue(props);
+    const viewModel = useSelectionViewModel(
+        map,
         sources,
+        onSelectionComplete,
         onSelectionSourceChanged
     );
+    return viewModel && <SelectionReady viewModel={viewModel} {...props} />;
+};
 
-    const currentSourceStatus = useSourceStatus(currentSource);
+function SelectionReady(props: CommonComponentProps & { viewModel: SelectionViewModel }) {
+    const { viewModel } = props;
+    const { containerProps } = useCommonComponentProps("selection", props);
+    const intl = useIntl();
 
-    const map = useMapModelValue(props);
-    const { onExtentSelected } = useSelectionController(
-        map,
-        sources,
-        currentSource,
-        onSelectionComplete
+    // Subscribe to relevant view model state.
+    const sources = useReactiveSnapshot(() => viewModel.sources, [viewModel]);
+    const currentSource = useReactiveSnapshot(() => viewModel.currentSource, [viewModel]);
+    const ariaMessage = useReactiveSnapshot(() => viewModel.ariaMessage, [viewModel]);
+
+    // Translate sources array to a collection for chakra's select control.
+    const getSourceId = useSelectionSourceId();
+    const sourceOptionsCollection = useMemo(
+        () =>
+            createListCollection({
+                items: sources,
+                isItemDisabled: () => {
+                    return false;
+                },
+                itemToString: (item) => item.label,
+                itemToValue: (item) => getSourceId(item)
+            }),
+        [sources, getSourceId]
     );
-
-    const isActive = currentSourceStatus.kind === "available";
-    const hasSelectedSource = !!currentSource;
-
-    const dragController = useDragSelection(
-        map,
-        intl,
-        onExtentSelected,
-        isActive,
-        hasSelectedSource
-    );
-    const dragTooltip = useReactiveSnapshot(() => dragController?.tooltipText, [dragController]);
-
-    const getId = useSelectionSourceId();
-
-    const sourceOptionsCollection = createListCollection({
-        items: sources,
-        isItemDisabled: () => {
-            return false;
-        },
-        itemToString: (item) => item.label,
-        itemToValue: (item) => getId(item)
-    });
 
     let triggerItem;
     if (currentSource) {
@@ -116,15 +106,15 @@ export const Selection: FC<SelectionProps> = (props) => {
             <Select.Root
                 className="selection-source"
                 collection={sourceOptionsCollection}
-                value={currentSource ? [getId(currentSource)] : undefined}
-                onValueChange={(option) => option && setCurrentSource(option.items[0])}
+                value={currentSource ? [getSourceId(currentSource)] : undefined}
+                onValueChange={(option) => option && (viewModel.currentSource = option.items[0])}
                 lazyMount={true}
                 unmountOnExit={true}
             >
                 <Select.Label>{intl.formatMessage({ id: "selectSource" })}</Select.Label>
 
                 <Select.Control>
-                    <Select.Trigger aria-description={dragTooltip}>
+                    <Select.Trigger aria-description={ariaMessage}>
                         <Select.ValueText
                             placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
                         >
@@ -140,7 +130,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                     <Select.Positioner>
                         <Select.Content className="selection-source-options">
                             {sourceOptionsCollection.items.map((item) => (
-                                <SelectionSourceItemContent item={item} key={getId(item)} />
+                                <SelectionSourceItemContent item={item} key={getSourceId(item)} />
                             ))}
                         </Select.Content>
                     </Select.Positioner>
@@ -148,36 +138,14 @@ export const Selection: FC<SelectionProps> = (props) => {
             </Select.Root>
         </VStack>
     );
-};
-
-type GetSelectionSourceId = (selectionSource: SelectionSource) => string;
-
-/**
- * Assigns unique IDs to selection sources.
- */
-function useSelectionSourceId(): GetSelectionSourceId {
-    const sourceIds = useRef<WeakMap<SelectionSource, string>>(undefined);
-    const counter = useRef(0);
-    if (!sourceIds.current) {
-        sourceIds.current = new WeakMap();
-    }
-
-    return useCallback((selectionSource: SelectionSource) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const ids = sourceIds.current!;
-        if (!ids.has(selectionSource)) {
-            ids.set(selectionSource, `source-${counter.current++}`);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return ids.get(selectionSource)!;
-    }, []);
 }
 
+/**
+ * Renders a dropdown item in the menu.
+ */
 function SelectionSourceItemContent(props: { item: SelectionSource }) {
     const { item } = props;
-
     const isDisabled = useSourceStatus(item).kind === "unavailable";
-
     return (
         <Select.Item
             className="selection-source-option"
@@ -192,34 +160,8 @@ function SelectionSourceItemContent(props: { item: SelectionSource }) {
     );
 }
 
-function useCurrentSelectionSource(
-    sources: SelectionSource[],
-    onSourceChanged: ((event: SelectionSourceChangedEvent) => void) | undefined
-): [SelectionSource | undefined, (source: SelectionSource | undefined) => void] {
-    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
-        () => sources[0]
-    );
-
-    // Reset to undefined if the current source is not in the list of sources
-    useEffect(() => {
-        if (currentSource && !sources.includes(currentSource)) {
-            setCurrentSource(undefined);
-        }
-    }, [sources, currentSource]);
-
-    // Track the current source and notify the parent component if it changes
-    const prevSelectedSource = useRef<SelectionSource | undefined>(undefined);
-    useEffect(() => {
-        if (currentSource !== prevSelectedSource.current) {
-            prevSelectedSource.current = currentSource;
-            onSourceChanged?.({ source: currentSource });
-        }
-    }, [currentSource, onSourceChanged]);
-    return [currentSource, setCurrentSource];
-}
-
 /**
- * Hook to manage source option in selection-source react-select
+ * Renders a selection source in the dropdown menu (option or current selection).
  */
 function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
     const source = props.source;
@@ -257,52 +199,6 @@ function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
     );
 }
 
-/**
- * Hook to manage selection controller
- */
-function useSelectionController(
-    mapModel: MapModel,
-    sources: SelectionSource[],
-    currentSource: SelectionSource | undefined,
-    onSelectionComplete: ((event: SelectionCompleteEvent) => void) | undefined
-) {
-    const notifier = useService<NotificationService>("notifier.NotificationService");
-    const intl = useIntl();
-    const [controller, setController] = useState<SelectionController | undefined>(undefined);
-    useEffect(() => {
-        const controller = new SelectionController({
-            mapModel,
-            onError() {
-                notifier.notify({
-                    level: "error",
-                    message: intl.formatMessage({ id: "selectionFailed" })
-                });
-            }
-        });
-        setController(controller);
-        return () => {
-            controller.destroy();
-        };
-    }, [mapModel, notifier, sources, intl]);
-
-    const onExtentSelected = useEvent(async (geometry: Geometry) => {
-        if (!controller || !currentSource) {
-            return;
-        }
-
-        const selectionResult = await controller.select(currentSource, geometry.getExtent());
-        if (!selectionResult) {
-            return;
-        }
-
-        onSelectionComplete?.(selectionResult);
-    });
-    return {
-        controller,
-        onExtentSelected
-    };
-}
-
 type SimpleStatus =
     | {
           kind: "available";
@@ -312,64 +208,47 @@ type SimpleStatus =
           reason: string;
       };
 
-function getSourceStatus(source: SelectionSource, sourceNotAvailableReason: string): SimpleStatus {
-    const rawCurrent = source.status ?? "available";
-    const current: SelectionSourceStatusObject =
-        typeof rawCurrent === "string" ? { kind: rawCurrent } : rawCurrent;
-    if (current.kind === "available") {
-        return current;
-    }
-
-    return {
-        kind: "unavailable",
-        reason: current.reason ?? sourceNotAvailableReason
-    };
-}
-
-/**
- * Hook to manage source status
- */
 function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
     const intl = useIntl();
-    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
     const sourceStatus = useReactiveSnapshot((): SimpleStatus => {
         if (!source) {
-            return { kind: "unavailable", reason: defaultNotAvailableMessage };
+            return {
+                kind: "unavailable",
+                reason: intl.formatMessage({ id: "sourceNotAvailable" })
+            };
         }
-        return getSourceStatus(source, defaultNotAvailableMessage);
-    }, [source, defaultNotAvailableMessage]);
+
+        const status = getSourceStatus(source);
+        if (status.kind === "available") {
+            return status;
+        }
+        return {
+            kind: "unavailable",
+            reason: status.reason ?? intl.formatMessage({ id: "sourceNotAvailable" })
+        };
+    }, [source, intl]);
     return sourceStatus;
 }
 
+type GetSelectionSourceId = (selectionSource: SelectionSource) => string;
+
 /**
- * Hook to manage map controls and tooltip
+ * Assigns unique IDs to selection sources.
  */
-function useDragSelection(
-    map: MapModel,
-    intl: PackageIntl,
-    onExtentSelected: (geometry: Geometry) => void,
-    isActive: boolean,
-    hasSelectedSource: boolean
-): DragController | undefined {
-    const [controller, setController] = useState<DragController | undefined>();
-    useEffect(() => {
-        const disabledMessage = hasSelectedSource
-            ? intl.formatMessage({ id: "disabledTooltip" })
-            : intl.formatMessage({ id: "noSourceTooltip" });
+function useSelectionSourceId(): GetSelectionSourceId {
+    const sourceIds = useRef<WeakMap<SelectionSource, string>>(undefined);
+    const counter = useRef(0);
+    if (!sourceIds.current) {
+        sourceIds.current = new WeakMap();
+    }
 
-        const dragController = new DragController(
-            map.olMap,
-            intl.formatMessage({ id: "tooltip" }),
-            disabledMessage,
-            onExtentSelected
-        );
-
-        dragController.setActive(isActive);
-        setController(dragController);
-        return () => {
-            setController(undefined);
-            dragController.destroy();
-        };
-    }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
-    return controller;
+    return useCallback((selectionSource: SelectionSource) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const ids = sourceIds.current!;
+        if (!ids.has(selectionSource)) {
+            ids.set(selectionSource, `source-${counter.current++}`);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return ids.get(selectionSource)!;
+    }, []);
 }
