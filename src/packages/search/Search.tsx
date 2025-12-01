@@ -9,6 +9,7 @@ import {
     Highlight,
     HStack,
     Icon,
+    IconButton,
     InputGroup,
     ListCollection,
     Portal,
@@ -22,7 +23,7 @@ import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, Fragment, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { FC, Fragment, UIEvent, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     SearchApi,
@@ -35,7 +36,8 @@ import {
     SearchSource
 } from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
-import { LuSearch } from "react-icons/lu";
+import { LuSearch, LuX } from "react-icons/lu";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 
 const LOG = createLogger("search:Search");
 
@@ -135,6 +137,7 @@ export const Search: FC<SearchProps> = (props) => {
     
     const portalDiv = useRef<HTMLDivElement>(null);
     
+    
     //event hooks for handling input changes, clearing input and selecting options
     const { handleInputChange, clearInput, handleSelectChange } = useSearchHandlers(
         onInputChanged,
@@ -147,6 +150,8 @@ export const Search: FC<SearchProps> = (props) => {
 
     //render the result list or loading spinner based on search state
     const { showResultOrLoading } = useResultList(collection, input, search, intl);
+
+    const customClearIndicator = CustomClearIndicator({clearValue: () => clearInput("user")});
     
     return (
         <Box {...containerProps} width={"100%"}>
@@ -161,11 +166,18 @@ export const Search: FC<SearchProps> = (props) => {
                 openOnClick={input.length > 0}
             >
                 <Combobox.Control>
-                    <InputGroup startElement={<Icon className={"search-icon"}><LuSearch /></Icon>}>
-                        <Combobox.Input/>
+                    <InputGroup
+                        startElement={
+                            <Icon className={"search-icon"}>
+                                <LuSearch />
+                            </Icon>
+                        }
+                        endElement={search.kind === "loading" ? <Spinner size="xs" borderWidth="1px" /> : null}
+                    >
+                        <Combobox.Input />
                     </InputGroup>
                     <Combobox.IndicatorGroup>
-                        <Combobox.ClearTrigger />
+                        {input.length ? customClearIndicator : null}
                     </Combobox.IndicatorGroup>
                 </Combobox.Control>
 
@@ -173,7 +185,7 @@ export const Search: FC<SearchProps> = (props) => {
                     <Combobox.Positioner>
                         <Combobox.ItemGroup>
                             <Combobox.Content minW="sm" overflowX="hidden">
-                                {showResultOrLoading}
+                                { showResultOrLoading}
                             </Combobox.Content>
                         </Combobox.ItemGroup>
                     </Combobox.Positioner>
@@ -185,6 +197,41 @@ export const Search: FC<SearchProps> = (props) => {
         </Box>
     );
 };
+
+function CustomClearIndicator(props: {
+    clearValue: () => void;
+}) {
+    const intl = useIntl();
+    const clearButtonLabel = intl.formatMessage({
+        id: "ariaLabel.clearButton"
+    });
+    const clickHandler = (e: UIEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        props.clearValue();
+    };
+
+    return (
+        <Tooltip content={clearButtonLabel}>
+            <IconButton
+                size="sm"
+                variant="ghost"
+                mr="1px"
+                aria-label={clearButtonLabel}
+                onClick={clickHandler}
+                // needed for correct touch handling; select control would otherwise preventDefault()
+                onTouchEnd={clickHandler}
+                // Stop select component from opening the menu.
+                // It will otherwise flash briefly because of a mouse down listener in the select.
+                onMouseDown={(e) => e.preventDefault()}
+            >
+                <Icon>
+                    <LuX />
+                </Icon>
+            </IconButton>
+        </Tooltip>
+    );
+}
 
 function useSearchCollection(search: SearchResultsState) {
     const { collection, set } = useListCollection<SearchOption>({
@@ -249,10 +296,8 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
         "colorPalette.500"
     ]);
 
-
-    return useMemo(() => {
-        const searchResults = () => {
-            return collection.group().map((groupElement, key) => {
+    const searchResults = useMemo(() => {
+        return collection.group().map((groupElement, key) => {
                 return (
                     <Fragment key={key}>
                         <Combobox.ItemGroupLabel key={groupElement[0]} backgroundColor={groupHeadingBg} padding={"8px 12px"}>
@@ -276,8 +321,9 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
                     </Fragment>
                 );
             });
-        };
-        
+    },[collection, groupHeadingBg, input]);
+    
+    return useMemo(() => {
         const showResultOrLoading = search.kind === "ready" ? (
             <Fragment>
                 {
@@ -285,7 +331,7 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
                         {intl.formatMessage({ id: "noOptionsText" })}
                     </Combobox.Empty>
                 }
-                {searchResults()}
+                {searchResults}
             </Fragment>
         ) : (
             <HStack p="2">
@@ -295,7 +341,7 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
         );
 
         return { showResultOrLoading };
-    }, [collection, groupHeadingBg, input, intl, search.kind]);
+    }, [intl, search.kind, searchResults]);
 
 
 }
