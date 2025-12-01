@@ -84,6 +84,8 @@ export class Overlay {
     #resources: Resource[];
 
     constructor(id: string, content: ReactNode, properties: OverlayProperties, parent: Overlays) {
+        const mode = properties.mode ?? "fixedPosition";
+
         const overlayDiv = document.createElement("div");
 
         this.id = id;
@@ -98,7 +100,7 @@ export class Overlay {
 
         parent[REGISTER_OVERLAY](this);
 
-        if (properties.followPointer) {
+        if (mode === "followPointer") {
             //olMap is set after registration
             const olMap = this.olOverlay.getMap();
             if (!olMap) {
@@ -149,5 +151,5 @@ export class Overlay {
 }
 
 export interface OverlayProperties extends Omit<Options, "id" | "element"> {
-    followPointer?: boolean;
+    mode?: "fixedPosition" | "followPointer";
 }

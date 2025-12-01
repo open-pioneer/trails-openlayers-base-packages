@@ -59,7 +59,7 @@ export function AppUI() {
         }
 
         const followPointerOverlay = map.overlays.addOverlay(
-            { positioning: "center-center", stopEvent: false, followPointer: true, insertFirst: false},
+            { positioning: "center-center", stopEvent: false, mode: "followPointer" },
             <Icon size={"2xl"} color={"red.solid"}>
                 <LuCrosshair />
             </Icon>
@@ -76,7 +76,6 @@ export function AppUI() {
             {
                 positioning: "center-center",
                 stopEvent: false,
-                followPointer: false,
                 position: [410000, 5760000]
             },
             <SelfUpdatingTooltip></SelfUpdatingTooltip>
@@ -85,7 +84,6 @@ export function AppUI() {
             {
                 positioning: "center-center",
                 stopEvent: false,
-                followPointer: false,
                 position: [410000, 5762000]
             },
             <ReactiveTooltip count={count.current}></ReactiveTooltip>
@@ -207,11 +205,11 @@ function StaticTooltip() {
                 <Tabs.List bg="bg.muted" rounded="l3" ml="2">
                     <Tabs.Trigger value="facts">
                         <LuTable />
-                        {intl.formatMessage({id:"tooltip.facts"})}
+                        {intl.formatMessage({ id: "tooltip.facts" })}
                     </Tabs.Trigger>
                     <Tabs.Trigger value="photo">
                         <LuCamera />
-                        {intl.formatMessage({id:"tooltip.photo"})}
+                        {intl.formatMessage({ id: "tooltip.photo" })}
                     </Tabs.Trigger>
                     <Tabs.Indicator rounded="l2" />
                 </Tabs.List>
@@ -237,14 +235,17 @@ function StaticTooltip() {
     );
 }
 
-function FactsDataList(props: {intl: PackageIntl}) {
-    const {intl} = props;
+function FactsDataList(props: { intl: PackageIntl }) {
+    const { intl } = props;
 
     const facts = [
-        { label: intl.formatMessage({id:"tooltip.factList.name"}), value: "Schloss Münster" },
-        { label: intl.formatMessage({id:"tooltip.factList.location"}), value: "Münster" },
-        { label: intl.formatMessage({id:"tooltip.factList.style"}), value: intl.formatMessage({id:"tooltip.factList.baroque"}) },
-        { label: intl.formatMessage({id:"tooltip.factList.date"}), value: "1767-1787" }
+        { label: intl.formatMessage({ id: "tooltip.factList.name" }), value: "Schloss Münster" },
+        { label: intl.formatMessage({ id: "tooltip.factList.location" }), value: "Münster" },
+        {
+            label: intl.formatMessage({ id: "tooltip.factList.style" }),
+            value: intl.formatMessage({ id: "tooltip.factList.baroque" })
+        },
+        { label: intl.formatMessage({ id: "tooltip.factList.date" }), value: "1767-1787" }
     ];
 
     return (
@@ -261,15 +262,15 @@ function FactsDataList(props: {intl: PackageIntl}) {
     );
 }
 
-function PhotoWithLicense(props: {intl: PackageIntl}) {
+function PhotoWithLicense(props: { intl: PackageIntl }) {
     const { intl } = props;
     return (
         <Flex direction="column">
             <Box borderWidth={1} borderColor={"gray.700"}>
-            <Image  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg/330px-M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg" />
+                <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg/330px-M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg" />
             </Box>
             <Text fontSize={"2xs"}>
-                {intl.formatMessage({id:"tooltip.photo"})}:{" "}
+                {intl.formatMessage({ id: "tooltip.photo" })}:{" "}
                 <b>
                     <Link href="https://commons.wikimedia.org/wiki/User:XRay">Dietmar Rabich</Link>
                 </b>
@@ -278,9 +279,9 @@ function PhotoWithLicense(props: {intl: PackageIntl}) {
                     Münster, Fürstbischöfliches Schloss -- 2018 -- 1925-27-28
                 </Link>
                 ,{" "}
-                <Link href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" rel="license" >
+                <Link href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" rel="license">
                     CC BY-SA 4.0
-                </Link>              
+                </Link>
             </Text>
         </Flex>
     );

@@ -13,6 +13,6 @@ messages:
     factList:
       name: "Name"
       location: "Ort"
-      style: "Stil" 
+      style: "Stil"
       date: "Baujahr"
       baroque: "barock"
