@@ -2,7 +2,7 @@
     display: none;
 }
 
-.search-component .search-value-container {
+.search-combobox-component input {
     cursor: text;
     padding-left: 30px !important;
 }
@@ -20,8 +20,10 @@
     font-weight: bold;
 }
 
-.chakra-combobox__itemGroupLabel {
-    background-color: "colorPalette.100";
+.search-combobox-component .search-icon {
+    position: absolute;
+    left: 8px;
+    box-sizing: 1.25em;
 }
 
 /* Exposition only

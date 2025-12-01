@@ -155,15 +155,13 @@ export const Search: FC<SearchProps> = (props) => {
                 onInputValueChange={(e) => handleInputChange(e)}
                 onValueChange={(e) => handleSelectChange(e)}
                 inputValue={input}
-                className="search-conbobox-component"
+                className="search-combobox-component"
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 openOnClick={input.length > 0}
             >
                 <Combobox.Control>
-                    <InputGroup startElement={<Icon position="absolute" left="8px" boxSize="1.25em">
-                        <LuSearch />
-                    </Icon>}>
+                    <InputGroup startElement={<Icon className={"search-icon"}><LuSearch /></Icon>}>
                         <Combobox.Input/>
                     </InputGroup>
                     <Combobox.IndicatorGroup>
@@ -262,8 +260,7 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
                         </Combobox.ItemGroupLabel>
                         {groupElement[1].map((searchResult, key) => {
                             return (
-                                <Combobox.Item key={key} item={searchResult}
-                                >
+                                <Combobox.Item key={key} item={searchResult}>
                                     <Combobox.ItemText>
                                         <Highlight
                                             ignoreCase
