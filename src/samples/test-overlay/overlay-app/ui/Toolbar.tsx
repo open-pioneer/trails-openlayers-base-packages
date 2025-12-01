@@ -1,17 +1,26 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, IconButton } from "@chakra-ui/react";
+import { CloseButton, Flex, IconButton, Text } from "@chakra-ui/react";
+import { reactive, Reactive } from "@conterra/reactivity-core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/map-ui-components";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { LuArrowLeft, LuArrowRight, LuThermometerSnowflake } from "react-icons/lu";
 
 export function Toolbar(props: { map: MapModel }) {
     const { map } = props;
     const intl = useIntl();
     const [tooltip, setTooltip] = useState<Overlay | undefined>();
+    const overlayPositionRef = useRef<Reactive<Coordinate>>(reactive([410000, 5757000]));
+
+    const destroyOverlay = () => {
+        tooltip?.destroy();
+        setTooltip(undefined);
+    };
 
     return (
         <Flex
@@ -30,20 +39,20 @@ export function Toolbar(props: { map: MapModel }) {
                 active={tooltip != undefined}
                 onClick={() => {
                     if (!tooltip) {
-                        const initialPosition = [410000, 5757000];
-                        const content = (
-                            <Box width={"100px"} height={"100px"} background="red">
-                                {initialPosition[0]}, {initialPosition[1]}
-                            </Box>
-                        );
                         const tooltip = map.overlays.addOverlay(
-                            { position: initialPosition, insertFirst: false, autoPan: true },
-                            content
+                            {
+                                position: overlayPositionRef.current.value,
+                                insertFirst: false,
+                                autoPan: true
+                            },
+                            <MovableOverlay
+                                position={overlayPositionRef.current}
+                                onCloseClicked={destroyOverlay}
+                            />
                         );
                         setTooltip(tooltip);
                     } else {
-                        tooltip.destroy();
-                        setTooltip(undefined);
+                        destroyOverlay();
                     }
                 }}
             />
@@ -53,12 +62,8 @@ export function Toolbar(props: { map: MapModel }) {
                         const pos = tooltip.position;
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] + 500, pos[1]];
+                            overlayPositionRef.current.value = newPos;
                             tooltip.setPosition(newPos);
-                            tooltip.setContent(
-                                <Box width={"100px"} height={"100px"} background="green">
-                                    {newPos[0]}, {newPos[1]}
-                                </Box>
-                            );
                         }
                     }}
                 >
@@ -71,18 +76,35 @@ export function Toolbar(props: { map: MapModel }) {
                         const pos = tooltip.position;
                         if (pos && pos[0] && pos[1]) {
                             const newPos = [pos[0] - 500, pos[1]];
+                            overlayPositionRef.current.value = newPos;
                             tooltip.setPosition(newPos);
-                            tooltip.setContent(
-                                <Box width={"100px"} height={"100px"} background="blue">
-                                    {newPos[0]}, {newPos[1]}
-                                </Box>
-                            );
                         }
                     }}
                 >
                     <LuArrowLeft></LuArrowLeft>
                 </IconButton>
             )}
+        </Flex>
+    );
+}
+
+function MovableOverlay(props: { position: Reactive<Coordinate>; onCloseClicked: () => void }) {
+    const position = useReactiveSnapshot(() => props.position.value, [props]);
+
+    return (
+        <Flex
+            bg={"whiteAlpha.700"}
+            borderWidth={3}
+            borderColor={"gray.700"}
+            rounded={20}
+            p={2}
+            gap={2}
+            alignItems={"center"}
+        >
+            <Text>
+                X: {position[0]}, Y: {position[1]}
+            </Text>
+            <CloseButton onClick={props.onCloseClicked} variant={"solid"} size={"xs"}></CloseButton>
         </Flex>
     );
 }

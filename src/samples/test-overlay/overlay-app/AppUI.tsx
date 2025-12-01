@@ -12,7 +12,13 @@ import {
     Link,
     DataList
 } from "@chakra-ui/react";
-import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import {
+    DefaultMapProvider,
+    MapAnchor,
+    MapContainer,
+    Overlay,
+    useMapModel
+} from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
@@ -26,14 +32,14 @@ import { OverviewMap } from "@open-pioneer/overview-map";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { Toolbar } from "./ui/Toolbar";
 import { LuCalendarClock, LuCamera, LuCrosshair, LuTable } from "react-icons/lu";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { Reactive, reactive } from "@conterra/reactivity-core";
 import { fromLonLat } from "ol/proj";
 import { PackageIntl } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const intl = useIntl();
     const { map } = useMapModel(MAP_ID);
+    const overlayItemIndex = useRef(0);
+    const updatedOverlayRef = useRef<Overlay | undefined>(undefined);
 
     const overviewMapLayer = useMemo(
         () =>
@@ -43,13 +49,20 @@ export function AppUI() {
         []
     );
 
-    const count = useRef(reactive(0));
+    const overlayContentItems = ["green", "yellow", "orange"].map((color: string, i: number) => (
+        <Box key={i} bg={color} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2}>
+            {color}
+        </Box>
+    ));
+
     useEffect(() => {
         const interval = setInterval(() => {
-            const increment = count.current.value + 1;
-            count.current.value = increment;
-            console.log(increment);
-        }, 1000);
+            const increment = overlayItemIndex.current + 1;
+            const nextIndex = increment < overlayContentItems.length ? increment : 0;
+            const content = overlayContentItems[nextIndex];
+            updatedOverlayRef.current?.setContent(content); //set new content of overlay
+            overlayItemIndex.current = nextIndex;
+        }, 5000);
         return () => clearInterval(interval);
     });
 
@@ -80,21 +93,21 @@ export function AppUI() {
             },
             <SelfUpdatingOverlay></SelfUpdatingOverlay>
         );
-        const updatedOverlay = map.overlays.addOverlay(
+        updatedOverlayRef.current = map.overlays.addOverlay(
             {
                 positioning: "center-center",
                 stopEvent: false,
                 position: [410000, 5762000]
             },
-            <ReactiveTooltip count={count.current}></ReactiveTooltip>
+            overlayContentItems[0]
         );
         return () => {
             staticOverlay.destroy();
             followPointerOverlay.destroy();
             updatingOverlay.destroy();
-            updatedOverlay.destroy();
+            updatedOverlayRef.current?.destroy();
         };
-    }, [map]);
+    }, [map, overlayContentItems]);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -187,13 +200,21 @@ function SelfUpdatingOverlay() {
         return () => clearInterval(interval);
     }, []);
 
-    return <Flex bg={"whiteAlpha.700"} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2} alignItems={"center"}><Icon size="lg" mr={1} color={"gray.700"} ><LuCalendarClock /></Icon>{date.toLocaleString()}</Flex>;
-}
-
-function ReactiveTooltip(props: { count: Reactive<number> }) {
-    const count = useReactiveSnapshot(() => props.count.value, [props]);
-
-    return <Box bg={"whiteAlpha.700"} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2}>Count: {count}</Box>;
+    return (
+        <Flex
+            bg={"whiteAlpha.700"}
+            borderWidth={3}
+            borderColor={"gray.700"}
+            rounded={20}
+            p={2}
+            alignItems={"center"}
+        >
+            <Icon size="lg" mr={1} color={"gray.700"}>
+                <LuCalendarClock />
+            </Icon>
+            {date.toLocaleString()}
+        </Flex>
+    );
 }
 
 function StaticOverlay() {
