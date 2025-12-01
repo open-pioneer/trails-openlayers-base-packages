@@ -30,7 +30,7 @@ export function Toolbar(props: { map: MapModel }) {
                 active={tooltip != undefined}
                 onClick={() => {
                     if (!tooltip) {
-                        const initialPosition = [410000, 5759500];
+                        const initialPosition = [410000, 5757000];
                         const content = (
                             <Box width={"100px"} height={"100px"} background="red">
                                 {initialPosition[0]}, {initialPosition[1]}

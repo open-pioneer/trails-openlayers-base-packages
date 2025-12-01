@@ -7,3 +7,13 @@ messages:
     toolbar: "Maptools"
     topRight: "Overview map and basemap switcher"
     bottomRight: "Maptools"
+  tooltip:
+    photo: "Photo"
+    facts: "Facts"
+    factList:
+      name: "Name"
+      location: "Location"
+      style: "Style" 
+      date: "Construction"
+      baroque: "baroque"
+

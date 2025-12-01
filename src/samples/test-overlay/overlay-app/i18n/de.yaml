@@ -7,3 +7,12 @@ messages:
     toolbar: "Kartenwerkzeuge"
     topRight: "Übersichtskarte und Auswahl der Hintergrundkarte"
     bottomRight: "Kartenwerkzeuge"
+  tooltip:
+    photo: "Foto"
+    facts: "Fakten"
+    factList:
+      name: "Name"
+      location: "Ort"
+      style: "Stil" 
+      date: "Baujahr"
+      baroque: "barock"
