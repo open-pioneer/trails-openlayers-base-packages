@@ -1,5 +1,5 @@
-configDependencies:
-  "@open-pioneer/pnpm-plugin-defaults": 0.1.0+sha512-+m/wk7B8hZPfiFzM82JBYTD6TbrMHPdgPUITBMHzjlqzCo8YfPHc5NAsURCz/YcMBN5tNANDQDfclYhrsjmClQ==
+#configDependencies:
+#  "@open-pioneer/pnpm-plugin-defaults": 0.1.0+sha512-+m/wk7B8hZPfiFzM82JBYTD6TbrMHPdgPUITBMHzjlqzCo8YfPHc5NAsURCz/YcMBN5tNANDQDfclYhrsjmClQ==
 
 packages:
   - src/**
