@@ -4,11 +4,14 @@ import {
     Box,
     Button,
     chakra,
+    CloseButton,
     Combobox,
     Highlight,
     HStack,
+    Icon,
     InputGroup,
     Portal,
+    Span,
     Spinner,
     useListCollection,
     useToken
@@ -23,7 +26,6 @@ import {
     AriaOnFocus,
     ChakraStylesConfig,
     Props as SelectProps,
-    SelectInstance
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, Fragment, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -55,7 +57,7 @@ import {
     InputValueChangeDetails,
     ValueChangeDetails
 } from "@chakra-ui/react/dist/types/components/combobox/namespace";
-import { LuLoader, LuSearch, LuX } from "react-icons/lu";
+import { LuSearch, LuX } from "react-icons/lu";
 
 const LOG = createLogger("search:Search");
 
@@ -150,6 +152,12 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
     const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
         useSearchState(controller);
 
+    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
+        "colorPalette.100",
+        "colorPalette.50",
+        "colorPalette.500"
+    ]);
+    
     const chakraStyles = useChakraStyles();
     const ariaMessages = useAriaMessages(intl);
     const components = useCustomComponents();
@@ -159,7 +167,6 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
     const handleInputChange = useEvent((e: InputValueChangeDetails) => {
         // Only update the input if the user actually typed something.
         // This keeps the input content if the user focuses another element or if the menu is closed.
-
         if (e.reason === "input-change") {
             onInputChanged(e.inputValue);
         }
@@ -168,15 +175,6 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
     const clearInput = useEvent((trigger: SearchClearTrigger) => {
         // Updates the input field
         onInputChanged("");
-
-        // the next two lines are a workaround for the open bug in react-select regarding the
-        // cursor not being shown after clearing, although the component is focussed:
-        // https://github.com/JedWatson/react-select/issues/3871
-        // if (trigger === "user") {
-        //     comboRef.current?.blur();
-        //     comboRef.current?.focus();
-        // }
-
         onClear?.({ trigger: trigger });
     });
 
@@ -201,6 +199,7 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
         groupBy: (item) => item.source.label
     });
 
+    // combodata
     useEffect(() => {
         if (search.kind === "ready") {
             const allSearchResults = search.results.flatMap(
@@ -214,22 +213,18 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
         return collection.group().map((groupElement, key) => {
             return (
                 <Fragment key={key}>
-                    <Combobox.ItemGroupLabel key={groupElement[0]}>
+                    <Combobox.ItemGroupLabel key={groupElement[0]} backgroundColor={groupHeadingBg} padding={"8px 12px"} 
+                    >
                         {groupElement[0]}
                     </Combobox.ItemGroupLabel>
                     {groupElement[1].map((searchResult, key) => {
                         return (
-                            <Combobox.Item key={key} item={searchResult}>
-                                {/*<HStack justify="space-between" textStyle="sm">*/}
-                                {/*    <Span fontWeight="medium" truncate>*/}
-                                {/*        {searchResult?.label}*/}
-                                {/*    </Span>*/}
-                                {/*</HStack>*/}
+                            <Combobox.Item key={key} item={searchResult} _checked={{ backgroundColor: selectedItemBg }} _selected={{ backgroundColor: focussedItemBg }}>
                                 <Combobox.ItemText>
                                     <Highlight
                                         ignoreCase
                                         query={input}
-                                        styles={{ fontWeight: "bolder" }}
+                                        styles={{ fontWeight: "bold" }}
                                     >
                                         {searchResult?.label}
                                     </Highlight>
@@ -241,25 +236,31 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                 </Fragment>
             );
         });
-    }, [collection, input]);
+    }, [collection, focussedItemBg, input, selectedItemBg]);
     
-    const endIndicator = useMemo(() => {
+    const loading = useMemo(() =>  {
         if (search.kind === "loading") {
-            return ( <HStack p="2">
+            return (<HStack p="2">
                 <Spinner size="xs" borderWidth="1px" />
             </HStack>);
-        } else if (input.length > 0) {
-            return (
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onInputChanged("")}
-                    mr="0px"
-                >   
-                <LuX/>
-            </Button>); 
         }
-    }, [input.length, onInputChanged, search.kind]);
+        
+    },[search.kind]);
+    
+    const showResultOrState = useMemo(() => {
+        if (search.kind === "ready") {
+            return (
+                <Fragment>
+                    <Combobox.Empty>
+                        {intl.formatMessage({ id: "noOptionsText" })}
+                    </Combobox.Empty>
+                    {searchResults}
+                </Fragment>
+            );
+        }  else {
+            return <Span>{intl.formatMessage({ id: "loadingText" })}</Span>;
+        }
+    }, [intl, search.kind, searchResults]);
     
     return (
         <Box {...containerProps}>
@@ -270,20 +271,19 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                 inputValue={input}
                 className="search-conbobox-component"
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
+                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 // ariaLiveMessages={ariaMessages}
                 // chakraStyles={chakraStyles}
             >
                 <Combobox.Control>
-                    <InputGroup startElement={<LuSearch />}>
-                        <Combobox.Input
-                            placeholder={
-                                props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })
-                            }
-                        />
+                    <InputGroup startElement={<Icon position="absolute" left="8px" boxSize="1.25em">
+                        <LuSearch />
+                    </Icon>}>
+                        <Combobox.Input/>
                     </InputGroup>
                     <Combobox.IndicatorGroup>
-                        {/*<Combobox.ClearTrigger/>*/}
-                        {endIndicator}
+                        <Combobox.ClearTrigger />
+                        {loading}
                     </Combobox.IndicatorGroup>
                 </Combobox.Control>
 
@@ -291,40 +291,12 @@ export const SearchCombobox: FC<SearchProps> = (props) => {
                     <Combobox.Positioner>
                         <Combobox.ItemGroup>
                             <Combobox.Content minW="sm">
-                                {search.kind === "ready" ? (
-                                    <>
-                                        <Combobox.Empty>No items found</Combobox.Empty>
-                                        {searchResults}
-                                    </>
-                                ) : null}
+                                {showResultOrState}
                             </Combobox.Content>
                         </Combobox.ItemGroup>
                     </Combobox.Positioner>
                 </Portal>
             </Combobox.Root>
-            {/*<Select<SearchOption, false, SearchGroupOption>*/}
-            {/*    className="search-component"*/}
-            {/*    classNamePrefix="react-select"*/}
-            {/*    ref={selectRef}*/}
-            {/*    inputValue={input}*/}
-            {/*    onInputChange={handleInputChange}*/}
-            {/*    aria-label={intl.formatMessage({ id: "ariaLabel.search" })}*/}
-            {/*    ariaLiveMessages={ariaMessages}*/}
-            {/*    selectedOptionStyle="color"*/}
-            {/*    selectedOptionColorPalette="colorPalette"*/}
-            {/*    chakraStyles={chakraStyles}*/}
-            {/*    isClearable={true}*/}
-            {/*    placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}*/}
-            {/*    closeMenuOnSelect={true}*/}
-            {/*    isLoading={search.kind === "loading"}*/}
-            {/*    options={search.kind === "ready" ? search.results : undefined}*/}
-            {/*    filterOption={() => true} // always show all options (don't filter based on input text)*/}
-            {/*    tabSelectsValue={false}*/}
-            {/*    components={components}*/}
-            {/*    onChange={handleSelectChange}*/}
-            {/*    value={selectedOption}*/}
-            {/*    menuPortalTarget={portalDiv.current}*/}
-            {/*/>*/}
             <Portal>
                 <chakra.div ref={portalDiv} className="search-component-menu" />
             </Portal>

@@ -20,6 +20,10 @@
     font-weight: bold;
 }
 
+.chakra-combobox__itemGroupLabel {
+    background-color: "colorPalette.100";
+}
+
 /* Exposition only
 
 .search-option {
