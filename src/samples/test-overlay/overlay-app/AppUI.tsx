@@ -25,7 +25,7 @@ import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { Toolbar } from "./ui/Toolbar";
-import { LuCamera, LuCrosshair, LuTable } from "react-icons/lu";
+import { LuCalendarClock, LuCamera, LuCrosshair, LuTable } from "react-icons/lu";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { fromLonLat } from "ol/proj";
@@ -70,17 +70,17 @@ export function AppUI() {
                 positioning: "bottom-center",
                 stopEvent: true
             },
-            <StaticTooltip />
+            <StaticOverlay />
         );
-        const updatingTooltip = map.overlays.addOverlay(
+        const updatingOverlay = map.overlays.addOverlay(
             {
                 positioning: "center-center",
                 stopEvent: false,
                 position: [410000, 5760000]
             },
-            <SelfUpdatingTooltip></SelfUpdatingTooltip>
+            <SelfUpdatingOverlay></SelfUpdatingOverlay>
         );
-        const updatedTooltip = map.overlays.addOverlay(
+        const updatedOverlay = map.overlays.addOverlay(
             {
                 positioning: "center-center",
                 stopEvent: false,
@@ -91,8 +91,8 @@ export function AppUI() {
         return () => {
             staticOverlay.destroy();
             followPointerOverlay.destroy();
-            updatingTooltip.destroy();
-            updatedTooltip.destroy();
+            updatingOverlay.destroy();
+            updatedOverlay.destroy();
         };
     }, [map]);
 
@@ -179,7 +179,7 @@ function BasemapSwitcherComponent() {
     );
 }
 
-function SelfUpdatingTooltip() {
+function SelfUpdatingOverlay() {
     const [date, setDate] = useState(new Date());
 
     useEffect(() => {
@@ -187,16 +187,16 @@ function SelfUpdatingTooltip() {
         return () => clearInterval(interval);
     }, []);
 
-    return <Box bg={"yellow.400"}>{date.toLocaleString()}</Box>;
+    return <Flex bg={"whiteAlpha.700"} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2} alignItems={"center"}><Icon size="lg" mr={1} color={"gray.700"} ><LuCalendarClock /></Icon>{date.toLocaleString()}</Flex>;
 }
 
 function ReactiveTooltip(props: { count: Reactive<number> }) {
     const count = useReactiveSnapshot(() => props.count.value, [props]);
 
-    return <Box bg={"teal.500"}>Count: {count}</Box>;
+    return <Box bg={"whiteAlpha.700"} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2}>Count: {count}</Box>;
 }
 
-function StaticTooltip() {
+function StaticOverlay() {
     const intl = useIntl();
 
     return (
