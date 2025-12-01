@@ -12,5 +12,4 @@ export type {
     SearchSource
 } from "./api";
 export { Search, type SearchProps } from "./Search";
-export { SearchCombobox } from "./SearchCombobox";
 export { SearchApiImpl } from "./SearchApiImpl";
