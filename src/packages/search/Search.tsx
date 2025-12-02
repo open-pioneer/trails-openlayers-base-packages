@@ -295,6 +295,12 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
         "colorPalette.50",
         "colorPalette.500"
     ]);
+    const loadingLabel = useMemo(() => {
+        return intl.formatMessage({ id: "loadingText"  });
+    }, [intl]);
+    const noResultLabel = useMemo(() => {
+        return intl.formatMessage({ id: "noOptionsText"  });
+    }, [intl]);
 
     const searchResults = useMemo(() => {
         return collection.group().map((groupElement, key) => {
@@ -324,24 +330,21 @@ function useResultList(collection: ListCollection<SearchOption>, input: string, 
     },[collection, groupHeadingBg, input]);
     
     return useMemo(() => {
-        const showResultOrLoading = search.kind === "ready" ? (
-            <Fragment>
-                {
-                    <Combobox.Empty>
-                        {intl.formatMessage({ id: "noOptionsText" })}
-                    </Combobox.Empty>
-                }
-                {searchResults}
-            </Fragment>
-        ) : (
-            <HStack p="2">
-                <Spinner size="xs" borderWidth="1px" />
-                <Span>{intl.formatMessage({ id: "loadingText" })}</Span>
-            </HStack>
-        );
+        const showResultOrLoading =
+            search.kind === "ready" ? (
+                <Fragment>
+                    {<Combobox.Empty>{noResultLabel}</Combobox.Empty>}
+                    {searchResults}
+                </Fragment>
+            ) : (
+                <HStack p="2">
+                    <Spinner size="xs" borderWidth="1px" />
+                    <Span>{loadingLabel}</Span>
+                </HStack>
+            );
 
         return { showResultOrLoading };
-    }, [intl, search.kind, searchResults]);
+    }, [loadingLabel, noResultLabel, search.kind, searchResults]);
 
 
 }
