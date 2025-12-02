@@ -71,36 +71,34 @@ export function AppUI() {
             return;
         }
 
-        const followPointerOverlay = map.overlays.addOverlay(
-            { positioning: "center-center", stopEvent: false, mode: "followPointer", content:            <Icon size={"2xl"} color={"red.solid"}>
-                <LuCrosshair />
-            </Icon>
-            }
-        );
-        const staticOverlay = map.overlays.addOverlay(
-            {
-                position: fromLonLat([7.613056, 51.9637], map.olView.getProjection()),
-                positioning: "bottom-center",
-                stopEvent: true,
-                content:  <StaticOverlay />
-            }
-        );
-        const updatingOverlay = map.overlays.addOverlay(
-            {
-                positioning: "center-center",
-                stopEvent: false,
-                position: [410000, 5760000],
-                content: <SelfUpdatingOverlay />
-            }
-        );
-        updatedOverlayRef.current = map.overlays.addOverlay(
-            {
-                positioning: "center-center",
-                stopEvent: false,
-                position: [410000, 5762000],
-                content: overlayContentItems[0]
-            }
-        );
+        const followPointerOverlay = map.overlays.addOverlay({
+            positioning: "center-center",
+            stopEvent: false,
+            mode: "followPointer",
+            content: (
+                <Icon size={"2xl"} color={"red.solid"}>
+                    <LuCrosshair />
+                </Icon>
+            )
+        });
+        const staticOverlay = map.overlays.addOverlay({
+            position: fromLonLat([7.613056, 51.9637], map.olView.getProjection()),
+            positioning: "bottom-center",
+            stopEvent: true,
+            content: <StaticOverlay />
+        });
+        const updatingOverlay = map.overlays.addOverlay({
+            positioning: "center-center",
+            stopEvent: false,
+            position: [410000, 5760000],
+            content: <SelfUpdatingOverlay />
+        });
+        updatedOverlayRef.current = map.overlays.addOverlay({
+            positioning: "center-center",
+            stopEvent: false,
+            position: [410000, 5762000],
+            content: overlayContentItems[0]
+        });
         return () => {
             staticOverlay.destroy();
             followPointerOverlay.destroy();

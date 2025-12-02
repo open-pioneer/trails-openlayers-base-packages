@@ -10,7 +10,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useRef, useState } from "react";
-import { LuArrowLeft, LuArrowRight, LuArrowRightLeft }from "react-icons/lu";
+import { LuArrowLeft, LuArrowRight, LuArrowRightLeft } from "react-icons/lu";
 
 export function Toolbar(props: { map: MapModel }) {
     const { map } = props;
@@ -36,25 +36,24 @@ export function Toolbar(props: { map: MapModel }) {
             <ZoomOut />
             <ToolButton
                 label="Toggle Tooltip"
-                icon={<LuArrowRightLeft/>}
+                icon={<LuArrowRightLeft />}
                 active={tooltip != undefined}
                 onClick={() => {
                     if (!tooltip) {
-                        const tooltip = map.overlays.addOverlay(
-                            {
-                                position: overlayPositionRef.current.value,
-                                tag: "test",
-                                content:   <MovableOverlay
-                                position={overlayPositionRef.current}
+                        const tooltip = map.overlays.addOverlay({
+                            position: overlayPositionRef.current.value,
+                            tag: "test",
+                            content: (
+                                <MovableOverlay
+                                    position={overlayPositionRef.current}
                                     onCloseClicked={destroyOverlay}
-                                />,
-                                olOptions: {
-                                    autoPan: true,
-                                    insertFirst: false
-                                }
-                            },
-                          
-                        );
+                                />
+                            ),
+                            olOptions: {
+                                autoPan: true,
+                                insertFirst: false
+                            }
+                        });
                         setTooltip(tooltip);
                     } else {
                         destroyOverlay();
