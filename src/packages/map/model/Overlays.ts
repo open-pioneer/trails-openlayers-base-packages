@@ -7,10 +7,10 @@ import { Coordinate } from "ol/coordinate";
 import { ReactNode } from "react";
 import { reactive, Reactive, reactiveSet } from "@conterra/reactivity-core";
 import { v4 as uuid4v } from "uuid";
-import { Options } from "ol/Overlay";
 import { createLogger, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
+import { Options } from "ol/Overlay";
 
 export const GET_CURRENT_OVERLAYS = Symbol("GET_CURRENT_OVERLAYS");
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
@@ -65,9 +65,8 @@ export class Overlays {
 
     */
 
-    addOverlay(properties: OverlayProperties, content: ReactNode): Overlay {
-        const id = uuid4v();
-        const newModel = new Overlay(id, content, properties, this);
+    addOverlay(properties: OverlayProperties): Overlay {
+        const newModel = new Overlay(properties, this);
         return newModel;
     }
 }
@@ -77,25 +76,31 @@ export class Overlay {
 
     // TODO: Decide whether this should be public or not
     readonly olOverlay: OlOverlay;
+    readonly tag?: string;
 
     #parent: Overlays;
     #isDestroyed = reactive(false);
     #content: Reactive<ReactNode>;
     #resources: Resource[];
 
-    constructor(id: string, content: ReactNode, properties: OverlayProperties, parent: Overlays) {
+    constructor(properties: OverlayProperties, parent: Overlays) {
         const mode = properties.mode ?? "fixedPosition";
-
+        this.id = uuid4v();
+        this.tag = properties.tag;
         const overlayDiv = document.createElement("div");
 
-        this.id = id;
+        if (properties.olOptions) {
+            //simply override with advanced OL Options if set
+            properties = { ...properties, ...properties.olOptions };
+        }
+
         this.olOverlay = new OlOverlay({
             element: overlayDiv,
-            id: id,
+            id: this.id,
             ...properties
         });
         this.#parent = parent;
-        this.#content = reactive(content);
+        this.#content = reactive(properties.content);
         this.#resources = [];
 
         parent[REGISTER_OVERLAY](this);
@@ -150,6 +155,29 @@ export class Overlay {
     }
 }
 
-export interface OverlayProperties extends Omit<Options, "id" | "element"> {
-    mode?: "fixedPosition" | "followPointer";
+export interface OverlayProperties {
+    content: ReactNode;
+    mode?: "setPosition" | "followPointer";
+    tag?: string;
+    //rather use {x: number, y: number}? (align with set/get position)
+    //initial position, Ol allows position to be undefined -> hidden
+    position?: Coordinate;
+    positioning?: OverlayPositioning;
+    offset?: number[]; //rather use {offsetX: number, offsetY: number}?
+    className?: string; //use other default than OLs "ol-overlay-container ol-selectable"?
+    stopEvent?: boolean;
+    olOptions?: OlOverlayOptions; //raw OL properties, overrides mutual properties from outer OverlayProperties (except id and element?)
 }
+
+export type OverlayPositioning =
+    | "bottom-left"
+    | "bottom-center"
+    | "bottom-right"
+    | "center-left"
+    | "center-center"
+    | "center-right"
+    | "top-left"
+    | "top-center"
+    | "top-right";
+
+export interface OlOverlayOptions extends Omit<Options, "id" | "element"> {}

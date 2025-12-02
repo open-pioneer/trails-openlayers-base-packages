@@ -5,11 +5,12 @@ import { reactive, Reactive } from "@conterra/reactivity-core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/map-ui-components";
+import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useRef, useState } from "react";
-import { LuArrowLeft, LuArrowRight, LuThermometerSnowflake } from "react-icons/lu";
+import { LuArrowLeft, LuArrowRight, LuArrowRightLeft }from "react-icons/lu";
 
 export function Toolbar(props: { map: MapModel }) {
     const { map } = props;
@@ -17,10 +18,10 @@ export function Toolbar(props: { map: MapModel }) {
     const [tooltip, setTooltip] = useState<Overlay | undefined>();
     const overlayPositionRef = useRef<Reactive<Coordinate>>(reactive([410000, 5757000]));
 
-    const destroyOverlay = () => {
+    const destroyOverlay = useEvent(() => {
         tooltip?.destroy();
         setTooltip(undefined);
-    };
+    });
 
     return (
         <Flex
@@ -35,20 +36,24 @@ export function Toolbar(props: { map: MapModel }) {
             <ZoomOut />
             <ToolButton
                 label="Toggle Tooltip"
-                icon={<LuThermometerSnowflake />}
+                icon={<LuArrowRightLeft/>}
                 active={tooltip != undefined}
                 onClick={() => {
                     if (!tooltip) {
                         const tooltip = map.overlays.addOverlay(
                             {
                                 position: overlayPositionRef.current.value,
-                                insertFirst: false,
-                                autoPan: true
-                            },
-                            <MovableOverlay
+                                tag: "test",
+                                content:   <MovableOverlay
                                 position={overlayPositionRef.current}
-                                onCloseClicked={destroyOverlay}
-                            />
+                                    onCloseClicked={destroyOverlay}
+                                />,
+                                olOptions: {
+                                    autoPan: true,
+                                    insertFirst: false
+                                }
+                            },
+                          
                         );
                         setTooltip(tooltip);
                     } else {
