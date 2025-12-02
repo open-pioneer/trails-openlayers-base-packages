@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
-    chakra,
     Combobox,
     ComboboxInputValueChangeDetails,
     ComboboxValueChangeDetails,
+    createListCollection,
     Highlight,
     HStack,
     Icon,
@@ -15,15 +15,23 @@ import {
     Portal,
     Span,
     Spinner,
-    useListCollection,
     useToken
 } from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, Fragment, UIEvent, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+    FC,
+    Fragment,
+    UIEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState
+} from "react";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     SearchApi,
@@ -129,15 +137,11 @@ export const Search: FC<SearchProps> = (props) => {
     const map = useMapModelValue(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
-    const { input, search, onInputChanged, onResultConfirmed } =
-        useSearchState(controller);
-    
+    const { input, search, onInputChanged, onResultConfirmed } = useSearchState(controller);
+
     // Create the collection for the combobox and keep it synced with search results.
     const collection = useSearchCollection(search);
-    
-    const portalDiv = useRef<HTMLDivElement>(null);
-    
-    
+
     //event hooks for handling input changes, clearing input and selecting options
     const { handleInputChange, clearInput, handleSelectChange } = useSearchHandlers(
         onInputChanged,
@@ -147,18 +151,17 @@ export const Search: FC<SearchProps> = (props) => {
     );
     // api trigger hooks
     useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
-
-    //render the result list or loading spinner based on search state
-    const { showResultOrLoading } = useResultList(collection, input, search, intl);
-
-    const customClearIndicator = CustomClearIndicator({clearValue: () => clearInput("user")});
     
     return (
         <Box {...containerProps} width={"100%"}>
             <Combobox.Root
                 collection={collection}
-                onInputValueChange={(e) => handleInputChange(e)}
-                onValueChange={(e) => handleSelectChange(e)}
+                onInputValueChange={(e) => {
+                    handleInputChange(e);
+                }}
+                onValueChange={(e) => {
+                    handleSelectChange(e);
+                }}
                 inputValue={input}
                 className="search-combobox-component"
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
@@ -172,12 +175,40 @@ export const Search: FC<SearchProps> = (props) => {
                                 <LuSearch />
                             </Icon>
                         }
-                        endElement={search.kind === "loading" ? <Spinner size="xs" borderWidth="1px" /> : null}
+                        endElement={
+                            search.kind === "loading" ? (
+                                <Spinner size="xs" borderWidth="1px" />
+                            ) : input.length > -1 ? (
+                                <CustomClearIndicator
+                                    clearValue={() => {
+                                        clearInput("user");
+                                    }}
+                                />
+                            ) : null
+                        }
                     >
                         <Combobox.Input />
                     </InputGroup>
                     <Combobox.IndicatorGroup>
-                        {input.length ? customClearIndicator : null}
+                        {/*{input.length > -1 ? (*/}
+                        {/*    <CustomClearIndicator*/}
+                        {/*        clearValue={() => {*/}
+                        {/*            // clearInput("user");*/}
+                        {/*            setComboInput("");*/}
+                        {/*        }}*/}
+                        {/*    />*/}
+                        {/*) : null}*/}
+
+                        {/*{*/}
+                        {/*    test ? <Combobox.ClearTrigger/> :*/}
+                        {/*        input.length ? (*/}
+                        {/*    <CustomClearIndicator*/}
+                        {/*        clearValue={() => {*/}
+                        {/*            clearInput("user");*/}
+                        {/*        }}*/}
+                        {/*    />*/}
+                        {/*) : null*/}
+                        {/*}*/}
                     </Combobox.IndicatorGroup>
                 </Combobox.Control>
 
@@ -185,22 +216,40 @@ export const Search: FC<SearchProps> = (props) => {
                     <Combobox.Positioner>
                         <Combobox.ItemGroup>
                             <Combobox.Content minW="sm" overflowX="hidden">
-                                { showResultOrLoading}
+                                <Fragment>
+                                    <LoadingOrEmptyIndicator search={search} />
+                                    <ResultList collection={collection} input={input} />
+                                </Fragment>
                             </Combobox.Content>
                         </Combobox.ItemGroup>
                     </Combobox.Positioner>
                 </Portal>
             </Combobox.Root>
-            <Portal>
-                <chakra.div ref={portalDiv} className="search-component-menu" />
-            </Portal>
         </Box>
     );
 };
 
-function CustomClearIndicator(props: {
-    clearValue: () => void;
-}) {
+function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
+    const intl = useIntl();
+    const loadingLabel = intl.formatMessage({ id: "loadingText" });
+    const noOptionLabel = intl.formatMessage({ id: "noOptionsText" });
+    return (
+        <Combobox.Empty>
+            <HStack p="2">
+                {props.search.kind === "loading" ? (
+                    <>
+                        <Spinner size="xs" borderWidth="1px" />
+                        <Span>{loadingLabel}</Span>
+                    </>
+                ) : (
+                    <Span>{noOptionLabel}</Span>
+                )}
+            </HStack>
+        </Combobox.Empty>
+    );
+}
+
+function CustomClearIndicator(props: { clearValue: () => void }) {
     const intl = useIntl();
     const clearButtonLabel = intl.formatMessage({
         id: "ariaLabel.clearButton"
@@ -215,7 +264,7 @@ function CustomClearIndicator(props: {
         <Tooltip content={clearButtonLabel}>
             <IconButton
                 size="sm"
-                variant="ghost"
+                variant="plain"
                 mr="1px"
                 aria-label={clearButtonLabel}
                 onClick={clickHandler}
@@ -234,23 +283,18 @@ function CustomClearIndicator(props: {
 }
 
 function useSearchCollection(search: SearchResultsState) {
-    const { collection, set } = useListCollection<SearchOption>({
-        initialItems: [],
-        itemToString: (item) => item?.label || "",
-        itemToValue: (item) => item?.value || "",
-        groupBy: (item) => item.source.label
-    });
-
-    useEffect(() => {
+    return useMemo(() => {
         if (search.kind === "ready") {
-            const allSearchResults = search.results.flatMap(
-                (searchGroupItem) => searchGroupItem.options
-            );
-            set(allSearchResults);
+            const options = search.results.flatMap((group) => group.options);
+            return createListCollection({
+                items: options,
+                groupBy: (item) => item.source.label,
+                itemToString: (item) => item?.label || "",
+                itemToValue: (item) => item?.value || ""
+            });
         }
-    }, [search, set]);
-
-    return collection;
+        return createListCollection<SearchOption>({ items: [] });
+    }, [search]);
 }
 
 function useSearchHandlers(
@@ -262,7 +306,7 @@ function useSearchHandlers(
     const handleInputChange = useEvent((e: ComboboxInputValueChangeDetails) => {
         // Only update the input if the user actually typed something.
         // This keeps the input content if the user focuses another element or if the menu is closed.
-        if (e.reason === "input-change") {
+        if (e.reason === "input-change" || e.reason === "interact-outside") {
             onInputChanged(e.inputValue);
         }
     });
@@ -274,7 +318,7 @@ function useSearchHandlers(
     });
 
     const handleSelectChange = useEvent((e: ComboboxValueChangeDetails<SearchOption>) => {
-        const selectedItem = e.items.length ? e.items[0] : clearInput("user");
+        const selectedItem = e.items.length ? e.items[0] : null;
         if (!selectedItem) {
             return;
         }
@@ -288,65 +332,44 @@ function useSearchHandlers(
     return { handleInputChange, clearInput, handleSelectChange };
 }
 
-function useResultList(collection: ListCollection<SearchOption>, input: string, search: SearchResultsState, intl: PackageIntl) {
-
+function ResultList(props: { collection: ListCollection<SearchOption>; input: string }) {
+    const { collection, input } = props;
     const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
         "colorPalette.100",
         "colorPalette.50",
         "colorPalette.500"
     ]);
-    const loadingLabel = useMemo(() => {
-        return intl.formatMessage({ id: "loadingText"  });
-    }, [intl]);
-    const noResultLabel = useMemo(() => {
-        return intl.formatMessage({ id: "noOptionsText"  });
-    }, [intl]);
 
-    const searchResults = useMemo(() => {
-        return collection.group().map((groupElement, key) => {
-                return (
-                    <Fragment key={key}>
-                        <Combobox.ItemGroupLabel key={groupElement[0]} backgroundColor={groupHeadingBg} padding={"8px 12px"}>
-                            {groupElement[0]}
-                        </Combobox.ItemGroupLabel>
-                        {groupElement[1].map((searchResult, key) => {
-                            return (
-                                <Combobox.Item key={key} item={searchResult}>
-                                    <Combobox.ItemText>
-                                        <Highlight
-                                            ignoreCase
-                                            query={input}
-                                            styles={{ fontWeight: "bold" }}
-                                        >
-                                            {searchResult?.label}
-                                        </Highlight>
-                                    </Combobox.ItemText>
-                                </Combobox.Item>
-                            );
-                        })}
-                    </Fragment>
-                );
-            });
-    },[collection, groupHeadingBg, input]);
-    
     return useMemo(() => {
-        const showResultOrLoading =
-            search.kind === "ready" ? (
-                <Fragment>
-                    {<Combobox.Empty>{noResultLabel}</Combobox.Empty>}
-                    {searchResults}
+        return collection.group().map((groupElement, key) => {
+            return (
+                <Fragment key={key}>
+                    <Combobox.ItemGroupLabel
+                        key={groupElement[0]}
+                        backgroundColor={groupHeadingBg}
+                        padding={"8px 12px"}
+                    >
+                        {groupElement[0]}
+                    </Combobox.ItemGroupLabel>
+                    {groupElement[1].map((searchResult, key) => {
+                        return (
+                            <Combobox.Item key={key} item={searchResult}>
+                                <Combobox.ItemText>
+                                    <Highlight
+                                        ignoreCase
+                                        query={input}
+                                        styles={{ fontWeight: "bold" }}
+                                    >
+                                        {searchResult?.label}
+                                    </Highlight>
+                                </Combobox.ItemText>
+                            </Combobox.Item>
+                        );
+                    })}
                 </Fragment>
-            ) : (
-                <HStack p="2">
-                    <Spinner size="xs" borderWidth="1px" />
-                    <Span>{loadingLabel}</Span>
-                </HStack>
             );
-
-        return { showResultOrLoading };
-    }, [loadingLabel, noResultLabel, search.kind, searchResults]);
-
-
+        });
+    }, [collection, groupHeadingBg, input]);
 }
 
 /**
@@ -513,7 +536,7 @@ async function search(controller: SearchController, query: string): Promise<Sear
 }
 
 function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
-    const options = suggestions.map(
+    return suggestions.map(
         (group, groupIndex): SearchGroupOption => ({
             label: group.label,
             options: group.results.map((suggestion): SearchOption => {
@@ -526,7 +549,6 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
             })
         })
     );
-    return options;
 }
 
 // Note: `clearInput` and `setInputValue` must be stable because only the initial value is used to construct the API instance at this time.
@@ -560,4 +582,3 @@ function useSearchApi(
         return disposeTrigger;
     }, [readyTrigger, disposeTrigger]);
 }
-
