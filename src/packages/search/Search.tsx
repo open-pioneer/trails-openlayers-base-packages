@@ -176,40 +176,15 @@ export const Search: FC<SearchProps> = (props) => {
                             </Icon>
                         }
                         endElement={
-                            search.kind === "loading" ? (
-                                <Spinner size="xs" borderWidth="1px" />
-                            ) : input.length > -1 ? (
-                                <CustomClearIndicator
-                                    clearValue={() => {
-                                        clearInput("user");
-                                    }}
-                                />
-                            ) : null
+                            <CustomIndicator
+                                search={search}
+                                input={input}
+                                clearInput={clearInput}
+                            />
                         }
                     >
                         <Combobox.Input />
                     </InputGroup>
-                    <Combobox.IndicatorGroup>
-                        {/*{input.length > -1 ? (*/}
-                        {/*    <CustomClearIndicator*/}
-                        {/*        clearValue={() => {*/}
-                        {/*            // clearInput("user");*/}
-                        {/*            setComboInput("");*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*) : null}*/}
-
-                        {/*{*/}
-                        {/*    test ? <Combobox.ClearTrigger/> :*/}
-                        {/*        input.length ? (*/}
-                        {/*    <CustomClearIndicator*/}
-                        {/*        clearValue={() => {*/}
-                        {/*            clearInput("user");*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*) : null*/}
-                        {/*}*/}
-                    </Combobox.IndicatorGroup>
                 </Combobox.Control>
 
                 <Portal>
@@ -228,6 +203,19 @@ export const Search: FC<SearchProps> = (props) => {
         </Box>
     );
 };
+
+function CustomIndicator(props: { search: SearchResultsState; input: string; clearInput: (trigger: SearchClearTrigger) => void }) {
+    const { search, input, clearInput } = props;
+    return search.kind === "loading" ? (
+        <Spinner size="xs" borderWidth="1px" />
+    ) : input.length ? (
+        <CustomClearIndicator
+            clearValue={() => {
+                clearInput("user");
+            }}
+        />
+    ) : null;
+}
 
 function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
     const intl = useIntl();
