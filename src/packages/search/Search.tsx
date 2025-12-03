@@ -1,48 +1,51 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, chakra, Portal, useToken } from "@chakra-ui/react";
+import {
+    Box,
+    Combobox,
+    ComboboxInputValueChangeDetails,
+    ComboboxValueChangeDetails,
+    createListCollection,
+    Highlight,
+    HStack,
+    Icon,
+    IconButton,
+    InputGroup,
+    ListCollection,
+    Portal,
+    Span,
+    Spinner,
+    useToken
+} from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { PackageIntl } from "@open-pioneer/runtime";
-import {
-    ActionMeta,
-    AriaLiveMessages,
-    AriaOnChange,
-    AriaOnFocus,
-    ChakraStylesConfig,
-    InputActionMeta,
-    Select,
-    SelectInstance,
-    Props as SelectProps,
-    SingleValue
-} from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
-    ClearIndicator,
-    GroupComp,
-    HighlightOption,
-    IndicatorsContainer,
-    Input,
-    LoadingMessage,
-    MenuComp,
-    NoOptionsMessage,
-    SingleValue as SingleValueComp,
-    ValueContainer
-} from "./CustomComponents";
+    FC,
+    Fragment,
+    UIEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState
+} from "react";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
-    SearchClearEvent,
     SearchApi,
+    SearchClearEvent,
+    SearchClearTrigger,
     SearchDisposedEvent,
     SearchReadyEvent,
     SearchResult,
     SearchSelectEvent,
-    SearchSource,
-    SearchClearTrigger
+    SearchSource
 } from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
+import { LuSearch, LuX } from "react-icons/lu";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 
 const LOG = createLogger("search:Search");
 
@@ -134,217 +137,227 @@ export const Search: FC<SearchProps> = (props) => {
     const map = useMapModelValue(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
-    const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
-        useSearchState(controller);
+    const { input, search, onInputChanged, onResultConfirmed } = useSearchState(controller);
 
-    const chakraStyles = useChakraStyles();
-    const ariaMessages = useAriaMessages(intl);
-    const components = useCustomComponents();
+    // Create the collection for the combobox and keep it synced with search results.
+    const collection = useSearchCollection(search);
 
-    const portalDiv = useRef<HTMLDivElement>(null);
+    //event hooks for handling input changes, clearing input and selecting options
+    const { handleInputChange, clearInput, handleSelectChange } = useSearchHandlers(
+        onInputChanged,
+        onResultConfirmed,
+        onClear,
+        onSelect
+    );
+    // api trigger hooks
+    useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
+    
+    return (
+        <Box {...containerProps} width={"100%"}>
+            <Combobox.Root
+                collection={collection}
+                onInputValueChange={(e) => {
+                    handleInputChange(e);
+                }}
+                onValueChange={(e) => {
+                    handleSelectChange(e);
+                }}
+                inputValue={input}
+                className="search-combobox-component"
+                aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
+                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
+                openOnClick={input.length > 0}
+            >
+                <Combobox.Control>
+                    <InputGroup
+                        startElement={
+                            <Icon className={"search-icon"}>
+                                <LuSearch />
+                            </Icon>
+                        }
+                        endElement={
+                            <CustomIndicator
+                                search={search}
+                                input={input}
+                                clearInput={clearInput}
+                            />
+                        }
+                    >
+                        <Combobox.Input />
+                    </InputGroup>
+                </Combobox.Control>
 
-    const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
+                <Portal>
+                    <Combobox.Positioner>
+                        <Combobox.ItemGroup>
+                            <Combobox.Content minW="sm" overflowX="hidden">
+                                <Fragment>
+                                    <LoadingOrEmptyIndicator search={search} />
+                                    <ResultList collection={collection} input={input} />
+                                </Fragment>
+                            </Combobox.Content>
+                        </Combobox.ItemGroup>
+                    </Combobox.Positioner>
+                </Portal>
+            </Combobox.Root>
+        </Box>
+    );
+};
+
+function CustomIndicator(props: { search: SearchResultsState; input: string; clearInput: (trigger: SearchClearTrigger) => void }) {
+    const { search, input, clearInput } = props;
+    return search.kind === "loading" ? (
+        <Spinner size="xs" borderWidth="1px" />
+    ) : input.length ? (
+        <CustomClearIndicator
+            clearValue={() => {
+                clearInput("user");
+            }}
+        />
+    ) : null;
+}
+
+function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
+    const intl = useIntl();
+    const loadingLabel = intl.formatMessage({ id: "loadingText" });
+    const noOptionLabel = intl.formatMessage({ id: "noOptionsText" });
+    return (
+        <Combobox.Empty>
+            <HStack p="2">
+                {props.search.kind === "loading" ? (
+                    <>
+                        <Spinner size="xs" borderWidth="1px" />
+                        <Span>{loadingLabel}</Span>
+                    </>
+                ) : (
+                    <Span>{noOptionLabel}</Span>
+                )}
+            </HStack>
+        </Combobox.Empty>
+    );
+}
+
+function CustomClearIndicator(props: { clearValue: () => void }) {
+    const intl = useIntl();
+    const clearButtonLabel = intl.formatMessage({
+        id: "ariaLabel.clearButton"
+    });
+    const clickHandler = (e: UIEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        props.clearValue();
+    };
+
+    return (
+        <Tooltip content={clearButtonLabel}>
+            <IconButton
+                size="sm"
+                variant="plain"
+                mr="1px"
+                aria-label={clearButtonLabel}
+                onClick={clickHandler}
+                // needed for correct touch handling; select control would otherwise preventDefault()
+                onTouchEnd={clickHandler}
+                // Stop select component from opening the menu.
+                // It will otherwise flash briefly because of a mouse down listener in the select.
+                onMouseDown={(e) => e.preventDefault()}
+            >
+                <Icon>
+                    <LuX />
+                </Icon>
+            </IconButton>
+        </Tooltip>
+    );
+}
+
+function useSearchCollection(search: SearchResultsState) {
+    return useMemo(() => {
+        if (search.kind === "ready") {
+            const options = search.results.flatMap((group) => group.options);
+            return createListCollection({
+                items: options,
+                groupBy: (item) => item.source.label,
+                itemToString: (item) => item?.label || "",
+                itemToValue: (item) => item?.value || ""
+            });
+        }
+        return createListCollection<SearchOption>({ items: [] });
+    }, [search]);
+}
+
+function useSearchHandlers(
+    onInputChanged: (newValue: string) => void,
+    onResultConfirmed: (option: SearchOption) => void,
+    onClear: ((event: SearchClearEvent) => void) | undefined,
+    onSelect: ((event: SearchSelectEvent) => void) | undefined
+) {
+    const handleInputChange = useEvent((e: ComboboxInputValueChangeDetails) => {
         // Only update the input if the user actually typed something.
         // This keeps the input content if the user focuses another element or if the menu is closed.
-        if (actionMeta.action === "input-change") {
-            onInputChanged(newValue);
+        if (e.reason === "input-change" || e.reason === "interact-outside") {
+            onInputChanged(e.inputValue);
         }
     });
 
     const clearInput = useEvent((trigger: SearchClearTrigger) => {
         // Updates the input field
         onInputChanged("");
-
-        // the next two lines are a workaround for the open bug in react-select regarding the
-        // cursor not being shown after clearing, although the component is focussed:
-        // https://github.com/JedWatson/react-select/issues/3871
-        if (trigger === "user") {
-            selectRef.current?.blur();
-            selectRef.current?.focus();
-        }
-
         onClear?.({ trigger: trigger });
     });
 
-    const handleSelectChange = useEvent(
-        (value: SingleValue<SearchOption>, actionMeta: ActionMeta<SearchOption>) => {
-            switch (actionMeta.action) {
-                case "select-option":
-                    if (value) {
-                        // Updates the input field with the option label
-                        onResultConfirmed(value);
-                        onSelect?.({
-                            source: value.source,
-                            result: value.result
-                        });
-                    }
-                    break;
-                case "clear":
-                    clearInput("user");
-                    break;
-                default:
-                    LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
-                    break;
-            }
+    const handleSelectChange = useEvent((e: ComboboxValueChangeDetails<SearchOption>) => {
+        const selectedItem = e.items.length ? e.items[0] : null;
+        if (!selectedItem) {
+            return;
         }
-    );
+        onResultConfirmed(selectedItem);
+        onSelect?.({
+            source: selectedItem.source,
+            result: selectedItem.result
+        });
+    });
 
-    useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
-
-    const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
-    return (
-        <Box {...containerProps}>
-            <Select<SearchOption, false, SearchGroupOption>
-                className="search-component"
-                classNamePrefix="react-select"
-                ref={selectRef}
-                inputValue={input}
-                onInputChange={handleInputChange}
-                aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
-                ariaLiveMessages={ariaMessages}
-                selectedOptionStyle="color"
-                selectedOptionColorPalette="colorPalette"
-                chakraStyles={chakraStyles}
-                isClearable={true}
-                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
-                closeMenuOnSelect={true}
-                isLoading={search.kind === "loading"}
-                options={search.kind === "ready" ? search.results : undefined}
-                filterOption={() => true} // always show all options (don't filter based on input text)
-                tabSelectsValue={false}
-                components={components}
-                onChange={handleSelectChange}
-                value={selectedOption}
-                menuPortalTarget={portalDiv.current}
-            />
-            <Portal>
-                <chakra.div ref={portalDiv} className="search-component-menu" />
-            </Portal>
-        </Box>
-    );
-};
-
-/**
- * Provides custom aria messages for the select component.
- */
-function useAriaMessages(
-    intl: PackageIntl
-): AriaLiveMessages<SearchOption, false, SearchGroupOption> {
-    return useMemo(() => {
-        /**
-         * Method to create Aria-String for focus-Event
-         */
-        const onFocus: AriaOnFocus<SearchOption> = () => {
-            //no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
-            return "";
-        };
-
-        /**
-         * Method to create Aria-String for value-change-Event
-         */
-        const onChange: AriaOnChange<SearchOption, boolean> = () => {
-            //no aria string for change-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
-            return "";
-        };
-
-        /**
-         * Method to create Aria-String for instruction
-         */
-        const guidance = () => {
-            return `${intl.formatMessage({ id: "ariaLabel.instructions" })}`;
-        };
-
-        /**
-         * Method to create Aria-String for result length
-         */
-        const onFilter = () => {
-            return "";
-        };
-
-        return {
-            onFocus,
-            onChange,
-            guidance,
-            onFilter
-        };
-    }, [intl]);
+    return { handleInputChange, clearInput, handleSelectChange };
 }
 
-/**
- * Customizes the inner components used by the select component.
- */
-function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOption>["components"] {
-    return useMemo(() => {
-        return {
-            Menu: MenuComp,
-            Input: Input,
-            SingleValue: SingleValueComp,
-            Option: HighlightOption,
-            NoOptionsMessage: NoOptionsMessage,
-            LoadingMessage: LoadingMessage,
-            ValueContainer: ValueContainer,
-            IndicatorsContainer: IndicatorsContainer,
-            ClearIndicator: ClearIndicator,
-            Group: GroupComp
-        };
-    }, []);
-}
-
-/**
- * Customizes components styles within the select component.
- */
-function useChakraStyles() {
+function ResultList(props: { collection: ListCollection<SearchOption>; input: string }) {
+    const { collection, input } = props;
     const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
         "colorPalette.100",
         "colorPalette.50",
         "colorPalette.500"
     ]);
+
     return useMemo(() => {
-        const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
-            control: (provided) => ({
-                ...provided,
-                paddingInline: 0
-            }),
-            inputContainer: (provided) => ({
-                ...provided,
-                gridTemplateAreas: "'area area area'",
-                display: "grid"
-            }),
-            indicatorsContainer: (provided) => ({
-                ...provided,
-                // pointerEvents none can sneak in via chakra theme from <Select />
-                pointerEvents: "auto"
-            }),
-            input: (provided) => ({
-                ...provided,
-                gridArea: "area"
-            }),
-            groupHeading: (provided) => ({
-                ...provided,
-                backgroundColor: groupHeadingBg,
-                padding: "8px 12px",
-                // make Header look like normal options:
-                fontSize: "inherit",
-                fontWeight: "inherit"
-            }),
-            option: (provided) => ({
-                ...provided,
-                backgroundColor: "inherit",
-                _highlighted: {
-                    backgroundColor: focussedItemBg
-                },
-                _selected: {
-                    // Prevent white on white
-                    backgroundColor: selectedItemBg
-                }
-            }),
-            dropdownIndicator: (provided) => ({
-                ...provided,
-                display: "none" // always hide
-            })
-        };
-        return chakraStyles;
-    }, [groupHeadingBg, focussedItemBg, selectedItemBg]);
+        return collection.group().map((groupElement, key) => {
+            return (
+                <Fragment key={key}>
+                    <Combobox.ItemGroupLabel
+                        key={groupElement[0]}
+                        backgroundColor={groupHeadingBg}
+                        padding={"8px 12px"}
+                    >
+                        {groupElement[0]}
+                    </Combobox.ItemGroupLabel>
+                    {groupElement[1].map((searchResult, key) => {
+                        return (
+                            <Combobox.Item key={key} item={searchResult}>
+                                <Combobox.ItemText>
+                                    <Highlight
+                                        ignoreCase
+                                        query={input}
+                                        styles={{ fontWeight: "bold" }}
+                                    >
+                                        {searchResult?.label}
+                                    </Highlight>
+                                </Combobox.ItemText>
+                            </Combobox.Item>
+                        );
+                    })}
+                </Fragment>
+            );
+        });
+    }, [collection, groupHeadingBg, input]);
 }
 
 /**
@@ -392,8 +405,6 @@ type SearchResultsState = SearchResultsReady | SearchResultsLoading;
 
 /**
  * Keeps track of the current input text, active searches and their results.
- *
- * Event handlers returned by this hook are stable references.
  *
  * NOTE: it would be great to merge this state handling with the search controller
  * in a future revision.
@@ -475,17 +486,20 @@ function useSearchState(controller: SearchController | undefined) {
     });
 
     // Called when the user confirms a search result
-    const onResultConfirmed = useEvent((option: SearchOption) => {
+    const onResultConfirmed = useCallback((option: SearchOption) => {
         // Do not start a new search when the user confirms a result
         dispatch({ kind: "select-option", option });
-    });
+    }, []);
 
     // Called when a user types into the input field
-    const onInputChanged = useEvent((newValue: string) => {
-        // Trigger a new search if the user changes the query by typing
-        dispatch({ kind: "input", query: newValue });
-        startSearch(newValue);
-    });
+    const onInputChanged = useCallback(
+        (newValue: string) => {
+            // Trigger a new search if the user changes the query by typing
+            dispatch({ kind: "input", query: newValue });
+            startSearch(newValue);
+        },
+        [startSearch]
+    );
 
     return {
         input: state.query,
@@ -510,7 +524,7 @@ async function search(controller: SearchController, query: string): Promise<Sear
 }
 
 function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
-    const options = suggestions.map(
+    return suggestions.map(
         (group, groupIndex): SearchGroupOption => ({
             label: group.label,
             options: group.results.map((suggestion): SearchOption => {
@@ -523,7 +537,6 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
             })
         })
     );
-    return options;
 }
 
 // Note: `clearInput` and `setInputValue` must be stable because only the initial value is used to construct the API instance at this time.

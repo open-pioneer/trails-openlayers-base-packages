@@ -2,7 +2,7 @@
     display: none;
 }
 
-.search-component .search-value-container {
+.search-combobox-component input {
     cursor: text;
     padding-left: 30px !important;
 }
@@ -18,6 +18,12 @@
 
 .search-component-menu .search-highlighted-match {
     font-weight: bold;
+}
+
+.search-combobox-component .search-icon {
+    position: absolute;
+    left: 8px;
+    box-sizing: 1.25em;
 }
 
 /* Exposition only
