@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { MapModel } from "@open-pioneer/map";
+
 import { Vector as VectorLayer, Layer } from "ol/layer";
 import type { Vector as VectorSource } from "ol/source";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -56,9 +58,8 @@ export function useSnappingSources(
     }, [layers]);
 }
 
-// TODO: This is not reactive (needs useReactiveSnapshot).
 function useLayers(mapModel: MapModel | undefined, editableLayerIds: string[]): Layer[] {
-    return useMemo(() => {
+    return useReactiveSnapshot(() => {
         return compactMap(editableLayerIds, (id) => {
             const layer = mapModel?.layers.getLayerById(id);
             if (layer?.type === "simple" && layer.olLayer instanceof Layer) {

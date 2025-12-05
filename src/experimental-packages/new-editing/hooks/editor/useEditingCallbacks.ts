@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { NotificationService } from "@open-pioneer/notifier";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import type { Map } from "ol";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import type { MapModel } from "@open-pioneer/map";
+import type { NotificationService } from "@open-pioneer/notifier";
+
 import { useCallback, useMemo } from "react";
 
 import type { PropertyEditorCallbacks } from "../../components/propertyeditor/PropertyEditor";
@@ -11,13 +13,12 @@ import type { EditingStep } from "../../model/EditingStep";
 import type { ValueSetter } from "../../types/types";
 
 export function useEditingCallbacks(
-    map: Map | undefined,
+    mapModel: MapModel | undefined,
     editingStep: EditingStep,
     editingHandler: EditingHandler,
     setEditingStep: ValueSetter<EditingStep>
 ): PropertyEditorCallbacks {
-    // TODO: useReactiveSnapshot(() => map.projection, [map]) with the map model
-    const projection = useMemo(() => map?.getView().getProjection(), [map]);
+    const projection = useReactiveSnapshot(() => mapModel?.projection, [mapModel]);
     const showNotifier = useShowNotifier();
 
     return useMemo(
@@ -26,8 +27,7 @@ export function useEditingCallbacks(
                 if (editingStep.id === "create-modify") {
                     const { feature, template } = editingStep;
                     try {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        await editingHandler.addFeature(feature, template, projection!);
+                        await editingHandler.addFeature(feature, template, projection);
                         showNotifier("create", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
@@ -36,8 +36,7 @@ export function useEditingCallbacks(
                 } else if (editingStep.id === "update-modify") {
                     const { feature, olLayer: layer } = editingStep;
                     try {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        await editingHandler.updateFeature(feature, layer, projection!);
+                        await editingHandler.updateFeature(feature, layer, projection);
                         showNotifier("update", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
@@ -49,8 +48,7 @@ export function useEditingCallbacks(
                 if (editingStep.id === "update-modify") {
                     const { feature, olLayer: layer } = editingStep;
                     try {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        await editingHandler.deleteFeature(feature, layer, projection!);
+                        await editingHandler.deleteFeature(feature, layer, projection);
                         showNotifier("delete", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {

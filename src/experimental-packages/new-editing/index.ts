@@ -2,15 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 export { Editor, type EditorProps, type OnEditingStepChange } from "./Editor";
 
-export {
-    useEditing,
-    type Editing,
-    type EditingOptions,
-    type InteractionOptions,
-    type ModifyOptions,
-    type SelectOptions,
-    type SnapOptions
-} from "./hooks/editing/useEditing";
+export { useEditing, type EditingOptions } from "./hooks/editing/useEditing";
+
+export type {
+    InteractionOptions,
+    DrawOptions,
+    SelectOptions,
+    ModifyOptions,
+    SnapOptions,
+    HighlightOptions
+} from "./hooks/editing/controller/EditingController";
 
 export {
     usePropertyFormContext,
@@ -42,12 +43,13 @@ export type {
     UpdateFeatureHandler
 } from "./model/EditingHandler";
 
+export type { EditingState } from "./model/EditingState";
+
 export type {
+    FeatureTemplate,
     CheckBoxInput,
     ColorInput,
     DateInput,
-    DrawOptions,
-    FeatureTemplate,
     FieldInput,
     InputType,
     NumberInput,

@@ -21,9 +21,6 @@ export class InMemoryStore {
     }
 
     updateFeature(feature: Feature): void {
-        // We'll need to replace the feature in the collection with a cloned version. Otherwise, its
-        // geometry will not be updated in the map for some reason (invoking this.features.changed()
-        // won't help).
         const index = this.features.getArray().indexOf(feature);
         this.features.setAt(index, feature.clone());
     }

@@ -3,43 +3,49 @@
 import type { Coordinate } from "ol/coordinate";
 import type { Geometry, LineString, Polygon } from "ol/geom";
 
-export function canBeFinished(geometry: Geometry, numberOfVertices: number): boolean | null {
-    if (isLineString(geometry)) {
+export function canBeFinished(
+    geometry: Geometry,
+    numberOfVertices: number | undefined
+): boolean | undefined {
+    if (isLineString(geometry) && numberOfVertices != null) {
         return numberOfVertices >= 3;
-    } else if (isPolygon(geometry)) {
+    } else if (isPolygon(geometry) && numberOfVertices != null) {
         return numberOfVertices >= 4;
     } else {
-        return null;
+        return undefined;
     }
 }
 
-export function canBeAborted(geometry: Geometry, numberOfVertices: number): boolean | null {
-    if (isLineString(geometry) || isPolygon(geometry)) {
+export function canBeAborted(
+    geometry: Geometry,
+    numberOfVertices: number | undefined
+): boolean | undefined {
+    if ((isLineString(geometry) || isPolygon(geometry)) && numberOfVertices != null) {
         return numberOfVertices >= 1;
     } else {
-        return null;
+        return undefined;
     }
 }
 
-export function getNumberOfVertices(geometry: Geometry): number | null {
+export function getNumberOfVertices(geometry: Geometry): number | undefined {
     if (isLineString(geometry)) {
         return geometry.getCoordinates().length;
     } else if (isPolygon(geometry)) {
         return geometry.getFlatCoordinates().length / 2 - 1;
     } else {
-        return null;
+        return undefined;
     }
 }
 
-export function getLastCoordinate(geometry: Geometry): Coordinate | null {
+export function getLastCoordinate(geometry: Geometry): Coordinate | undefined {
     if (isLineString(geometry)) {
         const lastCoordinate = geometry.getLastCoordinate();
-        return lastCoordinate.length >= 2 ? lastCoordinate : null;
+        return lastCoordinate.length >= 2 ? lastCoordinate : undefined;
     } else if (isPolygon(geometry)) {
         const coordinates = geometry.getLinearRing(0)?.getCoordinates();
-        return coordinates?.[coordinates.length - 2] ?? null;
+        return coordinates?.[coordinates.length - 2] ?? undefined;
     } else {
-        return null;
+        return undefined;
     }
 }
 

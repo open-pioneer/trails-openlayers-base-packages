@@ -14,17 +14,17 @@ export interface EditingHandler {
 export type AddFeatureHandler = (
     feature: Feature,
     template: FeatureTemplate,
-    projection: Projection
+    projection: Projection | undefined
 ) => Promise<void>;
 
 export type UpdateFeatureHandler = (
     feature: Feature,
     olLayer: Layer | undefined,
-    projection: Projection
+    projection: Projection | undefined
 ) => Promise<void>;
 
 export type DeleteFeatureHandler = (
     feature: Feature,
     olLayer: Layer | undefined,
-    projection: Projection
+    projection: Projection | undefined
 ) => Promise<void>;

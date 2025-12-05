@@ -3,19 +3,22 @@
 import { useMapModelValue, type MapModelProps } from "@open-pioneer/map";
 import type { ReactElement, ReactNode } from "react";
 
-import { ActionSelector } from "./components/actionselector/ActionSelector";
-import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
-import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 import {
     DefaultPropertyForm,
     type FieldInputsProvider
 } from "./components/form/DefaultPropertyForm";
+
+import { ActionSelector } from "./components/actionselector/ActionSelector";
+import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
+
+import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 
 import {
     useEditingStep,
     useOnActionChangeCallback,
     useSnappingSources
 } from "./hooks/editor/editorHooks";
+
 import { useEditingCallbacks } from "./hooks/editor/useEditingCallbacks";
 import { useEditing, type InteractionOptions } from "./hooks/editing/useEditing";
 
@@ -41,8 +44,8 @@ export function Editor({
     const onActionChange = useOnActionChangeCallback(mapModel, editableLayerIds, setEditingStep);
     const snappingSources = useSnappingSources(mapModel, snappableLayerIds);
 
-    const { actions, capabilities } = useEditing({
-        mapModel,
+    const editingState = useEditing({
+        map,
         editingStep,
         setEditingStep,
         snappingSources,
@@ -50,7 +53,7 @@ export function Editor({
     });
 
     const { onSave, onDelete, onCancel } = useEditingCallbacks(
-        mapModel?.olMap,
+        mapModel,
         editingStep,
         editingHandler,
         setEditingStep
@@ -65,14 +68,7 @@ export function Editor({
                     templates={templates}
                     showActionBar={showActionBar}
                     onActionChange={onActionChange}
-                    canFinish={capabilities.canFinishDrawing}
-                    canAbort={capabilities.canAbortDrawing}
-                    canUndo={capabilities.canUndo}
-                    canRedo={capabilities.canRedo}
-                    onFinish={actions.finishDrawing}
-                    onAbort={actions.abortDrawing}
-                    onUndo={actions.undo}
-                    onRedo={actions.redo}
+                    editingState={editingState}
                 />
             );
 
@@ -90,7 +86,7 @@ export function Editor({
     }
 }
 
-export interface EditorProps extends InteractionOptions, MapModelProps {
+export interface EditorProps extends MapModelProps, InteractionOptions {
     readonly templates: FeatureTemplate[];
     readonly editableLayerIds: string[];
     readonly editingHandler: EditingHandler;

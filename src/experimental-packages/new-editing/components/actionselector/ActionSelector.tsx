@@ -5,17 +5,19 @@ import { useIntl } from "open-pioneer:react-hooks";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import { useCallback, useState, type ReactElement } from "react";
 
-import { ActionBar, type ActionBarProps } from "./ActionBar";
+import { ActionBar } from "./ActionBar";
 import { SelectButton } from "./SelectButton";
 import { TemplateSelector } from "./TemplateSelector";
+
 import type { Action } from "../../model/Action";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
+import type { EditingState } from "../../model/EditingState";
 
 export function ActionSelector({
     templates,
     showActionBar,
-    onActionChange,
-    ...actionBarProps
+    editingState,
+    onActionChange
 }: ActionSelectorProps): ReactElement {
     const [selectButtonIsActive, setSelectButtonActive] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
@@ -58,20 +60,21 @@ export function ActionSelector({
                 />
             </Box>
             {showActionBar && shouldShowActionBar(selectedTemplate) && (
-                <ActionBar {...actionBarProps} />
+                <ActionBar editingState={editingState} />
             )}
         </Flex>
     );
 }
 
 function shouldShowActionBar(template: FeatureTemplate | undefined): boolean {
-    return template != null && ACTION_GEOMETRY_TYPES.includes(template.geometryType);
+    return template != null && ACTION_GEOMETRY_TYPES.has(template.geometryType);
 }
 
-const ACTION_GEOMETRY_TYPES: GeometryType[] = ["Polygon", "LineString"];
+const ACTION_GEOMETRY_TYPES = new Set<GeometryType>(["Polygon", "LineString"]);
 
-interface ActionSelectorProps extends ActionBarProps {
+interface ActionSelectorProps {
     readonly templates: FeatureTemplate[];
     readonly showActionBar: boolean;
+    readonly editingState: EditingState;
     readonly onActionChange: (newAction: Action | undefined) => void;
 }

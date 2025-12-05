@@ -4,25 +4,24 @@ import type { EditingHandler, FeatureTemplate } from "new-editing";
 
 import type { Feature } from "ol";
 import type { Layer } from "ol/layer";
-import type { Projection } from "ol/proj";
 
 import { InMemoryStore } from "./InMemoryStore";
 
 export class InMemoryEditingHandler implements EditingHandler {
-    async addFeature(feature: Feature, template: FeatureTemplate, _: Projection): Promise<void> {
+    async addFeature(feature: Feature, template: FeatureTemplate): Promise<void> {
         const store = InMemoryStore.get(template.id);
         await this.addArtificialDelay();
         store.addFeature(feature);
     }
 
-    async updateFeature(feature: Feature, layer: Layer | undefined, _: Projection): Promise<void> {
+    async updateFeature(feature: Feature, layer: Layer | undefined): Promise<void> {
         const id = layer?.get("id");
         const store = InMemoryStore.get(id);
         await this.addArtificialDelay();
         store.updateFeature(feature);
     }
 
-    async deleteFeature(feature: Feature, layer: Layer | undefined, _: Projection): Promise<void> {
+    async deleteFeature(feature: Feature, layer: Layer | undefined): Promise<void> {
         const id = layer?.get("id");
         const store = InMemoryStore.get(id);
         await this.addArtificialDelay();
