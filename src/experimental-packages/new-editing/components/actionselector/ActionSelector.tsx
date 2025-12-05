@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
+
+import { TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
+
+import { useCallback, useMemo, useState, type ReactElement } from "react";
 import type { Type as GeometryType } from "ol/geom/Geometry";
-import { useCallback, useState, type ReactElement } from "react";
 
 import { ActionBar } from "./ActionBar";
 import { SelectButton } from "./SelectButton";
@@ -21,8 +24,6 @@ export function ActionSelector({
 }: ActionSelectorProps): ReactElement {
     const [selectButtonIsActive, setSelectButtonActive] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
-
-    const { formatMessage } = useIntl();
 
     const onButtonClick = useCallback(() => {
         setSelectButtonActive((active) => !active);
@@ -43,15 +44,24 @@ export function ActionSelector({
         [selectedTemplate, onActionChange]
     );
 
+    const { formatMessage } = useIntl();
+
+    const [editFeatureHeading, createFeatureHeading] = useMemo(
+        () => [
+            formatMessage({ id: "actionSelector.editFeatureHeading" }),
+            formatMessage({ id: "actionSelector.createFeatureHeading" })
+        ],
+        [formatMessage]
+    );
+
     return (
         <Flex direction="column" height="full" rowGap={3} align="stretch">
-            <Heading size="sm">
-                {formatMessage({ id: "actionSelector.editFeatureHeading" })}
-            </Heading>
+            <TitledSection title={editFeatureHeading} sectionHeadingProps={{ size: "sm" }} />
             <SelectButton isActive={selectButtonIsActive} onClick={onButtonClick} />
-            <Heading size="sm" mt={3}>
-                {formatMessage({ id: "actionSelector.createFeatureHeading" })}
-            </Heading>
+            <TitledSection
+                title={createFeatureHeading}
+                sectionHeadingProps={{ size: "sm", mt: 3 }}
+            />
             <Box flex={1} overflowY="auto" mb={2}>
                 <TemplateSelector
                     templates={templates}

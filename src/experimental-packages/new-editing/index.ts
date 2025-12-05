@@ -43,7 +43,17 @@ export type {
     UpdateFeatureHandler
 } from "./model/EditingHandler";
 
-export type { EditingState } from "./model/EditingState";
+export type { EditingState, EditingOperator, EditingCapabilities } from "./model/EditingState";
+
+export type {
+    EditingStep,
+    ModificationStep,
+    InitialStep,
+    DrawingStep,
+    SelectionStep,
+    CreationStep,
+    UpdateStep
+} from "./model/EditingStep";
 
 export type {
     FeatureTemplate,
@@ -57,5 +67,3 @@ export type {
     TextAreaInput,
     TextFieldInput
 } from "./model/FeatureTemplate";
-
-export type { EditingStep } from "./model/EditingStep";

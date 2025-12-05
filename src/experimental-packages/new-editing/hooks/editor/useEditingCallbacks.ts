@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { createLogger } from "@open-pioneer/core";
 import type { MapModel } from "@open-pioneer/map";
 import type { NotificationService } from "@open-pioneer/notifier";
 
@@ -31,6 +32,7 @@ export function useEditingCallbacks(
                         showNotifier("create", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
+                        LOG.error("Error creating feature", feature, error);
                         showNotifier("create", false, error);
                     }
                 } else if (editingStep.id === "update-modify") {
@@ -40,6 +42,7 @@ export function useEditingCallbacks(
                         showNotifier("update", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
+                        LOG.error("Error updating feature", feature, error);
                         showNotifier("update", false, error);
                     }
                 }
@@ -52,6 +55,7 @@ export function useEditingCallbacks(
                         showNotifier("delete", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
+                        LOG.error("Error deleting feature", feature, error);
                         showNotifier("delete", false, error);
                     } finally {
                         layer?.getSource()?.refresh();
@@ -102,6 +106,8 @@ function getTitleId(operation: Operation, success: boolean): TitleId {
             return success ? TitleId.DeletionSuccess : TitleId.DeletionFailure;
     }
 }
+
+const LOG = createLogger("new-editing:useEditingCallbacks");
 
 enum TitleId {
     CreationSuccess = "notifier.creationSuccess",
