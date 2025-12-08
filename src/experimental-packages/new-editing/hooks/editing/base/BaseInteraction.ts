@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { MapModel } from "@open-pioneer/map";
 import type { Map } from "ol";
-import { EditingInteraction } from "./EditingInteraction";
+
+import type { EditingInteraction } from "./EditingInteraction";
 
 export abstract class BaseInteraction<O, D> implements EditingInteraction {
     constructor(
-        private readonly mapModelObject: MapModel,
+        private readonly mapModelInstance: MapModel,
         private readonly options: O
     ) {}
 
@@ -29,7 +30,7 @@ export abstract class BaseInteraction<O, D> implements EditingInteraction {
     }
 
     protected get mapModel(): MapModel {
-        return this.mapModelObject;
+        return this.mapModelInstance;
     }
 
     protected abstract startInteraction(options: O): D;

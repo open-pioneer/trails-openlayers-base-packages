@@ -21,7 +21,7 @@ export class DrawingInteraction extends BaseInteraction<DrawingOptions, DrawingD
         const drawLayer = new VectorLayer({ source });
         const draw = new Draw({ source, type: geometryType, ...drawOptions });
 
-        const operator: EditingActionHandler = {
+        const handler: EditingActionHandler = {
             undo: () => draw.removeLastPoint(),
             redo: (coordinate) => draw.appendCoordinates([coordinate]),
             finishDrawing: () => draw.finishDrawing(),
@@ -29,7 +29,7 @@ export class DrawingInteraction extends BaseInteraction<DrawingOptions, DrawingD
         };
 
         const eventsKeys = [
-            draw.on("drawstart", ({ feature }) => tracker.trackCapabilities(feature, operator)),
+            draw.on("drawstart", ({ feature }) => tracker.trackCapabilities(feature, handler)),
             draw.on("drawabort", () => tracker.untrackCapabilities()),
             draw.once("drawend", ({ feature }) => completionHandler(feature, drawLayer))
         ];
@@ -37,16 +37,16 @@ export class DrawingInteraction extends BaseInteraction<DrawingOptions, DrawingD
         this.map.addLayer(drawLayer);
         this.map.addInteraction(draw);
 
-        return { draw, drawLayer, tracker, eventsKeys };
+        return { draw, drawLayer, eventsKeys, tracker };
     }
 
     protected override stopInteraction(data: DrawingData): void {
-        const { draw, drawLayer, tracker, eventsKeys } = data;
+        const { draw, drawLayer, eventsKeys, tracker } = data;
 
         this.map.removeInteraction(draw);
         this.map.removeLayer(drawLayer);
-        tracker.untrackCapabilities();
         unByKey(eventsKeys);
+        tracker.untrackCapabilities();
     }
 }
 
@@ -62,6 +62,6 @@ export type { DrawOptions };
 interface DrawingData {
     readonly draw: Draw;
     readonly drawLayer: VectorLayer;
-    readonly tracker: EditingTracker;
     readonly eventsKeys: EventsKey[];
+    readonly tracker: EditingTracker;
 }

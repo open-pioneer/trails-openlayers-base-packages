@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed, reactiveArray, untracked, type ReactiveArray } from "@conterra/reactivity-core";
+import { computed, reactiveArray } from "@conterra/reactivity-core";
 
 export class UndoManager<T> {
     addEdit(edit: T): void {
         this.undoStack.push(edit);
-        clear(this.redoStack);
+        this.redoStack.splice(0);
     }
 
     undo(): T | undefined {
@@ -25,8 +25,8 @@ export class UndoManager<T> {
     }
 
     reset(): void {
-        clear(this.undoStack);
-        clear(this.redoStack);
+        this.undoStack.splice(0);
+        this.redoStack.splice(0);
     }
 
     get canUndo(): boolean {
@@ -42,9 +42,4 @@ export class UndoManager<T> {
 
     private canUndoSignal = computed(() => this.undoStack.length >= 1);
     private canRedoSignal = computed(() => this.redoStack.length >= 1);
-}
-
-function clear(array: ReactiveArray<unknown>): void {
-    const length = untracked(() => array.length);
-    array.splice(0, length);
 }

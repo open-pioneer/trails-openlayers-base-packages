@@ -10,15 +10,9 @@ import {
 
 import { ActionSelector } from "./components/actionselector/ActionSelector";
 import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
-
 import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 
-import {
-    useEditingStep,
-    useOnActionChangeCallback,
-    useSnappingSources
-} from "./hooks/editor/editorHooks";
-
+import { useEditingStep, useOnActionChange, useSnappingSources } from "./hooks/editor/editorHooks";
 import { useEditingCallbacks } from "./hooks/editor/useEditingCallbacks";
 import { useEditing, type InteractionOptions } from "./hooks/editing/useEditing";
 
@@ -41,7 +35,7 @@ export function Editor({
     const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
 
     const mapModel = useMapModelValue({ map });
-    const onActionChange = useOnActionChangeCallback(mapModel, editableLayerIds, setEditingStep);
+    const onActionChange = useOnActionChange(mapModel, editableLayerIds, setEditingStep);
     const snappingSources = useSnappingSources(mapModel, snappableLayerIds);
 
     const editingState = useEditing({

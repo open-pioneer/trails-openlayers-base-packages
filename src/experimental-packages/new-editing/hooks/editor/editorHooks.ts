@@ -23,7 +23,7 @@ export function useEditingStep(
     return [editingStep, setEditingStep];
 }
 
-export function useOnActionChangeCallback(
+export function useOnActionChange(
     mapModel: MapModel | undefined,
     editableLayerIds: string[],
     setEditingStep: ValueSetter<EditingStep>
@@ -34,7 +34,7 @@ export function useOnActionChangeCallback(
         (action) => {
             if (action == null) {
                 setEditingStep({ id: "none" });
-            } else if (action.type === "update") {
+            } else if (action.mode === "update") {
                 setEditingStep({ id: "update-select", olLayers: editableLayers });
             } else {
                 setEditingStep({ id: "create-draw", template: action.template });
@@ -51,9 +51,9 @@ export function useSnappingSources(
     const layers = useLayers(mapModel, snappableLayerIds ?? []);
 
     return useMemo(() => {
-        const vectorLayers = layers.filter((layer): layer is VectorLayer => {
-            return layer instanceof VectorLayer;
-        });
+        const vectorLayers = layers.filter(
+            (layer): layer is VectorLayer => layer instanceof VectorLayer
+        );
         return compactMap(vectorLayers, (vectorLayer) => vectorLayer.getSource());
     }, [layers]);
 }

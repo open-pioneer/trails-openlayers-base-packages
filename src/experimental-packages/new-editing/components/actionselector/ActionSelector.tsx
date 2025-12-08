@@ -28,7 +28,7 @@ export function ActionSelector({
     const onButtonClick = useCallback(() => {
         setSelectButtonActive((active) => !active);
         setSelectedTemplate(undefined);
-        onActionChange(!selectButtonIsActive ? { type: "update" } : undefined);
+        onActionChange(!selectButtonIsActive ? { mode: "update" } : undefined);
     }, [selectButtonIsActive, onActionChange]);
 
     const onTemplateClick = useCallback(
@@ -37,7 +37,7 @@ export function ActionSelector({
             setSelectButtonActive(false);
             onActionChange(
                 selectedTemplate !== newTemplate
-                    ? { type: "create", template: newTemplate }
+                    ? { mode: "create", template: newTemplate }
                     : undefined
             );
         },

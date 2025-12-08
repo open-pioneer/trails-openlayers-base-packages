@@ -3,12 +3,12 @@
 import type { FeatureTemplate } from "./FeatureTemplate";
 
 interface CreateAction {
-    readonly type: "create";
+    readonly mode: "create";
     readonly template: FeatureTemplate;
 }
 
 interface UpdateAction {
-    readonly type: "update";
+    readonly mode: "update";
 }
 
 export type Action = CreateAction | UpdateAction;
