@@ -4,10 +4,10 @@
     "dependencies": {
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
-        "@open-pioneer/basemap-switcher": "workspace:^",
+        "@open-pioneer/basemap-switcher": "workspace:*",
         "@chakra-ui/react": "catalog:",
-        "@open-pioneer/experimental-layout-sidebar": "workspace:^",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/experimental-layout-sidebar": "workspace:*",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "ol": "catalog:",

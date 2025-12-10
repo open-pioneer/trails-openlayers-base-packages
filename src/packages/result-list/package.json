@@ -21,7 +21,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
@@ -33,9 +33,9 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
-        "test-utils": "workspace:^",
+        "test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

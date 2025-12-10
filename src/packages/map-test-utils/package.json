@@ -17,7 +17,7 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "@testing-library/react": "catalog:",
         "ol": "catalog:",

@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "classnames": "catalog:",
@@ -28,7 +28,7 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },

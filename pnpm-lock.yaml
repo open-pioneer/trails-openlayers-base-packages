@@ -240,6 +240,8 @@ overrides:
   '@ark-ui/react': 5.27.1
   react-select: 5.10.2
 
+pnpmfileChecksum: sha256-FAQ+ylJChk4moYBCl+iwvCnDgmyWSUpwlv3NBRm9xrs=
+
 patchedDependencies:
   '@ark-ui/react@*':
     hash: 6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb
@@ -438,7 +440,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -460,7 +462,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -485,7 +487,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -507,7 +509,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -516,7 +518,7 @@ importers:
         specifier: workspace:*
         version: link:../../..
       test-utils:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../testing/test-utils
     publishDirectory: dist
 
@@ -526,7 +528,7 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -545,7 +547,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -567,7 +569,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/runtime':
         specifier: 'catalog:'
@@ -577,7 +579,7 @@ importers:
         version: 10.7.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       openlayers-base-packages:
         specifier: workspace:*
@@ -596,10 +598,10 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/map-ui-components':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
@@ -624,7 +626,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -640,7 +642,7 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -665,7 +667,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -718,7 +720,7 @@ importers:
         version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -740,10 +742,10 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/map-ui-components':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -768,7 +770,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -784,7 +786,7 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -842,7 +844,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -861,7 +863,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -887,10 +889,10 @@ importers:
         version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/search':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../search
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -906,7 +908,7 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -922,7 +924,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -944,7 +946,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
@@ -972,7 +974,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1000,7 +1002,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1031,7 +1033,7 @@ importers:
         version: 17.6.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1040,7 +1042,7 @@ importers:
         specifier: workspace:*
         version: link:../../..
       test-utils:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../testing/test-utils
     publishDirectory: dist
 
@@ -1050,7 +1052,7 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1066,7 +1068,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1085,7 +1087,7 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1107,7 +1109,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1123,7 +1125,7 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1139,7 +1141,7 @@ importers:
         version: 19.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1161,7 +1163,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1186,7 +1188,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1214,7 +1216,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
@@ -1245,7 +1247,7 @@ importers:
         version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1254,7 +1256,7 @@ importers:
         specifier: workspace:*
         version: link:../../..
       test-utils:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../testing/test-utils
     publishDirectory: dist
 
@@ -1276,7 +1278,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1304,7 +1306,7 @@ importers:
         version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1323,13 +1325,13 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/basemap-switcher':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../basemap-switcher
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1354,7 +1356,7 @@ importers:
         version: 5.5.0(react@19.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
@@ -1421,13 +1423,13 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react@19.2.0)
       '@open-pioneer/basemap-switcher':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/experimental-layout-sidebar':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../experimental-packages/layout-sidebar
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1460,7 +1462,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1490,37 +1492,37 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react@19.2.0)
       '@open-pioneer/coordinate-viewer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/coordinate-viewer
       '@open-pioneer/editing':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/editing
       '@open-pioneer/http':
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/legend':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/legend
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/map-navigation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-navigation
       '@open-pioneer/map-ui-components':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/measurement':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/ogc-features
       '@open-pioneer/printing':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1529,25 +1531,25 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/result-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/scale-bar
       '@open-pioneer/scale-viewer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/scale-viewer
       '@open-pioneer/search':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/search
       '@open-pioneer/selection':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/selection
       '@open-pioneer/toc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
@@ -1571,19 +1573,19 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/basemap-switcher':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/http':
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/map-navigation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-navigation
       '@open-pioneer/ogc-features':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/ogc-features
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1592,7 +1594,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/toc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
@@ -1622,43 +1624,43 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/coordinate-search':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/coordinate-search
       '@open-pioneer/coordinate-viewer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/coordinate-viewer
       '@open-pioneer/editing':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/editing
       '@open-pioneer/geolocation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/legend':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/legend
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/map-navigation':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-navigation
       '@open-pioneer/measurement':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/ogc-features
       '@open-pioneer/overview-map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/overview-map
       '@open-pioneer/printing':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1667,31 +1669,31 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0
       '@open-pioneer/result-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/scale-bar
       '@open-pioneer/scale-setter':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/scale-setter
       '@open-pioneer/scale-viewer':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/scale-viewer
       '@open-pioneer/search':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/search
       '@open-pioneer/selection':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/selection
       '@open-pioneer/spatial-bookmarks':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/spatial-bookmarks
       '@open-pioneer/toc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
@@ -1709,10 +1711,10 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/map-ui-components':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1724,7 +1726,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/toc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
@@ -1748,7 +1750,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1766,10 +1768,10 @@ importers:
         specifier: 'catalog:'
         version: 3.29.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/printing':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1790,13 +1792,13 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.3.0(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))
       '@open-pioneer/result-list':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
@@ -1817,7 +1819,7 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
@@ -1829,7 +1831,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/search':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/search
       ol:
         specifier: 'catalog:'
@@ -1856,10 +1858,10 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.6)(react@19.2.0))(@types/react@19.2.6)(react@19.2.0)
       '@open-pioneer/map':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/map-ui-components':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
@@ -1871,7 +1873,7 @@ importers:
         specifier: 'catalog:'
         version: 4.3.0(@types/react@19.2.6)(typescript@5.9.3)
       '@open-pioneer/toc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
@@ -2527,36 +2529,42 @@ packages:
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm-musl@2.5.1':
     resolution: {integrity: sha512-6E+m/Mm1t1yhB8X412stiKFG3XykmgdIOqhjWj+VL8oHkKABfu/gjFj8DvLrYVHSBNC+/u5PeNrujiSQ1zwd1Q==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-arm64-glibc@2.5.1':
     resolution: {integrity: sha512-LrGp+f02yU3BN9A+DGuY3v3bmnFUggAITBGriZHUREfNEzZh/GO06FF5u2kx8x+GBEUYfyTGamol4j3m9ANe8w==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-arm64-musl@2.5.1':
     resolution: {integrity: sha512-cFOjABi92pMYRXS7AcQv9/M1YuKRw8SZniCDw0ssQb/noPkRzA+HBDkwmyOJYp5wXcsTrhxO0zq1U11cK9jsFg==}
     engines: {node: '>= 10.0.0'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-linux-x64-glibc@2.5.1':
     resolution: {integrity: sha512-GcESn8NZySmfwlTsIur+49yDqSny2IhPeZfXunQi48DMugKeZ7uy1FX83pO0X22sHntJ4Ub+9k34XQCX+oHt2A==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@parcel/watcher-linux-x64-musl@2.5.1':
     resolution: {integrity: sha512-n0E2EQbatQ3bXhcH2D1XIAANAcTZkQICBPVaxMeaCVBtOpBZpWJuf7LwyWPSBDITb7In8mqQgJ7gH8CILCURXg==}
     engines: {node: '>= 10.0.0'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@parcel/watcher-win32-arm64@2.5.1':
     resolution: {integrity: sha512-RFzklRvmc3PkjKjry3hLF9wD7ppR4AKcWNzH7kXR7GUe0Igb3Nz8fyPwtZCSquGrhU5HhUNDr/mKBqj7tqA2Vw==}
@@ -2726,56 +2734,67 @@ packages:
     resolution: {integrity: sha512-PsNAbcyv9CcecAUagQefwX8fQn9LQ4nZkpDboBOttmyffnInRy8R8dSg6hxxl2Re5QhHBf6FYIDhIj5v982ATQ==}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.52.5':
     resolution: {integrity: sha512-Fw4tysRutyQc/wwkmcyoqFtJhh0u31K+Q6jYjeicsGJJ7bbEq8LwPWV/w0cnzOqR2m694/Af6hpFayLJZkG2VQ==}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.52.5':
     resolution: {integrity: sha512-a+3wVnAYdQClOTlyapKmyI6BLPAFYs0JM8HRpgYZQO02rMR09ZcV9LbQB+NL6sljzG38869YqThrRnfPMCDtZg==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.52.5':
     resolution: {integrity: sha512-AvttBOMwO9Pcuuf7m9PkC1PUIKsfaAJ4AYhy944qeTJgQOqJYJ9oVl2nYgY7Rk0mkbsuOpCAYSs6wLYB2Xiw0Q==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.52.5':
     resolution: {integrity: sha512-DkDk8pmXQV2wVrF6oq5tONK6UHLz/XcEVow4JTTerdeV1uqPeHxwcg7aFsfnSm9L+OO8WJsWotKM2JJPMWrQtA==}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-gnu@4.52.5':
     resolution: {integrity: sha512-W/b9ZN/U9+hPQVvlGwjzi+Wy4xdoH2I8EjaCkMvzpI7wJUs8sWJ03Rq96jRnHkSrcHTpQe8h5Tg3ZzUPGauvAw==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.52.5':
     resolution: {integrity: sha512-sjQLr9BW7R/ZiXnQiWPkErNfLMkkWIoCz7YMn27HldKsADEKa5WYdobaa1hmN6slu9oWQbB6/jFpJ+P2IkVrmw==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.52.5':
     resolution: {integrity: sha512-hq3jU/kGyjXWTvAh2awn8oHroCbrPm8JqM7RUpKjalIRWWXE01CQOf/tUNWNHjmbMHg/hmNCwc/Pz3k1T/j/Lg==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.52.5':
     resolution: {integrity: sha512-gn8kHOrku8D4NGHMK1Y7NA7INQTRdVOntt1OCYypZPRt6skGbddska44K8iocdpxHTMMNui5oH4elPH4QOLrFQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.52.5':
     resolution: {integrity: sha512-hXGLYpdhiNElzN770+H2nlx+jRog8TyynpTVzdlc6bndktjKWyZyiCsuDAlpd+j+W+WNqfcyAWz9HxxIGfZm1Q==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.52.5':
     resolution: {integrity: sha512-arCGIcuNKjBoKAXD+y7XomR9gY6Mw7HnFBv5Rw7wQRvwYLR7gBAgV7Mb2QTyjXfTveBNFAtPt46/36vV9STLNg==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openharmony-arm64@4.52.5':
     resolution: {integrity: sha512-QoFqB6+/9Rly/RiPjaomPLmR/13cgkIGfA40LHly9zcH1S0bN2HVFYk3a1eAyHQyjs3ZJYlXvIGtcCs5tko9Cw==}
@@ -2846,24 +2865,28 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@swc/core-linux-arm64-musl@1.13.5':
     resolution: {integrity: sha512-9+ZxFN5GJag4CnYnq6apKTnnezpfJhCumyz0504/JbHLo+Ue+ZtJnf3RhyA9W9TINtLE0bC4hKpWi8ZKoETyOQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@swc/core-linux-x64-gnu@1.13.5':
     resolution: {integrity: sha512-WD530qvHrki8Ywt/PloKUjaRKgstQqNGvmZl54g06kA+hqtSE2FTG9gngXr3UJxYu/cNAjJYiBifm7+w4nbHbA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@swc/core-linux-x64-musl@1.13.5':
     resolution: {integrity: sha512-Luj8y4OFYx4DHNQTWjdIuKTq2f5k6uSXICqx+FSabnXptaOBAbJHNbHT/06JZh6NRUouaf0mYXN0mcsqvkhd7Q==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@swc/core-win32-arm64-msvc@1.13.5':
     resolution: {integrity: sha512-cZ6UpumhF9SDJvv4DA2fo9WIzlNFuKSkZpZmPG1c+4PFSEMy5DFOjBSllCvnqihCabzXzpn6ykCwBmHpy31vQw==}
@@ -3111,41 +3134,49 @@ packages:
     resolution: {integrity: sha512-7vFWHLCCNFLEQlmwKQfVy066ohLLArZl+AV/AdmrD1/pD1FlmqM+FKbtnONnIwbHtgetFUCV/SRi1q4D49aTlw==}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.7.11':
     resolution: {integrity: sha512-tYkGIx8hjWPh4zcn17jLEHU8YMmdP2obRTGkdaB3BguGHh31VCS3ywqC4QjTODjmhhNyZYkj/1Dz/+0kKvg9YA==}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.7.11':
     resolution: {integrity: sha512-6F328QIUev29vcZeRX6v6oqKxfUoGwIIAhWGD8wSysnBYFY0nivp25jdWmAb1GildbCCaQvOKEhCok7YfWkj4Q==}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.7.11':
     resolution: {integrity: sha512-NqhWmiGJGdzbZbeucPZIG9Iav4lyYLCarEnxAceguMx9qlpeEF7ENqYKOwB8Zqk7/CeuYMEcLYMaW2li6HyDzQ==}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.7.11':
     resolution: {integrity: sha512-J2RPIFKMdTrLtBdfR1cUMKl8Gcy05nlQ+bEs/6al7EdWLk9cs3tnDREHZ7mV9uGbeghpjo4i8neNZNx3PYUY9w==}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.7.11':
     resolution: {integrity: sha512-bDpGRerHvvHdhun7MmFUNDpMiYcJSqWckwAVVRTJf8F+RyqYJOp/mx04PDc7DhpNPeWdnTMu91oZRMV+gGaVcQ==}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.7.11':
     resolution: {integrity: sha512-G9U7bVmylzRLma3cK39RBm3guoD1HOvY4o0NS4JNm37AD0lS7/xyMt7kn0JejYyc0Im8J+rH69/dXGM9DAJcSQ==}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.7.11':
     resolution: {integrity: sha512-7qL20SBKomekSunm7M9Fe5L93bFbn+FbHiGJbfTlp0RKhPVoJDP73vOxf1QrmJHyDPECsGWPFnKa/f8fO2FsHw==}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.7.11':
     resolution: {integrity: sha512-jisvIva8MidjI+B1lFRZZMfCPaCISePgTyR60wNT1MeQvIh5Ksa0G3gvI+Iqyj3jqYbvOHByenpa5eDGcSdoSg==}

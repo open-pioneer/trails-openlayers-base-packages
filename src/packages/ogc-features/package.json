@@ -23,8 +23,8 @@
         "uuid": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/search": "workspace:^",
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/search": "workspace:*",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
