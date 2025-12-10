@@ -15,6 +15,9 @@ export default defineBuildConfig({
                 mapRegistry: "map.MapRegistry",
                 layerFactory: "map.LayerFactory"
             }
+        },
+        WorkflowStateManager: {
+            provides: "app.WorkflowStateManager"
         }
     },
     ui: {
@@ -23,7 +26,8 @@ export default defineBuildConfig({
             "ol-app.AppModel",
             "notifier.NotificationService",
             "editing.EditingService",
-            "runtime.ApplicationContext"
+            "runtime.ApplicationContext",
+            "app.WorkflowStateManager"
         ]
     }
 });
