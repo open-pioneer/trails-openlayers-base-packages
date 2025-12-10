@@ -3,5 +3,5 @@
 export type WorkflowState = Record<string, unknown>;
 
 export const INITIAL_WORKFLOW_STATE: WorkflowState = {
-    hello: "dev meetup"
+    hello: "world"
 };
