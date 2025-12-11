@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex } from "@chakra-ui/react";
 
-import { TitledSection } from "@open-pioneer/react-utils";
+import { TitledSection, useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 
-import { useCallback, useMemo, useState, type ReactElement } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 
 import { ActionBar } from "./ActionBar";
@@ -25,24 +25,17 @@ export function ActionSelector({
     const [selectButtonIsActive, setSelectButtonActive] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
 
-    const onButtonClick = useCallback(() => {
+    const onButtonClick = useEvent(() => {
         setSelectButtonActive((active) => !active);
         setSelectedTemplate(undefined);
         onActionChange(!selectButtonIsActive ? { mode: "update" } : undefined);
-    }, [selectButtonIsActive, onActionChange]);
+    });
 
-    const onTemplateClick = useCallback(
-        (newTemplate: FeatureTemplate) => {
-            setSelectedTemplate((template) => (template !== newTemplate ? newTemplate : undefined));
-            setSelectButtonActive(false);
-            onActionChange(
-                selectedTemplate !== newTemplate
-                    ? { mode: "create", template: newTemplate }
-                    : undefined
-            );
-        },
-        [selectedTemplate, onActionChange]
-    );
+    const onTemplateClick = useEvent((template: FeatureTemplate) => {
+        setSelectedTemplate((current) => (current !== template ? template : undefined));
+        setSelectButtonActive(false);
+        onActionChange(selectedTemplate !== template ? { mode: "create", template } : undefined);
+    });
 
     const { formatMessage } = useIntl();
 

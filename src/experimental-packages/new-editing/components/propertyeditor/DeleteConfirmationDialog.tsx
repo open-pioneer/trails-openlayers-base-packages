@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Button, Dialog } from "@chakra-ui/react";
-
+import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
+import { useMemo, useRef, useState, type ReactElement } from "react";
 
 export function DeleteConfirmationDialog({
     isOpen,
@@ -14,14 +14,14 @@ export function DeleteConfirmationDialog({
     const cancelButtonRef = useRef<HTMLButtonElement>(null);
     const { formatMessage } = useIntl();
 
-    const onDeleteClick = useCallback(async () => {
+    const onDeleteClick = useEvent(async () => {
         try {
             setDeleting(true);
             await onDelete();
         } finally {
             setDeleting(false);
         }
-    }, [onDelete]);
+    });
 
     const { title, message, deleteButtonTitle, cancelButtonTitle } = useMemo(
         () => ({

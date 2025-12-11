@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, VStack, useDisclosure } from "@chakra-ui/react";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { useCallback, type ReactElement, type ReactNode } from "react";
+import { useEvent } from "@open-pioneer/react-utils";
+import type { ReactElement, ReactNode } from "react";
 
 import { ButtonRow } from "./ButtonRow";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
@@ -18,15 +19,15 @@ export function PropertyEditor({
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
     const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 
-    const onSaveClick = useCallback(async () => {
+    const onSaveClick = useEvent(async () => {
         context.feature.setProperties(context.properties);
         await onSave();
-    }, [context.feature, context.properties, onSave]);
+    });
 
-    const onDeleteClick = useCallback(async () => {
+    const onDeleteClick = useEvent(async () => {
         await onDelete();
         closeDialog();
-    }, [closeDialog, onDelete]);
+    });
 
     return (
         <>

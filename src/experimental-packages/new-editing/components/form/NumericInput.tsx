@@ -1,7 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { NumberInput } from "@chakra-ui/react";
-import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
+import { NumberInput, type NumberInputValueChangeDetails } from "@chakra-ui/react";
+import { useEvent } from "@open-pioneer/react-utils";
+import { useEffect, useRef, useState, type ReactElement } from "react";
+
+// TODO: Rewrite this (Chakra 2 workarounds likely not needed anymore).
 
 // This component allows its value to be specified as a number. The value is still stored as a
 // string internally to allow non-numeric characters (such as '-', '.', or 'e') to be entered.
@@ -20,19 +23,16 @@ export function NumericInput({
     const [stringValue, setStringValue] = useState(() => toString(value, precision));
     const setNumericValue = useNumericState(value, precision, setStringValue);
 
-    const onChange = useCallback(
-        (newStringValue: string, newNumericValue: number) => {
-            setStringValue(newStringValue);
-            if (!isNaN(newNumericValue)) {
-                setNumericValue(newNumericValue);
-                onNumberChange?.(newNumericValue);
-            } else if (newStringValue === "") {
-                setNumericValue(undefined);
-                onNumberChange?.(undefined);
-            }
-        },
-        [setNumericValue, onNumberChange]
-    );
+    const onChange = useEvent(({ value, valueAsNumber }: NumberInputValueChangeDetails) => {
+        setStringValue(value);
+        if (!isNaN(valueAsNumber)) {
+            setNumericValue(valueAsNumber);
+            onNumberChange?.(valueAsNumber);
+        } else if (value === "") {
+            setNumericValue(undefined);
+            onNumberChange?.(undefined);
+        }
+    });
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -44,7 +44,7 @@ export function NumericInput({
             step={step}
             formatOptions={{ maximumFractionDigits: precision }}
             value={stringValue ?? ""}
-            onValueChange={(details) => onChange(details.value, details.valueAsNumber)}
+            onValueChange={onChange}
         >
             <NumberInput.Input ref={inputRef} placeholder={placeholder} />
             {showSteppers && (

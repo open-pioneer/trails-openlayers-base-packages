@@ -1,10 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Flex, Button, Spacer } from "@chakra-ui/react";
+
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
+
 import { LuTrash2 } from "react-icons/lu";
-import { useCallback, useMemo, useState, type ReactElement } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 
 export function ButtonRow({
     canSave,
@@ -15,14 +18,14 @@ export function ButtonRow({
 }: ButtonRowProps): ReactElement {
     const [isSaving, setSaving] = useState(false);
 
-    const onSaveClick = useCallback(async () => {
+    const onSaveClick = useEvent(async () => {
         try {
             setSaving(true);
             await onSave();
         } finally {
             setSaving(false);
         }
-    }, [onSave]);
+    });
 
     const { formatMessage } = useIntl();
 

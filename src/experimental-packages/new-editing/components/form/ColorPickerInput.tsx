@@ -8,8 +8,9 @@ import {
     type ColorPickerValueChangeDetails
 } from "@chakra-ui/react";
 
+import { useEvent } from "@open-pioneer/react-utils";
 import { LuCheck } from "react-icons/lu";
-import { useCallback, useMemo, type ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 
 export function ColorPickerInput({
     hexColor,
@@ -18,12 +19,9 @@ export function ColorPickerInput({
 }: ColorPickerInputProps): ReactElement {
     const defaultValue = useMemo(() => parseColor(hexColor ?? "black"), [hexColor]);
 
-    const onValueChangeEnd = useCallback(
-        (details: ColorPickerValueChangeDetails) => {
-            onChange(details.value.toString("hexa"));
-        },
-        [onChange]
-    );
+    const onValueChangeEnd = useEvent((details: ColorPickerValueChangeDetails) => {
+        onChange(details.value.toString("hexa"));
+    });
 
     return (
         <ColorPicker.Root defaultValue={defaultValue} onValueChangeEnd={onValueChangeEnd}>

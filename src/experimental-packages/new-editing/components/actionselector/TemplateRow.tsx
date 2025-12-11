@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HStack, Table, Text } from "@chakra-ui/react";
+import { useEvent } from "@open-pioneer/react-utils";
+import type { ReactElement, ReactNode } from "react";
+
 import {
     PiCircleBold,
     PiDotOutlineBold,
@@ -8,13 +11,11 @@ import {
     PiLineSegmentsFill,
     PiPolygonFill
 } from "react-icons/pi";
-import { useCallback, type ReactElement, type ReactNode } from "react";
+
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
 
 export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps): ReactElement {
-    const onRowClick = useCallback(() => {
-        onClick(template);
-    }, [template, onClick]);
+    const onRowClick = useEvent(() => onClick(template));
 
     return (
         <Table.Row

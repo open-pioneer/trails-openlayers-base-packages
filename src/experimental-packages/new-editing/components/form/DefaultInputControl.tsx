@@ -10,7 +10,8 @@ import {
     NativeSelectIndicator
 } from "@chakra-ui/react";
 
-import { ChangeEvent, useCallback, type ReactElement } from "react";
+import { useEvent } from "@open-pioneer/react-utils";
+import type { ChangeEvent, ReactElement } from "react";
 
 import { NumericInput } from "./NumericInput";
 import { ColorPickerInput } from "./ColorPickerInput";
@@ -22,34 +23,25 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
     const { fieldName } = fieldInput;
     const value = properties.get(fieldName);
 
-    const onInputChange = useCallback(
-        (event: ChangeEvent<InputElement>) => {
-            if (event.target.value !== "") {
-                if (fieldInput.inputType === "select" && fieldInput.valueType === "number") {
-                    properties.set(fieldName, parseFloat(event.target.value));
-                } else {
-                    properties.set(fieldName, event.target.value);
-                }
+    const onInputChange = useEvent((event: ChangeEvent<InputElement>) => {
+        if (event.target.value !== "") {
+            if (fieldInput.inputType === "select" && fieldInput.valueType === "number") {
+                properties.set(fieldName, parseFloat(event.target.value));
             } else {
-                properties.set(fieldName, undefined);
+                properties.set(fieldName, event.target.value);
             }
-        },
-        [fieldInput, fieldName, properties]
-    );
+        } else {
+            properties.set(fieldName, undefined);
+        }
+    });
 
-    const onChange = useCallback(
-        (value: unknown) => {
-            properties.set(fieldName, value);
-        },
-        [fieldName, properties]
-    );
+    const onChange = useEvent((value: unknown) => {
+        properties.set(fieldName, value);
+    });
 
-    const onCheckBoxChange = useCallback(
-        (details: { checked: boolean | string }) => {
-            properties.set(fieldName, details.checked === true || details.checked === "true");
-        },
-        [fieldName, properties]
-    );
+    const onCheckBoxChange = useEvent((details: { checked: boolean | string }) => {
+        properties.set(fieldName, details.checked === true || details.checked === "true");
+    });
 
     switch (fieldInput.inputType) {
         case "text-field":
