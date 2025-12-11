@@ -20,7 +20,8 @@ export function PropertyEditor({
     const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 
     const onSaveClick = useEvent(async () => {
-        context.feature.setProperties(context.properties);
+        const properties = context.propertyObject();
+        context.feature.setProperties(properties);
         await onSave();
     });
 

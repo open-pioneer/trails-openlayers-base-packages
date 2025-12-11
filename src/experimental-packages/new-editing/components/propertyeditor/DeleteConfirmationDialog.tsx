@@ -3,7 +3,7 @@
 import { Button, Dialog } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useMemo, useRef, useState, type ReactElement } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
 
 export function DeleteConfirmationDialog({
     isOpen,
@@ -12,6 +12,7 @@ export function DeleteConfirmationDialog({
 }: DeleteConfirmationDialogProps): ReactElement {
     const [isDeleting, setDeleting] = useState(false);
     const cancelButtonRef = useRef<HTMLButtonElement>(null);
+    const initialFocusEl = useCallback(() => cancelButtonRef.current, []);
     const { formatMessage } = useIntl();
 
     const onDeleteClick = useEvent(async () => {
@@ -34,11 +35,7 @@ export function DeleteConfirmationDialog({
     );
 
     return (
-        <Dialog.Root
-            open={isOpen}
-            initialFocusEl={() => cancelButtonRef.current}
-            role="alertdialog"
-        >
+        <Dialog.Root open={isOpen} initialFocusEl={initialFocusEl} role="alertdialog">
             <Dialog.Backdrop />
             <Dialog.Positioner>
                 <Dialog.Content>
@@ -49,6 +46,7 @@ export function DeleteConfirmationDialog({
                     <Dialog.Footer>
                         <Button
                             colorPalette="red"
+                            _hover={{ bg: "red.800" }}
                             loading={isDeleting}
                             loadingText={deleteButtonTitle}
                             onClick={onDeleteClick}

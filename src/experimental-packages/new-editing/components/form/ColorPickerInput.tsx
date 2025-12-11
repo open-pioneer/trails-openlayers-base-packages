@@ -19,12 +19,12 @@ export function ColorPickerInput({
 }: ColorPickerInputProps): ReactElement {
     const defaultValue = useMemo(() => parseColor(hexColor ?? "black"), [hexColor]);
 
-    const onValueChangeEnd = useEvent((details: ColorPickerValueChangeDetails) => {
+    const onValueChange = useEvent((details: ColorPickerValueChangeDetails) => {
         onChange(details.value.toString("hexa"));
     });
 
     return (
-        <ColorPicker.Root defaultValue={defaultValue} onValueChangeEnd={onValueChangeEnd}>
+        <ColorPicker.Root defaultValue={defaultValue} onValueChange={onValueChange}>
             <ColorPicker.Control>
                 <ColorPicker.Input />
                 <ColorPicker.Trigger />

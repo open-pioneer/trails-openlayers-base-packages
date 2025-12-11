@@ -14,6 +14,11 @@ export class PropertyFormContext {
         this.propertiesMap = reactiveMap(Object.entries(properties));
     }
 
+    propertyObject(): Record<string, unknown> {
+        const entries = this.properties.entries();
+        return Object.fromEntries(entries);
+    }
+
     get feature(): Feature {
         return this.editingStep.feature;
     }
