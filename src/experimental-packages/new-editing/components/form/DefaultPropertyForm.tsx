@@ -28,7 +28,7 @@ export function DefaultPropertyForm({
 }
 
 function useFieldInputs(provider: FieldInputsProvider | undefined): FieldInput[] {
-    const { feature, mode, template, layer } = usePropertyFormContext();
+    const { feature, mode, template, olLayer } = usePropertyFormContext();
 
     return useMemo(() => {
         if (mode === "create") {
@@ -36,10 +36,10 @@ function useFieldInputs(provider: FieldInputsProvider | undefined): FieldInput[]
                 template && provider?.getFieldInputsForNewFeature?.(feature, template);
             return fieldInputs ?? template?.fieldInputs ?? [];
         } else {
-            const fieldInputs = provider?.getFieldInputsForExistingFeature?.(feature, layer);
+            const fieldInputs = provider?.getFieldInputsForExistingFeature?.(feature, olLayer);
             return fieldInputs ?? [];
         }
-    }, [feature, mode, template, layer, provider]);
+    }, [feature, mode, template, olLayer, provider]);
 }
 
 function useUpdateValidity(fieldInputs: FieldInput[]): void {
@@ -67,6 +67,6 @@ export interface FieldInputsProvider {
 
     readonly getFieldInputsForExistingFeature?: (
         feature: Feature,
-        layer: Layer | undefined
+        olLayer: Layer | undefined
     ) => FieldInput[] | undefined;
 }

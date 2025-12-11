@@ -14,15 +14,15 @@ export class InMemoryEditingHandler implements EditingHandler {
         store.addFeature(feature);
     }
 
-    async updateFeature(feature: Feature, layer: Layer | undefined): Promise<void> {
-        const id = layer?.get("id");
+    async updateFeature(feature: Feature, olLayer: Layer | undefined): Promise<void> {
+        const id = olLayer?.get("id");
         const store = InMemoryStore.get(id);
         await this.addArtificialDelay();
         store.updateFeature(feature);
     }
 
-    async deleteFeature(feature: Feature, layer: Layer | undefined): Promise<void> {
-        const id = layer?.get("id");
+    async deleteFeature(feature: Feature, olLayer: Layer | undefined): Promise<void> {
+        const id = olLayer?.get("id");
         const store = InMemoryStore.get(id);
         await this.addArtificialDelay();
         store.deleteFeature(feature);

@@ -36,9 +36,9 @@ export function useEditingCallbacks(
                         showNotifier("create", false, error);
                     }
                 } else if (editingStep.id === "update-modify") {
-                    const { feature, olLayer: layer } = editingStep;
+                    const { feature, olLayer } = editingStep;
                     try {
-                        await editingHandler.updateFeature(feature, layer, projection);
+                        await editingHandler.updateFeature(feature, olLayer, projection);
                         showNotifier("update", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
@@ -49,16 +49,16 @@ export function useEditingCallbacks(
             },
             async onDelete() {
                 if (editingStep.id === "update-modify") {
-                    const { feature, olLayer: layer } = editingStep;
+                    const { feature, olLayer } = editingStep;
                     try {
-                        await editingHandler.deleteFeature(feature, layer, projection);
+                        await editingHandler.deleteFeature(feature, olLayer, projection);
                         showNotifier("delete", true);
                         setEditingStep({ id: "none" });
                     } catch (error) {
                         LOG.error("Error deleting feature", feature, error);
                         showNotifier("delete", false, error);
                     } finally {
-                        layer?.getSource()?.refresh();
+                        olLayer?.getSource()?.refresh();
                     }
                 }
             },

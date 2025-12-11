@@ -38,7 +38,7 @@ export class PropertyFormContext {
         return this.editingStep.id === "create-modify" ? this.editingStep.template : undefined;
     }
 
-    get layer(): Layer | undefined {
+    get olLayer(): Layer | undefined {
         return this.editingStep.id === "update-modify" ? this.editingStep.olLayer : undefined;
     }
 

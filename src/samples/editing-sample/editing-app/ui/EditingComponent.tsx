@@ -59,8 +59,8 @@ function useFeatureTemplates(): FeatureTemplate[] {
 function useFieldInputsProvider(templates: FeatureTemplate[]): FieldInputsProvider {
     return useMemo(
         () => ({
-            getFieldInputsForExistingFeature(_, layer) {
-                const layerId = layer?.get("id");
+            getFieldInputsForExistingFeature(_, olLayer) {
+                const layerId = olLayer?.get("id");
                 if (layerId != null) {
                     return templates.find(({ id }) => id === layerId)?.fieldInputs;
                 } else {
