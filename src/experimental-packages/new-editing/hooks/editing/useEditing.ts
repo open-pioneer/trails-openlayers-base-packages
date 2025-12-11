@@ -7,7 +7,6 @@ import type { Vector as VectorSource } from "ol/source";
 import { EditingController, type InteractionOptions } from "./controller/EditingController";
 import type { EditingStep } from "../../model/EditingStep";
 import type { EditingState } from "../../model/EditingState";
-import type { ValueSetter } from "../../types/types";
 
 export function useEditing({
     map,
@@ -75,7 +74,7 @@ function useEditingController(mapModel: MapModel): EditingController {
 
 export interface EditingOptions extends MapModelProps, InteractionOptions {
     readonly editingStep: EditingStep;
-    readonly setEditingStep: ValueSetter<EditingStep>;
+    readonly setEditingStep: (newEditingStep: EditingStep) => void;
     readonly snappingSources?: VectorSource[];
 }
 

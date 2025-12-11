@@ -9,7 +9,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { Action } from "../../model/Action";
 import type { EditingStep } from "../../model/EditingStep";
-import type { StatePair, ValueSetter } from "../../types/types";
 
 export function useEditingStep(
     onEditingStepChange: ((newStep: EditingStep) => void) | undefined
@@ -26,7 +25,7 @@ export function useEditingStep(
 export function useOnActionChange(
     mapModel: MapModel | undefined,
     editableLayerIds: string[],
-    setEditingStep: ValueSetter<EditingStep>
+    setEditingStep: (newEditingStep: EditingStep) => void
 ): (newAction: Action | undefined) => void {
     const editableLayers = useLayers(mapModel, editableLayerIds);
 
@@ -77,3 +76,5 @@ function compactMap<T, U>(array: T[], mapper: (element: T) => U | null): U[] {
         return value != null ? [value] : [];
     });
 }
+
+type StatePair<S> = [S, (newState: S) => void];

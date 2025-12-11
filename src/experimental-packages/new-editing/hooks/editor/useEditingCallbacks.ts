@@ -11,13 +11,12 @@ import { useCallback, useMemo } from "react";
 import type { PropertyEditorCallbacks } from "../../components/propertyeditor/PropertyEditor";
 import type { EditingHandler } from "../../model/EditingHandler";
 import type { EditingStep } from "../../model/EditingStep";
-import type { ValueSetter } from "../../types/types";
 
 export function useEditingCallbacks(
     mapModel: MapModel | undefined,
     editingStep: EditingStep,
     editingHandler: EditingHandler,
-    setEditingStep: ValueSetter<EditingStep>
+    setEditingStep: (newEditingStep: EditingStep) => void
 ): PropertyEditorCallbacks {
     const projection = useReactiveSnapshot(() => mapModel?.projection, [mapModel]);
     const showNotifier = useShowNotifier();
