@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Button } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FaMousePointer } from "react-icons/fa";
+import { LuMousePointerClick } from "react-icons/lu";
 import type { ReactElement } from "react";
 
 export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactElement {
@@ -17,7 +17,7 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
             _active={{ bg: "gray.500" }}
             onClick={onClick}
         >
-            <FaMousePointer />
+            <LuMousePointerClick />
             {formatMessage({ id: "actionSelector.selectButtonTitle" })}
         </Button>
     );

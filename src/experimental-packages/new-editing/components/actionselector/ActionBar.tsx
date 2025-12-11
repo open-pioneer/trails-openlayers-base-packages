@@ -7,9 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 
 import { useMemo, type ReactElement } from "react";
-
-import { GoCheckCircle, GoXCircle } from "react-icons/go";
-import { LuUndo, LuRedo } from "react-icons/lu";
+import { LuCheck, LuX, LuUndo, LuRedo } from "react-icons/lu";
 
 import type { EditingState } from "../../model/EditingState";
 
@@ -54,7 +52,7 @@ export function ActionBar({ editingState }: ActionBarProps): ReactElement {
                     disabled={!capabilities.canFinishDrawing}
                     onClick={operator.finishDrawing}
                 >
-                    <GoCheckCircle size={25} />
+                    <LuCheck size={25} />
                 </IconButton>
             </Tooltip>
 
@@ -64,7 +62,7 @@ export function ActionBar({ editingState }: ActionBarProps): ReactElement {
                     disabled={!capabilities.canAbortDrawing}
                     onClick={operator.abortDrawing}
                 >
-                    <GoXCircle size={25} />
+                    <LuX size={25} />
                 </IconButton>
             </Tooltip>
 

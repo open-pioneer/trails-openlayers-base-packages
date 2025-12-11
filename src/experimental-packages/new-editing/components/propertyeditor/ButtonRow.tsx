@@ -3,7 +3,7 @@
 import { Flex, Button, Spacer } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
-import { PiTrash } from "react-icons/pi";
+import { LuTrash2 } from "react-icons/lu";
 import { useCallback, useMemo, useState, type ReactElement } from "react";
 
 export function ButtonRow({
@@ -47,7 +47,7 @@ export function ButtonRow({
                         disabled={isSaving}
                         onClick={onDelete}
                     >
-                        <PiTrash />
+                        <LuTrash2 strokeWidth={1.5} />
                     </Button>
                 </Tooltip>
             )}
