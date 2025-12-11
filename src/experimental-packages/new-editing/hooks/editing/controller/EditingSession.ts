@@ -36,7 +36,6 @@ export class EditingSession implements EditingTracker, EditingState {
             this.watchHandle = watchValue(
                 () => numberOfVertices.value,
                 (numberOfVertices) => {
-                    console.log("#vertices =", numberOfVertices);
                     this.canFinishDrawingSignal.value = canBeFinished(geometry, numberOfVertices);
                     this.canAbortDrawingSignal.value = canBeAborted(geometry, numberOfVertices);
 

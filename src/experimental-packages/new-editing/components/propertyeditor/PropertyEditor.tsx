@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, VStack, useDisclosure } from "@chakra-ui/react";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useCallback, type ReactElement, type ReactNode } from "react";
 
 import { ButtonRow } from "./ButtonRow";
@@ -13,13 +14,14 @@ export function PropertyEditor({
     onDelete,
     onCancel
 }: PropertyEditorProps): ReactElement {
-    const { mode, isValid, feature, properties } = usePropertyFormContext();
+    const context = usePropertyFormContext();
+    const canSave = useReactiveSnapshot(() => context.isValid, [context]);
     const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 
     const onSaveClick = useCallback(async () => {
-        feature.setProperties(properties);
+        context.feature.setProperties(context.properties);
         await onSave();
-    }, [feature, properties, onSave]);
+    }, [context.feature, context.properties, onSave]);
 
     const onDeleteClick = useCallback(async () => {
         await onDelete();
@@ -33,8 +35,8 @@ export function PropertyEditor({
                     {children}
                 </Box>
                 <ButtonRow
-                    canSave={isValid}
-                    showDeleteButton={mode === "update"}
+                    canSave={canSave}
+                    showDeleteButton={context.mode === "update"}
                     onSave={onSaveClick}
                     onDelete={openDialog}
                     onCancel={onCancel}

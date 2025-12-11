@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { VStack } from "@chakra-ui/react";
+import { effect } from "@conterra/reactivity-core";
+
 import type { Feature } from "ol";
 import type { Layer } from "ol/layer";
+
 import { useEffect, useMemo, type ReactElement } from "react";
 
 import { DefaultInputControl } from "./DefaultInputControl";
@@ -29,8 +32,9 @@ function useFieldInputs(provider: FieldInputsProvider | undefined): FieldInput[]
 
     return useMemo(() => {
         if (mode === "create") {
-            const fieldInputs = provider?.getFieldInputsForNewFeature?.(feature, template);
-            return fieldInputs ?? template.fieldInputs ?? [];
+            const fieldInputs =
+                template && provider?.getFieldInputsForNewFeature?.(feature, template);
+            return fieldInputs ?? template?.fieldInputs ?? [];
         } else {
             const fieldInputs = provider?.getFieldInputsForExistingFeature?.(feature, layer);
             return fieldInputs ?? [];
@@ -39,14 +43,16 @@ function useFieldInputs(provider: FieldInputsProvider | undefined): FieldInput[]
 }
 
 function useUpdateValidity(fieldInputs: FieldInput[]): void {
-    const { properties, setValid } = usePropertyFormContext();
+    const context = usePropertyFormContext();
 
     useEffect(() => {
-        const isValid = fieldInputs.every(({ required, fieldName }) => {
-            return !required || properties[fieldName] != null;
+        const handle = effect(() => {
+            context.isValid = fieldInputs.every(({ required, fieldName }) => {
+                return !required || context.properties.get(fieldName) != null;
+            });
         });
-        setValid(isValid);
-    }, [fieldInputs, properties, setValid]);
+        return () => handle.destroy();
+    }, [context, fieldInputs]);
 }
 
 export interface DefaultPropertyFormProps {

@@ -14,41 +14,41 @@ import { ChangeEvent, useCallback, type ReactElement } from "react";
 
 import { NumericInput } from "./NumericInput";
 import { ColorPickerInput } from "./ColorPickerInput";
-import { useProperty, usePropertyFormContext } from "../../context/usePropertyFormContext";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { FieldInput } from "../../model/FeatureTemplate";
 
 export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): ReactElement {
-    const { setProperty } = usePropertyFormContext();
+    const { properties } = usePropertyFormContext();
     const { fieldName } = fieldInput;
-    const value = useProperty(fieldName);
+    const value = properties.get(fieldName);
 
     const onInputChange = useCallback(
         (event: ChangeEvent<InputElement>) => {
             if (event.target.value !== "") {
                 if (fieldInput.inputType === "select" && fieldInput.valueType === "number") {
-                    setProperty(fieldName, parseFloat(event.target.value));
+                    properties.set(fieldName, parseFloat(event.target.value));
                 } else {
-                    setProperty(fieldName, event.target.value);
+                    properties.set(fieldName, event.target.value);
                 }
             } else {
-                setProperty(fieldName, undefined);
+                properties.set(fieldName, undefined);
             }
         },
-        [fieldInput, fieldName, setProperty]
+        [fieldInput, fieldName, properties]
     );
 
     const onChange = useCallback(
         (value: unknown) => {
-            setProperty(fieldName, value);
+            properties.set(fieldName, value);
         },
-        [fieldName, setProperty]
+        [fieldName, properties]
     );
 
     const onCheckBoxChange = useCallback(
         (details: { checked: boolean | string }) => {
-            setProperty(fieldName, details.checked === true || details.checked === "true");
+            properties.set(fieldName, details.checked === true || details.checked === "true");
         },
-        [fieldName, setProperty]
+        [fieldName, properties]
     );
 
     switch (fieldInput.inputType) {
