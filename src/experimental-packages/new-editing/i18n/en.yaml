@@ -3,14 +3,14 @@ messages:
     editFeatureHeading: Edit Feature
     createFeatureHeading: Create Feature
     selectButtonTitle: Select
-    finishButtonAriaLabel: Finish drawing
-    abortButtonAriaLabel: Abort drawing
-    undoButtonAriaLabel: Undo
-    redoButtonAriaLabel: Redo
+    finishButtonTooltip: Finish drawing
+    abortButtonTooltip: Abort drawing
+    undoButtonTooltip: Undo
+    redoButtonTooltip: Redo
   propertyEditor:
     saveButtonTitle: Save
     cancelButtonTitle: Cancel
-    deleteButtonAriaLabel: Delete
+    deleteButtonTooltip: Delete Feature
   deleteConfirmationDialog:
     title: Delete Feature
     message: Are you sure you want to delete this feature?

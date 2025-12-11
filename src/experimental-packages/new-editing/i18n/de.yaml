@@ -3,14 +3,14 @@ messages:
     editFeatureHeading: Geoobjekt bearbeiten
     createFeatureHeading: Geoobjekt erstellen
     selectButtonTitle: Auswählen
-    finishButtonAriaLabel: Zeichnen beenden
-    abortButtonAriaLabel: Zeichnen abbrechen
-    undoButtonAriaLabel: Rückgängig machen
-    redoButtonAriaLabel: Wiederholen
+    finishButtonTooltip: Zeichnen beenden
+    abortButtonTooltip: Zeichnen abbrechen
+    undoButtonTooltip: Rückgängig machen
+    redoButtonTooltip: Wiederholen
   propertyEditor:
     saveButtonTitle: Speichern
     cancelButtonTitle: Abbrechen
-    deleteButtonAriaLabel: Löschen
+    deleteButtonTooltip: Geoobjekt löschen
   deleteConfirmationDialog:
     title: Geoobjekt löschen
     message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?

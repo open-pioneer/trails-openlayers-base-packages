@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HStack, IconButton } from "@chakra-ui/react";
 
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 
 import { useMemo, type ReactElement } from "react";
+
 import { GoCheckCircle, GoXCircle } from "react-icons/go";
 import { LuUndo, LuRedo } from "react-icons/lu";
 
@@ -34,46 +36,57 @@ export function ActionBar({ editingState }: ActionBarProps): ReactElement {
 
     const { formatMessage } = useIntl();
 
-    const ariaLabels = useMemo(
+    const tooltips = useMemo(
         () => ({
-            finishButton: formatMessage({ id: "actionSelector.finishButtonAriaLabel" }),
-            abortButton: formatMessage({ id: "actionSelector.abortButtonAriaLabel" }),
-            undoButton: formatMessage({ id: "actionSelector.undoButtonAriaLabel" }),
-            redoButton: formatMessage({ id: "actionSelector.redoButtonAriaLabel" })
+            finishButton: formatMessage({ id: "actionSelector.finishButtonTooltip" }),
+            abortButton: formatMessage({ id: "actionSelector.abortButtonTooltip" }),
+            undoButton: formatMessage({ id: "actionSelector.undoButtonTooltip" }),
+            redoButton: formatMessage({ id: "actionSelector.redoButtonTooltip" })
         }),
         [formatMessage]
     );
 
     return (
         <HStack justify="right" gap={3}>
-            <IconButton
-                aria-label={ariaLabels.finishButton}
-                disabled={!capabilities.canFinishDrawing}
-                onClick={operator.finishDrawing}
-            >
-                <GoCheckCircle size={25} />
-            </IconButton>
-            <IconButton
-                aria-label={ariaLabels.abortButton}
-                disabled={!capabilities.canAbortDrawing}
-                onClick={operator.abortDrawing}
-            >
-                <GoXCircle size={25} />
-            </IconButton>
-            <IconButton
-                aria-label={ariaLabels.undoButton}
-                disabled={!capabilities.canUndo}
-                onClick={operator.undo}
-            >
-                <LuUndo size={25} />
-            </IconButton>
-            <IconButton
-                aria-label={ariaLabels.redoButton}
-                disabled={!capabilities.canRedo}
-                onClick={operator.redo}
-            >
-                <LuRedo size={25} />
-            </IconButton>
+            <Tooltip content={tooltips.finishButton}>
+                <IconButton
+                    aria-label={tooltips.finishButton}
+                    disabled={!capabilities.canFinishDrawing}
+                    onClick={operator.finishDrawing}
+                >
+                    <GoCheckCircle size={25} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip content={tooltips.abortButton}>
+                <IconButton
+                    aria-label={tooltips.abortButton}
+                    disabled={!capabilities.canAbortDrawing}
+                    onClick={operator.abortDrawing}
+                >
+                    <GoXCircle size={25} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip content={tooltips.undoButton}>
+                <IconButton
+                    aria-label={tooltips.undoButton}
+                    disabled={!capabilities.canUndo}
+                    onClick={operator.undo}
+                >
+                    <LuUndo size={25} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip content={tooltips.redoButton}>
+                <IconButton
+                    aria-label={tooltips.redoButton}
+                    disabled={!capabilities.canRedo}
+                    onClick={operator.redo}
+                >
+                    <LuRedo size={25} />
+                </IconButton>
+            </Tooltip>
         </HStack>
     );
 }

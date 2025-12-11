@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Flex, Button, Spacer } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
 import { PiTrash } from "react-icons/pi";
 import { useCallback, useMemo, useState, type ReactElement } from "react";
@@ -25,11 +26,11 @@ export function ButtonRow({
 
     const { formatMessage } = useIntl();
 
-    const { saveButtonTitle, cancelButtonTitle, deleteButtonAriaLabel } = useMemo(
+    const { saveButtonTitle, cancelButtonTitle, deleteButtonTooltip } = useMemo(
         () => ({
             saveButtonTitle: formatMessage({ id: "propertyEditor.saveButtonTitle" }),
             cancelButtonTitle: formatMessage({ id: "propertyEditor.cancelButtonTitle" }),
-            deleteButtonAriaLabel: formatMessage({ id: "propertyEditor.deleteButtonAriaLabel" })
+            deleteButtonTooltip: formatMessage({ id: "propertyEditor.deleteButtonTooltip" })
         }),
         [formatMessage]
     );
@@ -37,16 +38,18 @@ export function ButtonRow({
     return (
         <Flex flexDirection="row" columnGap={2}>
             {showDeleteButton && (
-                <Button
-                    width={65}
-                    variant="outline"
-                    colorPalette="red"
-                    aria-label={deleteButtonAriaLabel}
-                    disabled={isSaving}
-                    onClick={onDelete}
-                >
-                    <PiTrash />
-                </Button>
+                <Tooltip content={deleteButtonTooltip}>
+                    <Button
+                        width={65}
+                        variant="outline"
+                        colorPalette="red"
+                        aria-label={deleteButtonTooltip}
+                        disabled={isSaving}
+                        onClick={onDelete}
+                    >
+                        <PiTrash />
+                    </Button>
+                </Tooltip>
             )}
             <Spacer />
             <Button
