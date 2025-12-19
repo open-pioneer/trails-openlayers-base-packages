@@ -21,15 +21,15 @@ it("should successfully create a search component", async () => {
 });
 
 it("should successfully type into search", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({delay: 50});
     await createSearch();
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    await user.type(searchInput, "Dortmund", {  });
     expect(searchInput).toHaveValue("Dortmund");
 });
 
 it("should successfully show a search suggestion", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({delay: 50});
     await createSearch();
 
     const { searchInput } = await waitForInput();
@@ -39,7 +39,7 @@ it("should successfully show a search suggestion", async () => {
 });
 
 it("should successfully call select handler after clicking a suggestion", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({delay: 50});
 
     const selectHandler = vi.fn();
     const { sources } = await createSearch(selectHandler);
@@ -62,7 +62,7 @@ it("should successfully call select handler after clicking a suggestion", async 
 });
 
 it("should successfully clear a suggestion select", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({delay: 50});
 
     const selectHandler = vi.fn();
     const clearHandler = vi.fn();
@@ -80,7 +80,7 @@ it("should successfully clear a suggestion select", async () => {
 });
 
 it("should allow clearing the suggestion text even if no option has been selected", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({delay: 50});
 
     const selectHandler = vi.fn();
     const clearHandler = vi.fn();
@@ -267,7 +267,10 @@ async function waitForSuggestion(timeout?: number) {
     const { suggestion } = await waitFor(
         async () => {
             const { menuDiv } = await waitForMenu();
-            const suggestion = menuDiv.getElementsByClassName("search-highlighted-match")[0];
+            const markElements = menuDiv.getElementsByTagName("mark");
+            const suggestion = Array.from(markElements).find(
+                (el) => el.textContent?.trim() === "Dortmund"
+            );
 
             if (!suggestion) {
                 throw new Error("Suggestion not found");

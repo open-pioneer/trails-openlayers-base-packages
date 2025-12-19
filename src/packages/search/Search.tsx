@@ -191,13 +191,13 @@ export const Search: FC<SearchProps> = (props) => {
                     </InputGroup>
                     <Combobox.IndicatorGroup>
                         {search.kind === "loading" ? (
-                        <Spinner size="xs" borderWidth="1px" />
+                            <Spinner size="xs" borderWidth="1px" />
                         ) : input.length ? (
-                        <CustomClearIndicator
-                            clearValue={() => {
-                                clearInput("user");
-                            }}
-                        />
+                            <CustomClearIndicator
+                                clearValue={() => {
+                                    clearInput("user");
+                                }}
+                            />
                         ) : null}
                     </Combobox.IndicatorGroup>
                 </Combobox.Control>
@@ -205,10 +205,19 @@ export const Search: FC<SearchProps> = (props) => {
                 <Portal>
                     <Combobox.Positioner>
                         <Combobox.ItemGroup>
-                            <Combobox.Content minW="sm" overflowX="hidden" visibility={input.length ? "visible" : "hidden"}>
+                            <Combobox.Content
+                                className="search-component-menu"
+                                minW="sm"
+                                overflowX="hidden"
+                                visibility={input.length ? "visible" : "hidden"}
+                            >
                                 <Fragment>
                                     <LoadingOrEmptyIndicator search={search} />
-                                    <ResultList collection={collection} input={input} search={search} />
+                                    <ResultList
+                                        collection={collection}
+                                        input={input}
+                                        search={search}
+                                    />
                                 </Fragment>
                             </Combobox.Content>
                         </Combobox.ItemGroup>
