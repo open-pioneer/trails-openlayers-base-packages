@@ -21,7 +21,17 @@ import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, Fragment, UIEvent, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+    FC,
+    Fragment,
+    UIEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState
+} from "react";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     SearchApi,
@@ -127,7 +137,8 @@ export const Search: FC<SearchProps> = (props) => {
     const map = useMapModelValue(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
-    const { input, search, onInputChanged, onResultConfirmed, selectedOption } = useSearchState(controller);
+    const { input, search, onInputChanged, onResultConfirmed, selectedOption } =
+        useSearchState(controller);
 
     // Create the collection for the combobox and keep it synced with search results.
     const collection = useSearchCollection(search);
@@ -146,7 +157,7 @@ export const Search: FC<SearchProps> = (props) => {
     // the combobox sometimes looses input change trigger and is not usable, until clicked somewhere else
     // if we control the open state here, we can at least ensure that the search is working as intented
     // TO consider: remove when chakra ui fixes the issue
-    const [openState, setOpenState] = useState<boolean>(true); 
+    const [openState, setOpenState] = useState<boolean>(true);
 
     return (
         <Box {...containerProps} width={"100%"}>
@@ -231,15 +242,25 @@ export const Search: FC<SearchProps> = (props) => {
 /**
  * Report loading status for screen readers.
  */
-function AccessibleBoxHelper(search: SearchResultsState ) {
+function AccessibleBoxHelper(search: SearchResultsState) {
     const intl = useIntl();
     const loadingLabel = intl.formatMessage({ id: "loadingText" });
     const resultsloaded = intl.formatMessage({ id: "resultLoaded" });
     return (
-        <Box position="absolute" width="1px" height="1px" overflow="hidden" clip="rect(1px, 1px, 1px, 1px)">
-                <span aria-live="polite">
-                    {search.kind === "ready" ? resultsloaded : search.kind === "loading" ? loadingLabel : ""}
-                </span>
+        <Box
+            position="absolute"
+            width="1px"
+            height="1px"
+            overflow="hidden"
+            clip="rect(1px, 1px, 1px, 1px)"
+        >
+            <span aria-live="polite">
+                {search.kind === "ready"
+                    ? resultsloaded
+                    : search.kind === "loading"
+                      ? loadingLabel
+                      : ""}
+            </span>
         </Box>
     );
 }
@@ -279,7 +300,7 @@ function CustomClearIndicator(props: { clearValue: () => void }) {
 
     return (
         <Tooltip content={clearButtonLabel}>
-            <CloseButton 
+            <CloseButton
                 variant="ghost"
                 mr="-10px"
                 size="sm"
@@ -288,7 +309,8 @@ function CustomClearIndicator(props: { clearValue: () => void }) {
                 onTouchEnd={clickHandler}
                 // Stop select component from opening the menu.
                 // It will otherwise flash briefly because of a mouse down listener in the select.
-                onMouseDown={(e) => e.preventDefault()}  />
+                onMouseDown={(e) => e.preventDefault()}
+            />
         </Tooltip>
     );
 }
@@ -343,7 +365,11 @@ function useSearchHandlers(
     return { handleInputChange, clearInput, handleSelectChange };
 }
 
-function ResultList(props: { collection: ListCollection<SearchOption>; input: string, search: SearchResultsState }) {
+function ResultList(props: {
+    collection: ListCollection<SearchOption>;
+    input: string;
+    search: SearchResultsState;
+}) {
     const { collection, input, search } = props;
     const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
         "colorPalette.100",
@@ -372,7 +398,6 @@ function ResultList(props: { collection: ListCollection<SearchOption>; input: st
                             }
                             _hover={{ backgroundColor: focussedItemBg }}
                         >
-                            
                             <Combobox.ItemText>
                                 <Highlight ignoreCase query={input} styles={{ fontWeight: "bold" }}>
                                     {searchResult?.label}

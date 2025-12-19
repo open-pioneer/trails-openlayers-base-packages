@@ -21,26 +21,26 @@ it("should successfully create a search component", async () => {
 });
 
 it("should successfully type into search", async () => {
-    const user = userEvent.setup({delay: 50});
+    const user = userEvent.setup({ delay: 50 });
     await createSearch();
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund", {  });
+    await user.type(searchInput, "Dortmund", {});
     expect(searchInput).toHaveValue("Dortmund");
 });
 
 it("should successfully show a search suggestion", async () => {
-    const user = userEvent.setup({delay: 50});
+    const user = userEvent.setup({ delay: 50 });
     await createSearch();
 
     const { searchInput } = await waitForInput();
-    const title= "Dortmund";
+    const title = "Dortmund";
     await user.type(searchInput, title);
     const { suggestion } = await waitForSuggestion(title);
     expect(suggestion).toHaveTextContent(title);
 });
 
 it("should successfully call select handler after clicking a suggestion", async () => {
-    const user = userEvent.setup({delay: 50});
+    const user = userEvent.setup({ delay: 50 });
 
     const selectHandler = vi.fn();
     const { sources } = await createSearch(selectHandler);
@@ -63,14 +63,14 @@ it("should successfully call select handler after clicking a suggestion", async 
 });
 
 it("should successfully clear a suggestion select", async () => {
-    const user = userEvent.setup({delay: 50});
+    const user = userEvent.setup({ delay: 50 });
 
     const selectHandler = vi.fn();
     const clearHandler = vi.fn();
 
     await createSearch(selectHandler, clearHandler);
     const { searchInput } = await waitForInput();
-    const title= "Dortmund";
+    const title = "Dortmund";
     await user.type(searchInput, title);
 
     const { suggestion } = await waitForSuggestion(title);
@@ -82,7 +82,7 @@ it("should successfully clear a suggestion select", async () => {
 });
 
 it("should allow clearing the suggestion text even if no option has been selected", async () => {
-    const user = userEvent.setup({delay: 50});
+    const user = userEvent.setup({ delay: 50 });
 
     const selectHandler = vi.fn();
     const clearHandler = vi.fn();
@@ -145,8 +145,8 @@ describe("search api", () => {
         await createSearch(selectHandler, clearHandler, readyMock);
 
         const { searchInput } = await waitForInput();
-        const title= "Dortmund";
-        await userEvent.type(searchInput, title, {delay: 50});
+        const title = "Dortmund";
+        await userEvent.type(searchInput, title, { delay: 50 });
 
         expect(searchInput).toHaveValue(title);
 
@@ -191,9 +191,9 @@ describe("search api", () => {
 
         await createSearch(selectHandler, undefined, readyHandler);
         const { searchInput } = await waitForInput();
-        const title= "Dortmund";
-        
-        await userEvent.type(searchInput, title, {delay: 50});
+        const title = "Dortmund";
+
+        await userEvent.type(searchInput, title, { delay: 50 });
         expect(searchInput).toHaveValue(title);
         const { suggestion } = await waitForSuggestion(title);
         await userEvent.click(suggestion);
@@ -206,7 +206,7 @@ describe("search api", () => {
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(title2,100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(title2, 100)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
 });
