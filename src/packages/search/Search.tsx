@@ -219,16 +219,25 @@ export const Search: FC<SearchProps> = (props) => {
     );
 };
 
-function AccessibleBoxHelper(search: SearchResultsState) {
+/**
+ * Report loading status for screen readers.
+ */
+function AccessibleBoxHelper(search: SearchResultsState ) {
+    const intl = useIntl();
+    const loadingLabel = intl.formatMessage({ id: "loadingText" });
+    const resultsloaded = intl.formatMessage({ id: "resultLoaded" });
     return (
         <Box position="absolute" width="1px" height="1px" overflow="hidden" clip="rect(1px, 1px, 1px, 1px)">
                 <span aria-live="polite">
-                    {search.kind === "ready" ? "Ergebnisse geladen" : search.kind === "loading" ? "Lade Ergebnisse..." : ""}
+                    {search.kind === "ready" ? resultsloaded : search.kind === "loading" ? loadingLabel : ""}
                 </span>
         </Box>
     );
 }
 
+/**
+ * Show loading label or empty Result.
+ */
 function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
     const intl = useIntl();
     const loadingLabel = intl.formatMessage({ id: "loadingText" });
@@ -267,7 +276,6 @@ function CustomClearIndicator(props: { clearValue: () => void }) {
                 size="sm"
                 aria-label={clearButtonLabel}
                 onClick={clickHandler}
-                // needed for correct touch handling; select control would otherwise preventDefault()
                 onTouchEnd={clickHandler}
                 // Stop select component from opening the menu.
                 // It will otherwise flash briefly because of a mouse down listener in the select.
