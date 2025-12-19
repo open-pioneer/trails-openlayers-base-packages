@@ -141,7 +141,11 @@ export const Search: FC<SearchProps> = (props) => {
     );
     // api trigger hooks
     useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
-    
+
+    // Workaround for buggy Combobox behavior selectionBehavior="preserve" (dont clear input on outside click)
+    // the combobox sometimes looses input change trigger and is not usable, until clicked somewhere else
+    // if we control the open state here, we can at least ensure that the search is working as intented
+    // TO consider: remove when chakra ui fixes the issue
     const [openState, setOpenState] = useState<boolean>(true); 
 
     return (
@@ -164,16 +168,17 @@ export const Search: FC<SearchProps> = (props) => {
                 openOnClick={input.length > 0}
                 lazyMount={true}
                 unmountOnExit={true}
-                // selectionBehavior="preserve" => comboBox looses input foocus and is not usable till clicked sonewhere else
+                // selectionBehavior="preserve"
                 onPointerDownOutside={(e) => {
                     e.preventDefault();
                     setOpenState(false);
-                }} // prevents deleting input on outside click
+                }} // prevents deleting inputtext on outside click, alternative to selectionBehavior="preserve"
                 open={openState}
                 onClick={() => {
                     setOpenState(true);
                 }}
             >
+                {AccessibleBoxHelper(search)}
                 <Combobox.Control>
                     <InputGroup
                         startElement={
@@ -214,16 +219,25 @@ export const Search: FC<SearchProps> = (props) => {
     );
 };
 
+function AccessibleBoxHelper(search: SearchResultsState) {
+    return (
+        <Box position="absolute" width="1px" height="1px" overflow="hidden" clip="rect(1px, 1px, 1px, 1px)">
+                <span aria-live="polite">
+                    {search.kind === "ready" ? "Ergebnisse geladen" : search.kind === "loading" ? "Lade Ergebnisse..." : ""}
+                </span>
+        </Box>
+    );
+}
+
 function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
     const intl = useIntl();
     const loadingLabel = intl.formatMessage({ id: "loadingText" });
     const noOptionLabel = intl.formatMessage({ id: "noOptionsText" });
     return (
-        <Combobox.Empty>
-            <HStack p="2">
+        <Combobox.Empty padding="0">
+            <HStack p="2" justifyContent="center">
                 {props.search.kind === "loading" ? (
                     <Fragment>
-                        <Spinner size="xs" borderWidth="1px" />
                         <Span>{loadingLabel}</Span>
                     </Fragment>
                 ) : (
@@ -319,41 +333,40 @@ function ResultList(props: { collection: ListCollection<SearchOption>; input: st
         "colorPalette.50",
         "colorPalette.500"
     ]);
-
-    return useMemo(() => {
-        return collection.group().map((groupElement, key) => {
-            return (
-                <Fragment key={key}>
-                    <Combobox.ItemGroupLabel
-                        key={groupElement[0]}
-                        backgroundColor={groupHeadingBg}
-                        padding={"8px 12px"}
-                        visibility={search.kind === "loading" ? "hidden" : "visible"}
-                    >
-                        {groupElement[0]}
-                    </Combobox.ItemGroupLabel>
-                    {groupElement[1].map((searchResult, key) => {
-                        return (
-                            <Combobox.Item key={key} item={searchResult} 
-                                           style={searchResult?.label === input ? {backgroundColor: selectedItemBg, color: "white"} : undefined}
-                                           _hover={{backgroundColor: focussedItemBg}}
-                            >
-                                <Combobox.ItemText>
-                                    <Highlight
-                                        ignoreCase
-                                        query={input}
-                                        styles={{ fontWeight: "bold" }}
-                                    >
-                                        {searchResult?.label}
-                                    </Highlight>
-                                </Combobox.ItemText>
-                            </Combobox.Item>
-                        );
-                    })}
-                </Fragment>
-            );
-        });
-    }, [collection, focussedItemBg, groupHeadingBg, input, selectedItemBg, search]);
+    return collection.group().map((groupElement, key) => {
+        return (
+            <Fragment key={key}>
+                <Combobox.ItemGroupLabel
+                    key={groupElement[0]}
+                    backgroundColor={groupHeadingBg}
+                    visibility={search.kind === "loading" ? "hidden" : "visible"}
+                >
+                    {groupElement[0]}
+                </Combobox.ItemGroupLabel>
+                {groupElement[1].map((searchResult, key) => {
+                    return (
+                        <Combobox.Item
+                            key={key}
+                            item={searchResult}
+                            style={
+                                searchResult?.label === input
+                                    ? { backgroundColor: selectedItemBg, color: "white" }
+                                    : undefined
+                            }
+                            _hover={{ backgroundColor: focussedItemBg }}
+                        >
+                            
+                            <Combobox.ItemText>
+                                <Highlight ignoreCase query={input} styles={{ fontWeight: "bold" }}>
+                                    {searchResult?.label}
+                                </Highlight>
+                            </Combobox.ItemText>
+                        </Combobox.Item>
+                    );
+                })}
+            </Fragment>
+        );
+    });
 }
 
 /**
