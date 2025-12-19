@@ -33,9 +33,10 @@ it("should successfully show a search suggestion", async () => {
     await createSearch();
 
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
-    const { suggestion } = await waitForSuggestion();
-    expect(suggestion).toHaveTextContent("Dortmund");
+    const title= "Dortmund";
+    await user.type(searchInput, title);
+    const { suggestion } = await waitForSuggestion(title);
+    expect(suggestion).toHaveTextContent(title);
 });
 
 it("should successfully call select handler after clicking a suggestion", async () => {
@@ -48,7 +49,7 @@ it("should successfully call select handler after clicking a suggestion", async 
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dort");
 
-    const { suggestion } = await waitForSuggestion();
+    const { suggestion } = await waitForSuggestion("Dort");
     await userEvent.click(suggestion);
 
     expect(searchInput).toHaveValue("Dortmund");
@@ -69,9 +70,10 @@ it("should successfully clear a suggestion select", async () => {
 
     await createSearch(selectHandler, clearHandler);
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    const title= "Dortmund";
+    await user.type(searchInput, title);
 
-    const { suggestion } = await waitForSuggestion();
+    const { suggestion } = await waitForSuggestion(title);
     await userEvent.click(suggestion);
     const { clearButton } = await waitForClearButton();
     await userEvent.click(clearButton);
@@ -143,9 +145,10 @@ describe("search api", () => {
         await createSearch(selectHandler, clearHandler, readyMock);
 
         const { searchInput } = await waitForInput();
-        await userEvent.type(searchInput, "Dortmund");
+        const title= "Dortmund";
+        await userEvent.type(searchInput, title, {delay: 50});
 
-        expect(searchInput).toHaveValue("Dortmund");
+        expect(searchInput).toHaveValue(title);
 
         // reset the input using the SearchApi
         readyEvent?.api.resetInput();
@@ -166,16 +169,16 @@ describe("search api", () => {
 
         await createSearch(selectHandler, undefined, readyHandler);
         const { searchInput } = await waitForInput();
-
-        readyEvent?.api.setInputValue("Dortmund");
+        const title = "Dortmund";
+        readyEvent?.api.setInputValue(title);
 
         // input value is set
         await waitFor(() => {
-            expect(searchInput).toHaveValue("Dortmund");
+            expect(searchInput).toHaveValue(title);
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(title, 10)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).not.toHaveBeenCalled();
     });
 
@@ -188,21 +191,22 @@ describe("search api", () => {
 
         await createSearch(selectHandler, undefined, readyHandler);
         const { searchInput } = await waitForInput();
-
-        await userEvent.type(searchInput, "Dortmund");
-        expect(searchInput).toHaveValue("Dortmund");
-        const { suggestion } = await waitForSuggestion();
+        const title= "Dortmund";
+        
+        await userEvent.type(searchInput, title, {delay: 50});
+        expect(searchInput).toHaveValue(title);
+        const { suggestion } = await waitForSuggestion(title);
         await userEvent.click(suggestion);
-
-        readyEvent?.api.setInputValue("Bonn");
+        const title2 = "Bonn";
+        readyEvent?.api.setInputValue(title2);
 
         // input value is replaced
         await waitFor(() => {
-            expect(searchInput).toHaveValue("Bonn");
+            expect(searchInput).toHaveValue(title2);
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(title2,100)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
 });
@@ -263,13 +267,13 @@ async function waitForInput() {
     return { searchInput };
 }
 
-async function waitForSuggestion(timeout?: number) {
+async function waitForSuggestion(title: string, timeout?: number) {
     const { suggestion } = await waitFor(
         async () => {
             const { menuDiv } = await waitForMenu();
             const markElements = menuDiv.getElementsByTagName("mark");
             const suggestion = Array.from(markElements).find(
-                (el) => el.textContent?.trim() === "Dortmund"
+                (el) => el.textContent?.trim() === title
             );
 
             if (!suggestion) {
