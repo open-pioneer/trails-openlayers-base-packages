@@ -206,7 +206,7 @@ describe("search api", () => {
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(title2, 100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForSuggestion(title2, 50)).rejects.toThrow("Suggestion not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
 });
