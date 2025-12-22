@@ -27,6 +27,9 @@ catalogs:
     '@eslint/js':
       specifier: ^9.39.2
       version: 9.39.2
+    '@formatjs/intl':
+      specifier: ^4.0.2
+      version: 4.0.2
     '@open-pioneer/build-package-cli':
       specifier: ^3.0.6
       version: 3.0.6
@@ -1021,6 +1024,9 @@ importers:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
+      '@formatjs/intl':
+        specifier: 'catalog:'
+        version: 4.0.2(typescript@5.9.3)
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
         version: link:../map-test-utils
