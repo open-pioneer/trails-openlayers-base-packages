@@ -7,20 +7,20 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^4.3.0
-  "@open-pioneer/core": ^4.3.0
-  "@open-pioneer/http": ^4.3.0
-  "@open-pioneer/integration": ^4.3.0
-  "@open-pioneer/local-storage": ^4.3.0
-  "@open-pioneer/notifier": ^4.3.0
-  "@open-pioneer/react-utils": ^4.3.0
-  "@open-pioneer/reactivity": ^4.3.0
-  "@open-pioneer/runtime": ^4.3.0
-  "@open-pioneer/test-utils": ^4.3.0
-  "@open-pioneer/chakra-snippets": ^4.3.0
+  "@open-pioneer/base-theme": 4.4.0-dev.20251222113627
+  "@open-pioneer/core": 4.4.0-dev.20251222113627
+  "@open-pioneer/http": 4.4.0-dev.20251222113627
+  "@open-pioneer/integration": 4.4.0-dev.20251222113627
+  "@open-pioneer/local-storage": 4.4.0-dev.20251222113627
+  "@open-pioneer/notifier": 4.4.0-dev.20251222113627
+  "@open-pioneer/react-utils": 4.4.0-dev.20251222113627
+  "@open-pioneer/reactivity": 4.4.0-dev.20251222113627
+  "@open-pioneer/runtime": 4.4.0-dev.20251222113627
+  "@open-pioneer/test-utils": 4.4.0-dev.20251222113627
+  "@open-pioneer/chakra-snippets": 4.4.0-dev.20251222113627
 
-  "@chakra-ui/react": ^3.29.0
-  "@chakra-ui/cli": ^3.29.0
+  "@chakra-ui/react": ^3.30.0
+  "@chakra-ui/cli": ^3.30.0
   "@conterra/reactivity-core": ^0.8.1
   "@conterra/reactivity-events": ^0.8.1
   "@emotion/cache": ^11.14.0
@@ -43,7 +43,7 @@ catalog:
   uuid: ^13.0.0
 
   # Devtools
-  "@changesets/cli": 2.29.8
+  "@changesets/cli": "2.29.8"
   "@open-pioneer/build-package-cli": ^3.0.6
   "@open-pioneer/build-support": ^3.0.5
   "@open-pioneer/check-pnpm-duplicates": ^0.2.6
@@ -130,7 +130,7 @@ overrides:
   "csstype@<3.2.3": ">=3.2.3"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
-  "@ark-ui/react": "5.27.1"
+  "@ark-ui/react": "5.30.0"
   "react-select": "5.10.2"
 
 allowUnusedPatches: true
@@ -139,7 +139,7 @@ patchedDependencies:
   # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
   "react-select@*": "patches/react-select.patch"
 
-  # - Ensure all portals are mounted under `.pioneer-root` div
+  # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
 onlyBuiltDependencies:
