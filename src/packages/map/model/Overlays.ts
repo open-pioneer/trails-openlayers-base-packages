@@ -89,15 +89,15 @@ export class Overlay {
         this.tag = properties.tag;
         const overlayDiv = document.createElement("div");
 
-        if (properties.olOptions) {
-            //simply override with advanced OL Options if set
-            properties = { ...properties, ...properties.olOptions };
-        }
+        //simply override with advanced OL Options if set
+        const mergedProperties = !properties.olOptions
+            ? properties
+            : { ...properties, ...properties.olOptions };
 
         this.olOverlay = new OlOverlay({
             element: overlayDiv,
             id: this.id,
-            ...properties
+            ...mergedProperties
         });
         this.#parent = parent;
         this.#content = reactive(properties.content);

@@ -1,6 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { CloseButton, Flex, IconButton, Text } from "@chakra-ui/react";
+import {
+    CloseButton,
+    Flex,
+    IconButton,
+    Text,
+    HStack,
+    Popover,
+    Portal,
+    usePopoverContext
+} from "@chakra-ui/react";
 import { reactive, Reactive } from "@conterra/reactivity-core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -9,19 +18,54 @@ import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { LuArrowLeft, LuArrowRight, LuArrowRightLeft } from "react-icons/lu";
 
 export function Toolbar(props: { map: MapModel }) {
     const { map } = props;
     const intl = useIntl();
-    const [tooltip, setTooltip] = useState<Overlay | undefined>();
+    const [movableOverlay, setMovableOverlay] = useState<Overlay | undefined>();
     const overlayPositionRef = useRef<Reactive<Coordinate>>(reactive([410000, 5757000]));
 
     const destroyOverlay = useEvent(() => {
-        tooltip?.destroy();
-        setTooltip(undefined);
+        movableOverlay?.destroy();
+        setMovableOverlay(undefined);
     });
+
+    const toogleOverlay = () => {
+        if (!movableOverlay) {
+            const overlay = map.overlays.addOverlay({
+                position: overlayPositionRef.current.value,
+                tag: "sample-movable-overlay",
+                content: (
+                    <MovableOverlayContent
+                        position={overlayPositionRef.current}
+                        onCloseClicked={destroyOverlay}
+                    />
+                ),
+                olOptions: {
+                    autoPan: true,
+                    insertFirst: false
+                }
+            });
+            setMovableOverlay(overlay);
+        } else {
+            destroyOverlay();
+        }
+    };
+
+    const updateOverlayPostion = (offsetX: number) => {
+        if (!movableOverlay) {
+            return;
+        }
+
+        const pos = movableOverlay.position;
+        if (pos && pos[0] && pos[1]) {
+            const newPos = [pos[0] + offsetX, pos[1]];
+            overlayPositionRef.current.value = newPos;
+            movableOverlay.setPosition(newPos);
+        }
+    };
 
     return (
         <Flex
@@ -34,65 +78,42 @@ export function Toolbar(props: { map: MapModel }) {
             <InitialExtent />
             <ZoomIn />
             <ZoomOut />
-            <ToolButton
-                label="Toggle Tooltip"
-                icon={<LuArrowRightLeft />}
-                active={tooltip != undefined}
-                onClick={() => {
-                    if (!tooltip) {
-                        const tooltip = map.overlays.addOverlay({
-                            position: overlayPositionRef.current.value,
-                            tag: "test",
-                            content: (
-                                <MovableOverlay
-                                    position={overlayPositionRef.current}
-                                    onCloseClicked={destroyOverlay}
-                                />
-                            ),
-                            olOptions: {
-                                autoPan: true,
-                                insertFirst: false
-                            }
-                        });
-                        setTooltip(tooltip);
-                    } else {
-                        destroyOverlay();
-                    }
-                }}
-            />
-            {tooltip && (
-                <IconButton
-                    onClick={() => {
-                        const pos = tooltip.position;
-                        if (pos && pos[0] && pos[1]) {
-                            const newPos = [pos[0] + 500, pos[1]];
-                            overlayPositionRef.current.value = newPos;
-                            tooltip.setPosition(newPos);
-                        }
-                    }}
-                >
-                    <LuArrowRight></LuArrowRight>
-                </IconButton>
-            )}
-            {tooltip && (
-                <IconButton
-                    onClick={() => {
-                        const pos = tooltip.position;
-                        if (pos && pos[0] && pos[1]) {
-                            const newPos = [pos[0] - 500, pos[1]];
-                            overlayPositionRef.current.value = newPos;
-                            tooltip.setPosition(newPos);
-                        }
-                    }}
-                >
-                    <LuArrowLeft></LuArrowLeft>
-                </IconButton>
-            )}
+
+            <Popover.Root
+                positioning={{ placement: "left" }}
+                lazyMount={true}
+                open={movableOverlay !== undefined}
+                onOpenChange={toogleOverlay}
+            >
+                <Popover.Trigger asChild>
+                    <TriggerToolButton active={movableOverlay !== undefined}></TriggerToolButton>
+                </Popover.Trigger>
+                <Portal>
+                    <Popover.Positioner>
+                        <Popover.Content width="auto">
+                            <Popover.Arrow />
+                            <Popover.Body padding={2}>
+                                <HStack gap={2}>
+                                    <IconButton onClick={() => updateOverlayPostion(-500)}>
+                                        <LuArrowLeft></LuArrowLeft>
+                                    </IconButton>
+                                    <IconButton onClick={() => updateOverlayPostion(500)}>
+                                        <LuArrowRight></LuArrowRight>
+                                    </IconButton>
+                                </HStack>
+                            </Popover.Body>
+                        </Popover.Content>
+                    </Popover.Positioner>
+                </Portal>
+            </Popover.Root>
         </Flex>
     );
 }
 
-function MovableOverlay(props: { position: Reactive<Coordinate>; onCloseClicked: () => void }) {
+function MovableOverlayContent(props: {
+    position: Reactive<Coordinate>;
+    onCloseClicked: () => void;
+}) {
     const position = useReactiveSnapshot(() => props.position.value, [props]);
 
     return (
@@ -112,3 +133,32 @@ function MovableOverlay(props: { position: Reactive<Coordinate>; onCloseClicked:
         </Flex>
     );
 }
+
+const TriggerToolButton = function TriggerToolButton({
+    ref,
+    active
+}: {
+    ref?: RefObject<HTMLButtonElement>;
+    active: boolean;
+}) {
+    const context = usePopoverContext();
+    const { onClick, ...triggerProps } = context.getTriggerProps();
+    return (
+        <ToolButton
+            active={active}
+            ref={ref}
+            label="Toggle Tooltip"
+            icon={<LuArrowRightLeft />}
+            onClick={onClick}
+            buttonProps={triggerProps}
+            tooltipProps={{
+                ids: {
+                    // Mixing Popup and menu/popover triggers requires some coordination.
+                    // We tell the tooltip to watch the same dom element as the popover trigger.
+                    // See https://chakra-ui.com/docs/components/tooltip#with-menutrigger
+                    trigger: triggerProps.id
+                }
+            }}
+        />
+    );
+};
