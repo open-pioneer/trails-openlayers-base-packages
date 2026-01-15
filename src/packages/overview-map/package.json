@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/overview-map",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "This package offers a UI component with which an overview map can be integrated.",
     "license": "Apache-2.0",
     "main": "index.ts",

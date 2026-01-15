@@ -1,5 +1,13 @@
 # @open-pioneer/map
 
+## 1.2.0
+
+### Patch Changes
+
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to chakra 3.30.0
+
 ## 1.1.0
 
 ### Minor Changes
