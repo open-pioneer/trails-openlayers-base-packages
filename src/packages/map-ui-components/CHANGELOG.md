@@ -1,5 +1,12 @@
 # @open-pioneer/map-ui-components
 
+## 1.2.0
+
+### Patch Changes
+
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to chakra 3.30.0
+
 ## 1.1.0
 
 ### Minor Changes
