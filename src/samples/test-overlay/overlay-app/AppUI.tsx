@@ -224,11 +224,11 @@ function StaticOverlay() {
                 <Tabs.List bg="bg.muted" rounded="l3" ml="2">
                     <Tabs.Trigger value="facts">
                         <LuTable />
-                        {intl.formatMessage({ id: "tooltip.facts" })}
+                        {intl.formatMessage({ id: "staticOverlay.facts" })}
                     </Tabs.Trigger>
                     <Tabs.Trigger value="photo">
                         <LuCamera />
-                        {intl.formatMessage({ id: "tooltip.photo" })}
+                        {intl.formatMessage({ id: "staticOverlay.photo" })}
                     </Tabs.Trigger>
                     <Tabs.Indicator rounded="l2" />
                 </Tabs.List>
@@ -258,13 +258,13 @@ function FactsDataList(props: { intl: PackageIntl }) {
     const { intl } = props;
 
     const facts = [
-        { label: intl.formatMessage({ id: "tooltip.factList.name" }), value: "Schloss Münster" },
-        { label: intl.formatMessage({ id: "tooltip.factList.location" }), value: "Münster" },
+        { label: intl.formatMessage({ id: "staticOverlay.factList.name" }), value: "Schloss Münster" },
+        { label: intl.formatMessage({ id: "staticOverlay.factList.location" }), value: "Münster" },
         {
-            label: intl.formatMessage({ id: "tooltip.factList.style" }),
-            value: intl.formatMessage({ id: "tooltip.factList.baroque" })
+            label: intl.formatMessage({ id: "staticOverlay.factList.style" }),
+            value: intl.formatMessage({ id: "staticOverlay.factList.baroque" })
         },
-        { label: intl.formatMessage({ id: "tooltip.factList.date" }), value: "1767-1787" }
+        { label: intl.formatMessage({ id: "staticOverlay.factList.date" }), value: "1767-1787" }
     ];
 
     return (
@@ -289,7 +289,7 @@ function PhotoWithLicense(props: { intl: PackageIntl }) {
                 <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg/330px-M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg" />
             </Box>
             <Text fontSize={"2xs"}>
-                {intl.formatMessage({ id: "tooltip.photo" })}:{" "}
+                {intl.formatMessage({ id: "staticOverlay.photo" })}:{" "}
                 <b>
                     <Link href="https://commons.wikimedia.org/wiki/User:XRay">Dietmar Rabich</Link>
                 </b>

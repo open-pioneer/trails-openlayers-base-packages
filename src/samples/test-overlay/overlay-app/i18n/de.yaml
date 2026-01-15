@@ -7,7 +7,7 @@ messages:
     toolbar: "Kartenwerkzeuge"
     topRight: "Übersichtskarte und Auswahl der Hintergrundkarte"
     bottomRight: "Kartenwerkzeuge"
-  tooltip:
+  staticOverlay:
     photo: "Foto"
     facts: "Fakten"
     factList:
@@ -16,3 +16,5 @@ messages:
       style: "Stil"
       date: "Baujahr"
       baroque: "barock"
+  movableOverlay:
+    tooltip: Overlay ein/ausblenden

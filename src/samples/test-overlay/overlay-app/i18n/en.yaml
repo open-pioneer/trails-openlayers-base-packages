@@ -7,7 +7,7 @@ messages:
     toolbar: "Maptools"
     topRight: "Overview map and basemap switcher"
     bottomRight: "Maptools"
-  tooltip:
+  staticOverlay:
     photo: "Photo"
     facts: "Facts"
     factList:
@@ -16,3 +16,5 @@ messages:
       style: "Style"
       date: "Construction"
       baroque: "baroque"
+  movableOverlay:
+    tooltip: Toggle Overlay

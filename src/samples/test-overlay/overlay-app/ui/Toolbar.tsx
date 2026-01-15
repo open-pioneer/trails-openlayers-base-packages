@@ -84,6 +84,7 @@ export function Toolbar(props: { map: MapModel }) {
                 lazyMount={true}
                 open={movableOverlay !== undefined}
                 onOpenChange={toogleOverlay}
+                closeOnInteractOutside= {false}
             >
                 <Popover.Trigger asChild>
                     <TriggerToolButton active={movableOverlay !== undefined}></TriggerToolButton>
@@ -140,14 +141,15 @@ const TriggerToolButton = function TriggerToolButton({
 }: {
     ref?: RefObject<HTMLButtonElement>;
     active: boolean;
-}) {
+    }) {
+    const intl = useIntl();
     const context = usePopoverContext();
     const { onClick, ...triggerProps } = context.getTriggerProps();
     return (
         <ToolButton
             active={active}
             ref={ref}
-            label="Toggle Tooltip"
+            label={intl.formatMessage({ id: "movableOverlay.tooltip" })}
             icon={<LuArrowRightLeft />}
             onClick={onClick}
             buttonProps={triggerProps}
