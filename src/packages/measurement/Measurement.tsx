@@ -10,7 +10,7 @@ import Polygon from "ol/geom/Polygon";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { MeasurementController, MeasurementType } from "./MeasurementController";
 
 /** Emitted when a new measurement is being added to the map. */
@@ -231,4 +231,10 @@ function getDefaultFinishedFeatureStyle() {
             })
         })
     ];
+}
+
+export function MeasurementOverlayContent(props: { content?: ReactNode }) {
+    const { content } = props;
+
+    return <Box as="span">{content}</Box>;
 }

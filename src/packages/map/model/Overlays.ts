@@ -88,6 +88,9 @@ export class Overlay {
         this.id = uuid4v();
         this.tag = properties.tag;
         const overlayDiv = document.createElement("div");
+        if (properties.ariaRole) {
+            overlayDiv.role = properties.ariaRole;
+        }
 
         //simply override with advanced OL Options if set
         const mergedProperties = !properties.olOptions
@@ -166,6 +169,7 @@ export interface OverlayProperties {
     offset?: number[]; //rather use {offsetX: number, offsetY: number}?
     className?: string; //use other default than OLs "ol-overlay-container ol-selectable"?
     stopEvent?: boolean;
+    ariaRole?: string; //aria role that is added to the html element
     olOptions?: OlOverlayOptions; //raw OL properties, overrides mutual properties from outer OverlayProperties (except id and element?)
 }
 

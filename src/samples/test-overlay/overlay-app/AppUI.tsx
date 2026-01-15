@@ -258,7 +258,10 @@ function FactsDataList(props: { intl: PackageIntl }) {
     const { intl } = props;
 
     const facts = [
-        { label: intl.formatMessage({ id: "staticOverlay.factList.name" }), value: "Schloss Münster" },
+        {
+            label: intl.formatMessage({ id: "staticOverlay.factList.name" }),
+            value: "Schloss Münster"
+        },
         { label: intl.formatMessage({ id: "staticOverlay.factList.location" }), value: "Münster" },
         {
             label: intl.formatMessage({ id: "staticOverlay.factList.style" }),
