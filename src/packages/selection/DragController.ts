@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, watch } from "@conterra/reactivity-core";
 import { Resource } from "@open-pioneer/core";
+import { MapModel, Overlay } from "@open-pioneer/map";
 import { MapBrowserEvent } from "ol";
 import OlMap from "ol/Map";
-import { unByKey } from "ol/Observable";
-import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
+import { createElement } from "react";
+import { SelectionOverlayContent } from "./Selection";
 
 interface InteractionResource extends Resource {
     interaction: PointerInteraction;
@@ -25,7 +26,7 @@ const ACTIVE_CLASS = "selection-active";
 const INACTIVE_CLASS = "selection-inactive";
 
 export class DragController {
-    private tooltip: Tooltip;
+    private tooltip: Overlay;
     private interactionResources: InteractionResource[] = [];
     private olMap: OlMap;
     private isActive = reactive(true);
@@ -34,26 +35,31 @@ export class DragController {
     private tooltipSync: Resource | undefined;
 
     constructor(
-        olMap: OlMap,
+        map: MapModel,
         tooltipMessage: string,
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
-        const viewPort = this.initViewport(olMap);
+        this.olMap = map.olMap;
+        const viewPort = this.initViewport(this.olMap);
         this.interactionResources.push(
-            this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
+            this.createDragBox(this.olMap, onExtentSelected, viewPort, this.interactionResources)
         );
-        this.interactionResources.push(this.createDrag(olMap, viewPort, this.interactionResources));
+        this.interactionResources.push(
+            this.createDrag(this.olMap, viewPort, this.interactionResources)
+        );
 
-        this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
-        this.olMap = olMap;
+        this.tooltip = this.createHelpTooltip(map, tooltipMessage);
         this.tooltipMessage = tooltipMessage;
         this.tooltipDisabledMessage = tooltipDisabledMessage;
 
         this.tooltipSync = watch(
             () => [this.isActive.value, this.tooltipText],
             ([isActive, tooltipText]) => {
-                this.tooltip.setText(tooltipText);
+                const tooltipContent = createElement(SelectionOverlayContent, {
+                    content: tooltipText
+                });
+                this.tooltip.setContent(tooltipContent);
                 viewPort.classList.toggle(ACTIVE_CLASS, isActive);
                 viewPort.classList.toggle(INACTIVE_CLASS, !isActive);
             },
@@ -182,38 +188,20 @@ export class DragController {
     /**
      * Method to generate a tooltip on the mouse cursor
      */
-    private createHelpTooltip(olMap: OlMap, message: string): Tooltip {
-        const element = document.createElement("div");
-        element.className = "selection-tooltip printing-hide";
-        element.role = "tooltip";
-
-        const content = document.createElement("span");
-        content.textContent = message;
-        element.appendChild(content);
-
-        const overlay = new Overlay({
-            element: element,
+    private createHelpTooltip(map: MapModel, message: string): Overlay {
+        const tooltipContent = createElement(SelectionOverlayContent, {
+            content: message
+        });
+        const tooltipOverlay = map.overlays.addOverlay({
+            content: tooltipContent,
+            mode: "followPointer",
             offset: [15, 0],
-            positioning: "center-left"
+            positioning: "center-left",
+            ariaRole: "tooltip",
+            className: "selection-tooltip printing-hide"
         });
 
-        const pointHandler = olMap.on("pointermove", (evt) => {
-            overlay.setPosition(evt.coordinate);
-        });
-
-        olMap.addOverlay(overlay);
-        return {
-            overlay,
-            element,
-            destroy() {
-                olMap.removeOverlay(overlay);
-                overlay.dispose();
-                unByKey(pointHandler);
-            },
-            setText(value) {
-                content.textContent = value;
-            }
-        };
+        return tooltipOverlay;
     }
 
     /**

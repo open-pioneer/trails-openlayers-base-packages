@@ -4,19 +4,20 @@ import { afterEach, expect, vi, it } from "vitest";
 import { DragController } from "./DragController";
 import OlMap from "ol/Map";
 import { waitFor } from "@testing-library/react";
+import { setupMap } from "@open-pioneer/map-test-utils";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("expect tooltip to be successfully created after construction", async () => {
-    const { olMap, tooltipTest } = createController();
+    const { olMap, tooltipTest } = await createController();
     const activeTooltip = getTooltipElement(olMap, "selection-tooltip");
     expect(activeTooltip).toMatchSnapshot(tooltipTest);
 });
 
 it("expect extent handler to be called", async () => {
-    const { controller, extentHandler } = createController();
+    const { controller, extentHandler } = await createController();
     const dragBox = controller.getDragboxInteraction();
     if (!dragBox) throw new Error("myDragbox not found");
     dragBox.interaction.dispatchEvent("boxend");
@@ -24,7 +25,7 @@ it("expect extent handler to be called", async () => {
 });
 
 it("expect interactions, tooltip and cursor correspond to controller state", async () => {
-    const { olMap, controller, tooltipTest, disabledTooltipText } = createController();
+    const { olMap, controller, tooltipTest, disabledTooltipText } = await createController();
     const activeTooltip = getTooltipElement(olMap, "selection-tooltip");
 
     const dragBox = controller.getDragboxInteraction()?.interaction;
@@ -50,13 +51,15 @@ it("expect interactions, tooltip and cursor correspond to controller state", asy
     expect(activeTooltip.textContent).toBe(disabledTooltipText);
 });
 
-function createController() {
-    const olMap = new OlMap();
+async function createController() {
+    const { map } = await setupMap();
+
+    const olMap = map.olMap;
     const tooltipTest = "Tooltip wurde gesetzt";
     const disabledTooltipText = "Funktion ist deaktiviert";
     const extentHandler = vi.fn();
-    const controller = new DragController(olMap, tooltipTest, disabledTooltipText, extentHandler);
-    return { olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
+    const controller = new DragController(map, tooltipTest, disabledTooltipText, extentHandler);
+    return { map, olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
 }
 
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
