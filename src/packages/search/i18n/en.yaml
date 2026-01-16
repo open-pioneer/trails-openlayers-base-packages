@@ -1,6 +1,7 @@
 messages:
   noOptionsText: "No results found"
   loadingText: "Loading..."
+  resultLoaded: "Results loaded"
   searchPlaceholder: "Search..."
   ariaLabel:
     search: "Search bar"
