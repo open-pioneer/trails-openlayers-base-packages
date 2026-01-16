@@ -15,12 +15,6 @@ import { SelectionOverlayContent } from "./Selection";
 interface InteractionResource extends Resource {
     interaction: PointerInteraction;
 }
-/** Represents a tooltip rendered on the OpenLayers map. */
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-    setText(value: string): void;
-}
 
 const ACTIVE_CLASS = "selection-active";
 const INACTIVE_CLASS = "selection-inactive";
