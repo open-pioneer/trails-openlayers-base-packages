@@ -1,0 +1,25 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import { createCustomElement } from "@open-pioneer/runtime";
+import type { NotifierProperties } from "@open-pioneer/notifier";
+import * as appMetadata from "open-pioneer:app";
+import { AppUI } from "./ui/AppUI";
+
+// Hint: Append ?lang=en or ?lang=de to the URL to change the locale.
+const URL_PARAMS = new URLSearchParams(window.location.search);
+const FORCED_LANG = URL_PARAMS.get("lang") || undefined;
+
+const Element = createCustomElement({
+    component: AppUI,
+    appMetadata,
+    config: {
+        locale: FORCED_LANG,
+        properties: {
+            "@open-pioneer/notifier": {
+                position: "bottom-right"
+            } satisfies NotifierProperties
+        }
+    }
+});
+
+customElements.define("editing-app", Element);
