@@ -20,6 +20,16 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
+    SearchApi,
+    SearchClearEvent,
+    SearchClearTrigger,
+    SearchDisposedEvent,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent,
+    SearchSource
+} from "./api";
+import {
     ClearIndicator,
     GroupComp,
     HighlightOption,
@@ -31,18 +41,8 @@ import {
     SingleValue as SingleValueComp,
     ValueContainer
 } from "./CustomComponents";
-import { SearchController, SuggestionGroup } from "./SearchController";
-import {
-    SearchClearEvent,
-    SearchApi,
-    SearchDisposedEvent,
-    SearchReadyEvent,
-    SearchResult,
-    SearchSelectEvent,
-    SearchSource,
-    SearchClearTrigger
-} from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
+import { SearchController, SuggestionGroup } from "./SearchController";
 
 const LOG = createLogger("search:Search");
 
@@ -141,7 +141,7 @@ export const Search: FC<SearchProps> = (props) => {
     const ariaMessages = useAriaMessages(intl);
     const components = useCustomComponents();
 
-    const portalDiv = useRef<HTMLDivElement>(null);
+    const [portalDiv, setPortalDiv] = useState<HTMLDivElement | null>(null);
 
     const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
         // Only update the input if the user actually typed something.
@@ -215,10 +215,10 @@ export const Search: FC<SearchProps> = (props) => {
                 components={components}
                 onChange={handleSelectChange}
                 value={selectedOption}
-                menuPortalTarget={portalDiv.current}
+                menuPortalTarget={portalDiv}
             />
             <Portal>
-                <chakra.div ref={portalDiv} className="search-component-menu" />
+                <chakra.div ref={setPortalDiv} className="search-component-menu" />
             </Portal>
         </Box>
     );
