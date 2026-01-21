@@ -5,11 +5,13 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
+import { sourceId } from "open-pioneer:source-info";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
-import { MapModel, MapPadding } from "../model/MapModel";
-const LOG = createLogger("map:MapContainer");
+
+const LOG = createLogger(sourceId);
 
 /**
  * @group UI Components and Hooks

@@ -114,7 +114,7 @@ it("should trigger a notification if the map export fails", async () => {
     expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy.mock.lastCall).toMatchInlineSnapshot(`
       [
-        "[ERROR] printing: Failed to print the map",
+        "[ERROR] @open-pioneer/printing/Printing: Failed to print the map",
         [Error: Error from map export],
       ]
     `);

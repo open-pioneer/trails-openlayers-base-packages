@@ -4,11 +4,12 @@ import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippe
 import { createLogger } from "@open-pioneer/core";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { useMemo } from "react";
 import { AppModel } from "../../model/AppModel";
 import { HeaderFormControl } from "./HeaderFormControl";
 
-const LOG = createLogger("app::DemoSelection");
+const LOG = createLogger(sourceId);
 
 export interface DemoSelectionProps {
     appModel: AppModel;

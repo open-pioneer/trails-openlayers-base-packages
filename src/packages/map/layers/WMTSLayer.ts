@@ -9,6 +9,7 @@ import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import TileLayer from "ol/layer/Tile";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities, Options as WMTSSourceOptions } from "ol/source/WMTS";
+import { sourceId } from "open-pioneer:source-info";
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -42,7 +43,7 @@ export interface WMTSLayerConfig extends LayerConfig {
     sourceOptions?: Partial<WMTSSourceOptions>;
 }
 
-const LOG = createLogger("map:WMTSLayer");
+const LOG = createLogger(sourceId);
 
 const deprecatedConstructor = deprecated({
     name: "WMTSLayer constructor",

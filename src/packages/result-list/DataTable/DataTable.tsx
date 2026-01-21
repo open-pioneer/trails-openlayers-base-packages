@@ -16,12 +16,14 @@ import {
 } from "@tanstack/react-table";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { MouseEvent, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ResultListSelectionChangeEvent, SelectionMode } from "../ResultList";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
-const LOG = createLogger("result-list:DataTable");
+
+const LOG = createLogger(sourceId);
 
 export interface DataTableProps<Data extends BaseFeature> {
     data: Data[];
