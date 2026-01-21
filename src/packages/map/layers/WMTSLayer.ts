@@ -7,9 +7,8 @@ import Tile from "ol/Tile";
 import TileState from "ol/TileState";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import TileLayer from "ol/layer/Tile";
-import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import type TileSourceType from "ol/source/Tile";
-import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
+import WMTS, { optionsFromCapabilities, Options as WMTSSourceOptions } from "ol/source/WMTS";
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -40,7 +39,7 @@ export interface WMTSLayerConfig extends LayerConfig {
      * NOTE: These options are intended for advanced configuration:
      * the WMTS Layer manages some of the OpenLayers source options itself.
      */
-    sourceOptions?: Partial<WMSSourceOptions>;
+    sourceOptions?: Partial<WMTSSourceOptions>;
 }
 
 const LOG = createLogger("map:WMTSLayer");
@@ -63,7 +62,7 @@ export class WMTSLayer extends AbstractLayer {
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
     #source: WMTS | undefined;
-    #sourceOptions?: Partial<WMSSourceOptions>;
+    #sourceOptions?: Partial<WMTSSourceOptions>;
     #legend = reactive<string | undefined>();
 
     #loadStarted = false;
@@ -166,8 +165,25 @@ export class WMTSLayer extends AbstractLayer {
                     matrixSet: this.#matrixSet
                 });
                 if (!options) {
-                    throw new Error("Layer was not found in capabilities");
+                    throw new Error(`Layer '${this.#name}' was not found in capabilities`);
                 }
+                if (options.matrixSet !== this.#matrixSet) {
+                    throw new Error(
+                        `Tile matrix set '${this.#matrixSet}' was not found in capabilities`
+                    );
+                }
+                if (this.#sourceOptions?.style && this.#sourceOptions.style !== options.style) {
+                    const styleToUse = this.#existsStyleInCapabilities(
+                        capabilities,
+                        this.#sourceOptions.style
+                    );
+                    if (!styleToUse) {
+                        throw new Error(
+                            `Style '${this.#sourceOptions.style}' was not found in capabilities`
+                        );
+                    }
+                }
+
                 const source = new WMTS({
                     ...options,
                     ...this.#sourceOptions,
@@ -184,12 +200,23 @@ export class WMTSLayer extends AbstractLayer {
             .catch((error) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
-                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
                     return;
                 }
-                LOG.error(`Failed fetching WMTS capabilities for Layer ${this.name}`, error);
+                LOG.error(`Failed initialize WMTS for Layer ${this.name}`, error);
+                //TODO: how to set the load state to error?
             });
     }
+
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    #existsStyleInCapabilities(capabilities: any, styleToUse: string): boolean {
+        // NOTE: we have a style override, check if the style exists in the capabilities
+        // the helper optionsFromCapabilities, supports style, too, but uses the Title instead of the Identifier, to find a match in the capabilities
+        const layerDesc = capabilities.Contents?.Layer?.find(
+            (layer: any) => layer.Identifier === this.#name
+        );
+        return layerDesc?.Style?.some((style: any) => style.Identifier === styleToUse) ?? false;
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     async #fetchWMTSCapabilities(): Promise<string> {
         const httpService = this[GET_DEPS]().httpService;

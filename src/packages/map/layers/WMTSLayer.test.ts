@@ -35,23 +35,15 @@ it("uses http service to fetch images", async () => {
         It triggers a load() on the source used by the tile layer (in a way usually done
         by the open layers map) and checks that the mocked httpService is actually being called for the URL.
     */
+    const fetch = fetchStaticCapas(WMTS_CAPAS);
 
-    const fetch = vi.fn(async (url: string) => {
-        if (url === SERVICE_URL) {
-            return new Response(WMTS_CAPAS, {
-                status: 200
-            });
-        }
-
-        return new Response("", { status: 200 }); // tile req
-    });
     const { layer } = createLayer({
         title: "foo",
         name: "layer-7328",
         matrixSet: "EPSG:3857",
         url: SERVICE_URL,
         attach: true,
-        fetch: fetch
+        fetch
     });
 
     // Initializes with metadata
@@ -65,6 +57,136 @@ it("uses http service to fetch images", async () => {
     tile.load();
     expect(fetch).toHaveBeenCalledOnce();
 });
+
+it("logs error when capabilities cannot be fetched", async () => {
+    const fetch = vi.fn().mockImplementation(async (url: string) => {
+        if (url === SERVICE_URL) {
+            return new Response("Service not found", {
+                status: 404
+            });
+        }
+
+        return new Response("", { status: 200 }); // tile req
+    });
+    const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const l = createLayer({
+        title: "foo",
+        name: "layer-7328",
+        matrixSet: "EPSG:3857",
+        url: SERVICE_URL,
+        attach: true,
+        fetch: fetch
+    });
+
+    // wait for async operations
+    await vi.waitFor(() => {
+        expect(logErrorSpy).toHaveBeenCalled();
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(`${logErrorSpy.mock.lastCall![1]}`).toContain("404");
+    });
+    // TODO: should be "error" once implemented
+    expect(l.layer.loadState).toBe("loaded");
+});
+
+it("logs error when layer not detected in capabilities", async () => {
+    const fetch = fetchStaticCapas(WMTS_CAPAS);
+    const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    createLayer({
+        title: "foo",
+        name: "layer-not-found",
+        matrixSet: "EPSG:3857",
+        url: SERVICE_URL,
+        attach: true,
+        fetch: fetch
+    });
+
+    // wait for async operations
+    await vi.waitFor(() => {
+        expect(logErrorSpy).toHaveBeenCalled();
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
+            "Layer 'layer-not-found' was not found in capabilities"
+        );
+    });
+});
+
+it("logs error when matrixset not detected in capabilities", async () => {
+    const fetch = fetchStaticCapas(WMTS_CAPAS);
+    const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    createLayer({
+        title: "foo",
+        name: "layer-7328",
+        matrixSet: "EPSG:9999",
+        url: SERVICE_URL,
+        attach: true,
+        fetch: fetch
+    });
+
+    // wait for async operations
+    await vi.waitFor(() => {
+        expect(logErrorSpy).toHaveBeenCalled();
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
+            "Tile matrix set 'EPSG:9999' was not found in capabilities"
+        );
+    });
+});
+
+it("logs error when style not detected in capabilities", async () => {
+    const fetch = fetchStaticCapas(WMTS_CAPAS);
+    const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    createLayer({
+        title: "foo",
+        name: "layer-7328",
+        matrixSet: "EPSG:3857",
+        sourceOptions: {
+            style: "non-existent-style"
+        },
+        url: SERVICE_URL,
+        attach: true,
+        fetch: fetch
+    });
+
+    // wait for async operations
+    await vi.waitFor(() => {
+        expect(logErrorSpy).toHaveBeenCalled();
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
+            "Style 'non-existent-style' was not found in capabilities"
+        );
+    });
+});
+
+it("allows switching of style, when supported in capabilities", async () => {
+    const fetch = fetchStaticCapas(WMTS_CAPAS);
+    const { layer } = createLayer({
+        title: "foo",
+        name: "layer-7328",
+        matrixSet: "EPSG:3857",
+        sourceOptions: {
+            style: "style=40"
+        },
+        url: SERVICE_URL,
+        attach: true,
+        fetch: fetch
+    });
+
+    // Initializes with metadata
+    const source = await waitForSource(layer);
+    expect(source.getStyle()).toBe("style=40");
+});
+
+function fetchStaticCapas(capabilities: string) {
+    return vi.fn(async (url: string) => {
+        if (url === SERVICE_URL) {
+            return new Response(capabilities, {
+                status: 200
+            });
+        }
+        return new Response("", { status: 200 }); // tile req
+    });
+}
 
 function createLayer(
     options: WMTSLayerConfig & { fetch?: Mock; attach?: boolean; waitForCapas?: boolean }
