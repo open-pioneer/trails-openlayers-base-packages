@@ -182,7 +182,6 @@ export class WMTSLayer extends AbstractLayer {
                             `Style '${this.#sourceOptions.style}' was not found in capabilities`
                         );
                     }
-                    options.style = this.#sourceOptions.style;
                 }
 
                 const source = new WMTS({
@@ -208,21 +207,16 @@ export class WMTSLayer extends AbstractLayer {
             });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     #existsStyleInCapabilities(capabilities: any, styleToUse: string): boolean {
         // NOTE: we have a style override, check if the style exists in the capabilities
         // the helper optionsFromCapabilities, supports style, too, but uses the Title instead of the Identifier, to find a match in the capabilities
         const layerDesc = capabilities.Contents?.Layer?.find(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (layer: any) => layer.Identifier === this.#name
         );
-        return (
-            layerDesc?.Style?.some(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (style: any) => style.Identifier === styleToUse
-            ) ?? false
-        );
+        return layerDesc?.Style?.some((style: any) => style.Identifier === styleToUse) ?? false;
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     async #fetchWMTSCapabilities(): Promise<string> {
         const httpService = this[GET_DEPS]().httpService;
