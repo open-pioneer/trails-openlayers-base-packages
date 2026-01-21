@@ -24,4 +24,4 @@
 "@open-pioneer/toc": patch
 ---
 
-Update to chakra 3.30.0
+Update to Chakra 3.31.0
