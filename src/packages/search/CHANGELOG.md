@@ -1,5 +1,26 @@
 # @open-pioneer/search
 
+## 1.2.0
+
+### Minor Changes
+
+- 1b5632a: Provide a search API method to programmatically set the search value input without triggering any search actions.
+  See README for details.
+
+### Patch Changes
+
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+- Updated dependencies [597584b]
+- Updated dependencies [9c29256]
+- Updated dependencies [279ca67]
+- Updated dependencies [597584b]
+- Updated dependencies [9580bb4]
+- Updated dependencies [9580bb4]
+    - @open-pioneer/map@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
