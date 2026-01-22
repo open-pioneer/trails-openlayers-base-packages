@@ -142,7 +142,7 @@ export const Search: FC<SearchProps> = (props) => {
     const ariaMessages = useAriaMessages(intl);
     const components = useCustomComponents();
 
-    const portalDiv = useRef<HTMLDivElement>(null);
+    const [portalDiv, setPortalDiv] = useState<HTMLDivElement | null>(null);
 
     const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
         // Only update the input if the user actually typed something.
@@ -216,10 +216,10 @@ export const Search: FC<SearchProps> = (props) => {
                 components={components}
                 onChange={handleSelectChange}
                 value={selectedOption}
-                menuPortalTarget={portalDiv.current}
+                menuPortalTarget={portalDiv}
             />
             <Portal>
-                <chakra.div ref={portalDiv} className="search-component-menu" />
+                <chakra.div ref={setPortalDiv} className="search-component-menu" />
             </Portal>
         </Box>
     );
