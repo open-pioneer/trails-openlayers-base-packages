@@ -20,8 +20,9 @@ import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
-import type { BaseFeature } from "../utils/BaseFeature";
+import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
+import type { BaseFeature } from "../utils/BaseFeature";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
@@ -31,7 +32,7 @@ import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
 
-const LOG = createLogger("map:MapModel");
+const LOG = createLogger(sourceId);
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;

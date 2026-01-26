@@ -13,6 +13,7 @@ import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
+import { sourceId } from "open-pioneer:source-info";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase } from "./AbstractLayerBase";
@@ -28,7 +29,7 @@ import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
 
-const LOG = createLogger("map:AbstractLayer");
+const LOG = createLogger(sourceId);
 
 /**
  * The load state of a layer.

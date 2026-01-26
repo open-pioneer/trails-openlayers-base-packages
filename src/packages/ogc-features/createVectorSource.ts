@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { FeatureLike } from "ol/Feature";
 import { FeatureLoader } from "ol/featureloader";
 import FeatureFormat from "ol/format/Feature";
 import GeoJSON from "ol/format/GeoJSON";
 import { bbox } from "ol/loadingstrategy";
 import VectorSource from "ol/source/Vector";
+import { sourceId } from "open-pioneer:source-info";
+import { OgcFeatureVectorSourceOptions } from "./api";
 import { CollectionInfos, getCollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./requestUtils";
-import { OgcFeatureVectorSourceOptions } from "./api";
-import { HttpService } from "@open-pioneer/http";
 
-const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
+const LOG = createLogger(sourceId);
 const DEFAULT_LIMIT = 5000;
 const DEFAULT_CONCURRENTY = 6;
 

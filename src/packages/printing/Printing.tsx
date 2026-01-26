@@ -8,11 +8,12 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
 
-const LOG = createLogger("printing");
+const LOG = createLogger(sourceId);
 
 /**
  * This is special property for the Printing.

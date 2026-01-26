@@ -14,6 +14,7 @@ import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import ImageWMS from "ol/source/ImageWMS";
+import { sourceId } from "open-pioneer:source-info";
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
@@ -63,7 +64,7 @@ export interface WMSLayerConfig extends LayerConfig {
     fetchCapabilities?: boolean;
 }
 
-const LOG = createLogger("map:WMSLayer");
+const LOG = createLogger(sourceId);
 
 const deprecatedConstructor = deprecated({
     name: "WMSLayer constructor",

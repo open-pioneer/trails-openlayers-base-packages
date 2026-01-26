@@ -13,6 +13,7 @@ import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
+import { sourceId } from "open-pioneer:source-info";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
@@ -29,7 +30,7 @@ registerProjections({
     "EPSG:25833":
         "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
 });
-const LOG = createLogger("map:createMapModel");
+const LOG = createLogger(sourceId);
 
 export async function createMapModel(
     mapId: string,

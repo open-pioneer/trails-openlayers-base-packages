@@ -5,10 +5,11 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { DemoInfo } from "./AppInitModel";
+import { sourceId } from "open-pioneer:source-info";
 import { Demo, DemoModel } from "../demos/Demo";
+import { DemoInfo } from "./AppInitModel";
 
-const LOG = createLogger("app::AppModel");
+const LOG = createLogger(sourceId);
 
 export class AppModel {
     #mapModel: MapModel;

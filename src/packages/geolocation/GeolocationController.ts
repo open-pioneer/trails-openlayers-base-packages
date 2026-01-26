@@ -15,8 +15,9 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
+import { sourceId } from "open-pioneer:source-info";
 
-const LOG = createLogger("geolocation:GeolocationController");
+const LOG = createLogger(sourceId);
 const DEFAULT_MAX_ZOOM = 17;
 
 export type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";

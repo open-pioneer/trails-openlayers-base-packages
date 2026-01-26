@@ -18,7 +18,18 @@ import {
     SingleValue
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { FC, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+    SearchApi,
+    SearchClearEvent,
+    SearchClearTrigger,
+    SearchDisposedEvent,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent,
+    SearchSource
+} from "./api";
 import {
     ClearIndicator,
     GroupComp,
@@ -31,20 +42,10 @@ import {
     SingleValue as SingleValueComp,
     ValueContainer
 } from "./CustomComponents";
-import { SearchController, SuggestionGroup } from "./SearchController";
-import {
-    SearchClearEvent,
-    SearchApi,
-    SearchDisposedEvent,
-    SearchReadyEvent,
-    SearchResult,
-    SearchSelectEvent,
-    SearchSource,
-    SearchClearTrigger
-} from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
+import { SearchController, SuggestionGroup } from "./SearchController";
 
-const LOG = createLogger("search:Search");
+const LOG = createLogger(sourceId);
 
 export interface SearchOption {
     /** Unique value for this option. */

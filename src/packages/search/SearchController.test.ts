@@ -94,7 +94,7 @@ it("expect controller to filter rejected queries and return only successfully re
       [MockFunction error] {
         "calls": [
           [
-            "[ERROR] search:SearchController: search for source Rejected failed",
+            "[ERROR] @open-pioneer/search/SearchController: search for source Rejected failed",
             [Error: search with aa rejected],
           ],
         ],
