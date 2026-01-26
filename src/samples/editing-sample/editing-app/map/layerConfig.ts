@@ -26,23 +26,24 @@ export const LAYER_CONFIG: LayerConfig[] = [
         }),
         template: {
             name: "Waldschaden",
+            kind: "declarative",
             geometryType: "Point",
             prototype: {
                 saniert: false
             },
-            fieldInputs: [
+            fields: [
                 {
                     label: "Baumart",
-                    fieldName: "baumart",
-                    inputType: "text-field",
-                    required: true
+                    type: "text-field",
+                    propertyName: "baumart",
+                    isRequired: true
                 },
                 {
                     label: "Schadursache",
-                    fieldName: "schadursache",
-                    inputType: "select",
-                    required: true,
+                    type: "select",
+                    propertyName: "schadursache",
                     valueType: "number",
+                    isRequired: true,
                     options: [
                         {
                             label: "abiotische Ursache",
@@ -68,27 +69,31 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Schadmenge",
-                    fieldName: "schadmenge",
-                    inputType: "number",
-                    required: true,
+                    type: "number-field",
+                    propertyName: "schadmenge",
+                    isRequired: true,
                     min: 1,
-                    precision: 0,
+                    formatOptions: {
+                        maximumFractionDigits: 0
+                    },
                     step: 1,
                     showSteppers: true
                 },
                 {
                     label: "Schadumfang [%]",
-                    fieldName: "schadumfang",
-                    inputType: "number",
+                    type: "number-field",
+                    propertyName: "schadumfang",
                     min: 0,
                     max: 100,
-                    precision: 1,
+                    formatOptions: {
+                        maximumFractionDigits: 1
+                    },
                     showSteppers: false
                 },
                 {
                     label: "Sanierungszustand",
-                    fieldName: "saniert",
-                    inputType: "check-box",
+                    type: "check-box",
+                    propertyName: "saniert",
                     checkBoxLabel: "Saniert"
                 }
             ]
@@ -105,14 +110,15 @@ export const LAYER_CONFIG: LayerConfig[] = [
         }),
         template: {
             name: "Waldweg",
+            kind: "declarative",
             geometryType: "LineString",
-            fieldInputs: [
+            fields: [
                 {
                     label: "Wegtyp",
-                    fieldName: "wegtyp",
-                    inputType: "select",
-                    required: true,
+                    type: "select",
+                    propertyName: "wegtyp",
                     valueType: "number",
+                    isRequired: true,
                     options: [
                         {
                             label: "Abfuhrweg",
@@ -138,8 +144,8 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Befahrbarkeit",
-                    fieldName: "befahrbarkeit",
-                    inputType: "select",
+                    type: "select",
+                    propertyName: "befahrbarkeit",
                     valueType: "string",
                     options: [
                         {
@@ -158,10 +164,12 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Wegbreite [m]",
-                    fieldName: "wegbreite",
-                    inputType: "number",
+                    type: "number-field",
+                    propertyName: "wegbreite",
                     min: 0,
-                    precision: 2,
+                    formatOptions: {
+                        maximumFractionDigits: 2
+                    },
                     step: 1,
                     showSteppers: true
                 }
@@ -184,17 +192,18 @@ export const LAYER_CONFIG: LayerConfig[] = [
         },
         template: {
             name: "Schutzgebiet",
+            kind: "declarative",
             geometryType: "Polygon",
             prototype: {
                 farbe: "#2196f3"
             },
-            fieldInputs: [
+            fields: [
                 {
                     label: "Schutzgebietsart",
-                    fieldName: "schutzgebietsart",
-                    inputType: "select",
-                    required: true,
+                    type: "select",
+                    propertyName: "schutzgebietsart",
                     valueType: "number",
+                    isRequired: true,
                     options: [
                         {
                             label: "Bannwald",
@@ -248,10 +257,10 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Farbe",
-                    fieldName: "farbe",
-                    inputType: "color",
-                    required: true,
-                    colors: [
+                    type: "color-picker",
+                    propertyName: "farbe",
+                    isRequired: true,
+                    swatchColors: [
                         "#000000",
                         "#4A5568",
                         "#F56565",
@@ -285,14 +294,15 @@ export const LAYER_CONFIG: LayerConfig[] = [
         }),
         template: {
             name: "Bodenprobe",
+            kind: "declarative",
             geometryType: "Circle",
-            fieldInputs: [
+            fields: [
                 {
                     label: "Art der Bodenprobe",
-                    fieldName: "art",
-                    inputType: "select",
-                    required: true,
+                    type: "select",
+                    propertyName: "art",
                     valueType: "number",
+                    isRequired: true,
                     options: [
                         {
                             label: "pH-Wert",
@@ -318,14 +328,14 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Probenahmedatum",
-                    fieldName: "datum",
-                    inputType: "date",
-                    required: true
+                    type: "date-picker",
+                    propertyName: "datum",
+                    isRequired: true
                 },
                 {
                     label: "Bemerkung",
-                    fieldName: "bemerkung",
-                    inputType: "text-area"
+                    type: "text-area",
+                    propertyName: "bemerkung"
                 }
             ]
         }
@@ -333,32 +343,42 @@ export const LAYER_CONFIG: LayerConfig[] = [
     {
         id: "aufforstungsflaechen",
         title: "Aufforstungsflächen",
-        style: new Style({
-            fill: new Fill({
-                color: "#00aa00aa"
-            }),
-            stroke: new Stroke({
-                color: "black",
-                width: 1.0
-            })
-        }),
+        style(feature) {
+            const waldtyp = feature.get("waldtyp") as string;
+            const colors: Record<string, string> = {
+                laubwald: "#90ee90aa",
+                nadelwald: "#006400aa",
+                mischwald: "#3cb371aa",
+                other: "#808080aa"
+            };
+            return new Style({
+                fill: new Fill({
+                    color: colors[waldtyp] ?? colors.other
+                }),
+                stroke: new Stroke({
+                    color: "black",
+                    width: 1.0
+                })
+            });
+        },
         template: {
             name: "Aufforstungsfläche",
+            kind: "declarative",
             geometryType: "Circle",
             icon: PiRectangleBold({ size: 20 }),
             prototype: {
                 aufforstungsjahr: new Date().getFullYear()
             },
-            drawOptions: {
+            drawingOptions: {
                 geometryFunction: createBox()
             },
-            fieldInputs: [
+            fields: [
                 {
                     label: "Waldtyp",
-                    fieldName: "waldtyp",
-                    inputType: "select",
-                    required: true,
+                    type: "select",
+                    propertyName: "waldtyp",
                     valueType: "string",
+                    isRequired: true,
                     options: [
                         {
                             label: "Laubwald",
@@ -376,18 +396,24 @@ export const LAYER_CONFIG: LayerConfig[] = [
                 },
                 {
                     label: "Pflanzendichte [#/ha]",
-                    fieldName: "pflanzendichte",
-                    inputType: "number",
+                    type: "number-field",
+                    propertyName: "pflanzendichte",
                     min: 0,
-                    precision: 0
+                    formatOptions: {
+                        maximumFractionDigits: 0
+                    }
                 },
                 {
                     label: "Aufforstungsjahr",
-                    fieldName: "aufforstungsjahr",
-                    inputType: "number",
+                    type: "number-field",
+                    propertyName: "aufforstungsjahr",
                     min: 1900,
                     max: 2100,
-                    precision: 0
+                    showSteppers: true,
+                    formatOptions: {
+                        maximumFractionDigits: 0,
+                        useGrouping: false
+                    }
                 }
             ]
         }
@@ -398,5 +424,5 @@ interface LayerConfig {
     readonly id: string;
     readonly title: string;
     readonly style: StyleLike;
-    readonly template: Omit<FeatureTemplate, "id">;
+    readonly template: FeatureTemplate;
 }

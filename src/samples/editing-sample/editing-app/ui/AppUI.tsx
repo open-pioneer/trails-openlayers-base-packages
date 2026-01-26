@@ -12,7 +12,8 @@ import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 
 import { useCallback, useState, type ReactElement } from "react";
-import { LuMenu, LuPencil } from "react-icons/lu";
+import { LuMenu } from "react-icons/lu";
+import { PiPencil } from "react-icons/pi";
 
 import { MAP_ID } from "../map/MainMapProvider";
 import { EditingComponent } from "./EditingComponent";
@@ -63,7 +64,7 @@ export function AppUI(): ReactElement | undefined {
                                     />
                                     <ToolButton
                                         label="Editing"
-                                        icon={<LuPencil />}
+                                        icon={<PiPencil />}
                                         active={editingIsActive}
                                         onClick={toggleEditing}
                                     />

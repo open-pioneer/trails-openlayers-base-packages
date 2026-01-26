@@ -1,59 +1,72 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-export { Editor, type EditorProps, type OnEditingStepChange } from "./Editor";
-export { useEditing, type EditingOptions } from "./hooks/editing/useEditing";
+
+// =================================================================
+// Editor, property form context, and editing hook
+// =================================================================
+export { Editor, type EditorProps, type OnEditingStepChange } from "./api/editor/editor";
+export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./api/editor/context";
+export { useEditing, type EditingOptions } from "./api/editor/editing";
+
+// =================================================================
+// Editing model types
+// =================================================================
+export type { DrawingActions, DrawingCapabilities, DrawingState } from "./api/model/DrawingState";
 
 export type {
-    InteractionOptions,
-    DrawOptions,
-    SelectOptions,
-    ModifyOptions,
-    SnapOptions,
-    HighlightOptions
-} from "./hooks/editing/controller/EditingController";
-
-export { usePropertyFormContext } from "./context/usePropertyFormContext";
-export type { PropertyFormContext } from "./context/PropertyFormContext";
-
-export {
-    DefaultPropertyForm,
-    type DefaultPropertyFormProps,
-    type FieldInputsProvider
-} from "./components/form/DefaultPropertyForm";
-
-export {
-    DefaultInputControl,
-    type DefaultInputControlProps
-} from "./components/form/DefaultInputControl";
-
-export type {
-    EditingHandler,
     AddFeatureHandler,
     DeleteFeatureHandler,
+    EditingHandler,
     UpdateFeatureHandler
-} from "./model/EditingHandler";
-
-export type { EditingState, EditingOperator, EditingCapabilities } from "./model/EditingState";
+} from "./api/model/EditingHandler";
 
 export type {
-    EditingStep,
-    ModificationStep,
-    InitialStep,
-    DrawingStep,
-    SelectionStep,
     CreationStep,
+    DrawingStep,
+    EditingStep,
+    InitialStep,
+    ModificationStep,
+    SelectionStep,
     UpdateStep
-} from "./model/EditingStep";
+} from "./api/model/EditingStep";
 
 export type {
+    BaseFeatureTemplate,
+    DeclarativeFormTemplate,
+    DynamicFormTemplate,
     FeatureTemplate,
-    CheckBoxInput,
-    ColorInput,
-    DateInput,
-    FieldInput,
-    InputType,
-    NumberInput,
-    SelectInput,
-    TextAreaInput,
-    TextFieldInput
-} from "./model/FeatureTemplate";
+    FormTemplate,
+    FormTemplateProvider
+} from "./api/model/FeatureTemplate";
+
+export type {
+    DrawingOptions,
+    InteractionOptions,
+    ModificationOptions,
+    SelectionOptions,
+    SnappingOptions
+} from "./api/model/InteractionOptions";
+
+// =================================================================
+// Field configurations
+// =================================================================
+export type { FieldConfig, FieldConfigType } from "./api/fields/FieldConfig";
+export type { PropertyFunction, PropertyFunctionOr } from "./api/fields/BaseFieldConfig";
+export type { CustomFieldConfig, OnCustomFieldChange } from "./api/fields/CustomFieldConfig";
+
+export type {
+    ComboBoxConfig,
+    RadioGroupConfig,
+    SelectConfig,
+    Option
+} from "./api/fields/optionFieldConfigs";
+
+export type {
+    CheckBoxConfig,
+    ColorPickerConfig,
+    DatePickerConfig,
+    NumberFieldConfig,
+    SwitchConfig,
+    TextAreaConfig,
+    TextFieldConfig
+} from "./api/fields/standardFieldConfigs";

@@ -56,8 +56,7 @@ export class MainMapProvider implements MapConfigProvider {
                     }),
                     style,
                     updateWhileAnimating: true,
-                    updateWhileInteracting: true,
-                    properties: { id, title }
+                    updateWhileInteracting: true
                 })
             });
         });
