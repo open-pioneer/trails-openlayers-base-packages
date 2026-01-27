@@ -1,0 +1,27 @@
+messages:
+  header:
+    defaultTitle: Editor
+  actionSelector:
+    editFeatureHeading: Geoobjekt bearbeiten
+    createFeatureHeading: Geoobjekt erstellen
+    selectButtonTitle: Auswählen
+    finishButtonTooltip: Zeichnen beenden
+    resetButtonTooltip: Zeichnung zurücksetzen
+    undoButtonTooltip: Rückgängig machen
+    redoButtonTooltip: Wiederholen
+  propertyEditor:
+    saveButtonTitle: Speichern
+    cancelButtonTitle: Abbrechen
+    deleteButtonTooltip: Geoobjekt löschen
+  deleteConfirmationDialog:
+    title: Geoobjekt löschen
+    message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?
+    deleteButtonTitle: Geoobjekt löschen
+    cancelButtonTitle: Abbrechen
+  notifier:
+    creationSuccess: Geoobjekt erstellt
+    creationFailure: Das Geoobjekt konnte nicht erstellt werden.
+    updateSuccess: Geoobjekt aktualisiert
+    updateFailure: Das Geoobjekt konnte nicht aktualisiert werden.
+    deletionSuccess: Geoobjekt gelöscht
+    deletionFailure: Das Geoobjekt konnte nicht gelöscht werden.

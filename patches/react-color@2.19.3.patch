@@ -1,0 +1,69 @@
+diff --git a/es/components/circle/Circle.js b/es/components/circle/Circle.js
+index 98b0d643bd90e89337f3b327e0a8994f44a4daac..6bdea2573e534f211d35694d49efce6e12bfe712 100644
+--- a/es/components/circle/Circle.js
++++ b/es/components/circle/Circle.js
+@@ -9,15 +9,19 @@ import { ColorWrap } from '../common';
+ import CircleSwatch from './CircleSwatch';
+ 
+ export var Circle = function Circle(_ref) {
+-  var width = _ref.width,
++  var _ref$width = _ref.width,
++      width = _ref$width === undefined ? 252 : _ref$width,
+       onChange = _ref.onChange,
+       onSwatchHover = _ref.onSwatchHover,
+-      colors = _ref.colors,
++      _ref$colors = _ref.colors,
++      colors = _ref$colors === undefined ? [material.red['500'], material.pink['500'], material.purple['500'], material.deepPurple['500'], material.indigo['500'], material.blue['500'], material.lightBlue['500'], material.cyan['500'], material.teal['500'], material.green['500'], material.lightGreen['500'], material.lime['500'], material.yellow['500'], material.amber['500'], material.orange['500'], material.deepOrange['500'], material.brown['500'], material.blueGrey['500']] : _ref$colors,
+       hex = _ref.hex,
+-      circleSize = _ref.circleSize,
++      _ref$circleSize = _ref.circleSize,
++      circleSize = _ref$circleSize === undefined ? 28 : _ref$circleSize,
+       _ref$styles = _ref.styles,
+       passedStyles = _ref$styles === undefined ? {} : _ref$styles,
+-      circleSpacing = _ref.circleSpacing,
++      _ref$circleSpacing = _ref.circleSpacing,
++      circleSpacing = _ref$circleSpacing === undefined ? 14 : _ref$circleSpacing,
+       _ref$className = _ref.className,
+       className = _ref$className === undefined ? '' : _ref$className;
+ 
+@@ -61,12 +65,4 @@ Circle.propTypes = {
+   styles: PropTypes.object
+ };
+ 
+-Circle.defaultProps = {
+-  width: 252,
+-  circleSize: 28,
+-  circleSpacing: 14,
+-  colors: [material.red['500'], material.pink['500'], material.purple['500'], material.deepPurple['500'], material.indigo['500'], material.blue['500'], material.lightBlue['500'], material.cyan['500'], material.teal['500'], material.green['500'], material.lightGreen['500'], material.lime['500'], material.yellow['500'], material.amber['500'], material.orange['500'], material.deepOrange['500'], material.brown['500'], material.blueGrey['500']],
+-  styles: {}
+-};
+-
+ export default ColorWrap(Circle);
+\ No newline at end of file
+diff --git a/es/components/circle/CircleSwatch.js b/es/components/circle/CircleSwatch.js
+index 6611c0da53b12419935036f530cad423ba26a5fa..f80cd9e0a3d3b1433e8cdce7b4c98ac674fa2d57 100644
+--- a/es/components/circle/CircleSwatch.js
++++ b/es/components/circle/CircleSwatch.js
+@@ -9,8 +9,10 @@ export var CircleSwatch = function CircleSwatch(_ref) {
+       onSwatchHover = _ref.onSwatchHover,
+       hover = _ref.hover,
+       active = _ref.active,
+-      circleSize = _ref.circleSize,
+-      circleSpacing = _ref.circleSpacing;
++      _ref$circleSize = _ref.circleSize,
++      circleSize = _ref$circleSize === undefined ? 28 : _ref$circleSize,
++      _ref$circleSpacing = _ref.circleSpacing,
++      circleSpacing = _ref$circleSpacing === undefined ? 14 : _ref$circleSpacing;
+ 
+   var styles = reactCSS({
+     'default': {
+@@ -54,9 +56,4 @@ export var CircleSwatch = function CircleSwatch(_ref) {
+   );
+ };
+ 
+-CircleSwatch.defaultProps = {
+-  circleSize: 28,
+-  circleSpacing: 14
+-};
+-
+ export default handleHover(CircleSwatch);
