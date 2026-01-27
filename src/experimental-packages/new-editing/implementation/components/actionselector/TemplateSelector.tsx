@@ -14,9 +14,9 @@ export function TemplateSelector({
     return (
         <Table.Root variant="line" size="sm">
             <Table.Body>
-                {templates.map((template) => (
+                {templates.map((template, index) => (
                     <TemplateRow
-                        key={template.layerId}
+                        key={index}
                         template={template}
                         isSelected={selectedTemplate === template}
                         onClick={onClick}

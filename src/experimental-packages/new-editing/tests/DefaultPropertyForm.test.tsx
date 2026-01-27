@@ -607,17 +607,19 @@ describe("DefaultPropertyForm input types", () => {
     it("renders all field inputs at once", async () => {
         const editingStep = createTestEditingStep();
 
-        render(
-            <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
-                    <DefaultPropertyForm
-                        title="All Fields"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
-                </PropertyFormContextProvider>
-            </PackageContextProvider>
-        );
+        await waitFor(() => {
+            render(
+                <PackageContextProvider>
+                    <PropertyFormContextProvider editingStep={editingStep}>
+                        <DefaultPropertyForm
+                            title="All Fields"
+                            templates={[allInputTypesTemplate]}
+                            formTemplateProvider={undefined}
+                        />
+                    </PropertyFormContextProvider>
+                </PackageContextProvider>
+            );
+        });
 
         expect(screen.getByText("Text Field")).toBeDefined();
         expect(screen.getByText("Text Area")).toBeDefined();
@@ -635,17 +637,19 @@ describe("DefaultPropertyForm input types", () => {
         const editingStep = createTestEditingStep();
         const customTitle = "My Custom Property Form";
 
-        render(
-            <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
-                    <DefaultPropertyForm
-                        title={customTitle}
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
-                </PropertyFormContextProvider>
-            </PackageContextProvider>
-        );
+        await waitFor(() => {
+            render(
+                <PackageContextProvider>
+                    <PropertyFormContextProvider editingStep={editingStep}>
+                        <DefaultPropertyForm
+                            title={customTitle}
+                            templates={[allInputTypesTemplate]}
+                            formTemplateProvider={undefined}
+                        />
+                    </PropertyFormContextProvider>
+                </PackageContextProvider>
+            );
+        });
 
         const title = screen.getByText(customTitle);
         expect(title).toBeDefined();
