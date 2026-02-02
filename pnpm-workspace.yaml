@@ -100,7 +100,8 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "jspdf@4.0.0"
+  # Renovate security update: jspdf@4.1.0
+  - "jspdf@4.0.0 || 4.1.0"
 
 overrides:
   # https://github.com/advisories/GHSA-v6h2-p8h4-qcjw
