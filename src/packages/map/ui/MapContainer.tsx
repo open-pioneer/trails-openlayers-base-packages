@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@chakra-ui/react";
-import { Resource, createLogger } from "@open-pioneer/core";
+import { BoxProps, chakra } from "@chakra-ui/react";
+import { createLogger, Resource } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
@@ -71,7 +71,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      *
      * Use cases: setting custom data attributes, registering custom event handlers, ...
      */
-    rootProps?: Record<string, unknown>;
+    rootProps?: BoxProps;
 
     /**
      * Arbitrary html properties that will be applied to the map container's element.
@@ -81,7 +81,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      *
      * Use cases: setting custom data attributes, registering custom event handlers, ...
      */
-    containerProps?: Record<string, unknown>; // TODO: HTMLChakraProps<...>
+    containerProps?: BoxProps;
 }
 
 /**

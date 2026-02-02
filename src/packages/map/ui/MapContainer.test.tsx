@@ -10,6 +10,7 @@ import {
     SimpleMapOptions,
     createTestOlLayer
 } from "@open-pioneer/map-test-utils";
+import { BoxProps } from "@chakra-ui/react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -45,9 +46,11 @@ it("supports configuration of map container root properties", async () => {
             <MapContainer
                 map={map}
                 data-testid="base"
-                rootProps={{
-                    "data-test": "foo"
-                }}
+                rootProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
             />
         </PackageContextProvider>
     );
@@ -64,9 +67,11 @@ it("supports configuration of map container properties", async () => {
             <MapContainer
                 map={map}
                 data-testid="base"
-                containerProps={{
-                    "data-test": "foo"
-                }}
+                containerProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
             />
         </PackageContextProvider>
     );
