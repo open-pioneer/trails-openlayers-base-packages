@@ -513,11 +513,9 @@ export class MapModel {
      */
     #watchLoadingState() {
         this.#loadStartEventHandler = this.#olMap.on("loadstart", () => {
-            LOG.debug("Map is loading");
             this.#olLoading.value = true;
         });
         this.#loadEndEventHandler = this.#olMap.on("loadend", () => {
-            LOG.debug("Map finished loading");
             this.#olLoading.value = false;
         });
     }
