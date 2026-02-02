@@ -62,6 +62,26 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * This property is directly applied to the map's container div element.
      */
     "aria-label"?: string;
+
+    /**
+     * Arbitrary html properties that will be applied to the map container's _root_ element.
+     * This is the element that contains the map container and any UI elements (like map anchors, for example).
+     *
+     * Use these at your own risk since they may be overwritten by the map container root itself.
+     *
+     * Use cases: setting custom data attributes, registering custom event handlers, ...
+     */
+    rootProps?: Record<string, unknown>;
+
+    /**
+     * Arbitrary html properties that will be applied to the map container's element.
+     * This is the element that _renders_ the OpenLayers map.
+     *
+     * Use these at your own risk since they may be overwritten by the map container itself.
+     *
+     * Use cases: setting custom data attributes, registering custom event handlers, ...
+     */
+    containerProps?: Record<string, unknown>; // TODO: HTMLChakraProps<...>
 }
 
 /**
@@ -78,9 +98,14 @@ export function MapContainer(props: MapContainerProps) {
         children,
         role = "application",
         "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy
+        "aria-labelledby": ariaLabelledBy,
+        rootProps,
+        containerProps
     } = props;
-    const { containerProps } = useCommonComponentProps("map-container-root", props);
+    const { containerProps: rootContainerProps } = useCommonComponentProps(
+        "map-container-root",
+        props
+    );
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
     const map = useMapModelValue(props);
@@ -114,9 +139,10 @@ export function MapContainer(props: MapContainerProps) {
     }, [viewPadding]);
 
     return (
-        <chakra.div {...containerProps} css={styleProps}>
+        <chakra.div {...rootProps} {...rootContainerProps} css={styleProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
             <chakra.div
+                {...containerProps}
                 className="map-container"
                 ref={mapContainer}
                 role={role}

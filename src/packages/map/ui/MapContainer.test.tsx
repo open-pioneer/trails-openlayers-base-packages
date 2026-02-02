@@ -38,6 +38,44 @@ it("successfully creates a map", async () => {
     expect(map?.container).toBeUndefined();
 });
 
+it("supports configuration of map container root properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                rootProps={{
+                    "data-test": "foo"
+                }}
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const root = renderResult.container.querySelector(".map-container-root");
+    expect(root).toHaveAttribute("data-test", "foo");
+});
+
+it("supports configuration of map container properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                containerProps={{
+                    "data-test": "foo"
+                }}
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const container = renderResult.container.querySelector(".map-container");
+    expect(container).toHaveAttribute("data-test", "foo");
+});
+
 it("reports an error if two map containers are used for the same map", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
     const { map } = await setupMap();
