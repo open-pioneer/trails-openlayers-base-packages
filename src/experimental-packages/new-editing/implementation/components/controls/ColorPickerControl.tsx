@@ -1,0 +1,77 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import {
+    ColorPicker,
+    HStack,
+    Portal,
+    parseColor,
+    type ColorPickerValueChangeDetails
+} from "@chakra-ui/react";
+
+import { useEvent } from "@open-pioneer/react-utils";
+import { LuCheck } from "react-icons/lu";
+import { useMemo, type ReactElement } from "react";
+import type { ColorPickerConfig } from "../../../api/fields/standardFieldConfigs";
+
+export function ColorPickerControl({
+    hexColor,
+    field,
+    onChange
+}: ColorPickerControlProps): ReactElement {
+    const defaultValue = useMemo(() => parseColor(hexColor ?? "black"), [hexColor]);
+
+    const onValueChange = useEvent((details: ColorPickerValueChangeDetails) => {
+        onChange(details.value.toString("hexa"));
+    });
+
+    return (
+        <ColorPicker.Root defaultValue={defaultValue} onValueChange={onValueChange}>
+            <ColorPicker.Control>
+                <ColorPicker.Input />
+                <ColorPicker.Trigger />
+            </ColorPicker.Control>
+            <Portal>
+                <ColorPicker.Positioner>
+                    <ColorPicker.Content>
+                        <ColorPicker.Area />
+                        <HStack>
+                            <ColorPicker.EyeDropper size="xs" variant="outline" />
+                            <ColorPicker.Sliders />
+                        </HStack>
+                        <SwatchGroup swatchColors={field.swatchColors} />
+                    </ColorPicker.Content>
+                </ColorPicker.Positioner>
+            </Portal>
+        </ColorPicker.Root>
+    );
+}
+
+function SwatchGroup({ swatchColors }: SwatchGroupProps): ReactElement | undefined {
+    if (swatchColors != null && swatchColors.length >= 1) {
+        return (
+            <ColorPicker.SwatchGroup>
+                {swatchColors.map((color) => (
+                    <ColorPicker.SwatchTrigger key={color} value={color}>
+                        <ColorPicker.Swatch boxSize={4.5} value={color}>
+                            <ColorPicker.SwatchIndicator>
+                                <LuCheck />
+                            </ColorPicker.SwatchIndicator>
+                        </ColorPicker.Swatch>
+                    </ColorPicker.SwatchTrigger>
+                ))}
+            </ColorPicker.SwatchGroup>
+        );
+    } else {
+        return undefined;
+    }
+}
+
+interface ColorPickerControlProps {
+    readonly hexColor: string | undefined;
+    readonly field: ColorPickerConfig;
+    readonly onChange: (newHexColor: string) => void;
+}
+
+interface SwatchGroupProps {
+    readonly swatchColors: string[] | undefined;
+}
