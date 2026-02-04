@@ -10,6 +10,7 @@ import {
     SimpleMapOptions,
     createTestOlLayer
 } from "@open-pioneer/map-test-utils";
+import { BoxProps } from "@chakra-ui/react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -36,6 +37,48 @@ it("successfully creates a map", async () => {
     renderResult.unmount();
     expect(map?.olMap.getTarget()).toBeUndefined();
     expect(map?.container).toBeUndefined();
+});
+
+it("supports configuration of map container root properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                rootProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const root = renderResult.container.querySelector(".map-container-root");
+    expect(root).toHaveAttribute("data-test", "foo");
+});
+
+it("supports configuration of map container properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                containerProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const container = renderResult.container.querySelector(".map-container");
+    expect(container).toHaveAttribute("data-test", "foo");
 });
 
 it("reports an error if two map containers are used for the same map", async () => {
