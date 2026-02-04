@@ -100,18 +100,11 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "jspdf@4.1.0"
+  - "@isaacs/brace-expansion@5.0.1" # see overrides
 
 overrides:
-  # https://github.com/advisories/GHSA-v6h2-p8h4-qcjw
-  "brace-expansion@>=1.0.0 <=1.1.11": "^1.1.12"
-  "brace-expansion@>=2.0.0 <=2.0.1": "^2.0.2"
-
-  # https://github.com/advisories/GHSA-52f5-9888-hmc6
-  "tmp@<=0.2.3": "^0.2.4"
-
-  # https://github.com/advisories/GHSA-mh29-5h37-fv8m
-  "js-yaml@<3.14.2": "^3.14.2"
+  # https://github.com/advisories/GHSA-7h2j-956f-4vf2
+  "@isaacs/brace-expansion@<=5.0.0": "^5.0.1"
 
   # https://github.com/advisories/GHSA-5j98-mcp5-4vw2
   "glob@>=10.x <= 11.0.3": "^11.1.0"
