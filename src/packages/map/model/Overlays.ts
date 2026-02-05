@@ -12,7 +12,6 @@ import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { Options } from "ol/Overlay";
 
-export const GET_CURRENT_OVERLAYS = Symbol("GET_CURRENT_OVERLAYS");
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
 export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
 
@@ -24,11 +23,6 @@ export class Overlays {
 
     constructor(map: MapModel) {
         this.olMap = map.olMap;
-    }
-
-    // Reactive, used by renderer
-    [GET_CURRENT_OVERLAYS](): Overlay[] {
-        return Array.from(this.overlays);
     }
 
     [REGISTER_OVERLAY](overlay: Overlay) {
@@ -47,27 +41,14 @@ export class Overlays {
         this.olMap.removeOverlay(overlay.olOverlay);
     }
 
-    /*
-    
-    addOverlay({
-        content: "foo",
-        position: {
-            kind: "mouse"
-        },
-        position: {
-            kind: "fixed",
-            // ...point
-        },
-        advanced: {
-            // ...
-        }
-    })
-
-    */
-
     addOverlay(properties: OverlayProperties): Overlay {
         const newModel = new Overlay(properties, this);
         return newModel;
+    }
+
+    // Reactive, used by renderer
+    getOverlays(): Overlay[] {
+        return Array.from(this.overlays);
     }
 }
 
@@ -82,23 +63,32 @@ export class Overlay {
     #isDestroyed = reactive(false);
     #content: Reactive<ReactNode>;
     #resources: Resource[];
+    #overlayDiv: HTMLDivElement;
 
     constructor(properties: OverlayProperties, parent: Overlays) {
-        const mode = properties.mode ?? "fixedPosition";
         this.id = uuid4v();
         this.tag = properties.tag;
-        const overlayDiv = document.createElement("div");
-        if (properties.ariaRole) {
-            overlayDiv.role = properties.ariaRole;
+        this.#overlayDiv = document.createElement("div");
+        if (!properties.mode) {
+            properties.mode = "setPosition";
+        }
+
+        const { className, ariaRole, mode, ...copyProperties } = properties;
+
+        if (ariaRole) {
+            this.#overlayDiv.role = ariaRole;
+        }
+        if (className) {
+            this.#overlayDiv.className = className;
         }
 
         //simply override with advanced OL Options if set
-        const mergedProperties = !properties.olOptions
-            ? properties
-            : { ...properties, ...properties.olOptions };
+        const mergedProperties = !copyProperties.olOptions
+            ? copyProperties
+            : { ...copyProperties, ...copyProperties.olOptions };
 
         this.olOverlay = new OlOverlay({
-            element: overlayDiv,
+            element: this.#overlayDiv,
             id: this.id,
             ...mergedProperties
         });
@@ -149,12 +139,44 @@ export class Overlay {
         return this.olOverlay.getPosition();
     }
 
+    get className() {
+        return this.#overlayDiv.className;
+    }
+
+    get offset() {
+        return this.olOverlay.getOffset();
+    }
+
+    get positioning(): OverlayPositioning {
+        return this.olOverlay.getPositioning();
+    }
+
+    get ariaRole(): string | undefined {
+        return this.#overlayDiv.role ?? undefined;
+    }
+
     setContent(content: ReactNode): void {
         this.#content.value = content;
     }
 
     setPosition(position: Coordinate | undefined) {
         this.olOverlay.setPosition(position);
+    }
+
+    setClassName(className: string) {
+        this.#overlayDiv.className = className;
+    }
+
+    setOffset(offset: number[]) {
+        this.olOverlay.setOffset(offset);
+    }
+
+    setPositioning(positioning: OverlayPositioning) {
+        this.olOverlay.setPositioning(positioning);
+    }
+
+    setAriaRole(ariaRole: string) {
+        this.#overlayDiv.role = ariaRole;
     }
 }
 

@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { MapModel } from "../model/MapModel";
-import { GET_CURRENT_OVERLAYS, Overlay } from "../model/Overlays";
+import { Overlay } from "../model/Overlays";
 import { createPortal } from "react-dom";
 
 export function OverlaysRenderer(props: { map: MapModel }) {
     const { map } = props;
     const overlays = useReactiveSnapshot(() => {
-        return map.overlays[GET_CURRENT_OVERLAYS]();
+        return map.overlays.getOverlays();
     }, [map]);
     return overlays.map((overlay) => <OverlayRenderer key={overlay.id} overlay={overlay} />);
 }

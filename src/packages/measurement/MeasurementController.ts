@@ -397,10 +397,8 @@ class MeasurementInstance {
     }
 
     finishTooltip() {
-        //destroy old "active" overlay and create new "finished" overlay
-        this.tooltip.destroy();
-
-        this.tooltip = createMeasureTooltip(this.controller.map, true);
+        this.tooltip.setClassName(FINISHED_MEASUREMENT_CLASSNAME);
+        this.tooltip.setOffset(FINISHED_MEASUREMENT_OFFSET);
         this.updateTooltipContent();
         this.updateTooltipPosition();
     }
@@ -416,6 +414,8 @@ class MeasurementInstance {
 
 const DEFAULT_MEASUREMENT_OFFSET = [0, -15];
 const FINISHED_MEASUREMENT_OFFSET = [0, -7];
+const ACTIVE_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-active-tooltip printing-hide";
+const FINISHED_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-finished-tooltip";
 
 function createHelpTooltip(map: MapModel): Overlay {
     const helpOverlay = map.overlays.addOverlay({
@@ -432,16 +432,11 @@ function createHelpTooltip(map: MapModel): Overlay {
 }
 
 function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
-    // const element = document.createElement("div");
-    // element.role = "tooltip";
-
     const overlay = map.overlays.addOverlay({
         content: createElement(MeasurementOverlayContent),
         offset: !isFinished ? DEFAULT_MEASUREMENT_OFFSET : FINISHED_MEASUREMENT_OFFSET,
         positioning: "bottom-center",
-        className: !isFinished
-            ? "measurement-tooltip measurement-active-tooltip printing-hide"
-            : "measurement-tooltip measurement-finished-tooltip",
+        className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,
         stopEvent: false,
         ariaRole: "tooltip",
         olOptions: {
