@@ -1,19 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, vi, it } from "vitest";
+import { MapContainer, MapModel } from "@open-pioneer/map";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { render, waitFor } from "@testing-library/react";
+import { createElement } from "react";
+import { afterEach, expect, it, vi } from "vitest";
 import { DragController } from "./DragController";
-import { waitFor } from "@testing-library/react";
-import { setupMap } from "@open-pioneer/map-test-utils";
-import { MapModel } from "@open-pioneer/map";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it.only("expect tooltip to be successfully created after construction", async () => {
-    const { map, tooltipTest } = await createController();
+    const { map, tooltipText } = await createController();
     const activeTooltip = getTooltipElement(map, "selection-tooltip");
-    await waitFor(() => expect(activeTooltip.textContent).not.toEqual(""));
+    await waitFor(() => expect(activeTooltip.textContent).toBe(tooltipText));
 });
 
 it("expect extent handler to be called", async () => {
@@ -25,7 +27,13 @@ it("expect extent handler to be called", async () => {
 });
 
 it("expect interactions, tooltip and cursor correspond to controller state", async () => {
-    const { map, olMap, controller, tooltipTest, disabledTooltipText } = await createController();
+    const {
+        map,
+        olMap,
+        controller,
+        tooltipText: tooltipTest,
+        disabledTooltipText
+    } = await createController();
     const activeTooltip = getTooltipElement(map, "selection-tooltip");
 
     const dragBox = controller.getDragboxInteraction()?.interaction;
@@ -53,13 +61,21 @@ it("expect interactions, tooltip and cursor correspond to controller state", asy
 
 async function createController() {
     const { map } = await setupMap();
+    render(
+        createElement(
+            PackageContextProvider,
+            {},
+            createElement(MapContainer, { map, "data-testid": "base" })
+        )
+    );
+    await waitForMapMount();
 
     const olMap = map.olMap;
-    const tooltipTest = "Tooltip wurde gesetzt";
+    const tooltipText = "Tooltip wurde gesetzt";
     const disabledTooltipText = "Funktion ist deaktiviert";
     const extentHandler = vi.fn();
-    const controller = new DragController(map, tooltipTest, disabledTooltipText, extentHandler);
-    return { map, olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
+    const controller = new DragController(map, tooltipText, disabledTooltipText, extentHandler);
+    return { map, olMap, controller, tooltipText, extentHandler, disabledTooltipText };
 }
 
 function getTooltipElement(map: MapModel, expectedClassname: string): HTMLElement {
