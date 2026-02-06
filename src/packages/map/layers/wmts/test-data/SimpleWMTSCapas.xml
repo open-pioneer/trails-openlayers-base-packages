@@ -55,6 +55,10 @@
                 <ows:Title>Weighted point styles</ows:Title>
                 <ows:Identifier>style=39</ows:Identifier>
             </Style>
+            <Style isDefault="false">
+                <ows:Title>Second point styles</ows:Title>
+                <ows:Identifier>style=40</ows:Identifier>
+            </Style>
             <Format>image/png</Format>
             <InfoFormat>application/json</InfoFormat>
             <InfoFormat>text/html</InfoFormat>

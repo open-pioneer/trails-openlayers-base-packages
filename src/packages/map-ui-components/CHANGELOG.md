@@ -1,5 +1,21 @@
 # @open-pioneer/map-ui-components
 
+## 1.2.0
+
+### Patch Changes
+
+- 9c29256: Update to core packages 4.4.0
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+
 ## 1.0.0
 
 ### Minor Changes

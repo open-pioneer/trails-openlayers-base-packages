@@ -16,16 +16,17 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { Feature } from "ol";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
+import { Geometry } from "ol/geom";
 import { Select } from "ol/interaction";
+import { SelectEvent } from "ol/interaction/Select";
 import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { useEffect, useId, useState } from "react";
 import { AppModel } from "../AppModel";
-import { SelectEvent } from "ol/interaction/Select";
-import { Geometry } from "ol/geom";
-import VectorSource from "ol/source/Vector";
 
-const LOG = createLogger("ol-app:Editing");
+const LOG = createLogger(sourceId);
 
 export type EditingKind = "create" | "update";
 

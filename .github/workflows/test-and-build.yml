@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -45,7 +45,7 @@ jobs:
         run: pnpm build-license-report;
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: build
           path: dist/
@@ -59,7 +59,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -90,10 +90,13 @@ jobs:
       - version
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+        with:
+          # https://github.com/JamesIves/github-pages-deploy-action/issues/1928#issuecomment-3635092712
+          persist-credentials: false
 
       - name: Load artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: build
           path: dist/

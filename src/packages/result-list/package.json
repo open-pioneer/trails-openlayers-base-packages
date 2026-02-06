@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/result-list",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "This package provides a UI component to display features and their attributes.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -21,7 +21,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
@@ -33,9 +33,10 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
-        "test-utils": "workspace:^",
+        "@formatjs/intl": "catalog:",
+        "test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

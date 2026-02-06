@@ -1,5 +1,44 @@
 # @open-pioneer/toc
 
+## 1.2.0
+
+### Patch Changes
+
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+- Updated dependencies [597584b]
+- Updated dependencies [9c29256]
+- Updated dependencies [279ca67]
+- Updated dependencies [597584b]
+- Updated dependencies [9580bb4]
+- Updated dependencies [9580bb4]
+    - @open-pioneer/map@1.2.0
+    - @open-pioneer/basemap-switcher@1.2.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- c38b619: Layers that are not visible in the current resolution of the map are indicated with an icon and disabled text (but are still selectable by the user).
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+- Updated dependencies [fce7fa9]
+- Updated dependencies [c38b619]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+- Updated dependencies [a8b8a36]
+- Updated dependencies [10338fa]
+- Updated dependencies [c38b619]
+    - @open-pioneer/map@1.1.0
+    - @open-pioneer/basemap-switcher@1.1.0
+
 ## 1.0.0
 
 ### Minor Changes

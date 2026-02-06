@@ -39,3 +39,13 @@ export function useLoadState(layer: AnyLayer): string {
         return target.loadState;
     }, [layer]);
 }
+
+/** Returns the layers current visibility. */
+export function useVisibleInScale(layer: AnyLayer): boolean {
+    return useReactiveSnapshot(() => {
+        // for sublayers, use the state of the parent
+        const target = isSublayer(layer) ? layer.parentLayer : layer;
+
+        return target.visibleInScale;
+    }, [layer]);
+}

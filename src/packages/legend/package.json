@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/legend",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "This package provides a legend UI component that allows a user to see legend information for layers in the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "classnames": "catalog:",
@@ -28,7 +28,7 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },

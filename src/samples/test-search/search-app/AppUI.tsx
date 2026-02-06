@@ -121,6 +121,13 @@ export function AppUI() {
                                         >
                                             reset search input
                                         </Button>
+                                        <Button
+                                            onClick={() => {
+                                                searchApiRef.current?.setInputValue("Münster");
+                                            }}
+                                        >
+                                            set search input
+                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>

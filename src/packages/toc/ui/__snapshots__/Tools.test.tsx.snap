@@ -28,6 +28,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
               aria-haspopup="menu"
               aria-label="toolsLabel"
               class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
+              data-controls="menu:_r_2_:content"
               data-part="trigger"
               data-scope="tooltip"
               data-state="closed"
@@ -84,7 +85,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
           >
             <label
               aria-label="Layer 1"
-              class="chakra-checkbox__root css-uwx0lo"
+              class="chakra-checkbox__root css-if4mqv"
               data-part="root"
               data-scope="checkbox"
               data-state="checked"
@@ -103,7 +104,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
               />
               <div
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1rzwffa"
+                class="chakra-checkbox__control css-16983vm"
                 data-part="control"
                 data-scope="checkbox"
                 data-state="checked"
@@ -128,7 +129,9 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                 dir="ltr"
                 id="checkbox:_r_6_:label"
               >
-                Layer 1
+                <span>
+                  Layer 1
+                </span>
               </span>
             </label>
             <div
@@ -146,6 +149,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
       aria-haspopup="menu"
       aria-label="toolsLabel"
       class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
+      data-controls="menu:_r_2_:content"
       data-part="trigger"
       data-scope="tooltip"
       data-state="closed"
@@ -193,7 +197,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
 exports[`Should successfully create a toc with default tool component 2`] = `
 <div
   aria-labelledby="_r_1_"
-  class="toc-tools-menu chakra-menu__content css-sbuxqe"
+  class="toc-tools-menu chakra-menu__content css-1ksrylv"
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"

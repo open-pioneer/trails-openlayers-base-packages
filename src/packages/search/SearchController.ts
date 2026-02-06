@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
-import { SearchSource, SearchResult } from "./api";
 import { MapModel } from "@open-pioneer/map";
+import { sourceId } from "open-pioneer:source-info";
+import { SearchResult, SearchSource } from "./api";
 
-const LOG = createLogger("search:SearchController");
+const LOG = createLogger(sourceId);
 
 /**
  * Group of suggestions returned from one source.

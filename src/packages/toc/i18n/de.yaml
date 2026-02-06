@@ -10,6 +10,7 @@ messages:
     collapse: "Gruppe {title} einklappen"
 
   layerNotAvailable: "Layer nicht verfügbar"
+  layerNotVisible: "Layer in diesem Maßstab nicht sichtbar"
 
   toolsLabel: "Kartenwerkzeuge"
   tools:

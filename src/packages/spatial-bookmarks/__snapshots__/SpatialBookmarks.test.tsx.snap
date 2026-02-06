@@ -53,7 +53,7 @@ exports[`should load the stored bookmark from local storage and present it visib
       />
       <button
         aria-label="bookmark.button.deleteOne.ariaLabel"
-        class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-ljrkvq"
+        class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-1necjxs"
         data-part="trigger"
         data-scope="tooltip"
         data-state="closed"
@@ -93,7 +93,7 @@ exports[`should load the stored bookmark from local storage and present it visib
 
 exports[`should only delete all bookmarks after the user confirms the action. 1`] = `
 <div
-  class="chakra-alert__root css-jwwdmt"
+  class="chakra-alert__root css-1y5d7a2"
   role="alert"
 >
   <span
@@ -134,7 +134,7 @@ exports[`should remove bookmark from the list by clicking the remove button 1`] 
 
 exports[`should shown an alert message if no bookmarks are saved 1`] = `
 <div
-  class="chakra-alert__root css-1owmyes"
+  class="chakra-alert__root css-14p89pr"
   role="alert"
 >
   <span

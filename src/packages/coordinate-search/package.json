@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/coordinate-search",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "This package provides a UI component to search for entered coordinates in the choosen projection.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -21,7 +21,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
@@ -31,8 +31,8 @@
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
-        "@open-pioneer/map-test-utils": "workspace:^",
-        "test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
+        "test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

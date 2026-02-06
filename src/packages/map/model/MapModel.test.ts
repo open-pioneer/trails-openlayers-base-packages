@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
 import { createMapModel } from "./createMapModel";
+import { watchValue } from "@conterra/reactivity-core";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -124,6 +125,30 @@ it("tracks the OpenLayers target", async () => {
 
     model.olMap.setTarget(undefined);
     expect(model.container).toBeUndefined();
+});
+
+it("exposes the OpenLayers load status as a reactive property", async () => {
+    model = await create("foo", {});
+
+    const events: boolean[] = [];
+    watchValue(
+        () => model!.loading,
+        (loading) => {
+            events.push(loading);
+        },
+        { dispatch: "sync" }
+    );
+
+    expect(model.loading).toBe(false);
+    expect(events.length).toBe(0);
+
+    model.olMap.dispatchEvent("loadstart");
+    expect(model.loading).toBe(true);
+    expect(events).toEqual([true]);
+
+    model.olMap.dispatchEvent("loadend");
+    expect(model.loading).toBe(false);
+    expect(events).toEqual([true, false]);
 });
 
 describe("whenDisplayed", () => {

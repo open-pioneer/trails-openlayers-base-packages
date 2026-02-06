@@ -10,6 +10,7 @@ import {
     SimpleMapOptions,
     createTestOlLayer
 } from "@open-pioneer/map-test-utils";
+import { BoxProps } from "@chakra-ui/react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -38,6 +39,48 @@ it("successfully creates a map", async () => {
     expect(map?.container).toBeUndefined();
 });
 
+it("supports configuration of map container root properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                rootProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const root = renderResult.container.querySelector(".map-container-root");
+    expect(root).toHaveAttribute("data-test", "foo");
+});
+
+it("supports configuration of map container properties", async () => {
+    const { map } = await setupMap();
+    const renderResult = render(
+        <PackageContextProvider>
+            <MapContainer
+                map={map}
+                data-testid="base"
+                containerProps={
+                    {
+                        "data-test": "foo"
+                    } as BoxProps
+                }
+            />
+        </PackageContextProvider>
+    );
+    await waitForMapMount();
+
+    const container = renderResult.container.querySelector(".map-container");
+    expect(container).toHaveAttribute("data-test", "foo");
+});
+
 it("reports an error if two map containers are used for the same map", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
     const { map } = await setupMap();
@@ -57,7 +100,7 @@ it("reports an error if two map containers are used for the same map", async () 
       [MockFunction error] {
         "calls": [
           [
-            "[ERROR] map:MapContainer: Failed to display the map: the map already has a target. There may be more than one <MapContainer />.",
+            "[ERROR] @open-pioneer/map/ui/MapContainer: Failed to display the map: the map already has a target. There may be more than one <MapContainer />.",
           ],
         ],
         "results": [

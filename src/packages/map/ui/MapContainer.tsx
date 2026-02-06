@@ -1,16 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@chakra-ui/react";
-import { Resource, createLogger } from "@open-pioneer/core";
+import { BoxProps, chakra } from "@chakra-ui/react";
+import { createLogger, Resource } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
+import { sourceId } from "open-pioneer:source-info";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { OverlaysRenderer } from "./OverlaysRenderer";
-const LOG = createLogger("map:MapContainer");
+
+const LOG = createLogger(sourceId);
 
 /**
  * @group UI Components and Hooks
@@ -61,6 +63,26 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * This property is directly applied to the map's container div element.
      */
     "aria-label"?: string;
+
+    /**
+     * Arbitrary html properties that will be applied to the map container's _root_ element.
+     * This is the element that contains the map container and any UI elements (like map anchors, for example).
+     *
+     * Use these at your own risk since they may be overwritten by the map container root itself.
+     *
+     * Use cases: setting custom data attributes, registering custom event handlers, ...
+     */
+    rootProps?: BoxProps;
+
+    /**
+     * Arbitrary html properties that will be applied to the map container's element.
+     * This is the element that _renders_ the OpenLayers map.
+     *
+     * Use these at your own risk since they may be overwritten by the map container itself.
+     *
+     * Use cases: setting custom data attributes, registering custom event handlers, ...
+     */
+    containerProps?: BoxProps;
 }
 
 /**
@@ -77,9 +99,14 @@ export function MapContainer(props: MapContainerProps) {
         children,
         role = "application",
         "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy
+        "aria-labelledby": ariaLabelledBy,
+        rootProps,
+        containerProps
     } = props;
-    const { containerProps } = useCommonComponentProps("map-container-root", props);
+    const { containerProps: rootContainerProps } = useCommonComponentProps(
+        "map-container-root",
+        props
+    );
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
     const map = useMapModelValue(props);
@@ -113,9 +140,10 @@ export function MapContainer(props: MapContainerProps) {
     }, [viewPadding]);
 
     return (
-        <chakra.div {...containerProps} css={styleProps}>
+        <chakra.div {...rootProps} {...rootContainerProps} css={styleProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
             <chakra.div
+                {...containerProps}
                 className="map-container"
                 ref={mapContainer}
                 role={role}

@@ -37,10 +37,11 @@ import VectorLayer from "ol/layer/Vector";
 import { OSM } from "ol/source";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Style } from "ol/style";
+import { sourceId } from "open-pioneer:source-info";
 import { CustomLegendItem } from "./map/CustomLegendItems";
 import { PhotonGeocoder } from "./sources/searchSources";
 
-const LOG = createLogger("ol-app:AppModel");
+const LOG = createLogger(sourceId);
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;

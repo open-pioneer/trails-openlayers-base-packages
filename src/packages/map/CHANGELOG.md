@@ -1,5 +1,49 @@
 # @open-pioneer/map
 
+## 1.2.0
+
+### Patch Changes
+
+- 597584b: WMTSLayer: Fix type of `sourceOptions` parameter (was `WMS`, now `WMTS`).
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 597584b: WMTSLayer: Report better errors if `matrixSet` and `style` are not found in service capabilities.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
+## 1.1.0
+
+### Minor Changes
+
+- 10338fa: Update OpenLayers to 10.7.0
+- a8b8a36: Update trails core packages to 4.3.0
+- 10338fa: Update Chakra to 3.29.0
+- c38b619: Adds optional configuration properties to all `Layers` to restrict the visibility of layers to a range of zoom levels or resolutions.
+  The visibility can be restricted either to a `minResolution` and `maxResolution` or to a `minZoom` and `maxZoom`.
+  Using only a minimum or maximum limit is possible.
+  Missing properties are considered as no limitation.
+
+    ```js
+    layerFactory.create({
+        type: WMTSLayer,
+        isBaseLayer: true,
+        title: "Basemap",
+        name: "basemap",
+        minZoom: 10,
+        maxZoom: 16
+    });
+    ```
+
+    The boolean property `visibleInScale` of a layer indicates the visibility of this layer depending on the current resolution of the map.
+
+    Restrictions of a `GroupLayer` are inherited to child layers.
+    If no restrictions are configured for a child layer, its visibility limitations are equal to the parent `GroupLayer`.
+    By configuring additional limits for the child layer, its visibility can be further restricted.
+
+### Patch Changes
+
+- fce7fa9: Implement stricter null safety checks.
+
 ## 1.0.0
 
 ### Major Changes
