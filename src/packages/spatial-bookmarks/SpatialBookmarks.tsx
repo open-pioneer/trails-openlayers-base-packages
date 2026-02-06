@@ -174,7 +174,7 @@ function createList(
     bookmarks: Bookmark[],
     viewModel: SpatialBookmarkViewModel,
     intl: PackageIntl,
-    listRef: React.MutableRefObject<HTMLElement[]>
+    listRef: React.RefObject<HTMLElement[]>
 ) {
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
