@@ -143,6 +143,10 @@ export class Overlay {
         return this.#overlayDiv.className;
     }
 
+    get classList(){
+        return this.#overlayDiv.classList;
+    }
+
     get offset() {
         return this.olOverlay.getOffset();
     }
