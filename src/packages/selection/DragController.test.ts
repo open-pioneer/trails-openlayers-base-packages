@@ -12,7 +12,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it.only("expect tooltip to be successfully created after construction", async () => {
+it("expect tooltip to be successfully created after construction", async () => {
     const { map, tooltipText } = await createController();
     const activeTooltip = getTooltipElement(map, "selection-tooltip");
     await waitFor(() => expect(activeTooltip.textContent).toBe(tooltipText));
