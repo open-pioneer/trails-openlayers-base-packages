@@ -22,6 +22,7 @@
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "ol": "catalog:",
         "proj4": "catalog:",
         "react": "catalog:",

@@ -4,11 +4,10 @@ import { Reactive, reactive, watch } from "@conterra/reactivity-core";
 import { Button, Flex } from "@chakra-ui/react";
 import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
-import { Layer, MapModel } from "@open-pioneer/map";
+import { Layer, MapModel, Overlay } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { Overlay } from "ol";
 import { EventsKey } from "ol/events";
 import { FeatureLike } from "ol/Feature";
 import { Select } from "ol/interaction";
@@ -24,7 +23,6 @@ const EDIT_LAYER_ID: string = "krankenhaus";
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
     overlay: Overlay;
-    element: HTMLDivElement;
 }
 
 export function createEditingDemo(options: SharedDemoOptions): Demo {
@@ -168,7 +166,7 @@ class EditingController {
             });
 
             this.#mapModel.olMap.addInteraction(this.#selectInteraction);
-            this.#updateEditSelectTooltip.element.classList.remove("editing-tooltip-hidden");
+            this.#updateEditSelectTooltip.overlay.classList.remove("editing-tooltip-hidden");
 
             this.#editUpdateSelectHandler = this.#selectInteraction.on("select", (e) => {
                 const selected = e.selected;
@@ -239,35 +237,20 @@ class EditingController {
     }
 
     _createEditingSelectTooltip(): Tooltip {
-        const element = document.createElement("div");
-        element.className = "editing-tooltip editing-tooltip-hidden";
-        element.textContent = this.#intl.formatMessage({
-            id: "demos.editing.update.tooltip.select"
-        });
-
-        const overlay = new Overlay({
-            element: element,
+        const overlay = this.#mapModel.overlays.addOverlay({
+            content: this.#intl.formatMessage({
+                id: "demos.editing.update.tooltip.select"
+            }),
             offset: [15, 0],
-            positioning: "center-left"
+            positioning: "center-left",
+            className: "editing-tooltip editing-tooltip-hidden",
+            mode: "followPointer"
         });
-
-        const olMap = this.#mapModel.olMap;
-        const pointerMove = olMap.on("pointermove", (evt) => {
-            if (evt.dragging) {
-                return;
-            }
-
-            overlay.setPosition(evt.coordinate);
-        });
-
-        olMap.addOverlay(overlay);
 
         return {
             overlay,
-            element,
             destroy() {
-                unByKey(pointerMove);
-                olMap.removeOverlay(overlay);
+                overlay.destroy();
             }
         };
     }

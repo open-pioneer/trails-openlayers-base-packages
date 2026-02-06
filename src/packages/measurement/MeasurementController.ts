@@ -1,12 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { destroyResource, Resource } from "@open-pioneer/core";
-import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
-import MapBrowserEvent from "ol/MapBrowserEvent";
 import { unByKey } from "ol/Observable";
-import Overlay from "ol/Overlay";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { LineString, Polygon } from "ol/geom";
@@ -16,7 +14,13 @@ import { Projection } from "ol/proj";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
-import type { MeasurementsChangeEvent, MeasurementGeometry, MeasurementProps } from "./Measurement";
+import {
+    type MeasurementsChangeEvent,
+    type MeasurementGeometry,
+    type MeasurementProps,
+    MeasurementOverlayContent
+} from "./Measurement";
+import { createElement } from "react";
 
 type MeasurementsChangeHandler = NonNullable<MeasurementProps["onMeasurementsChange"]>;
 
@@ -68,9 +72,9 @@ export class MeasurementController {
     private finishedMeasurements = new Set<MeasurementInstance>();
 
     /**
-     * The help tooltip element.
+     * Overlay for help tooltip.
      */
-    private helpTooltip: Tooltip;
+    private helpTooltip: Overlay;
 
     /**
      * Keeps track of registered event handlers.
@@ -97,20 +101,7 @@ export class MeasurementController {
         });
         map.layers.addLayer(this.layer, { at: "topmost" });
 
-        // "pointermove" is documented but produces a typescript error.
-        // See https://openlayers.org/en/latest/apidoc/module-ol_MapBrowserEvent-MapBrowserEvent.html#event:pointermove
-        const pointerMoveKey: EventsKey = this.olMap.on(
-            // @ts-expect-error pointermove not declared
-            "pointermove",
-            this.handlePointerMove.bind(this)
-        );
-        this.resources.push({
-            destroy() {
-                unByKey(pointerMoveKey);
-            }
-        });
-
-        this.helpTooltip = createHelpTooltip(this.olMap);
+        this.helpTooltip = createHelpTooltip(this.map);
     }
 
     destroy() {
@@ -200,7 +191,7 @@ export class MeasurementController {
 
         // update tooltip if user changed drawing mode (and did not move the mouse yet)
         // currently this does not work when the tool is initially activated as the tooltip has no position yet
-        this.updateTooltip(undefined);
+        this.updateTooltip();
 
         let measurement: MeasurementInstance | undefined;
         let changeListenerKey: EventsKey | undefined = undefined;
@@ -218,7 +209,7 @@ export class MeasurementController {
             });
 
             // update tooltip message if user started drawing but did not yet move the mouse
-            this.updateTooltip(undefined);
+            this.updateTooltip();
         });
 
         draw.on("drawend", () => {
@@ -236,7 +227,7 @@ export class MeasurementController {
             }
 
             // update tooltip if user finished drawing but did not yet move the mouse
-            this.updateTooltip(undefined);
+            this.updateTooltip();
         });
 
         draw.on("drawabort", () => {
@@ -266,20 +257,11 @@ export class MeasurementController {
         this.activeMeasurement = destroyResource(this.activeMeasurement);
     }
 
-    private handlePointerMove(evt: MapBrowserEvent<PointerEvent>) {
-        if (evt.dragging) {
-            return;
-        }
-        this.updateTooltip(evt.coordinate);
-    }
-
-    private updateTooltip(coordinate: number[] | undefined) {
-        const tooltip = this.helpTooltip;
+    private updateTooltip() {
+        const overlay = this.helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.activeMeasurement);
-        tooltip.setText(helpMessage);
-        if (coordinate) {
-            tooltip.overlay.setPosition(coordinate);
-        }
+        const newContent = createElement(MeasurementOverlayContent, { content: helpMessage });
+        overlay.setContent(newContent);
     }
 
     private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
@@ -345,16 +327,15 @@ class MeasurementInstance {
     readonly feature: Feature;
 
     private _state: "active" | "finished";
-    private readonly tooltip: ReturnType<typeof createMeasureTooltip>;
+    private tooltip: Overlay;
 
     constructor(state: "active" | "finished", feature: Feature, controller: MeasurementController) {
         this.controller = controller;
         this._state = state;
         this.feature = feature;
-        this.tooltip = createMeasureTooltip(this.olMap);
+        this.tooltip = createMeasureTooltip(this.controller.map, state === "finished");
         this.updateTooltipContent();
         this.updateTooltipPosition();
-        this.tooltip.setActive(state === "active");
     }
 
     destroy() {
@@ -371,7 +352,9 @@ class MeasurementInstance {
         }
 
         this._state = state;
-        this.tooltip.setActive(state === "active");
+        if (this._state === "finished") {
+            this.finishTooltip();
+        }
     }
 
     // Updates the tooltip content based on the current state and the feature's geometry.
@@ -389,7 +372,9 @@ class MeasurementInstance {
             outputHtml = formatLength(geometry, projection, this.messages);
         }
         if (outputHtml) {
-            this.tooltip.setHtml(outputHtml);
+            this.tooltip.setContent(
+                createElement(MeasurementOverlayContent, { content: outputHtml })
+            );
         }
     }
 
@@ -408,7 +393,14 @@ class MeasurementInstance {
         } else {
             return;
         }
-        this.tooltip.overlay.setPosition(tooltipCoord);
+        this.tooltip.setPosition(tooltipCoord);
+    }
+
+    finishTooltip() {
+        this.tooltip.setClassName(FINISHED_MEASUREMENT_CLASSNAME);
+        this.tooltip.setOffset(FINISHED_MEASUREMENT_OFFSET);
+        this.updateTooltipContent();
+        this.updateTooltipPosition();
     }
 
     private get olMap(): OlMap {
@@ -422,85 +414,37 @@ class MeasurementInstance {
 
 const DEFAULT_MEASUREMENT_OFFSET = [0, -15];
 const FINISHED_MEASUREMENT_OFFSET = [0, -7];
+const ACTIVE_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-active-tooltip printing-hide";
+const FINISHED_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-finished-tooltip";
 
-/** Represents a tooltip rendered on the OpenLayers map. */
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-
-    setText(value: string): void;
-    setHtml(value: string): void;
-}
-
-function createHelpTooltip(olMap: OlMap): Tooltip {
-    const element = document.createElement("div");
-    element.className = "measurement-tooltip printing-hide";
-    element.role = "tooltip";
-
-    const content = document.createElement("span");
-    element.appendChild(content);
-
-    const overlay = new Overlay({
-        element: element,
+function createHelpTooltip(map: MapModel): Overlay {
+    const helpOverlay = map.overlays.addOverlay({
+        className: "measurement-tooltip printing-hide",
+        mode: "followPointer",
+        tag: "measurement-help-overlay",
         offset: [15, 0],
-        positioning: "center-left"
+        positioning: "center-left",
+        ariaRole: "tooltip",
+        content: createElement(MeasurementOverlayContent)
     });
 
-    olMap.addOverlay(overlay);
-    return {
-        overlay,
-        element,
-        destroy() {
-            olMap.removeOverlay(overlay);
-        },
-        setText(value) {
-            content.textContent = value;
-        },
-        setHtml(value) {
-            content.innerHTML = value;
-        }
-    };
+    return helpOverlay;
 }
 
-function createMeasureTooltip(olMap: OlMap): Tooltip & { setActive(active: boolean): void } {
-    const element = document.createElement("div");
-    element.role = "tooltip";
-    element.className = "measurement-tooltip measurement-active-tooltip printing-hide";
-
-    const content = document.createElement("span");
-    element.appendChild(content);
-
-    const overlay = new Overlay({
-        element: element,
-        offset: DEFAULT_MEASUREMENT_OFFSET,
+function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
+    const overlay = map.overlays.addOverlay({
+        content: createElement(MeasurementOverlayContent),
+        offset: !isFinished ? DEFAULT_MEASUREMENT_OFFSET : FINISHED_MEASUREMENT_OFFSET,
         positioning: "bottom-center",
+        className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,
         stopEvent: false,
-        insertFirst: false
+        ariaRole: "tooltip",
+        olOptions: {
+            insertFirst: false
+        }
     });
 
-    olMap.addOverlay(overlay);
-    return {
-        overlay,
-        element,
-        destroy() {
-            olMap.removeOverlay(overlay);
-        },
-        setActive(active) {
-            if (active) {
-                element.className = "measurement-tooltip measurement-active-tooltip printing-hide";
-                overlay.setOffset(DEFAULT_MEASUREMENT_OFFSET);
-            } else {
-                element.className = "measurement-tooltip measurement-finished-tooltip";
-                overlay.setOffset(FINISHED_MEASUREMENT_OFFSET);
-            }
-        },
-        setText(value) {
-            content.textContent = value;
-        },
-        setHtml(value) {
-            content.innerHTML = value;
-        }
-    };
+    return overlay;
 }
 
 function getHelpMessage(messages: Messages, activeMeasurement: MeasurementInstance | undefined) {
@@ -517,9 +461,9 @@ function formatArea(polygon: Polygon, projection: Projection, messages: Messages
     const area = getArea(polygon, { projection });
     let output;
     if (area >= 1000000) {
-        output = `${messages.formatNumber(area / 1000000)} km<sup>2</sup>`;
+        output = `${messages.formatNumber(area / 1000000)} km\u00B2`;
     } else {
-        output = `${messages.formatNumber(area)} m<sup>2</sup>`;
+        output = `${messages.formatNumber(area)} m\u00B2`;
     }
     return output;
 }

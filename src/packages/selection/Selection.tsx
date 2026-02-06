@@ -18,7 +18,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
@@ -358,7 +358,7 @@ function useDragSelection(
             : intl.formatMessage({ id: "noSourceTooltip" });
 
         const dragController = new DragController(
-            map.olMap,
+            map,
             intl.formatMessage({ id: "tooltip" }),
             disabledMessage,
             onExtentSelected
@@ -372,4 +372,10 @@ function useDragSelection(
         };
     }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
     return controller;
+}
+
+export function SelectionOverlayContent(props: { content?: ReactNode }) {
+    const { content } = props;
+
+    return <Box as="span">{content}</Box>;
 }
