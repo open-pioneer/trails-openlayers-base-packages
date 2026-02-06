@@ -23,41 +23,17 @@ export function createTooltip(map: MapModel, text: string): Tooltip {
         content: text,
         mode: "followPointer",
         offset: [15, 0],
-        positioning: "center-left"
+        positioning: "center-left",
+        ariaRole: "tooltip",
+        className: "editing-tooltip"
     });
 
-    // const element = document.createElement("div");
-    // element.className = "editing-tooltip editing-tooltip-hidden";
-    // element.role = "tooltip";
-
-    //
-    // element.appendChild(content);
-
-    // const overlay = new Overlay({
-    //     element: element,
-    //     offset: [15, 0],
-    //     positioning: "center-left"
-    // });
-
-    // const pointerMove = olMap.on("pointermove", (evt) => {
-    //     if (evt.dragging) {
-    //         return;
-    //     }
-
-    //     overlay.setPosition(evt.coordinate);
-    // });
-
-    // olMap.addOverlay(overlay);
     return {
         destroy() {
             overlay.destroy();
         },
         setVisible(visible) {
-            if (!visible) {
-                overlay.setClassName(overlay.className + "editing-tooltip-hidden");
-            } else {
-                overlay.setClassName(overlay.className.replace("editing-tooltip-hidden", ""));
-            }
+            overlay.classList.toggle("editing-tooltip-hidden", !visible);
         },
         setText(text) {
             overlay.setContent(text);

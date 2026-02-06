@@ -9,11 +9,11 @@ import {
     isAbortError
 } from "@open-pioneer/core";
 import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
-import { Layer, MapModel, useMapModelValue } from "@open-pioneer/map";
+import { Layer, MapModel, Overlay, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { Feature, Overlay } from "ol";
+import { Feature } from "ol";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
@@ -257,8 +257,8 @@ class EditingViewModel {
                 });
                 map.olMap.addInteraction(selectInteraction);
 
-                tooltip = createEditingTooltip(this.intl, map.olMap);
-                tooltip.element.classList.remove("editing-tooltip-hidden");
+                tooltip = createEditingTooltip(this.intl, map);
+                tooltip.overlay.classList.remove("editing-tooltip-hidden");
 
                 let feature: Feature<Geometry> | undefined;
                 // eslint-disable-next-line no-constant-condition
@@ -310,36 +310,21 @@ class EditingViewModel {
 
 interface Tooltip extends Resource {
     overlay: Overlay;
-    element: HTMLDivElement;
 }
 
-function createEditingTooltip(intl: PackageIntl, olMap: OlMap): Tooltip {
-    const element = document.createElement("div");
-    element.className = "editing-tooltip editing-tooltip-hidden";
-    element.textContent = intl.formatMessage({ id: "editing.update.tooltip.select" });
-
-    const overlay = new Overlay({
-        element: element,
+function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
+    const overlay = map.overlays.addOverlay({
+        content: intl.formatMessage({ id: "editing.update.tooltip.select" }),
         offset: [15, 0],
-        positioning: "center-left"
+        positioning: "center-left",
+        className: "editing-tooltip editing-tooltip-hidden",
+        mode: "followPointer"
     });
-
-    const pointerMove = olMap.on("pointermove", (evt) => {
-        if (evt.dragging) {
-            return;
-        }
-
-        overlay.setPosition(evt.coordinate);
-    });
-
-    olMap.addOverlay(overlay);
 
     return {
         overlay,
-        element,
         destroy() {
-            unByKey(pointerMove);
-            olMap.removeOverlay(overlay);
+            overlay.destroy()
         }
     };
 }
