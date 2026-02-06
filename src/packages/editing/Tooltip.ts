@@ -1,9 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core";
-import { Overlay } from "ol";
-import type OlMap from "ol/Map";
-import { unByKey } from "ol/Observable";
+import { MapModel } from "@open-pioneer/map";
 
 /**
  * Represents a tooltip rendered on the OpenLayers map
@@ -20,40 +18,49 @@ export interface Tooltip extends Resource {
  *
  * Note: the tooltip starts invisible, and must be toggled on via `setVisible(true)`.
  */
-export function createTooltip(olMap: OlMap, text: string): Tooltip {
-    const element = document.createElement("div");
-    element.className = "editing-tooltip editing-tooltip-hidden";
-    element.role = "tooltip";
-
-    const content = document.createElement("span");
-    content.textContent = text;
-    element.appendChild(content);
-
-    const overlay = new Overlay({
-        element: element,
+export function createTooltip(map: MapModel, text: string): Tooltip {
+    const overlay = map.overlays.addOverlay({
+        content: text,
+        mode: "followPointer",
         offset: [15, 0],
         positioning: "center-left"
     });
 
-    const pointerMove = olMap.on("pointermove", (evt) => {
-        if (evt.dragging) {
-            return;
-        }
+    // const element = document.createElement("div");
+    // element.className = "editing-tooltip editing-tooltip-hidden";
+    // element.role = "tooltip";
 
-        overlay.setPosition(evt.coordinate);
-    });
+    //
+    // element.appendChild(content);
 
-    olMap.addOverlay(overlay);
+    // const overlay = new Overlay({
+    //     element: element,
+    //     offset: [15, 0],
+    //     positioning: "center-left"
+    // });
+
+    // const pointerMove = olMap.on("pointermove", (evt) => {
+    //     if (evt.dragging) {
+    //         return;
+    //     }
+
+    //     overlay.setPosition(evt.coordinate);
+    // });
+
+    // olMap.addOverlay(overlay);
     return {
         destroy() {
-            unByKey(pointerMove);
-            olMap.removeOverlay(overlay);
+            overlay.destroy();
         },
         setVisible(visible) {
-            element.classList.toggle("editing-tooltip-hidden", !visible);
+            if (!visible) {
+                overlay.setClassName(overlay.className + "editing-tooltip-hidden");
+            } else {
+                overlay.setClassName(overlay.className.replace("editing-tooltip-hidden", ""));
+            }
         },
         setText(text) {
-            content.textContent = text;
+            overlay.setContent(text);
         }
     };
 }
