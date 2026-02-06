@@ -1,4 +1,5 @@
 name: Publish snapshot
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,6 +8,10 @@ on:
         description: Name of the snapshot build tag. Use "dev" for the main branch and "dev-XYZ" for other branches.
         default: dev
         required: true
+
+permissions:
+  contents: read
+
 jobs:
   build_packages:
     name: "Build and publish"
