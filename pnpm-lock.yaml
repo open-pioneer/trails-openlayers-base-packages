@@ -690,6 +690,9 @@ importers:
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))
+      '@open-pioneer/reactivity':
+        specifier: 'catalog:'
+        version: 4.4.0
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.4.0(@types/react@19.2.8)(typescript@5.9.3)
@@ -1706,18 +1709,6 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
-      '@open-pioneer/map-navigation':
-        specifier: workspace:^
-        version: link:../../../packages/map-navigation
-      '@open-pioneer/map-ui-components':
-        specifier: workspace:^
-        version: link:../../../packages/map-ui-components
-      '@open-pioneer/notifier':
-        specifier: 'catalog:'
-        version: 4.2.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
-      '@open-pioneer/overview-map':
-        specifier: workspace:^
-        version: link:../../../packages/overview-map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))
@@ -1727,6 +1718,78 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.2.3
+
+  src/samples/test-overlay/overlay-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@conterra/reactivity-core':
+        specifier: 'catalog:'
+        version: 0.8.1
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.8)(react@19.2.3)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react@19.2.3)
+      '@open-pioneer/basemap-switcher':
+        specifier: workspace:^
+        version: link:../../../packages/basemap-switcher
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/http':
+        specifier: 'catalog:'
+        version: 4.4.0(@types/react@19.2.8)(typescript@5.9.3)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/map-navigation':
+        specifier: workspace:^
+        version: link:../../../packages/map-navigation
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:^
+        version: link:../../../packages/map-ui-components
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(typescript@5.9.3)
+      '@open-pioneer/overview-map':
+        specifier: workspace:^
+        version: link:../../../packages/overview-map
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))
+      '@open-pioneer/reactivity':
+        specifier: 'catalog:'
+        version: 4.4.0
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.4.0(@types/react@19.2.8)(typescript@5.9.3)
+      '@open-pioneer/scale-bar':
+        specifier: workspace:^
+        version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/scale-viewer
+      '@open-pioneer/search':
+        specifier: workspace:^
+        version: link:../../../packages/search
+      '@open-pioneer/selection':
+        specifier: workspace:^
+        version: link:../../../packages/selection
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.3
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.3(react@19.2.3)
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.2.3)
 
   src/samples/test-printing-api/printing-api-app:
     dependencies:

@@ -236,6 +236,7 @@ export class MapModel {
 
         // expects fully constructed mapModel
         this.#highlights = new Highlights(this, this.#layerDeps);
+        this.#tooltips = new Overlays(this);
     }
 
     /**
