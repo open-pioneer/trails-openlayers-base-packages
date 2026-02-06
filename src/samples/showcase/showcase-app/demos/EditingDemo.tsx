@@ -247,12 +247,10 @@ class EditingController {
             mode: "followPointer"
         });
 
-
-
         return {
             overlay,
             destroy() {
-                overlay.destroy()
+                overlay.destroy();
             }
         };
     }

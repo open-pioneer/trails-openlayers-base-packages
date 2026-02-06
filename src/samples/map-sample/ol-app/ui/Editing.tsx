@@ -14,7 +14,6 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Feature } from "ol";
-import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { Select } from "ol/interaction";
@@ -324,7 +323,7 @@ function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
     return {
         overlay,
         destroy() {
-            overlay.destroy()
+            overlay.destroy();
         }
     };
 }

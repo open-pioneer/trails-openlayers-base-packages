@@ -143,7 +143,7 @@ export class Overlay {
         return this.#overlayDiv.className;
     }
 
-    get classList(){
+    get classList() {
         return this.#overlayDiv.classList;
     }
 
