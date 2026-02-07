@@ -1,5 +1,20 @@
 # @open-pioneer/map
 
+## 1.3.0
+
+### Minor Changes
+
+- 2ceb1ca: MapModel: implement new `loading` property.
+  This property is `true` if the map is currently loading any resources, `false` otherwise.
+  The property is based on OpenLayers `loadstart` and `loadend` events (see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart)).
+- 2ceb1ca: MapContainer: allow configuration of `rootProps` and `containerProps`.
+  This can be used to set custom attributes on the respective DOM elements.
+
+### Patch Changes
+
+- 4bcc8ce: Prevent update of `olMap.padding` by MapContainer if viewPadding did not change.
+  This caused running map animation to be cancelled.
+
 ## 1.2.0
 
 ### Patch Changes

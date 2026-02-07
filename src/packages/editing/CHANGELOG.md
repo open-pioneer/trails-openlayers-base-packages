@@ -1,5 +1,14 @@
 # @open-pioneer/editing
 
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies [2ceb1ca]
+- Updated dependencies [4bcc8ce]
+- Updated dependencies [2ceb1ca]
+    - @open-pioneer/map@1.3.0
+
 ## 1.2.0
 
 ### Patch Changes
