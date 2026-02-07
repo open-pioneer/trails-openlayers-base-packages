@@ -171,14 +171,18 @@ it("supports configuring role and aria labels", async () => {
 it("does not change view padding on map if padding values are not changed", async () => {
     const { map } = await setupMap();
 
-    const padding = { top: 10, right: 20, bottom: 30, left: 40 };
-    render(
-        <PackageContextProvider>
-            <div data-testid="base">
-                <MapContainer map={map} viewPadding={padding} />
-            </div>
-        </PackageContextProvider>
-    );
+    function getMapContainer(padding: MapPadding) {
+        return (
+            <PackageContextProvider>
+                <div data-testid="base">
+                    <MapContainer map={map} viewPadding={padding} />
+                </div>
+            </PackageContextProvider>
+        );
+    }
+
+    const initialPadding = { top: 10, right: 20, bottom: 30, left: 40 };
+    const { rerender } = render(getMapContainer(initialPadding));
 
     // Assert map is mounted
     await waitForMapMount();
@@ -187,21 +191,13 @@ it("does not change view padding on map if padding values are not changed", asyn
     expect(map.olView.padding).toEqual([10, 20, 30, 40]);
 
     // clone padding to simulate new object reference with same values
-    const newPadding = { ...padding };
+    const newPadding = { ...initialPadding };
 
     let changeFired = false;
     map.olView.on("change", () => {
         changeFired = true;
     });
-
-    // update with same padding
-    render(
-        <PackageContextProvider>
-            <div data-testid="base">
-                <MapContainer map={map} viewPadding={newPadding} />
-            </div>
-        </PackageContextProvider>
-    );
+    rerender(getMapContainer(newPadding));
 
     // expect padding is unchanged
     expect(map.olView.padding).toEqual([10, 20, 30, 40]);
@@ -211,14 +207,18 @@ it("does not change view padding on map if padding values are not changed", asyn
 it("does update view padding on map if padding values are changed", async () => {
     const { map } = await setupMap();
 
-    const padding = { top: 10, right: 20, bottom: 30, left: 40 };
-    render(
-        <PackageContextProvider>
-            <div data-testid="base">
-                <MapContainer map={map} viewPadding={padding} />
-            </div>
-        </PackageContextProvider>
-    );
+    function getMapContainer(padding: MapPadding) {
+        return (
+            <PackageContextProvider>
+                <div data-testid="base">
+                    <MapContainer map={map} viewPadding={padding} />
+                </div>
+            </PackageContextProvider>
+        );
+    }
+
+    const initialPadding = { top: 10, right: 20, bottom: 30, left: 40 };
+    const { rerender } = render(getMapContainer(initialPadding));
 
     // Assert map is mounted
     await waitForMapMount();
@@ -227,7 +227,7 @@ it("does update view padding on map if padding values are changed", async () => 
     expect(map.olView.padding).toEqual([10, 20, 30, 40]);
 
     // clone padding to simulate new object reference with same values
-    const newPadding = { ...padding, top: 15 };
+    const newPadding = { ...initialPadding, top: 15 };
 
     let changeFired = false;
     map.olView.on("change", () => {
@@ -235,13 +235,7 @@ it("does update view padding on map if padding values are changed", async () => 
     });
 
     // update with changed padding
-    render(
-        <PackageContextProvider>
-            <div data-testid="base">
-                <MapContainer map={map} viewPadding={newPadding} />
-            </div>
-        </PackageContextProvider>
-    );
+    rerender(getMapContainer(newPadding));
 
     // expect padding is unchanged
     expect(map.olView.padding).toEqual([15, 20, 30, 40]);
