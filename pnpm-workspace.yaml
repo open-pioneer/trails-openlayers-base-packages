@@ -28,7 +28,6 @@ catalog:
   "@emotion/styled": ^11.14.1
   "@formatjs/intl": ^4.1.0
   "@tanstack/react-table": ^8.21.3
-  chakra-react-select: ^6.1.1
   classnames: ^2.5.1
   framer-motion: ^12.26.2
   html2canvas: ^1.4.1
@@ -125,15 +124,11 @@ overrides:
 
   # Ensure patched packages have the expected version (patch was tested with this version):
   "@ark-ui/react": "5.30.0"
-  "react-select": "5.10.2"
   "@zag-js/toast": "1.31.1"
 
 allowUnusedPatches: true
 ignorePatchFailures: false
 patchedDependencies:
-  # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
-  "react-select@*": "patches/react-select.patch"
-
   # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
