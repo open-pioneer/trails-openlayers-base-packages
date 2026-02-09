@@ -1,6 +1,7 @@
 messages:
   noOptionsText: "Keine Suchtreffer gefunden"
   loadingText: "Frage Daten ab..."
+  resultLoaded: "Ergebnisse geladen"
   searchPlaceholder: "Suche..."
   ariaLabel:
     search: "Suchleiste"

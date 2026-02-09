@@ -102,7 +102,6 @@ it("should support overriding basemap-switcher properties", async () => {
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    // react-select creates list of options in dom after opening selection
     act(() => {
         fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
     });
