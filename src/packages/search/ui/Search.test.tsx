@@ -5,8 +5,8 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Search } from "./Search";
-import { SearchClearEvent, SearchReadyEvent, SearchSelectEvent } from "./api";
-import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
+import { SearchClearEvent, SearchReadyEvent, SearchSelectEvent } from "../api";
+import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "../testSources";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
 

@@ -1,5 +1,8 @@
 ---
-"@open-pioneer/search": patch
+"@open-pioneer/search": minor
 ---
 
-search] Try using chakra's combobox instead of react-select
+Refactor user interface: now based on chakra's combobox instead of react-select.
+
+NOTE: This causes changes to many internal CSS classes and attributes.
+The UX of the control should be the same.
