@@ -212,7 +212,7 @@ it("overlay is inside OL's container that stops event propagation if stopEvent i
     const testClassName = "overlay-test";
     const olStopEventContainerSelector = ".ol-overlaycontainer-stopevent";
 
-    const overlay = overlays.addOverlay({
+    overlays.addOverlay({
         content: overlayTextContent,
         className: testClassName,
         stopEvent: true
