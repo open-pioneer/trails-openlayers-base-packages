@@ -58,7 +58,7 @@ export class Overlays {
 }
 
 /**
- * An overlay is a UI element that is displayed over the map. Overlays are tied to coordinates on the map and not to a position on the screen.
+ * An overlay is an UI element that is displayed over the map. Overlays are tied to coordinates on the map and not to a position on the screen.
  * The displayed content of an overlay is a ReactNode. Therefore, it can be simple text content or a complex React component.
  */
 export class Overlay {
