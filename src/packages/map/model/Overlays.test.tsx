@@ -3,12 +3,12 @@
 
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, waitFor } from "@testing-library/react";
-import { createElement } from "react";
+import { act, render, waitFor } from "@testing-library/react";
 import { MapContainer } from "../ui/MapContainer";
 import { Overlays } from "./Overlays";
 import { expect, it } from "vitest";
 import { Box } from "@chakra-ui/react";
+import BaseEvent from "ol/events/Event";
 
 it("return all current overlays", async () => {
     const { overlays } = await setup();
@@ -99,15 +99,106 @@ it("render overlay at fixed position", async () => {
     expect(olOverlay.getPosition()).toEqual([40, 40]);
 });
 
+it("set overlay position according to pointer position (mode: followPointer)", async () => {
+    const { map, overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName = "overlay-test";
+    const expectedPosition1 = [777000, 6698400];
+    const expectedPosition2 = [777500, 669900];
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName,
+        mode: "followPointer"
+    });
+
+    const simulateMove = (x: number, y: number) => {
+        const fakeMoveEvent = new BaseEvent("pointermove");
+        (fakeMoveEvent as any).coordinate = [x, y];
+        map.olMap.dispatchEvent(fakeMoveEvent);
+    };
+    //fake pointer move
+    act(() => {
+        simulateMove(expectedPosition1[0]!, expectedPosition1[1]!);
+    });
+    expect(overlay.position).toEqual(expectedPosition1);
+
+    act(() => {
+        simulateMove(expectedPosition2[0]!, expectedPosition2[1]!);
+    });
+    expect(overlay.position).toEqual(expectedPosition2);
+});
+
+it("add class name to overlay element", async () => {
+    const { overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName1 = "overlay-test";
+    const testClassName2 = "overlay-test2";
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName1
+    });
+
+    const overlayElement = getOverlayDivElement(overlays, testClassName1);
+    expect(overlayElement.className).toEqual(testClassName1);
+
+    overlay.setClassName(testClassName2);
+    expect(overlayElement.className).toEqual(testClassName2);
+});
+
+it("add class name to overlay element", async () => {
+    const { overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName = "overlay-test";
+    const role1 = "abc";
+    const role2 = "xyz";
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName,
+        ariaRole: role1
+    });
+
+    const overlayElement = getOverlayDivElement(overlays, testClassName);
+    expect(overlayElement.role).toEqual(role1);
+
+    overlay.setAriaRole(role2);
+    expect(overlayElement.role).toEqual(role2);
+});
+
+it("set offset and position correctly", async () => {
+    const { overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName = "overlay-test";
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName,
+        positioning: "bottom-center",
+        offset: [0, 0]
+    });
+
+    //use underlying ol overlay for checks
+    const olOverlay = overlay.olOverlay;
+    expect(olOverlay.getPositioning()).toEqual("bottom-center");
+    expect(olOverlay.getOffset()).toEqual([0, 0]);
+
+    overlay.setPositioning("top-center");
+    overlay.setOffset([10, 10]);
+    expect(olOverlay.getPositioning()).toEqual("top-center");
+    expect(olOverlay.getOffset()).toEqual([10, 10]);
+});
+
 async function setup() {
     const { map } = await setupMap();
+
     render(
-        createElement(
-            PackageContextProvider,
-            {},
-            createElement(MapContainer, { map, "data-testid": "base" })
-        )
+        <PackageContextProvider>
+            <MapContainer map={map} data-testid="base"></MapContainer>
+        </PackageContextProvider>
     );
+
     await waitForMapMount();
 
     const overlays = map.overlays;
