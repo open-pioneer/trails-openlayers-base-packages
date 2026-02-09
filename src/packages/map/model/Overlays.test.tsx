@@ -147,7 +147,7 @@ it("add class name to overlay element", async () => {
     expect(overlayElement.className).toEqual(testClassName2);
 });
 
-it("add class name to overlay element", async () => {
+it("add role to overlay element", async () => {
     const { overlays } = await setup();
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
@@ -167,7 +167,7 @@ it("add class name to overlay element", async () => {
     expect(overlayElement.role).toEqual(role2);
 });
 
-it("set offset and position correctly", async () => {
+it("set offset and positioning correctly", async () => {
     const { overlays } = await setup();
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
