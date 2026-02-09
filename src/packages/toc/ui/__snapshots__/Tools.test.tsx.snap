@@ -201,11 +201,11 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"
-  data-state="closed"
+  data-state="open"
   dir="ltr"
   id="menu:_r_2_:content"
   role="menu"
-  style="--layer-index: 0; --nested-layer-count: 0;"
+  style="--layer-index: 0; --nested-layer-count: 0; pointer-events: auto;"
   tabindex="0"
 >
   <div
