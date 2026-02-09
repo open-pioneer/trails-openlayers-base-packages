@@ -197,7 +197,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
 exports[`Should successfully create a toc with default tool component 2`] = `
 <div
   aria-labelledby="_r_1_"
-  class="toc-tools-menu chakra-menu__content css-1ksrylv"
+  class="toc-tools-menu chakra-menu__content css-1awm0xt"
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"
