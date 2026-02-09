@@ -7,20 +7,20 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^4.4.0
-  "@open-pioneer/core": ^4.4.0
-  "@open-pioneer/http": ^4.4.0
-  "@open-pioneer/integration": ^4.4.0
-  "@open-pioneer/local-storage": ^4.4.0
-  "@open-pioneer/notifier": ^4.4.0
-  "@open-pioneer/react-utils": ^4.4.0
-  "@open-pioneer/reactivity": ^4.4.0
-  "@open-pioneer/runtime": ^4.4.0
-  "@open-pioneer/test-utils": ^4.4.0
-  "@open-pioneer/chakra-snippets": ^4.4.0
+  "@open-pioneer/base-theme": 4.5.0-dev.20260209115911
+  "@open-pioneer/core": 4.5.0-dev.20260209115911
+  "@open-pioneer/http": 4.5.0-dev.20260209115911
+  "@open-pioneer/integration": 4.5.0-dev.20260209115911
+  "@open-pioneer/local-storage": 4.5.0-dev.20260209115911
+  "@open-pioneer/notifier": 4.5.0-dev.20260209115911
+  "@open-pioneer/react-utils": 4.5.0-dev.20260209115911
+  "@open-pioneer/reactivity": 4.5.0-dev.20260209115911
+  "@open-pioneer/runtime": 4.5.0-dev.20260209115911
+  "@open-pioneer/test-utils": 4.5.0-dev.20260209115911
+  "@open-pioneer/chakra-snippets": 4.5.0-dev.20260209115911
 
-  "@chakra-ui/react": ^3.31.0
-  "@chakra-ui/cli": ^3.31.0
+  "@chakra-ui/react": ^3.32.0
+  "@chakra-ui/cli": ^3.32.0
   "@conterra/reactivity-core": ^0.8.1
   "@conterra/reactivity-events": ^0.8.1
   "@emotion/cache": ^11.14.0
@@ -43,7 +43,7 @@ catalog:
   uuid: ^13.0.0
 
   # Devtools
-  "@changesets/cli": "2.29.8"
+  "@changesets/cli": ^2.29.8
   "@open-pioneer/build-package-cli": ^3.0.7
   "@open-pioneer/build-support": ^3.0.5
   "@open-pioneer/check-pnpm-duplicates": ^0.2.6
@@ -124,9 +124,8 @@ overrides:
   "csstype@<3.2.3": ">=3.2.3"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
-  "@ark-ui/react": "5.30.0"
+  "@ark-ui/react": "5.31.0"
   "react-select": "5.10.2"
-  "@zag-js/toast": "1.31.1"
 
 allowUnusedPatches: true
 ignorePatchFailures: false
@@ -136,10 +135,6 @@ patchedDependencies:
 
   # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
-
-  # Fix display of toasts that are created before the Notifier UI is mounted
-  # See https://github.com/chakra-ui/zag/issues/2922
-  "@zag-js/toast": patches/@zag-js__toast.patch
 
 onlyBuiltDependencies:
   - "@parcel/watcher"
