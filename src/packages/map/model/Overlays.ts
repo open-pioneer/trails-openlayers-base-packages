@@ -11,11 +11,12 @@ import { createLogger, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { Options } from "ol/Overlay";
+import { sourceId } from "open-pioneer:source-info";
 
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
 export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
 
-const LOG = createLogger("map:Overlays");
+const LOG = createLogger(sourceId);
 
 export class Overlays {
     private olMap: OlMap;
