@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/geolocation",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "This package provides a component to locate a user's position.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -20,8 +20,8 @@
         "@conterra/reactivity-core": "catalog:",
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/map-ui-components": "workspace:*",
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
@@ -31,7 +31,7 @@
         "react-icons": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },

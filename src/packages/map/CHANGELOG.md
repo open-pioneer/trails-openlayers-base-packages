@@ -1,5 +1,16 @@
 # @open-pioneer/map
 
+## 1.2.0
+
+### Patch Changes
+
+- 597584b: WMTSLayer: Fix type of `sourceOptions` parameter (was `WMS`, now `WMTS`).
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 597584b: WMTSLayer: Report better errors if `matrixSet` and `style` are not found in service capabilities.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
 ## 1.1.0
 
 ### Minor Changes

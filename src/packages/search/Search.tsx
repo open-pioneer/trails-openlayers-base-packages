@@ -17,10 +17,12 @@ import {
     Spinner,
     useToken
 } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import {
     FC,
     Fragment,
@@ -32,7 +34,7 @@ import {
     useRef,
     useState
 } from "react";
-import { SearchController, SuggestionGroup } from "./SearchController";
+import { LuSearch } from "react-icons/lu";
 import {
     SearchApi,
     SearchClearEvent,
@@ -44,10 +46,9 @@ import {
     SearchSource
 } from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
-import { LuSearch } from "react-icons/lu";
-import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { SearchController, SuggestionGroup } from "./SearchController";
 
-const LOG = createLogger("search:Search");
+const LOG = createLogger(sourceId);
 
 export interface SearchOption {
     /** Unique value for this option. */
@@ -153,11 +154,12 @@ export const Search: FC<SearchProps> = (props) => {
     // api trigger hooks
     useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
 
+    // TODO:
     // Workaround for buggy Combobox behavior selectionBehavior="preserve" (dont clear input on outside click)
     // the combobox sometimes looses input change trigger and is not usable, until clicked somewhere else
     // if we control the open state here, we can at least ensure that the search is working as intented
     // TO consider: remove when chakra ui fixes the issue
-    const [openState, setOpenState] = useState<boolean>(true);
+    const [_openState, setOpenState] = useState<boolean>(false);
 
     return (
         <Box {...containerProps} width={"100%"}>
@@ -177,6 +179,7 @@ export const Search: FC<SearchProps> = (props) => {
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 openOnClick={input.length > 0}
+                closeOnSelect={true}
                 lazyMount={true}
                 unmountOnExit={true}
                 // selectionBehavior="preserve"
@@ -184,10 +187,6 @@ export const Search: FC<SearchProps> = (props) => {
                     e.preventDefault();
                     setOpenState(false);
                 }} // prevents deleting inputtext on outside click, alternative to selectionBehavior="preserve"
-                open={openState}
-                onClick={() => {
-                    setOpenState(true);
-                }}
             >
                 {AccessibleBoxHelper(search)}
                 <Combobox.Control>
@@ -198,7 +197,11 @@ export const Search: FC<SearchProps> = (props) => {
                             </Icon>
                         }
                     >
-                        <Combobox.Input />
+                        <Combobox.Input
+                            onClick={() => {
+                                setOpenState(true);
+                            }}
+                        />
                     </InputGroup>
                     <Combobox.IndicatorGroup>
                         {search.kind === "loading" ? (
@@ -222,14 +225,14 @@ export const Search: FC<SearchProps> = (props) => {
                                 overflowX="hidden"
                                 visibility={input.length ? "visible" : "hidden"}
                             >
-                                <Fragment>
+                                <>
                                     <LoadingOrEmptyIndicator search={search} />
                                     <ResultList
                                         collection={collection}
                                         input={input}
                                         search={search}
                                     />
-                                </Fragment>
+                                </>
                             </Combobox.Content>
                         </Combobox.ItemGroup>
                     </Combobox.Positioner>
@@ -276,9 +279,9 @@ function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
         <Combobox.Empty padding="0">
             <HStack p="2" justifyContent="center">
                 {props.search.kind === "loading" ? (
-                    <Fragment>
+                    <>
                         <Span>{loadingLabel}</Span>
-                    </Fragment>
+                    </>
                 ) : (
                     <Span>{noOptionLabel}</Span>
                 )}

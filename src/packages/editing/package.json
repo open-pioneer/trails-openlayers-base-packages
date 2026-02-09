@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/editing",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "This package provides an editing service that allows to start and handle geometry editing workflows.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -20,12 +20,12 @@
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map": "workspace:*",
         "ol": "catalog:",
         "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

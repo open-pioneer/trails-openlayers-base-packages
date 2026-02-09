@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import type { SelectionSource, SelectionResult } from "./api";
 import { MapModel } from "@open-pioneer/map";
 import { Extent } from "ol/extent";
+import { sourceId } from "open-pioneer:source-info";
+import type { SelectionResult, SelectionSource } from "./api";
 
-const LOG = createLogger("selection:SelectionController");
+const LOG = createLogger(sourceId);
 
 /**
  * All results returned from one source.

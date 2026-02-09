@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
-import { get as getProjection, Projection, transform } from "ol/proj";
 import { createLogger } from "@open-pioneer/core";
+import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { Coordinate } from "ol/coordinate";
-const LOG = createLogger("coordinate-search");
+import { get as getProjection, Projection, transform } from "ol/proj";
+import { sourceId } from "open-pioneer:source-info";
+
+const LOG = createLogger(sourceId);
 
 export interface ParseSuccess {
     kind: "success";

@@ -14,9 +14,7 @@ exports[`should successfully create a search component 1`] = `
     id="combobox:_r_0_"
   >
     <div
-      aria-hidden="true"
       class="css-1d0sc4z"
-      data-aria-hidden=""
     >
       <span
         aria-live="polite"
@@ -26,10 +24,9 @@ exports[`should successfully create a search component 1`] = `
     </div>
     <div
       class="chakra-combobox__control css-2vts3p"
-      data-focus=""
       data-part="control"
       data-scope="combobox"
-      data-state="open"
+      data-state="closed"
       dir="ltr"
       id="combobox:_r_0_:control"
     >
@@ -37,9 +34,7 @@ exports[`should successfully create a search component 1`] = `
         class="chakra-group css-1w66b0j"
       >
         <div
-          aria-hidden="true"
           class="css-78gcoq"
-          data-aria-hidden=""
         >
           <svg
             aria-hidden="true"
@@ -68,14 +63,14 @@ exports[`should successfully create a search component 1`] = `
         <input
           aria-autocomplete="list"
           aria-controls="combobox:_r_0_:content"
-          aria-expanded="true"
+          aria-expanded="false"
           autocapitalize="none"
           autocomplete="off"
           autocorrect="off"
           class="chakra-combobox__input css-nl9pxt"
           data-part="input"
           data-scope="combobox"
-          data-state="open"
+          data-state="closed"
           dir="ltr"
           id="combobox:_r_0_:input"
           placeholder="searchPlaceholder"
@@ -86,9 +81,7 @@ exports[`should successfully create a search component 1`] = `
         />
       </div>
       <div
-        aria-hidden="true"
         class="chakra-combobox__indicatorGroup css-19fqsky"
-        data-aria-hidden=""
       />
     </div>
   </div>

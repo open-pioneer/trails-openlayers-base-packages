@@ -1,8 +1,13 @@
 name: Build and deploy
+
 on:
   workflow_dispatch:
   push:
   pull_request:
+
+permissions:
+  contents: read
+
 jobs:
   # Performs quality checks
   checks:
@@ -45,7 +50,7 @@ jobs:
         run: pnpm build-license-report;
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: build
           path: dist/
@@ -75,6 +80,9 @@ jobs:
     needs:
       - checks
       - build_packages
+    permissions:
+      contents: write
+      pull-requests: write
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -91,9 +99,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          # https://github.com/JamesIves/github-pages-deploy-action/issues/1928#issuecomment-3635092712
+          persist-credentials: false
 
       - name: Load artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: build
           path: dist/

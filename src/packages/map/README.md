@@ -10,7 +10,7 @@ To use a map in your app, follow these steps:
 - Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
 - Create a map and set a configuration (see [Map configuration](#map-configuration)).
 
-There are two different ways to create a map ( see [Map creation](#map-creation) )
+There are two different ways to create a map (see [Map creation](#map-creation) )
 
 - Implement a `MapConfigProvider` (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)).
 - Directly create a `MapModel` instance (see [Direct mapModel](#create-a-mapmodel-instance-directly))

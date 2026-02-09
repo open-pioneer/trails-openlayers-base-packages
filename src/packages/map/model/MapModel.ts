@@ -20,8 +20,9 @@ import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
-import type { BaseFeature } from "../utils/BaseFeature";
+import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
+import type { BaseFeature } from "../utils/BaseFeature";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
@@ -31,7 +32,7 @@ import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
 
-const LOG = createLogger("map:MapModel");
+const LOG = createLogger(sourceId);
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
@@ -143,6 +144,10 @@ export class MapModel {
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
+    #loadStartEventHandler: EventsKey | undefined;
+    #loadEndEventHandler: EventsKey | undefined;
+    readonly #olLoading = reactive(false);
+
     #isDestroyed = false;
     #container: ReadonlyReactive<HTMLElement | undefined>;
     #initialExtent = reactive<ExtentConfig>();
@@ -166,6 +171,7 @@ export class MapModel {
         tag: InternalConstructorTag
     ) {
         assertInternalConstructor(tag);
+
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#olView = synchronized(
@@ -175,6 +181,10 @@ export class MapModel {
                 return () => unByKey(key);
             }
         );
+
+        // NOTE: As early as possible (before any async actions) so we don't miss any events.
+        this.#watchLoadingState();
+
         this.#initialExtent.value = properties.initialExtent;
         this.#layerDeps = {
             httpService: properties.httpService
@@ -240,6 +250,11 @@ export class MapModel {
         } catch (e) {
             LOG.warn(`Unexpected error from event listener during map model destruction:`, e);
         }
+
+        this.#loadStartEventHandler && unByKey(this.#loadStartEventHandler);
+        this.#loadStartEventHandler = undefined;
+        this.#loadEndEventHandler && unByKey(this.#loadEndEventHandler);
+        this.#loadEndEventHandler = undefined;
 
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
@@ -315,6 +330,16 @@ export class MapModel {
      */
     get scale(): number | undefined {
         return this.#scale.value;
+    }
+
+    /**
+     * Returns true if the map is currently loading.
+     *
+     * This is based on the OpenLayers events `loadstart` and `loadend`,
+     * see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart).
+     */
+    get loading(): boolean {
+        return this.#olLoading.value;
     }
 
     /**
@@ -481,6 +506,18 @@ export class MapModel {
         } catch (e) {
             throw new Error(`Failed to apply the initial extent.`, { cause: e });
         }
+    }
+
+    /**
+     * Subscribes to the OpenLayers loading state.
+     */
+    #watchLoadingState() {
+        this.#loadStartEventHandler = this.#olMap.on("loadstart", () => {
+            this.#olLoading.value = true;
+        });
+        this.#loadEndEventHandler = this.#olMap.on("loadend", () => {
+            this.#olLoading.value = false;
+        });
     }
 }
 

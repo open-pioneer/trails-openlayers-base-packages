@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "This package integrates OpenLayers maps into an open pioneer trails application.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
-        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/map-test-utils": "workspace:*",
         "@types/jsdom": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },

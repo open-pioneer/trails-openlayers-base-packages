@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModel } from "@open-pioneer/map";
+import { CleanupHandle, reactiveArray, watch } from "@conterra/reactivity-core";
+import { createLogger } from "@open-pioneer/core";
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
-import { v4 as uuid4v } from "uuid";
+import { MapModel } from "@open-pioneer/map";
 import { Extent as OlExtent, getCenter } from "ol/extent";
 import { transformExtent } from "ol/proj";
-import { createLogger } from "@open-pioneer/core";
-import { CleanupHandle, reactiveArray, watch } from "@conterra/reactivity-core";
+import { sourceId } from "open-pioneer:source-info";
+import { v4 as uuid4v } from "uuid";
 
-const LOG = createLogger("spatial-bookmark:SpatialBookmarkViewModel");
+const LOG = createLogger(sourceId);
 
 interface Extent {
     minX: number;

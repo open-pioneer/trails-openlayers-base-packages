@@ -83,7 +83,7 @@ it("should log warning message if new View is in advanced configuration and proj
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] map:createMapModel: The advanced configuration for map id 'test' has provided a fully constructed view instance: projection cannot be applied.
+            "[WARN] @open-pioneer/map/model/createMapModel: The advanced configuration for map id 'test' has provided a fully constructed view instance: projection cannot be applied.
       Use ViewOptions instead of a View instance.",
           ],
         ],
@@ -117,7 +117,7 @@ it("should log a warning message if new View is in advanced configuration and in
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] map:createMapModel: The advanced configuration for map id 'test' has provided a fully constructed view instance: initialView cannot be applied.
+            "[WARN] @open-pioneer/map/model/createMapModel: The advanced configuration for map id 'test' has provided a fully constructed view instance: initialView cannot be applied.
       Use ViewOptions instead of a View instance.",
           ],
         ],
