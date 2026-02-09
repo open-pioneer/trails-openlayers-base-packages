@@ -213,11 +213,11 @@ function getOverlayDivElement(overlays: Overlays, expectedClassname: string): HT
         return overlayClassname.includes(expectedClassname);
     });
     if (tooltips.length === 0) {
-        throw Error("did not find any tooltips");
+        throw Error("did not find any overlays");
     }
     const element = tooltips[0]!.olOverlay.getElement();
     if (!element) {
-        throw new Error("tooltip overlay did not have an element");
+        throw new Error("overlay did not have an element");
     }
 
     if (element instanceof HTMLDivElement) {
