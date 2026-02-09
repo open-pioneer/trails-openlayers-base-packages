@@ -82,7 +82,7 @@ function AppContent(props: { state: AppStateReady }) {
                                         bgColor="white"
                                         borderRadius={10}
                                         p={2}
-                                        maxW="800px"
+                                        maxW="500px"
                                     >
                                         <TitledSection
                                             key={currentDemo.id}

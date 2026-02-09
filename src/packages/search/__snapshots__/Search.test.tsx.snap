@@ -13,15 +13,12 @@ exports[`should successfully create a search component 1`] = `
     dir="ltr"
     id="combobox:_r_0_"
   >
-    <div
-      class="css-1d0sc4z"
+    <span
+      aria-live="polite"
+      class="css-cfk6a1"
     >
-      <span
-        aria-live="polite"
-      >
-        resultLoaded
-      </span>
-    </div>
+      resultLoaded
+    </span>
     <div
       class="chakra-combobox__control css-2vts3p"
       data-part="control"

@@ -15,7 +15,7 @@ import {
     Portal,
     Span,
     Spinner,
-    useToken
+    VisuallyHidden
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { createLogger, isAbortError } from "@open-pioneer/core";
@@ -26,6 +26,7 @@ import { sourceId } from "open-pioneer:source-info";
 import {
     FC,
     Fragment,
+    memo,
     UIEvent,
     useCallback,
     useEffect,
@@ -141,8 +142,11 @@ export const Search: FC<SearchProps> = (props) => {
     const { input, search, onInputChanged, onResultConfirmed, selectedOption } =
         useSearchState(controller);
 
+    // NOTE: Search Sources do not have an id at this time, but the UI components need some.
+    const getId = useSearchSourceId();
+
     // Create the collection for the combobox and keep it synced with search results.
-    const collection = useSearchCollection(search);
+    const collection = useSearchCollection(search, getId);
 
     //event hooks for handling input changes, clearing input and selecting options
     const { handleInputChange, clearInput, handleSelectChange } = useSearchHandlers(
@@ -154,24 +158,15 @@ export const Search: FC<SearchProps> = (props) => {
     // api trigger hooks
     useSearchApi(onReady, onDisposed, clearInput, onInputChanged);
 
-    // TODO:
-    // Workaround for buggy Combobox behavior selectionBehavior="preserve" (dont clear input on outside click)
-    // the combobox sometimes looses input change trigger and is not usable, until clicked somewhere else
-    // if we control the open state here, we can at least ensure that the search is working as intented
-    // TO consider: remove when chakra ui fixes the issue
-    const [_openState, setOpenState] = useState<boolean>(false);
-
     return (
         <Box {...containerProps} width={"100%"}>
             <Combobox.Root
                 collection={collection}
                 onInputValueChange={(e) => {
                     handleInputChange(e);
-                    setOpenState(true);
                 }}
                 onValueChange={(e) => {
                     handleSelectChange(e);
-                    setOpenState(false);
                 }}
                 inputValue={input}
                 value={selectedOption?.value ? [selectedOption.value] : []}
@@ -182,13 +177,9 @@ export const Search: FC<SearchProps> = (props) => {
                 closeOnSelect={true}
                 lazyMount={true}
                 unmountOnExit={true}
-                // selectionBehavior="preserve"
-                onPointerDownOutside={(e) => {
-                    e.preventDefault();
-                    setOpenState(false);
-                }} // prevents deleting inputtext on outside click, alternative to selectionBehavior="preserve"
+                selectionBehavior="preserve"
             >
-                {AccessibleBoxHelper(search)}
+                <AccessibleBoxHelper search={search} />
                 <Combobox.Control>
                     <InputGroup
                         startElement={
@@ -197,17 +188,13 @@ export const Search: FC<SearchProps> = (props) => {
                             </Icon>
                         }
                     >
-                        <Combobox.Input
-                            onClick={() => {
-                                setOpenState(true);
-                            }}
-                        />
+                        <Combobox.Input />
                     </InputGroup>
                     <Combobox.IndicatorGroup>
                         {search.kind === "loading" ? (
                             <Spinner size="xs" borderWidth="1px" />
                         ) : input.length ? (
-                            <CustomClearIndicator
+                            <ClearIndicator
                                 clearValue={() => {
                                     clearInput("user");
                                 }}
@@ -226,7 +213,7 @@ export const Search: FC<SearchProps> = (props) => {
                                 visibility={input.length ? "visible" : "hidden"}
                             >
                                 <>
-                                    <LoadingOrEmptyIndicator search={search} />
+                                    <FallbackContent search={search} />
                                     <ResultList
                                         collection={collection}
                                         input={input}
@@ -245,52 +232,46 @@ export const Search: FC<SearchProps> = (props) => {
 /**
  * Report loading status for screen readers.
  */
-function AccessibleBoxHelper(search: SearchResultsState) {
+const AccessibleBoxHelper = memo(function AccessibleBoxHelper(props: {
+    search: SearchResultsState;
+}) {
+    const { search } = props;
     const intl = useIntl();
-    const loadingLabel = intl.formatMessage({ id: "loadingText" });
-    const resultsloaded = intl.formatMessage({ id: "resultLoaded" });
-    return (
-        <Box
-            position="absolute"
-            width="1px"
-            height="1px"
-            overflow="hidden"
-            clip="rect(1px, 1px, 1px, 1px)"
-        >
-            <span aria-live="polite">
-                {search.kind === "ready"
-                    ? resultsloaded
-                    : search.kind === "loading"
-                      ? loadingLabel
-                      : ""}
-            </span>
-        </Box>
-    );
-}
+
+    let content;
+    if (search.kind === "loading") {
+        content = intl.formatMessage({ id: "loadingText" });
+    } else if (search.kind === "ready") {
+        content = intl.formatMessage({ id: "resultLoaded" });
+    }
+
+    return <VisuallyHidden aria-live="polite">{content}</VisuallyHidden>;
+});
 
 /**
- * Show loading label or empty Result.
+ * Show loading label or fallback message when no results are found.
  */
-function LoadingOrEmptyIndicator(props: { search: SearchResultsState }) {
+const FallbackContent = memo(function FallbackContent(props: { search: SearchResultsState }) {
+    const { search } = props;
     const intl = useIntl();
-    const loadingLabel = intl.formatMessage({ id: "loadingText" });
-    const noOptionLabel = intl.formatMessage({ id: "noOptionsText" });
+
+    let content;
+    if (search.kind === "loading") {
+        content = intl.formatMessage({ id: "loadingText" });
+    } else {
+        content = intl.formatMessage({ id: "noOptionsText" });
+    }
+
     return (
         <Combobox.Empty padding="0">
             <HStack p="2" justifyContent="center">
-                {props.search.kind === "loading" ? (
-                    <>
-                        <Span>{loadingLabel}</Span>
-                    </>
-                ) : (
-                    <Span>{noOptionLabel}</Span>
-                )}
+                <Span>{content}</Span>
             </HStack>
         </Combobox.Empty>
     );
-}
+});
 
-function CustomClearIndicator(props: { clearValue: () => void }) {
+const ClearIndicator = memo(function ClearIndicator(props: { clearValue: () => void }) {
     const intl = useIntl();
     const clearButtonLabel = intl.formatMessage({
         id: "ariaLabel.clearButton"
@@ -310,27 +291,24 @@ function CustomClearIndicator(props: { clearValue: () => void }) {
                 aria-label={clearButtonLabel}
                 onClick={clickHandler}
                 onTouchEnd={clickHandler}
-                // Stop select component from opening the menu.
-                // It will otherwise flash briefly because of a mouse down listener in the select.
-                onMouseDown={(e) => e.preventDefault()}
             />
         </Tooltip>
     );
-}
+});
 
-function useSearchCollection(search: SearchResultsState) {
+function useSearchCollection(search: SearchResultsState, getId: GetSearchSourceId) {
     return useMemo(() => {
         if (search.kind === "ready") {
             const options = search.results.flatMap((group) => group.options);
             return createListCollection({
                 items: options,
-                groupBy: (item) => item.source.label,
+                groupBy: (item) => getId(item.source),
                 itemToString: (item) => item?.label || "",
                 itemToValue: (item) => item?.value || ""
             });
         }
         return createListCollection<SearchOption>({ items: [] });
-    }, [search]);
+    }, [search, getId]);
 }
 
 function useSearchHandlers(
@@ -368,42 +346,40 @@ function useSearchHandlers(
     return { handleInputChange, clearInput, handleSelectChange };
 }
 
-function ResultList(props: {
+const ResultList = memo(function ResultList(props: {
     collection: ListCollection<SearchOption>;
     input: string;
     search: SearchResultsState;
 }) {
     const { collection, input, search } = props;
-    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
-        "colorPalette.100",
-        "colorPalette.50",
-        "colorPalette.500"
-    ]);
-    return collection.group().map((groupElement, key) => {
+    return collection.group().map(([groupId, groupOptions], key) => {
         return (
             <Fragment key={key}>
                 <Combobox.ItemGroupLabel
-                    key={groupElement[0]}
-                    backgroundColor={groupHeadingBg}
+                    key={groupId}
+                    backgroundColor="colorPalette.100"
                     visibility={search.kind === "loading" ? "hidden" : "visible"}
                 >
-                    {groupElement[0]}
+                    {groupOptions[0]?.source.label}
                 </Combobox.ItemGroupLabel>
-                {groupElement[1].map((searchResult, key) => {
+                {groupOptions.map((searchResult, key) => {
                     return (
                         <Combobox.Item
                             key={key}
                             item={searchResult}
-                            style={
-                                searchResult?.label === input
-                                    ? { backgroundColor: selectedItemBg, color: "white" }
-                                    : undefined
-                            }
-                            _hover={{ backgroundColor: focussedItemBg }}
+                            css={{
+                                _checked: {
+                                    backgroundColor: "colorPalette.500",
+                                    color: "white"
+                                },
+                                "&:hover:not([data-state=checked])": {
+                                    backgroundColor: "colorPalette.50"
+                                }
+                            }}
                         >
                             <Combobox.ItemText>
                                 <Highlight ignoreCase query={input} styles={{ fontWeight: "bold" }}>
-                                    {searchResult?.label}
+                                    {searchResult.label}
                                 </Highlight>
                             </Combobox.ItemText>
                         </Combobox.Item>
@@ -412,7 +388,7 @@ function ResultList(props: {
             </Fragment>
         );
     });
-}
+});
 
 /**
  * Creates a controller to search on the given sources.
@@ -623,4 +599,27 @@ function useSearchApi(
         readyTrigger();
         return disposeTrigger;
     }, [readyTrigger, disposeTrigger]);
+}
+
+type GetSearchSourceId = (source: SearchSource) => string;
+
+/**
+ * Assigns unique IDs to selection sources.
+ */
+function useSearchSourceId(): GetSearchSourceId {
+    const sourceIds = useRef<WeakMap<SearchSource, string>>(undefined);
+    const counter = useRef(0);
+    if (!sourceIds.current) {
+        sourceIds.current = new WeakMap();
+    }
+
+    return useCallback((searchSource: SearchSource) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const ids = sourceIds.current!;
+        if (!ids.has(searchSource)) {
+            ids.set(searchSource, `source-${counter.current++}`);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return ids.get(searchSource)!;
+    }, []);
 }
