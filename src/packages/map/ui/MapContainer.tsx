@@ -208,9 +208,12 @@ function MapContainerReady(
         if (!olMap || !mapView) {
             return;
         }
-
-        const oldCenter = mapView.getCenter();
         const oldPadding = fromOlPadding(mapView.padding);
+        const paddingNotChanged = isPaddingEqual(viewPadding, oldPadding);
+        if (paddingNotChanged) {
+            return;
+        }
+        const oldCenter = mapView.getCenter();
         const oldExtent = extentIncludingPadding(olMap, oldPadding);
 
         mapView.padding = toOlPadding(viewPadding);
@@ -318,4 +321,8 @@ function toOlPadding(padding: Required<MapPadding>): number[] {
     // top, right, bottom, left
     const { top, right, bottom, left } = padding;
     return [top, right, bottom, left];
+}
+
+function isPaddingEqual(a: Required<MapPadding>, b: Required<MapPadding>): boolean {
+    return a.top === b.top && a.right === b.right && a.bottom === b.bottom && a.left === b.left;
 }
