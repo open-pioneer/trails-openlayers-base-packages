@@ -190,6 +190,40 @@ it("set offset and positioning correctly", async () => {
     expect(olOverlay.getOffset()).toEqual([10, 10]);
 });
 
+it("overlay is destroyed after calling destroy function", async () => {
+    const { overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName = "overlay-test";
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName
+    });
+
+    expect(overlay.isDestroyed).toBeFalsy();
+
+    overlay.destroy();
+    expect(overlay.isDestroyed).toBeTruthy();
+});
+
+it("overlay is inside OL's container that stops event propagation if stopEvent is true", async () => {
+    const { overlays } = await setup();
+    const overlayTextContent = "Overlay Text Content";
+    const testClassName = "overlay-test";
+    const olStopEventContainerSelector = ".ol-overlaycontainer-stopevent";
+
+    const overlay = overlays.addOverlay({
+        content: overlayTextContent,
+        className: testClassName,
+        stopEvent: true
+    });
+
+    const overlayElement = getOverlayDivElement(overlays, testClassName);
+    //find container element, not necessarily direct parent
+    const parentContainer = overlayElement.closest(olStopEventContainerSelector);
+    expect(parentContainer).not.toBe(null);
+});
+
 async function setup() {
     const { map } = await setupMap();
 
