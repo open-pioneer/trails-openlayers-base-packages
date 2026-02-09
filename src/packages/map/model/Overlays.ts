@@ -214,7 +214,7 @@ export class Overlay {
 
     /**
      * Set the coordinates of the overlay. The overlay is not rendered if the position is `undefined`.
-     * Can be overriden immediately if the overlay's `mode` is `followPointer` (see {@link OverlayProperties}).
+     * Can be overridden immediately if the overlay's `mode` is `followPointer` (see {@link OverlayProperties}).
      */
     setPosition(position: Coordinate | undefined) {
         this.olOverlay.setPosition(position);
@@ -282,7 +282,7 @@ export interface OverlayProperties {
      */
     offset?: number[]; //rather use {offsetX: number, offsetY: number}?
     /**
-     * CSS classes of the HTMLDIVElement that wraps the overlay's content
+     * CSS classes of the HTMLDivElement that wraps the overlay's content
      */
     className?: string;
     /**
@@ -292,7 +292,7 @@ export interface OverlayProperties {
      */
     stopEvent?: boolean;
     /**
-     * Role of the HTMLDIVElement that wraps the overlay's content
+     * Role of the HTMLDivElement that wraps the overlay's content
      */
     ariaRole?: string;
     /**
