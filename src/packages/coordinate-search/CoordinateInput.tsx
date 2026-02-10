@@ -176,7 +176,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     });
 
     return (
-        <Flex {...containerProps} flexDirection={"row"} flexDir={"row"}>
+        <Flex flexDirection={"row"} flexDir={"row"} {...containerProps}>
             <Tooltip
                 content={errorMessage}
                 showArrow

@@ -1,11 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Text, VisuallyHidden } from "@chakra-ui/react";
+import { Box, BoxProps, Text, VisuallyHidden } from "@chakra-ui/react";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 
 /**
  * These are the properties supported by the {@link ScaleViewer}.
@@ -26,12 +30,20 @@ export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     const debouncedScale = useDebouncedValue(scale, 3000);
     const ariaLabel = intl.formatMessage({ id: "scaleLabel" }, { scale: debouncedScale });
 
+    const mergedBoxProps = useMemo(
+        () =>
+            mergeChakraProps<BoxProps>(
+                {
+                    role: "region",
+                    "aria-label": intl.formatMessage({ id: "regionLabel" })
+                },
+                containerProps
+            ),
+        [intl, containerProps]
+    );
+
     return (
-        <Box
-            {...containerProps}
-            role="region"
-            aria-label={intl.formatMessage({ id: "regionLabel" })}
-        >
+        <Box {...mergedBoxProps}>
             <VisuallyHidden aria-live="polite" aria-atomic="true">
                 {ariaLabel}
             </VisuallyHidden>

@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Button, ButtonProps, Icon, Toggle } from "@chakra-ui/react";
 import { Tooltip, TooltipProps } from "@open-pioneer/chakra-snippets/tooltip";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import classNames from "classnames";
 import {
     FC,
@@ -89,7 +93,7 @@ export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: T
         disabled,
         active,
         tooltipProps,
-        buttonProps,
+        buttonProps = {},
         ref
     } = props;
 
@@ -111,19 +115,13 @@ export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: T
         onClickProp?.(e);
     };
 
+    const mergedButtonProps = mergeChakraProps<ButtonProps>(
+        { className, onClick, "aria-label": label, padding: 0, disabled, loading },
+        containerProps,
+        buttonProps
+    );
     let button = (
-        <ButtonIgnoringAriaProps
-            className={className}
-            ref={ref}
-            aria-label={label}
-            padding={0}
-            disabled={disabled}
-            loading={loading}
-            {...containerProps}
-            {...buttonProps}
-            /* don't allow overwrite because component would break */
-            onClick={onClick}
-        >
+        <ButtonIgnoringAriaProps ref={ref} {...mergedButtonProps}>
             <Icon>{icon}</Icon>
         </ButtonIgnoringAriaProps>
     );

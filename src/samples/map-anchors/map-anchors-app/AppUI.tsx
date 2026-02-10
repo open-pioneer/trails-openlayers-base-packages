@@ -141,6 +141,11 @@ function getAnchors() {
                 position={position}
                 //verticalGap={30}
                 //horizontalGap={30}
+                aria-busy="true"
+                css={{
+                    border: "2px solid black",
+                    padding: "4px"
+                }}
             >
                 <Box
                     backgroundColor="whiteAlpha.800"
@@ -155,8 +160,15 @@ function getAnchors() {
         ))
     );
     anchors.push(
-        // See CSS in app.css
-        <MapAnchor className="manual-position" key="manual" position="manual">
+        <MapAnchor
+            className="manual-position"
+            key="manual"
+            position="manual"
+            css={{
+                left: "200px",
+                top: "200px"
+            }}
+        >
             <Box
                 backgroundColor="whiteAlpha.800"
                 borderWidth="1px"

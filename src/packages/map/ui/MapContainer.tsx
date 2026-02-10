@@ -1,12 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { BoxProps, chakra } from "@chakra-ui/react";
+import { BoxProps, chakra, SystemStyleObject } from "@chakra-ui/react";
 import { createLogger, Resource } from "@open-pioneer/core";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { sourceId } from "open-pioneer:source-info";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
@@ -93,71 +98,65 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
  */
 export function MapContainer(props: MapContainerProps) {
     const {
-        viewPadding,
+        viewPadding: viewPaddingProp,
         viewPaddingChangeBehavior,
         children,
         role = "application",
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy,
         rootProps,
-        containerProps
+        containerProps,
+        ...restProps
     } = props;
     const { containerProps: rootContainerProps } = useCommonComponentProps(
         "map-container-root",
-        props
+        restProps // hide role, aria label etc from helper
     );
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
     const map = useMapModelValue(props);
-
+    const viewPadding = useViewPadding(viewPaddingProp);
     const [ready, setReady] = useState(false);
 
-    useEffect(() => {
-        // Mount the map into the DOM
-        if (mapContainer.current) {
-            const resource = registerMapTarget(map, mapContainer.current);
-            return () => resource?.destroy();
-        }
-    }, [map]);
+    // Register as renderer for map model
+    useMapContainerRegistration(mapContainer, map);
 
     // Wait for mount to make sure that the map anchors host is available
     useEffect(() => {
         setReady(true);
     }, []);
 
-    const styleProps = useMemo(() => {
-        return {
-            height: "100%",
-            position: "relative",
-
-            // set css variables according to view padding
-            "--map-padding-top": `${viewPadding?.top ?? 0}px`,
-            "--map-padding-bottom": `${viewPadding?.bottom ?? 0}px`,
-            "--map-padding-left": `${viewPadding?.left ?? 0}px`,
-            "--map-padding-right": `${viewPadding?.right ?? 0}px`
-        };
-    }, [viewPadding]);
-
+    const css = useRootCss(viewPadding);
+    const mergedRootProps = useMemo(
+        () => mergeChakraProps<BoxProps>({ css }, rootContainerProps, rootProps ?? {}),
+        [css, rootProps, rootContainerProps]
+    );
+    const mergedContainerProps = useMemo(
+        () =>
+            mergeChakraProps<BoxProps>(
+                {
+                    className: "map-container",
+                    role,
+                    "aria-label": ariaLabel,
+                    "aria-labelledby": ariaLabelledBy,
+                    h: "100%",
+                    w: "100%",
+                    tabIndex: 0
+                },
+                containerProps ?? {}
+            ),
+        [role, ariaLabel, ariaLabelledBy, containerProps]
+    );
     return (
-        <chakra.div {...rootProps} {...rootContainerProps} css={styleProps}>
+        <chakra.div {...mergedRootProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
-            <chakra.div
-                {...containerProps}
-                className="map-container"
-                ref={mapContainer}
-                role={role}
-                aria-label={ariaLabel}
-                aria-labelledby={ariaLabelledBy}
-                h="100%"
-                w="100%"
-                tabIndex={0}
-            />
+            <chakra.div ref={mapContainer} {...mergedContainerProps} />
 
             {/* Contains user widgets (map anchors and raw children). These are separate from the map so they don't interfere with mouse/keyboard events. */}
             <chakra.div ref={mapAnchorsHost} className="map-anchors">
                 {ready && map && (
                     <MapContainerReady
-                        olMap={map.olMap}
+                        map={map}
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
@@ -177,42 +176,108 @@ export function MapContainer(props: MapContainerProps) {
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { olMap: OlMap; mapAnchorsHost: HTMLElement } & Omit<
-        MapContainerProps,
-        "mapId" | "map" | "className"
-    >
+    props: {
+        map: MapModel;
+        mapAnchorsHost: HTMLElement;
+        viewPadding: Required<MapPadding>;
+    } & Omit<MapContainerProps, "mapId" | "map" | "className">
 ): ReactNode {
     const {
-        olMap,
+        map,
         mapAnchorsHost,
-        viewPadding: viewPaddingProp,
+        viewPadding,
         viewPaddingChangeBehavior = "preserve-center",
         children
     } = props;
 
-    const viewPadding = useMemo<Required<MapPadding>>(() => {
+    // Apply view padding
+    useSyncViewPadding(viewPadding, viewPaddingChangeBehavior, map);
+
+    const mapContext = useMemo((): MapContainerContextType => {
+        return {
+            mapAnchorsHost
+        };
+    }, [mapAnchorsHost]);
+    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
+}
+
+/**
+ * Registers the map container as the map's renderer.
+ * This can only be done once at a time: there cannot be two renderers for the same map model.
+ */
+function useMapContainerRegistration(
+    mapContainer: RefObject<HTMLDivElement | null>,
+    map: MapModel
+) {
+    useEffect(() => {
+        // Mount the map into the DOM
+        if (mapContainer.current) {
+            const resource = registerMapTarget(map, mapContainer.current);
+            return () => resource?.destroy();
+        }
+    }, [mapContainer, map]);
+}
+
+/**
+ * Custom CSS rules for the root element.
+ */
+function useRootCss(viewPadding: Required<MapPadding>) {
+    return useMemo((): SystemStyleObject => {
+        return {
+            height: "100%",
+            position: "relative",
+
+            // set css variables according to view padding
+            "--map-padding-top": `${viewPadding.top}px`,
+            "--map-padding-bottom": `${viewPadding.bottom}px`,
+            "--map-padding-left": `${viewPadding.left}px`,
+            "--map-padding-right": `${viewPadding.right}px`
+        };
+    }, [viewPadding]);
+}
+
+/**
+ * Normalizes the view padding property.
+ */
+function useViewPadding(viewPaddingProp: MapPadding | undefined): Required<MapPadding> {
+    return useMemo<Required<MapPadding>>(() => {
         return {
             left: viewPaddingProp?.left ?? 0,
             right: viewPaddingProp?.right ?? 0,
             top: viewPaddingProp?.top ?? 0,
             bottom: viewPaddingProp?.bottom ?? 0
         };
-    }, [viewPaddingProp]);
+    }, [
+        viewPaddingProp?.left,
+        viewPaddingProp?.right,
+        viewPaddingProp?.top,
+        viewPaddingProp?.bottom
+    ]);
+}
 
-    // Apply view padding
+/**
+ * Applies the current view padding to the view.
+ */
+function useSyncViewPadding(
+    viewPadding: Required<MapPadding>,
+    viewPaddingChangeBehavior: MapContainerProps["viewPaddingChangeBehavior"],
+    map: MapModel
+) {
+    const mapView = useReactiveSnapshot(() => map.olView, [map]);
     useEffect(() => {
-        const mapView = olMap?.getView();
-        if (!olMap || !mapView) {
+        const olMap = map.olMap;
+        if (!mapView) {
             return;
         }
+
         const oldPadding = fromOlPadding(mapView.padding);
         const paddingNotChanged = isPaddingEqual(viewPadding, oldPadding);
         if (paddingNotChanged) {
             return;
         }
+
         const oldCenter = mapView.getCenter();
         const oldExtent = extentIncludingPadding(olMap, oldPadding);
-
         mapView.padding = toOlPadding(viewPadding);
         switch (viewPaddingChangeBehavior) {
             case "preserve-center":
@@ -230,14 +295,7 @@ function MapContainerReady(
             }
             case "none":
         }
-    }, [viewPadding, olMap, viewPaddingChangeBehavior]);
-
-    const mapContext = useMemo((): MapContainerContextType => {
-        return {
-            mapAnchorsHost
-        };
-    }, [mapAnchorsHost]);
-    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
+    }, [viewPadding, viewPaddingChangeBehavior, map, mapView]);
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
