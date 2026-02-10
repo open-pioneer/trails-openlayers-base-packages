@@ -679,6 +679,9 @@ importers:
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.5.0-dev-css-prop.20260210120105(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+      '@open-pioneer/reactivity':
+        specifier: 'catalog:'
+        version: 4.5.0-dev-css-prop.20260210120105
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.5.0-dev-css-prop.20260210120105(@types/react@19.2.13)(typescript@5.9.3)
