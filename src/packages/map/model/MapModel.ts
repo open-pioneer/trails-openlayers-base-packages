@@ -31,6 +31,7 @@ import {
 import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
+import { Overlays } from "./Overlays";
 
 const LOG = createLogger(sourceId);
 
@@ -141,6 +142,7 @@ export class MapModel {
     readonly #olView: ReadonlyReactive<OlView>;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
+    readonly #tooltips: Overlays;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
@@ -234,6 +236,7 @@ export class MapModel {
 
         // expects fully constructed mapModel
         this.#highlights = new Highlights(this, this.#layerDeps);
+        this.#tooltips = new Overlays(this);
     }
 
     /**
@@ -384,6 +387,10 @@ export class MapModel {
      */
     get [LAYER_DEPS](): LayerDependencies {
         return this.#layerDeps;
+    }
+
+    get overlays(): Overlays {
+        return this.#tooltips;
     }
 
     /**

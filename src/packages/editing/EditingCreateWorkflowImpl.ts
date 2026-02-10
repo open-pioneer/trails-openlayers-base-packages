@@ -87,7 +87,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         });
 
         this._tooltip = createTooltip(
-            this._olMap,
+            this._map,
             this._intl.formatMessage({ id: "create.tooltip.begin" })
         );
 

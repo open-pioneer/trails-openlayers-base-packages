@@ -1,22 +1,25 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, vi, it } from "vitest";
+import { MapContainer, MapModel } from "@open-pioneer/map";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { render, waitFor } from "@testing-library/react";
+import { createElement } from "react";
+import { afterEach, expect, it, vi } from "vitest";
 import { DragController } from "./DragController";
-import OlMap from "ol/Map";
-import { waitFor } from "@testing-library/react";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("expect tooltip to be successfully created after construction", async () => {
-    const { olMap, tooltipTest } = createController();
-    const activeTooltip = getTooltipElement(olMap, "selection-tooltip");
-    expect(activeTooltip).toMatchSnapshot(tooltipTest);
+    const { map, tooltipText } = await createController();
+    const activeTooltip = getTooltipElement(map, "selection-tooltip");
+    await waitFor(() => expect(activeTooltip.textContent).toBe(tooltipText));
 });
 
 it("expect extent handler to be called", async () => {
-    const { controller, extentHandler } = createController();
+    const { controller, extentHandler } = await createController();
     const dragBox = controller.getDragboxInteraction();
     if (!dragBox) throw new Error("myDragbox not found");
     dragBox.interaction.dispatchEvent("boxend");
@@ -24,8 +27,14 @@ it("expect extent handler to be called", async () => {
 });
 
 it("expect interactions, tooltip and cursor correspond to controller state", async () => {
-    const { olMap, controller, tooltipTest, disabledTooltipText } = createController();
-    const activeTooltip = getTooltipElement(olMap, "selection-tooltip");
+    const {
+        map,
+        olMap,
+        controller,
+        tooltipText: tooltipTest,
+        disabledTooltipText
+    } = await createController();
+    const activeTooltip = getTooltipElement(map, "selection-tooltip");
 
     const dragBox = controller.getDragboxInteraction()?.interaction;
     const dragPan = controller.getDragPanInteraction()?.interaction;
@@ -50,22 +59,35 @@ it("expect interactions, tooltip and cursor correspond to controller state", asy
     expect(activeTooltip.textContent).toBe(disabledTooltipText);
 });
 
-function createController() {
-    const olMap = new OlMap();
-    const tooltipTest = "Tooltip wurde gesetzt";
+async function createController() {
+    const { map } = await setupMap();
+    render(
+        createElement(
+            PackageContextProvider,
+            {},
+            createElement(MapContainer, { map, "data-testid": "base" })
+        )
+    );
+    await waitForMapMount();
+
+    const olMap = map.olMap;
+    const tooltipText = "Tooltip wurde gesetzt";
     const disabledTooltipText = "Funktion ist deaktiviert";
     const extentHandler = vi.fn();
-    const controller = new DragController(olMap, tooltipTest, disabledTooltipText, extentHandler);
-    return { olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
+    const controller = new DragController(map, tooltipText, disabledTooltipText, extentHandler);
+    return { map, olMap, controller, tooltipText, extentHandler, disabledTooltipText };
 }
 
-function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
-    const allOverlays = olMap.getOverlays().getArray();
-    const tooltips = allOverlays.filter((ol) => ol.getElement()?.classList.contains(className));
+function getTooltipElement(map: MapModel, expectedClassname: string): HTMLElement {
+    const allOverlays = map.overlays.getOverlays();
+    const tooltips = allOverlays.filter((overlay) => {
+        const overlayClassname = overlay.className;
+        return overlayClassname.includes(expectedClassname);
+    });
     if (tooltips.length === 0) {
         throw Error("did not find any tooltips");
     }
-    const element = tooltips[0]!.getElement();
+    const element = tooltips[0]!.olOverlay.getElement();
     if (!element) {
         throw new Error("tooltip overlay did not have an element");
     }

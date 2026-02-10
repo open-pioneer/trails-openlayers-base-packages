@@ -1,0 +1,20 @@
+messages:
+  basemapLabel: "Select basemap:"
+  ariaLabel:
+    header: "Header bar"
+    footer: "Base bar with scale information, spatial reference system and coordinate display"
+    map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
+    toolbar: "Maptools"
+    topRight: "Overview map and basemap switcher"
+    bottomRight: "Maptools"
+  staticOverlay:
+    photo: "Photo"
+    facts: "Facts"
+    factList:
+      name: "Name"
+      location: "Location"
+      style: "Style"
+      date: "Construction"
+      baroque: "baroque"
+  movableOverlay:
+    tooltip: Toggle Overlay

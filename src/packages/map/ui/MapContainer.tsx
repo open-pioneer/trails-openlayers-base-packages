@@ -10,6 +10,7 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
+import { OverlaysRenderer } from "./OverlaysRenderer";
 
 const LOG = createLogger(sourceId);
 
@@ -157,7 +158,7 @@ export function MapContainer(props: MapContainerProps) {
             <chakra.div ref={mapAnchorsHost} className="map-anchors">
                 {ready && map && (
                     <MapContainerReady
-                        olMap={map.olMap}
+                        map={map}
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
@@ -177,18 +178,20 @@ export function MapContainer(props: MapContainerProps) {
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { olMap: OlMap; mapAnchorsHost: HTMLElement } & Omit<
+    props: { map: MapModel; mapAnchorsHost: HTMLElement } & Omit<
         MapContainerProps,
         "mapId" | "map" | "className"
     >
 ): ReactNode {
     const {
-        olMap,
+        map,
         mapAnchorsHost,
         viewPadding: viewPaddingProp,
         viewPaddingChangeBehavior = "preserve-center",
         children
     } = props;
+
+    const olMap = map.olMap;
 
     const viewPadding = useMemo<Required<MapPadding>>(() => {
         return {
@@ -237,7 +240,12 @@ function MapContainerReady(
             mapAnchorsHost
         };
     }, [mapAnchorsHost]);
-    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
+    return (
+        <MapContainerContextProvider value={mapContext}>
+            <OverlaysRenderer map={map} />
+            {children}
+        </MapContainerContextProvider>
+    );
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
