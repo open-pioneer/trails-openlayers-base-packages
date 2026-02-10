@@ -11,6 +11,8 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 
+import { useIntl } from "open-pioneer:react-hooks";
+
 import { useCallback, useState, type ReactElement } from "react";
 import { LuMenu } from "react-icons/lu";
 import { PiPencil } from "react-icons/pi";
@@ -19,10 +21,11 @@ import { MAP_ID } from "../map/MainMapProvider";
 import { EditingComponent } from "./EditingComponent";
 
 export function AppUI(): ReactElement | undefined {
+    const { map } = useMapModel(MAP_ID);
+    const { formatMessage } = useIntl();
+
     const [editingIsActive, toggleEditing] = useToolState(true);
     const [tocIsActive, toggleToc] = useToolState(false);
-
-    const { map } = useMapModel(MAP_ID);
 
     if (map != null) {
         return (
@@ -46,7 +49,7 @@ export function AppUI(): ReactElement | undefined {
                                         width={250}
                                     >
                                         <TitledSection
-                                            title="Table of Contents"
+                                            title={formatMessage({ id: "toc" })}
                                             sectionHeadingProps={{ size: "md" }}
                                         >
                                             <Toc />
@@ -57,13 +60,13 @@ export function AppUI(): ReactElement | undefined {
                             <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                                 <HStack gap={3}>
                                     <ToolButton
-                                        label="Table of Contents"
+                                        label={formatMessage({ id: "toc" })}
                                         icon={<LuMenu />}
                                         active={tocIsActive}
                                         onClick={toggleToc}
                                     />
                                     <ToolButton
-                                        label="Editing"
+                                        label={formatMessage({ id: "editor" })}
                                         icon={<PiPencil />}
                                         active={editingIsActive}
                                         onClick={toggleEditing}

@@ -225,13 +225,14 @@ All fields share these base properties:
 ```tsx
 interface BaseFieldConfig {
     readonly label: string; // Display label
+    readonly type: string; // Type of input control
     readonly propertyName: string; // Feature property to edit
     readonly isRequired?: PropertyFunctionOr<boolean>; // Required validation
     readonly isEnabled?: PropertyFunctionOr<boolean>; // Enable/disable state
     readonly isVisible?: PropertyFunctionOr<boolean>; // Show/hide field
     readonly isValid?: PropertyFunctionOr<boolean>; // Custom validation
-    readonly errorText?: PropertyFunctionOr<string>; // Error message
-    readonly helperText?: PropertyFunctionOr<string>; // Info text
+    readonly errorText?: PropertyFunctionOr<string | undefined>; // Error message
+    readonly helperText?: PropertyFunctionOr<string | undefined>; // Info text
 }
 ```
 

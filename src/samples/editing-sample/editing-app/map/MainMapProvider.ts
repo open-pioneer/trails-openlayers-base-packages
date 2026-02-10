@@ -16,11 +16,11 @@ import { InMemoryStore } from "../store/InMemoryStore";
 import { LAYER_CONFIG } from "./layerConfig";
 
 export class MainMapProvider implements MapConfigProvider {
-    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
-        return {
+    getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
+        return Promise.resolve({
             ...MainMapProvider.MAP_SETTINGS,
             layers: [this.createOSMLayer(layerFactory), ...this.createVectorLayers(layerFactory)]
-        };
+        });
     }
 
     get mapId(): string {

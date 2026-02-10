@@ -31,68 +31,68 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * ```
  */
 export interface EditingHandler {
-    /** Handler function called when a new feature is created. */
+    /**
+     * Handler function for adding a new feature.
+     *
+     * Called when a user creates a new feature using a feature template. The implementation should
+     * persist the feature to a backend service. If the handler throws an error, an error notification
+     * is displayed to the user; otherwise, a success notification is shown.
+     *
+     * @param feature - The OpenLayers feature that was created.
+     * @param template - The feature template used to create the feature, containing metadata such as
+     * geometry type, layer ID, and form configuration.
+     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
+     * @returns A promise that resolves when the feature has been successfully added, or rejects with
+     * an error if the operation fails.
+     */
     readonly addFeature: AddFeatureHandler;
 
-    /** Handler function called when an existing feature is modified. */
+    /**
+     * Handler function for updating an existing feature.
+     *
+     * Called when a user modifies an existing feature's geometry or properties. The implementation
+     * should persist the changes to a backend service. If the handler throws an error, an error
+     * notification is displayed to the user; otherwise, a success notification is shown.
+     *
+     * @param feature - The OpenLayers feature that was modified.
+     * @param layer - The layer containing the feature, or `undefined` if not available.
+     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
+     * @returns A promise that resolves when the feature has been successfully updated, or rejects
+     * with an error if the operation fails.
+     */
     readonly updateFeature: UpdateFeatureHandler;
 
-    /** Handler function called when a feature is deleted. */
+    /**
+     * Handler function for deleting a feature.
+     *
+     * Called when a user requests deletion of an existing feature. The implementation should remove
+     * the feature from a backend service. If the handler throws an error, an error notification is
+     * displayed to the user; otherwise, a success notification is shown.
+     *
+     * @param feature - The OpenLayers feature to be deleted.
+     * @param layer - The layer containing the feature, or `undefined` if not available.
+     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
+     * @returns A promise that resolves when the feature has been successfully deleted, or rejects
+     * with an error if the operation fails.
+     */
     readonly deleteFeature: DeleteFeatureHandler;
 }
 
-/**
- * Handler function type for adding a new feature.
- *
- * Called when a user creates a new feature using a feature template. The implementation should
- * persist the feature to a backend service. If the handler throws an error, an error notification
- * is displayed to the user; otherwise, a success notification is shown.
- *
- * @param feature - The OpenLayers feature that was created.
- * @param template - The feature template used to create the feature, containing metadata such as
- * geometry type, layer ID, and form configuration.
- * @param projection - The projection of the feature's geometry, or `undefined` if not available.
- * @returns A promise that resolves when the feature has been successfully added, or rejects with
- * an error if the operation fails.
- */
+/** Handler function type for adding a new feature. */
 export type AddFeatureHandler = (
     feature: Feature,
     template: FeatureTemplate,
     projection: Projection | undefined
 ) => Promise<void>;
 
-/**
- * Handler function type for updating an existing feature.
- *
- * Called when a user modifies an existing feature's geometry or properties. The implementation
- * should persist the changes to a backend service. If the handler throws an error, an error
- * notification is displayed to the user; otherwise, a success notification is shown.
- *
- * @param feature - The OpenLayers feature that was modified.
- * @param layer - The layer containing the feature, or `undefined` if not available.
- * @param projection - The projection of the feature's geometry, or `undefined` if not available.
- * @returns A promise that resolves when the feature has been successfully updated, or rejects
- * with an error if the operation fails.
- */
+/** Handler function type for updating an existing feature. */
 export type UpdateFeatureHandler = (
     feature: Feature,
     layer: Layer | undefined,
     projection: Projection | undefined
 ) => Promise<void>;
 
-/**
- * Handler function type for deleting a feature.
- *
- * Called when a user requests deletion of an existing feature. The implementation should remove
- * the feature from a backend service. If the handler throws an error, an error notification is
- * displayed to the user; otherwise, a success notification is shown.
- *
- * @param feature - The OpenLayers feature to be deleted.
- * @param layer - The layer containing the feature, or `undefined` if not available.
- * @param projection - The projection of the feature's geometry, or `undefined` if not available.
- * @returns A promise that resolves when the feature has been successfully deleted, or rejects
- * with an error if the operation fails.
- */
+/** Handler function type for deleting a feature. */
 export type DeleteFeatureHandler = (
     feature: Feature,
     layer: Layer | undefined,

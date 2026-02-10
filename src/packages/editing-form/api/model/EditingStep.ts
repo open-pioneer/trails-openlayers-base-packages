@@ -24,6 +24,7 @@ export interface InitialStep {
  */
 export interface DrawingStep {
     readonly id: "create-draw";
+
     /** The feature template defining the geometry type and properties for the new feature. */
     readonly template: FeatureTemplate;
 }
@@ -36,6 +37,7 @@ export interface DrawingStep {
  */
 export interface SelectionStep {
     readonly id: "update-select";
+
     /** The layers from which features can be selected for editing. */
     readonly layers: Layer[];
 }
@@ -49,10 +51,13 @@ export interface SelectionStep {
  */
 export interface CreationStep {
     readonly id: "create-modify";
+
     /** The feature being created and modified. */
     readonly feature: Feature;
+
     /** The feature template used to create the feature. */
     readonly template: FeatureTemplate;
+
     /** The temporary OpenLayers layer containing the feature during creation. */
     readonly drawOlLayer: OlLayer;
 }
@@ -65,8 +70,10 @@ export interface CreationStep {
  */
 export interface UpdateStep {
     readonly id: "update-modify";
+
     /** The existing feature being modified. */
     readonly feature: Feature;
+
     /** The layer containing the feature, or `undefined` if not available. */
     readonly layer: Layer | undefined;
 }
