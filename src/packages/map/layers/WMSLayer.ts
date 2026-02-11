@@ -34,6 +34,7 @@ import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
+import { getAttributions } from "./wms/getAttributions";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.
@@ -249,6 +250,14 @@ export class WMSLayer extends AbstractLayer {
                     const parser = new WMSCapabilities();
                     const capabilities = parser.read(result);
                     this.#capabilities = capabilities;
+
+                    // Apply attributions from metadata none are set.
+                    if (!this.#source.getAttributions()) {
+                        const attributions = getAttributions(capabilities);
+                        if (attributions) {
+                            this.#source.setAttributions(attributions);
+                        }
+                    }
 
                     const layers: WMSSublayer[] = [];
                     getNestedSublayer(this.#sublayers.getSublayers(), layers);

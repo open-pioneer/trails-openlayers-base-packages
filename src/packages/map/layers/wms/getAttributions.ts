@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Returns the attribution derived from the WMTS service metadata (if any).
+ * Returns the attribution derived from the WMS service metadata (if any).
  *
  * @param capabilities Parsed service capabilities
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function getAttributions(capabilities: Record<string, any>): string | undefined {
-    const service = capabilities?.ServiceIdentification;
+    const service = capabilities?.Service;
     if (!service) {
         return undefined;
     }
