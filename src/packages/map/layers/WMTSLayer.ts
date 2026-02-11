@@ -18,6 +18,7 @@ import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
 import { getLegendUrl } from "./wmts/getLegendUrl";
+import { getAttributions } from "./wmts/getAttributions";
 
 /**
  * Configuration options supported by {@link WMTSLayer}.
@@ -63,7 +64,7 @@ export class WMTSLayer extends AbstractLayer {
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
     #source: WMTS | undefined;
-    #sourceOptions?: Partial<WMTSSourceOptions>;
+    #sourceOptions: Partial<WMTSSourceOptions>;
     #legend = reactive<string | undefined>();
 
     #loadStarted = false;
@@ -108,7 +109,7 @@ export class WMTSLayer extends AbstractLayer {
         this.#name = config.name;
         this.#layer = layer;
         this.#matrixSet = config.matrixSet;
-        this.#sourceOptions = config.sourceOptions;
+        this.#sourceOptions = config.sourceOptions ?? {};
     }
 
     destroy(): void {
@@ -173,21 +174,27 @@ export class WMTSLayer extends AbstractLayer {
                         `Tile matrix set '${this.#matrixSet}' was not found in capabilities`
                     );
                 }
-                if (this.#sourceOptions?.style && this.#sourceOptions.style !== options.style) {
+
+                const { attributions: explicitAttributions, ...sourceOptions } =
+                    this.#sourceOptions;
+
+                if (sourceOptions.style && sourceOptions.style !== options.style) {
                     const styleToUse = this.#existsStyleInCapabilities(
                         capabilities,
-                        this.#sourceOptions.style
+                        sourceOptions.style
                     );
                     if (!styleToUse) {
                         throw new Error(
-                            `Style '${this.#sourceOptions.style}' was not found in capabilities`
+                            `Style '${sourceOptions.style}' was not found in capabilities`
                         );
                     }
                 }
 
+                const attributions = explicitAttributions ?? getAttributions(capabilities);
                 const source = new WMTS({
                     ...options,
-                    ...this.#sourceOptions,
+                    attributions,
+                    ...sourceOptions,
                     tileLoadFunction: (tile, tileUrl) => {
                         this.#loadTile(tile, tileUrl);
                     }
