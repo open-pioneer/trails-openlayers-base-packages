@@ -136,17 +136,7 @@ function getAnchors() {
     const anchors: ReactNode[] = [];
     anchors.push(
         ...ANCHOR_POSITIONS.map((position) => (
-            <MapAnchor
-                key={position}
-                position={position}
-                //verticalGap={30}
-                //horizontalGap={30}
-                aria-busy="true"
-                css={{
-                    border: "2px solid black",
-                    padding: "4px"
-                }}
-            >
+            <MapAnchor key={position} position={position}>
                 <Box
                     backgroundColor="whiteAlpha.800"
                     borderWidth="1px"
