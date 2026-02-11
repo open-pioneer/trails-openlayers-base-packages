@@ -74,9 +74,10 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const {
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy
+        "aria-labelledby": ariaLabelledBy,
+        ...restProps
     } = props;
-    const { containerProps } = useCommonComponentProps("basemap-switcher", props);
+    const { containerProps } = useCommonComponentProps("basemap-switcher", restProps);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const activateLayer = (layerId: string[]) => {
