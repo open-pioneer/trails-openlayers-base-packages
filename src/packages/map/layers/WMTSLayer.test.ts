@@ -82,7 +82,7 @@ it("logs error when capabilities cannot be fetched", async () => {
     // wait for async operations
     await vi.waitFor(() => {
         expect(logErrorSpy).toHaveBeenCalled();
-        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain("404");
     });
     // TODO: should be "error" once implemented
@@ -103,7 +103,7 @@ it("logs error when layer not detected in capabilities", async () => {
     // wait for async operations
     await vi.waitFor(() => {
         expect(logErrorSpy).toHaveBeenCalled();
-        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
             "Layer 'layer-not-found' was not found in capabilities"
         );
@@ -124,7 +124,7 @@ it("logs error when matrixset not detected in capabilities", async () => {
     // wait for async operations
     await vi.waitFor(() => {
         expect(logErrorSpy).toHaveBeenCalled();
-        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
             "Tile matrix set 'EPSG:9999' was not found in capabilities"
         );
@@ -148,7 +148,7 @@ it("logs error when style not detected in capabilities", async () => {
     // wait for async operations
     await vi.waitFor(() => {
         expect(logErrorSpy).toHaveBeenCalled();
-        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed initialize WMTS for Layer");
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain(
             "Style 'non-existent-style' was not found in capabilities"
         );

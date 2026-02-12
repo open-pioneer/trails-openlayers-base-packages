@@ -19,13 +19,14 @@ catalog:
   "@open-pioneer/test-utils": 4.5.0-dev.20260211105402
   "@open-pioneer/chakra-snippets": 4.5.0-dev.20260211105402
 
-  "@chakra-ui/react": ^3.32.0
   "@chakra-ui/cli": ^3.32.0
+  "@chakra-ui/react": ^3.32.0
   "@conterra/reactivity-core": ^0.8.1
   "@conterra/reactivity-events": ^0.8.1
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
   "@emotion/styled": ^11.14.1
+  "@esri/arcgis-html-sanitizer": "^4.1.0"
   "@formatjs/intl": ^4.1.2
   "@tanstack/react-table": ^8.21.3
   classnames: ^2.5.1
