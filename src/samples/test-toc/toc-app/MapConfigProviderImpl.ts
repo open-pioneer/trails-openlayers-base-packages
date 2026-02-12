@@ -54,7 +54,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     maxZoom: 16,
                     matrixSet: "EPSG_3857_16",
                     sourceOptions: {
-                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf"</a>`
+                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt, siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf">Nutzungsbedingungen</a>.`
                     }
                 }),
                 layerFactory.create({
