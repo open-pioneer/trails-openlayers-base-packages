@@ -5,7 +5,7 @@ import { FeatureLike } from "ol/Feature";
 import GeoJSON from "ol/format/GeoJSON";
 import { Point } from "ol/geom";
 import { Projection } from "ol/proj";
-import { assert, expect, it } from "vitest"; // (1)
+import { assert, beforeEach, describe, expect, it, vi } from "vitest"; // (1)
 import { CollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import {
     LoadFeatureOptions,
@@ -39,84 +39,8 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
     numberMatched: undefined
 };
 
-it("expect features are parsed from the feature response (offset-strategy)", async () => {
-    const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.invalid/items?f=json";
-    const options: LoadFeatureOptions = {
-        fullURL: fullUrl,
-        httpService: DUMMY_HTTP_SERVICE,
-        featureFormat: new GeoJSON(),
-        limit: 1234,
-        maxConcurrentRequests: 6,
-        addFeatures: (features: FeatureLike[]) => {
-            features.forEach((feature) => addedFeatures.push(feature));
-        },
-        queryFeatures: (): Promise<FeatureResponse> => {
-            return Promise.resolve(mockedFeatureResponse);
-        }
-    };
-    await loadAllFeaturesWithOffset(options);
-    assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
-});
-
-it("expect features are parsed from the feature response (next-strategy)", async () => {
-    const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.invalid/items?f=json";
-    const options: LoadFeatureOptions = {
-        fullURL: fullUrl,
-        httpService: DUMMY_HTTP_SERVICE,
-        featureFormat: new GeoJSON(),
-        limit: 1234,
-        maxConcurrentRequests: 6,
-        addFeatures: (features: FeatureLike[]) => {
-            features.forEach((feature) => addedFeatures.push(feature));
-        },
-        queryFeatures: (): Promise<FeatureResponse> => {
-            return Promise.resolve(mockedFeatureResponse);
-        }
-    };
-    await loadAllFeaturesNextStrategy(options);
-    assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
-});
-
-it("expect feature responses are empty (offset-strategy)", async () => {
-    const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.invalid/items?f=json";
-    const options: LoadFeatureOptions = {
-        fullURL: fullUrl,
-        httpService: DUMMY_HTTP_SERVICE,
-        featureFormat: new GeoJSON(),
-        limit: 1234,
-        maxConcurrentRequests: 6,
-        addFeatures: (features: FeatureLike[]) => {
-            features.forEach((feature) => addedFeatures.push(feature));
-        },
-        queryFeatures: (): Promise<FeatureResponse> => {
-            return Promise.resolve(mockedEmptyFeatureResponse);
-        }
-    };
-    await loadAllFeaturesWithOffset(options);
-    expect(addedFeatures.length).toBe(0);
-});
-
-it("expect feature responses are empty (next-strategy)", async () => {
-    const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.invalid/items?f=json";
-    const options: LoadFeatureOptions = {
-        fullURL: fullUrl,
-        httpService: DUMMY_HTTP_SERVICE,
-        featureFormat: new GeoJSON(),
-        limit: 1234,
-        maxConcurrentRequests: 6,
-        addFeatures: (features: FeatureLike[]) => {
-            features.forEach((feature) => addedFeatures.push(feature));
-        },
-        queryFeatures: (): Promise<FeatureResponse> => {
-            return Promise.resolve(mockedEmptyFeatureResponse);
-        }
-    };
-    await loadAllFeaturesNextStrategy(options);
-    expect(addedFeatures.length).toBe(0);
+beforeEach(() => {
+    vi.restoreAllMocks();
 });
 
 it("expect additionalOptions are set on vector-source", () => {
@@ -133,11 +57,10 @@ it("expect additionalOptions are set on vector-source", () => {
             getCollectionInfosParam: mockedGetCollectionInfos
         }
     );
-    assert.isTrue(
-        !vectorSource.getOverlaps() &&
-            vectorSource.getWrapX() === false &&
-            vectorSource.getFormat() === null //ol returns null instead of undefined
-    );
+
+    expect(vectorSource.getOverlaps()).toBe(false);
+    expect(vectorSource.getWrapX()).toBe(false);
+    expect(vectorSource.getFormat()).toBe(null); //ol returns null instead of undefined
 });
 
 it("expect url is created correctly on vector-source", async () => {
@@ -175,63 +98,147 @@ it("expect url is created correctly on vector-source", async () => {
     assert.isTrue(urlIsAlwaysCorrect);
 });
 
-it("expect all feature from 2 query-runs are added", async () => {
-    const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.invalid/items?f=json";
-
-    const pageSize = 3;
-    const totalFeatures = 28;
-    const createFeature = (id: number) => {
-        return new Feature({
-            testId: id,
-            geometry: new Point([5752928, 395388])
-        });
-    };
-
-    const expectedFeatures: Feature[] = [];
-    for (let i = 0; i < totalFeatures; ++i) {
-        expectedFeatures.push(createFeature(i));
-    }
-
-    let requestCount = 0;
-    const queryFeatures = async (fullUrl: string): Promise<FeatureResponse> => {
-        ++requestCount;
-
-        const urlObj = new URL(fullUrl);
-        const params = urlObj.searchParams;
-        const offset = Number.parseInt(params.get("offset") || "");
-        const limit = Number.parseInt(params.get("limit") || "");
-        if (Number.isNaN(offset) || Number.isNaN(limit)) {
-            throw new Error("invalid offset or limit");
-        }
-
-        const features: Feature[] = [];
-        for (let i = offset; i < Math.min(offset + limit, totalFeatures); ++i) {
-            features.push(createFeature(i));
-        }
-
-        const isLast = offset + limit >= totalFeatures;
-        return {
-            features,
-            nextURL: isLast ? undefined : "https://url-to-service.invalid",
-            numberMatched: totalFeatures
+describe("offset strategy", () => {
+    it("expect features are parsed from the feature response", async () => {
+        const addedFeatures: Array<FeatureLike> = [];
+        const fullUrl = "https://url-to-service.invalid/items?f=json";
+        const options: LoadFeatureOptions = {
+            fullURL: fullUrl,
+            httpService: DUMMY_HTTP_SERVICE,
+            featureFormat: new GeoJSON(),
+            limit: 1234,
+            maxConcurrentRequests: 6,
+            addFeatures: (features: FeatureLike[]) => {
+                features.forEach((feature) => addedFeatures.push(feature));
+            },
+            queryFeatures: (): Promise<FeatureResponse> => {
+                return Promise.resolve(mockedFeatureResponse);
+            }
         };
-    };
+        await loadAllFeaturesWithOffset(options);
+        assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
+    });
 
-    const options: LoadFeatureOptions = {
-        fullURL: fullUrl,
-        httpService: DUMMY_HTTP_SERVICE,
-        featureFormat: new GeoJSON(),
-        limit: pageSize,
-        maxConcurrentRequests: 2,
-        addFeatures: (features) => features.forEach((feature) => addedFeatures.push(feature)),
-        queryFeatures: queryFeatures
-    };
+    it("expect feature responses are empty", async () => {
+        const addedFeatures: Array<FeatureLike> = [];
+        const fullUrl = "https://url-to-service.invalid/items?f=json";
+        const options: LoadFeatureOptions = {
+            fullURL: fullUrl,
+            httpService: DUMMY_HTTP_SERVICE,
+            featureFormat: new GeoJSON(),
+            limit: 1234,
+            maxConcurrentRequests: 6,
+            addFeatures: (features: FeatureLike[]) => {
+                features.forEach((feature) => addedFeatures.push(feature));
+            },
+            queryFeatures: (): Promise<FeatureResponse> => {
+                return Promise.resolve(mockedEmptyFeatureResponse);
+            }
+        };
+        await loadAllFeaturesWithOffset(options);
+        expect(addedFeatures.length).toBe(0);
+    });
 
-    await loadAllFeaturesWithOffset(options);
+    it("expect all feature from 2 query-runs are added", async () => {
+        const addedFeatures: Array<FeatureLike> = [];
+        const fullUrl = "https://url-to-service.invalid/items?f=json";
 
-    const actualIds = addedFeatures.map((feature) => feature.get("testId"));
-    const expectedIds = expectedFeatures.map((feature) => feature.get("testId"));
-    assert.sameMembers(actualIds, expectedIds);
-    assert.strictEqual(requestCount, 10);
+        const pageSize = 3;
+        const totalFeatures = 28;
+        const createFeature = (id: number) => {
+            return new Feature({
+                testId: id,
+                geometry: new Point([5752928, 395388])
+            });
+        };
+
+        const expectedFeatures: Feature[] = [];
+        for (let i = 0; i < totalFeatures; ++i) {
+            expectedFeatures.push(createFeature(i));
+        }
+
+        let requestCount = 0;
+        const queryFeatures = async (fullUrl: string): Promise<FeatureResponse> => {
+            ++requestCount;
+
+            const urlObj = new URL(fullUrl);
+            const params = urlObj.searchParams;
+            const offset = Number.parseInt(params.get("offset") || "");
+            const limit = Number.parseInt(params.get("limit") || "");
+            if (Number.isNaN(offset) || Number.isNaN(limit)) {
+                throw new Error("invalid offset or limit");
+            }
+
+            const features: Feature[] = [];
+            for (let i = offset; i < Math.min(offset + limit, totalFeatures); ++i) {
+                features.push(createFeature(i));
+            }
+
+            const isLast = offset + limit >= totalFeatures;
+            return {
+                features,
+                nextURL: isLast ? undefined : "https://url-to-service.invalid",
+                numberMatched: totalFeatures
+            };
+        };
+
+        const options: LoadFeatureOptions = {
+            fullURL: fullUrl,
+            httpService: DUMMY_HTTP_SERVICE,
+            featureFormat: new GeoJSON(),
+            limit: pageSize,
+            maxConcurrentRequests: 2,
+            addFeatures: (features) => features.forEach((feature) => addedFeatures.push(feature)),
+            queryFeatures: queryFeatures
+        };
+
+        await loadAllFeaturesWithOffset(options);
+
+        const actualIds = addedFeatures.map((feature) => feature.get("testId"));
+        const expectedIds = expectedFeatures.map((feature) => feature.get("testId"));
+        assert.sameMembers(actualIds, expectedIds);
+        assert.strictEqual(requestCount, 10);
+    });
+});
+
+describe("next strategy", () => {
+    it("expect features are parsed from the feature response", async () => {
+        const addedFeatures: Array<FeatureLike> = [];
+        const fullUrl = "https://url-to-service.invalid/items?f=json";
+        const options: LoadFeatureOptions = {
+            fullURL: fullUrl,
+            httpService: DUMMY_HTTP_SERVICE,
+            featureFormat: new GeoJSON(),
+            limit: 1234,
+            maxConcurrentRequests: 6,
+            addFeatures: (features: FeatureLike[]) => {
+                features.forEach((feature) => addedFeatures.push(feature));
+            },
+            queryFeatures: (): Promise<FeatureResponse> => {
+                return Promise.resolve(mockedFeatureResponse);
+            }
+        };
+        await loadAllFeaturesNextStrategy(options);
+        assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
+    });
+
+    it("expect feature responses are empty", async () => {
+        const addedFeatures: Array<FeatureLike> = [];
+        const fullUrl = "https://url-to-service.invalid/items?f=json";
+        const options: LoadFeatureOptions = {
+            fullURL: fullUrl,
+            httpService: DUMMY_HTTP_SERVICE,
+            featureFormat: new GeoJSON(),
+            limit: 1234,
+            maxConcurrentRequests: 6,
+            addFeatures: (features: FeatureLike[]) => {
+                features.forEach((feature) => addedFeatures.push(feature));
+            },
+            queryFeatures: (): Promise<FeatureResponse> => {
+                return Promise.resolve(mockedEmptyFeatureResponse);
+            }
+        };
+        await loadAllFeaturesNextStrategy(options);
+        expect(addedFeatures.length).toBe(0);
+    });
 });
