@@ -83,9 +83,19 @@ export function _createVectorSource(
         extent,
         _,
         __,
-        success,
-        failure
+        successImpl,
+        failureImpl
     ): Promise<void> => {
+        const success = (features: FeatureLike[]) => {
+            successImpl?.(features);
+            vectorSrc.changed();
+        };
+
+        const failure = () => {
+            failureImpl?.();
+            vectorSrc.changed(); // Always trigger changed event to unstuck loading state
+        };
+
         collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
         let collectionInfos;
         try {
@@ -140,8 +150,8 @@ export function _createVectorSource(
             } else {
                 LOG.debug("Query-Feature-Request aborted", e);
                 vectorSrc.removeLoadedExtent(extent);
-                failure?.();
             }
+            failure?.();
         }
     };
     vectorSrc.setLoader(loaderFunction);
