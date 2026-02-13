@@ -41,7 +41,7 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
 
 it("expect features are parsed from the feature response (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.de/items?f=json";
+    const fullUrl = "https://url-to-service.invalid/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
         httpService: DUMMY_HTTP_SERVICE,
@@ -61,7 +61,7 @@ it("expect features are parsed from the feature response (offset-strategy)", asy
 
 it("expect features are parsed from the feature response (next-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.de/items?f=json";
+    const fullUrl = "https://url-to-service.invalid/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
         httpService: DUMMY_HTTP_SERVICE,
@@ -81,7 +81,7 @@ it("expect features are parsed from the feature response (next-strategy)", async
 
 it("expect feature responses are empty (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.de/items?f=json";
+    const fullUrl = "https://url-to-service.invalid/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
         httpService: DUMMY_HTTP_SERVICE,
@@ -101,7 +101,7 @@ it("expect feature responses are empty (offset-strategy)", async () => {
 
 it("expect feature responses are empty (next-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.de/items?f=json";
+    const fullUrl = "https://url-to-service.invalid/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
         httpService: DUMMY_HTTP_SERVICE,
@@ -177,7 +177,7 @@ it("expect url is created correctly on vector-source", async () => {
 
 it("expect all feature from 2 query-runs are added", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service.de/items?f=json";
+    const fullUrl = "https://url-to-service.invalid/items?f=json";
 
     const pageSize = 3;
     const totalFeatures = 28;
@@ -213,7 +213,7 @@ it("expect all feature from 2 query-runs are added", async () => {
         const isLast = offset + limit >= totalFeatures;
         return {
             features,
-            nextURL: isLast ? undefined : "https://url-to-service.de",
+            nextURL: isLast ? undefined : "https://url-to-service.invalid",
             numberMatched: totalFeatures
         };
     };
