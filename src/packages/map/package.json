@@ -18,6 +18,9 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "@conterra/reactivity-events": "catalog:",
+        "@esri/arcgis-html-sanitizer": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
@@ -25,12 +28,10 @@
         "@open-pioneer/runtime": "catalog:",
         "ol": "catalog:",
         "proj4": "catalog:",
-        "react": "catalog:",
         "react-dom": "catalog:",
         "react-use": "catalog:",
-        "uuid": "catalog:",
-        "@conterra/reactivity-core": "catalog:",
-        "@conterra/reactivity-events": "catalog:"
+        "react": "catalog:",
+        "uuid": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",

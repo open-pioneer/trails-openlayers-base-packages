@@ -32,8 +32,11 @@ import {
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
+import { getAttributions } from "./wms/getAttributions";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
+import { sanitizeAttributions } from "../utils/sanitize";
+import { Sublayer } from "./unions";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.
@@ -118,7 +121,6 @@ export class WMSLayer extends AbstractLayer {
         }
 
         const layer = new ImageLayer();
-
         super(
             {
                 ...config,
@@ -127,12 +129,13 @@ export class WMSLayer extends AbstractLayer {
             deps,
             internalTag
         );
-
+        const { attributions, ...sourceOptions } = config.sourceOptions ?? {};
         const source = new ImageWMS({
-            ...config.sourceOptions,
+            attributions: sanitizeAttributions(attributions),
+            ...sourceOptions,
             url: config.url,
             params: {
-                ...config.sourceOptions?.params
+                ...sourceOptions?.params
             },
             // Use http service to load tiles; needed for authentication etc.
             imageLoadFunction: (wrapper, url) => {
@@ -228,37 +231,10 @@ export class WMSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
-
-        /** Find all leaf nodes representing a layer in the structure */
-        const getNestedSublayer = (sublayers: WMSSublayer[], layers: WMSSublayer[]) => {
-            for (const sublayer of sublayers) {
-                const nested = sublayer.sublayers.getSublayers();
-                if (nested.length) {
-                    getNestedSublayer(nested, layers);
-                } else {
-                    if (sublayer.name) {
-                        layers.push(sublayer);
-                    }
-                }
-            }
-        };
-
         this.#fetchWMSCapabilities()
             .then((result: string) => {
                 batch(() => {
-                    const parser = new WMSCapabilities();
-                    const capabilities = parser.read(result);
-                    this.#capabilities = capabilities;
-
-                    const layers: WMSSublayer[] = [];
-                    getNestedSublayer(this.#sublayers.getSublayers(), layers);
-
-                    for (const layer of layers) {
-                        if (layer.name) {
-                            const legendUrl = getLegendUrl(capabilities, layer.name);
-                            layer[SET_LEGEND](legendUrl);
-                        }
-                    }
+                    this.#initializeWithMetadata(result);
                 });
             })
             .catch((error) => {
@@ -266,7 +242,7 @@ export class WMSLayer extends AbstractLayer {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
-                LOG.error(`Failed to fetch WMS capabilities for layer '${this.id}'`, error);
+                LOG.error(`Failed to initializes WMS layer '${this.id}'`, error);
             });
     }
 
@@ -289,28 +265,12 @@ export class WMSLayer extends AbstractLayer {
 
     #getVisibleLayerNames() {
         const layers: string[] = [];
-        const visitSublayer = (sublayer: WMSSublayer) => {
-            if (!sublayer.visible) {
-                return;
+        const filter = (sublayer: Sublayer) => sublayer.visible;
+        for (const sublayer of walkLeaves(this.#sublayers, filter)) {
+            // Push sublayer if layer name is not an empty string | undefined | ...
+            if (sublayer.name) {
+                layers.push(sublayer.name);
             }
-
-            const nestedSublayers = sublayer.sublayers[GET_RAW_SUBLAYERS]();
-            if (nestedSublayers.length) {
-                for (const nestedSublayer of nestedSublayers) {
-                    visitSublayer(nestedSublayer);
-                }
-            } else {
-                /**
-                 * Push sublayer only, if layer name is not an empty string | undefined | ...
-                 */
-                if (sublayer.name) {
-                    layers.push(sublayer.name);
-                }
-            }
-        };
-
-        for (const sublayer of this.sublayers[GET_RAW_SUBLAYERS]()) {
-            visitSublayer(sublayer);
         }
         return layers;
     }
@@ -319,6 +279,27 @@ export class WMSLayer extends AbstractLayer {
         const httpService = this[GET_DEPS]().httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
         return fetchText(url, httpService, this.#abortController.signal);
+    }
+
+    #initializeWithMetadata(metadata: string) {
+        const parser = new WMSCapabilities();
+        const capabilities = parser.read(metadata);
+        this.#capabilities = capabilities;
+
+        // Apply attributions from metadata none are set.
+        if (!this.#source.getAttributions()) {
+            const attributions = getAttributions(capabilities);
+            if (attributions) {
+                this.#source.setAttributions(sanitizeAttributions(attributions));
+            }
+        }
+
+        for (const layer of walkLeaves(this.#sublayers)) {
+            if (layer.name) {
+                const legendUrl = getLegendUrl(capabilities, layer.name);
+                layer[SET_LEGEND](legendUrl);
+            }
+        }
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
@@ -343,6 +324,27 @@ export class WMSLayer extends AbstractLayer {
         image.addEventListener("load", finish);
         image.addEventListener("error", finish);
         image.src = objectUrl;
+    }
+}
+
+/**
+ * Yields all leaf notes in the given collection (recursively).
+ */
+function* walkLeaves(
+    sublayers: SublayersCollection<WMSSublayer>,
+    filter?: (sublayer: Sublayer) => boolean
+): Generator<WMSSublayer> {
+    for (const sublayer of sublayers[GET_RAW_SUBLAYERS]()) {
+        if (filter && !filter(sublayer)) {
+            continue;
+        }
+
+        const nested = sublayer.sublayers[GET_RAW_SUBLAYERS]();
+        if (nested.length) {
+            yield* walkLeaves(sublayer.sublayers, filter);
+        } else {
+            yield sublayer;
+        }
     }
 }
 
