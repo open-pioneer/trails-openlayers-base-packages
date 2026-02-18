@@ -242,7 +242,7 @@ export class WMSLayer extends AbstractLayer {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
-                LOG.error(`Failed to initializes WMS layer '${this.id}'`, error);
+                LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
             });
     }
 
