@@ -82,7 +82,7 @@ catalog:
   rimraf: ^6.1.2
   sass: ^1.97.3
   tsx: ^4.21.0
-  typedoc: ^0.28.16
+  typedoc: ^0.28.17
   typescript: ^5.9.3
   vite: ^7.3.1
   vite-plugin-eslint: ^1.8.1
@@ -90,7 +90,12 @@ catalog:
   zx: ^8.8.5
 
 auditConfig:
-  ignoreCves: []
+  ignoreCves:
+    # This affects ajv, which is a transitive dependency of eslint.
+    # Eslint depends on ajv@v6, and an update to v8 might not be trivial.
+    # Only dev dependencies are (potentially) affected.
+    # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
+    - CVE-2025-69873
 
 # Install older versions by default
 resolutionMode: "lowest-direct"
@@ -108,6 +113,9 @@ overrides:
 
   # https://github.com/advisories/GHSA-5j98-mcp5-4vw2
   "glob@>=10.x <= 11.0.3": "^11.1.0"
+
+  # https://github.com/advisories/GHSA-38c4-r59v-3vqw
+  "markdown-it@>=13.0.0 <14.1.1": "^14.1.1"
 
   # We don't actually use the babel plugin.
   # The babel runtime is also not used as a production dependency.
