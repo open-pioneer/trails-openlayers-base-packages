@@ -97,6 +97,9 @@ auditConfig:
     # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
     - CVE-2025-69873
 
+    # See CVE CVE-2025-69873
+    - CVE-2026-26996
+
 # Install older versions by default
 resolutionMode: "lowest-direct"
 
