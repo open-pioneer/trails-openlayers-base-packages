@@ -32,7 +32,7 @@ catalog:
   classnames: ^2.5.1
   framer-motion: ^12.33.0
   html2canvas: ^1.4.1
-  jspdf: ^4.1.0
+  jspdf: ^4.2.0
   ol-mapbox-style: ^13.2.0
   ol: ^10.7.0
   proj4: ^2.20.2
@@ -108,7 +108,7 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "@isaacs/brace-expansion@5.0.1" # see overrides
+  - "jspdf@4.2.0"
 
 overrides:
   # https://github.com/advisories/GHSA-7h2j-956f-4vf2
