@@ -43,8 +43,8 @@ catalogs:
       specifier: 4.5.0-dev.20260211105402
       version: 4.5.0-dev.20260211105402
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: ^0.2.6
-      version: 0.2.6
+      specifier: ^0.3.0
+      version: 0.3.0
     '@open-pioneer/core':
       specifier: 4.5.0-dev.20260211105402
       version: 4.5.0-dev.20260211105402
@@ -263,7 +263,7 @@ importers:
         version: 3.0.5
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.2.6
+        version: 0.3.0
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
         version: 5.1.0(@open-pioneer/runtime@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3))(rollup@4.53.5)(sass@1.97.3)(vite@7.3.1(@types/node@20.19.32)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.1))
@@ -2420,8 +2420,8 @@ packages:
   '@open-pioneer/chakra-snippets@4.5.0-dev.20260211105402':
     resolution: {integrity: sha512-fRLVHETKjJLIqjFXcb/UvJ82a7X+gP3SNYL434tGJI5ZwDSbdOMDokJwb8908ZIcJmgQjz3WlizG79DkyevMtw==}
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.6':
-    resolution: {integrity: sha512-e8/bxBiq4leHm5TMSMlYKaVmBzPgex3a6H6aSrbTSos1xraLMfF/Xe3EBeX2BYNkaz3f+OtVnE3PFQ10FjXa4Q==}
+  '@open-pioneer/check-pnpm-duplicates@0.3.0':
+    resolution: {integrity: sha512-CHz9NSmrH1MtgI01QU3BDwoZt/FpmaJuDpoBjk3DM+imkSX3UCes5n1Rk3ESgCupXZPqO/Hr2Rl+ngGEcUW9MQ==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2675,6 +2675,10 @@ packages:
     resolution: {integrity: sha512-+/SabdOsq4ycO/s1F82mUTmYb9KTE7e74qbXE9caM6slbaJesVqQOKDxSP4RqCy5jkjDz26kpkWzxeNJLowdNQ==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/dependency-path@1001.1.9':
+    resolution: {integrity: sha512-C1V4H54GyMfLL47q93PmdVRJkJyNVEE6Ht6cFrMSsjgsR7fxXWqjlem7OaA9MMjSTBB/d/g9mV4xZnoT/HAkDQ==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/error@1000.0.5':
     resolution: {integrity: sha512-GjH0TPjbVNrPnl/BAGoFuBLJ2sFfXNKbS33lll/Ehe9yw0fyc8Kdw7kO9if37yQqn6vaa4dAHKkPllum7f/IPQ==}
     engines: {node: '>=18.12'}
@@ -2701,8 +2705,16 @@ packages:
     resolution: {integrity: sha512-4KT+rlDtHaGIDUVX0KJ6dG26hJyMEV9LCW0e29zYb9L/9libYdLzuyY2cCIbBI/9NlpCfiy82NcqFg7A3HASaw==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/lockfile.types@1002.0.9':
+    resolution: {integrity: sha512-cSdmJAXTab/hJz+RxvlZgWWZxFsP8rCbaUxSfgT7rwj6+1EFV9DcJYr4vh395Da5KgpIPxPceAs1iYO+5/MCqA==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/lockfile.utils@1003.0.9':
     resolution: {integrity: sha512-x7LZMBLPOLWZvw/f+eMhLpIbVtQnj7jupDZdp6jx2wBEcAwyh8kyxlGl1hLYJOG7eyowC3DVatdMnIxuAVpAIg==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/lockfile.utils@1004.0.1':
+    resolution: {integrity: sha512-mDoHM3WNHzlL1oZgak1MaRMmlb/aUxTXsZ5Zenme1FrtcR7C55NcgiQmUqIUofjfZoKZePlDdbp34EXs1e74+g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/lockfile.walker@1001.0.22':
@@ -2732,8 +2744,16 @@ packages:
     resolution: {integrity: sha512-mwh5nHZXP1iORD6bQLYAYp9WWma9kwHsK9tLWICLvrWPxw+RqRthKsp0NxYPR7nV1Yd1cEgAi1lWxgWNxjJ8wA==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/resolver-base@1005.4.1':
+    resolution: {integrity: sha512-47zGgACkbZWLOmM61kaE0nkqxiYx63C6DJ4wzDsdj0iXDZJ9SJEl+T035pkhquHe8XEh3YxvwMg2BRyZSgmZ9Q==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/types@1001.2.0':
     resolution: {integrity: sha512-UIju+OadUVS0q5q/MbRAzMS5M9HZcZyT6evyrgPUH0DV9przkcW7/LH1Sj33Q2MpJO9Nzqw4b4w72x8mvtUAew==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/types@1001.3.0':
+    resolution: {integrity: sha512-NLTXheat/u7OEGg5M5vF6Z85zx8uKUZE0+whtX/sbFV2XL48RdnOWGPTKYuVVkv8M+launaLUTgGEXNs/ess2w==}
     engines: {node: '>=18.12'}
 
   '@pnpm/util.lex-comparator@3.0.2':
@@ -6520,13 +6540,13 @@ snapshots:
       - react-dom
       - typescript
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.6':
+  '@open-pioneer/check-pnpm-duplicates@0.3.0':
     dependencies:
       '@pnpm/lockfile.fs': 1001.1.27(@pnpm/logger@1001.0.1)
-      '@pnpm/lockfile.utils': 1003.0.9
+      '@pnpm/lockfile.utils': 1004.0.1
       '@pnpm/lockfile.walker': 1001.0.22
       '@pnpm/logger': 1001.0.1
-      '@pnpm/types': 1001.2.0
+      '@pnpm/types': 1001.3.0
       chalk: 5.6.2
       commander: 14.0.2
       js-yaml: 4.1.1
@@ -6773,6 +6793,12 @@ snapshots:
       '@pnpm/types': 1001.2.0
       semver: 7.7.3
 
+  '@pnpm/dependency-path@1001.1.9':
+    dependencies:
+      '@pnpm/crypto.hash': 1000.2.1
+      '@pnpm/types': 1001.3.0
+      semver: 7.7.3
+
   '@pnpm/error@1000.0.5':
     dependencies:
       '@pnpm/constants': 1001.3.1
@@ -6820,6 +6846,12 @@ snapshots:
       '@pnpm/resolver-base': 1005.3.3
       '@pnpm/types': 1001.2.0
 
+  '@pnpm/lockfile.types@1002.0.9':
+    dependencies:
+      '@pnpm/patching.types': 1000.1.0
+      '@pnpm/resolver-base': 1005.4.1
+      '@pnpm/types': 1001.3.0
+
   '@pnpm/lockfile.utils@1003.0.9':
     dependencies:
       '@pnpm/dependency-path': 1001.1.8
@@ -6827,6 +6859,16 @@ snapshots:
       '@pnpm/pick-fetcher': 1001.0.0
       '@pnpm/resolver-base': 1005.3.3
       '@pnpm/types': 1001.2.0
+      get-npm-tarball-url: 2.1.0
+      ramda: '@pnpm/ramda@0.28.1'
+
+  '@pnpm/lockfile.utils@1004.0.1':
+    dependencies:
+      '@pnpm/dependency-path': 1001.1.9
+      '@pnpm/lockfile.types': 1002.0.9
+      '@pnpm/pick-fetcher': 1001.0.0
+      '@pnpm/resolver-base': 1005.4.1
+      '@pnpm/types': 1001.3.0
       get-npm-tarball-url: 2.1.0
       ramda: '@pnpm/ramda@0.28.1'
 
@@ -6856,7 +6898,13 @@ snapshots:
     dependencies:
       '@pnpm/types': 1001.2.0
 
+  '@pnpm/resolver-base@1005.4.1':
+    dependencies:
+      '@pnpm/types': 1001.3.0
+
   '@pnpm/types@1001.2.0': {}
+
+  '@pnpm/types@1001.3.0': {}
 
   '@pnpm/util.lex-comparator@3.0.2': {}
 
