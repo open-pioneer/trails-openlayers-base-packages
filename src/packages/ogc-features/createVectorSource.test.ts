@@ -10,9 +10,9 @@ import { CollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import {
     LoadFeatureOptions,
     _createVectorSource,
-    _findMatchingCrs,
     loadAllFeaturesNextStrategy
 } from "./createVectorSource";
+import { CollectionMetadata } from "./Metadata";
 import { FeatureResponse } from "./requestUtils";
 import { HttpService } from "@open-pioneer/http";
 
@@ -25,6 +25,18 @@ const DUMMY_HTTP_SERVICE = {
 async function mockedGetCollectionInfos(_collectionsItemsUrl: string): Promise<CollectionInfos> {
     return {
         supportsOffsetStrategy: true
+    };
+}
+
+async function mockedCollectionMetadata(): Promise<CollectionMetadata> {
+    return {
+        id: "collection-1",
+        crs: [
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/OGC/0/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/4326",
+            "http://www.opengis.net/def/crs/EPSG/0/3857"
+        ]
     };
 }
 
@@ -42,6 +54,82 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
 
 beforeEach(() => {
     vi.restoreAllMocks();
+});
+
+describe("Request CRS detection", () => {
+    it("expect configured CRS is used as request CRS", async () => {
+        let capturedCrs: string | null = null;
+
+        const vectorSource = _createVectorSource(
+            {
+                baseUrl: "https://ogc-features.example.com",
+                collectionId: "collection-1",
+                crs: "http://www.opengis.net/def/crs/EPSG/43/1111"
+            },
+            {
+                httpService: DUMMY_HTTP_SERVICE,
+                queryFeaturesParam: async (fullUrl: string): Promise<FeatureResponse> => {
+                    const params = new URL(fullUrl).searchParams;
+                    capturedCrs = params.get("crs");
+                    return mockedFeatureResponse;
+                },
+                getCollectionInfosParam: mockedGetCollectionInfos,
+                getCollectionMetadataParam: mockedCollectionMetadata
+            }
+        );
+
+        vectorSource.loadFeatures([1, 2, 3, 4], 1, new Projection({ code: "EPSG:4326" }));
+        await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
+        assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/43/1111");
+    });
+
+    it("expect map CRS is used as request CRS", async () => {
+        let capturedCrs: string | null = null;
+
+        const vectorSource = _createVectorSource(
+            { baseUrl: "https://ogc-features.example.com", collectionId: "collection-1" },
+            {
+                httpService: DUMMY_HTTP_SERVICE,
+                queryFeaturesParam: async (fullUrl: string): Promise<FeatureResponse> => {
+                    const params = new URL(fullUrl).searchParams;
+                    capturedCrs = params.get("crs");
+                    return mockedFeatureResponse;
+                },
+                getCollectionInfosParam: mockedGetCollectionInfos,
+                getCollectionMetadataParam: mockedCollectionMetadata
+            }
+        );
+
+        vectorSource.loadFeatures([1, 2, 3, 4], 1, new Projection({ code: "EPSG:4326" }));
+        await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
+        assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/4326");
+    });
+
+    it("expect map CRS is used as request CRS for changing map CRSes", async () => {
+        let capturedCrs: string | null = null;
+
+        const vectorSource = _createVectorSource(
+            { baseUrl: "https://ogc-features.example.com", collectionId: "collection-1" },
+            {
+                httpService: DUMMY_HTTP_SERVICE,
+                queryFeaturesParam: async (fullUrl: string): Promise<FeatureResponse> => {
+                    const params = new URL(fullUrl).searchParams;
+                    capturedCrs = params.get("crs");
+                    return mockedFeatureResponse;
+                },
+                getCollectionInfosParam: mockedGetCollectionInfos,
+                getCollectionMetadataParam: mockedCollectionMetadata
+            }
+        );
+
+        vectorSource.loadFeatures([3, 3, 4, 4], 1, new Projection({ code: "EPSG:4326" }));
+        await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
+        assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/4326");
+
+        vectorSource.loadFeatures([1, 1, 2, 2], 1, new Projection({ code: "EPSG:3857" }));
+        await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
+        assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/3857");
+    });
 });
 
 it("expect additionalOptions are set on vector-source", () => {
@@ -71,7 +159,7 @@ it("expect url is created correctly on vector-source", async () => {
         attributions = "attributions string",
         bbox = [1, 2, 3, 4];
 
-    let urlIsAlwaysCorrect = true;
+    let urlIsAlwaysCorrect = false;
 
     const queryFeatures = async (fullUrl: string): Promise<FeatureResponse> => {
         const urlObj = new URL(fullUrl);
@@ -92,10 +180,17 @@ it("expect url is created correctly on vector-source", async () => {
             httpService: DUMMY_HTTP_SERVICE,
             queryFeaturesParam: queryFeatures,
             addFeaturesParam() {},
-            getCollectionInfosParam: mockedGetCollectionInfos
+            getCollectionInfosParam: mockedGetCollectionInfos,
+            getCollectionMetadataParam: async () => {
+                return {
+                    id: "",
+                    crs: ["http://www.opengis.net/def/crs/EPSG/0/4326"]
+                };
+            }
         }
     );
-    await vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
+    vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
+    await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
     assert.isTrue(urlIsAlwaysCorrect);
 });
 
@@ -241,15 +336,5 @@ describe("next strategy", () => {
         };
         await loadAllFeaturesNextStrategy(options);
         expect(addedFeatures.length).toBe(0);
-    });
-});
-
-describe("findMatchingCrs", () => {
-    it("matches an EPSG code against its equivalent OGC CRS URI", () => {
-        const available = ["http://www.opengis.net/def/crs/EPSG/0/4326"];
-        _findMatchingCrs("EPSG:4326", available);
-        expect(_findMatchingCrs("EPSG:4326", available)).toBe(
-            "http://www.opengis.net/def/crs/EPSG/0/4326"
-        );
     });
 });
