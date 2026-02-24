@@ -143,7 +143,7 @@ it("expect additionalOptions are set on vector-source", () => {
     };
 
     const vectorSource = _createVectorSource(
-        { baseUrl: "", collectionId: "", crs: "", additionalOptions: additionalOptions },
+        { baseUrl: "", collectionId: "",  additionalOptions: additionalOptions },
         {
             httpService: DUMMY_HTTP_SERVICE,
             getCollectionInfosParam: mockedGetCollectionInfos
@@ -158,7 +158,6 @@ it("expect additionalOptions are set on vector-source", () => {
 it("expect url is created correctly on vector-source", async () => {
     const fullURL = "https://url-to-service.de",
         collectionId = "1",
-        crs = "http://www.opengis.net/def/crs/EPSG/0/25832",
         attributions = "attributions string",
         bbox = [1, 2, 3, 4];
 
@@ -168,9 +167,10 @@ it("expect url is created correctly on vector-source", async () => {
         const urlObj = new URL(fullUrl);
         const params = urlObj.searchParams;
         const pathIsCorrect = urlObj.pathname.includes("/collections/1/items");
+        const defaultCrs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
         const paramAreIncluded =
-            params.get("crs") === crs &&
-            params.get("bbox-crs") === crs &&
+            params.get("crs") === defaultCrs &&
+            params.get("bbox-crs") === "http://www.opengis.net/def/crs/OGC/1.3/CRS84" &&
             params.get("bbox") === bbox.join(",") &&
             params.get("f") === "json";
         urlIsAlwaysCorrect = paramAreIncluded && pathIsCorrect;
@@ -178,18 +178,13 @@ it("expect url is created correctly on vector-source", async () => {
     };
 
     const vectorSource = _createVectorSource(
-        { baseUrl: fullURL, collectionId: collectionId, crs: crs, attributions: attributions },
+        { baseUrl: fullURL, collectionId: collectionId, attributions: attributions },
         {
             httpService: DUMMY_HTTP_SERVICE,
             queryFeaturesParam: queryFeatures,
             addFeaturesParam() {},
             getCollectionInfosParam: mockedGetCollectionInfos,
-            getCollectionMetadataParam: async () => {
-                return {
-                    id: "",
-                    crs: ["http://www.opengis.net/def/crs/EPSG/0/4326"]
-                };
-            }
+            getCollectionMetadataParam: mockedCollectionMetadata
         }
     );
     vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
