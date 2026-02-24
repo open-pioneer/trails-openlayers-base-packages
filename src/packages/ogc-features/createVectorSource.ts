@@ -78,6 +78,8 @@ export function _createVectorSource(
     // Used to cancel outdated requests.
     let abortController: AbortController;
     let collectionInfosPromise: Promise<CollectionInfos | undefined> | undefined;
+
+    //TODO: Promise merken
     let collectionMetadata: CollectionMetadata | undefined;
     let requestCrs: string;
 
@@ -112,6 +114,7 @@ export function _createVectorSource(
             }
         }
 
+        //TODO Handle change in map projection; entweder Ticket oder merken, ob map projection die Basis für den requestCrs war
         requestCrs ??= getRequestCrs(projection.getCode(), collectionMetadata.crs, options.crs);
 
         collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
@@ -337,6 +340,7 @@ async function getCollectionMetadata(
             `Failed to fetch collection metadata for collection '${collectionId}' (status code ${response.status})`
         );
     }
+    // Note: Currently no validation
     return await response.json();
 }
 
@@ -354,7 +358,6 @@ function getRequestCrs(
     configuredCrs: string | undefined
 ): string {
     if (configuredCrs) {
-        LOG.warn(`Using configured CRS ${configuredCrs} instead of map CRS '${mapCrs}'.`);
         return configuredCrs;
     }
 
