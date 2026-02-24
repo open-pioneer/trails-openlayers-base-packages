@@ -29,7 +29,10 @@ export interface OgcFeatureVectorSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** the URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832 */
+    /** 
+     * The URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832
+     * If not provided, the vector source will attempt to use the map's CRS if supported by the collection, or fall back to CRS84 otherwise.
+     */
     crs?: string;
 
     /**
