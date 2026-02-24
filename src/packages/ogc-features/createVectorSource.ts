@@ -15,7 +15,7 @@ import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./re
 
 const LOG = createLogger(sourceId);
 const DEFAULT_LIMIT = 5000;
-const DEFAULT_CONCURRENTY = 6;
+const DEFAULT_CONCURRENCY = 6;
 
 /**
  * This function creates an OpenLayers VectorSource for OGC API Features services to be used inside
@@ -153,7 +153,7 @@ export function _createVectorSource(
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,
-                maxConcurrentRequests: options.maxConcurrentRequests ?? DEFAULT_CONCURRENTY,
+                maxConcurrentRequests: options.maxConcurrentRequests ?? DEFAULT_CONCURRENCY,
                 signal: abortController.signal,
                 collectionInfos: collectionInfos
             });
