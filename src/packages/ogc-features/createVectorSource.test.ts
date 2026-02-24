@@ -73,12 +73,13 @@ describe("Request CRS detection", () => {
                     capturedCrs = params.get("crs");
                     return mockedFeatureResponse;
                 },
+                addFeaturesParam() {},
                 getCollectionInfosParam: mockedGetCollectionInfos,
                 getCollectionMetadataParam: mockedCollectionMetadata
             }
         );
 
-        vectorSource.loadFeatures([1, 2, 3, 4], 1, new Projection({ code: "EPSG:4326" }));
+        vectorSource.loadFeatures([1, 1, 2, 2], 1, new Projection({ code: "EPSG:4326" }));
         await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
         assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/43/1111");
     });
@@ -95,12 +96,13 @@ describe("Request CRS detection", () => {
                     capturedCrs = params.get("crs");
                     return mockedFeatureResponse;
                 },
+                addFeaturesParam() {},
                 getCollectionInfosParam: mockedGetCollectionInfos,
                 getCollectionMetadataParam: mockedCollectionMetadata
             }
         );
 
-        vectorSource.loadFeatures([1, 2, 3, 4], 1, new Projection({ code: "EPSG:4326" }));
+        vectorSource.loadFeatures([1, 1, 2, 2], 1, new Projection({ code: "EPSG:4326" }));
         await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
         assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/4326");
     });
@@ -117,16 +119,17 @@ describe("Request CRS detection", () => {
                     capturedCrs = params.get("crs");
                     return mockedFeatureResponse;
                 },
+                addFeaturesParam() {},
                 getCollectionInfosParam: mockedGetCollectionInfos,
                 getCollectionMetadataParam: mockedCollectionMetadata
             }
         );
 
-        vectorSource.loadFeatures([3, 3, 4, 4], 1, new Projection({ code: "EPSG:4326" }));
+        vectorSource.loadFeatures([1, 1, 2, 2], 1, new Projection({ code: "EPSG:4326" }));
         await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
         assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/4326");
 
-        vectorSource.loadFeatures([1, 1, 2, 2], 1, new Projection({ code: "EPSG:3857" }));
+        vectorSource.loadFeatures([3, 3, 4, 4], 1, new Projection({ code: "EPSG:3857" }));
         await vi.waitUntil(() => (vectorSource as any).loadingExtentsCount_ === 0);
         assert.equal(capturedCrs, "http://www.opengis.net/def/crs/EPSG/0/3857");
     });
