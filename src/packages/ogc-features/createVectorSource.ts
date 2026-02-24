@@ -12,7 +12,7 @@ import { sourceId } from "open-pioneer:source-info";
 import { OgcFeatureVectorSourceOptions } from "./api";
 import { CollectionInfos, getCollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./requestUtils";
-import { getCollectionMetadata, getRequestCrs } from "./Metadata";
+import { CollectionMetadata, getCollectionMetadata, getRequestCrs } from "./Metadata";
 
 const LOG = createLogger(sourceId);
 const DEFAULT_LIMIT = 5000;
@@ -318,12 +318,4 @@ export async function loadPages(
     });
     await Promise.all(allRequestPromises);
     return allFeatureResponse;
-}
-
-/**
- * Metadata of a collection retrieved from the OGC API Features service as provided by the `/collections/{collectionId}` endpoint.
- */
-export interface CollectionMetadata {
-    id: string;
-    crs: string[] | undefined;
 }
