@@ -78,11 +78,13 @@ export function _createVectorSource(
     // Used to cancel outdated requests.
     let abortController: AbortController;
     let collectionInfosPromise: Promise<CollectionInfos | undefined> | undefined;
+    let collectionMetadata: CollectionMetadata | undefined;
+    let requestCrs: string;
 
     const loaderFunction: FeatureLoader = async (
         extent,
         _,
-        __,
+        projection,
         successImpl,
         failureImpl
     ): Promise<void> => {
@@ -95,6 +97,22 @@ export function _createVectorSource(
             failureImpl?.();
             vectorSrc.changed(); // Always trigger changed event to unstuck loading state
         };
+
+        if (!collectionMetadata) {
+            try {
+                collectionMetadata = await getCollectionMetadata(
+                    options.baseUrl,
+                    options.collectionId,
+                    httpService
+                );
+            } catch (e) {
+                LOG.error("Failed to retrieve collection metadata", e);
+                failure();
+                return;
+            }
+        }
+
+        requestCrs ??= getRequestCrs(projection.getCode(), collectionMetadata.crs, options.crs);
 
         collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
         let collectionInfos;
@@ -116,7 +134,7 @@ export function _createVectorSource(
         const fullURL = createCollectionRequestUrl(
             collectionItemsURL,
             extent,
-            options.crs,
+            requestCrs,
             options.rewriteUrl
         );
 
@@ -285,4 +303,97 @@ export async function loadPages(
     });
     await Promise.all(allRequestPromises);
     return allFeatureResponse;
+}
+
+/**
+ * Metadata of a collection retrieved from the OGC API Features service as provided by the `/collections/{collectionId}` endpoint.
+ */
+export interface CollectionMetadata {
+    id: string;
+    crs: string[] | undefined;
+}
+
+/**
+ * Requests metadata for an OGC API Features service collection.
+ *
+ * @param baseUrl Base URL of the OGC API Features service (e.g. `https://example.com/ogcapi/v1`).
+ * @param collectionId ID of the collection to retrieve the metadata for.
+ * @param httpService Instance to perform the HTTP request.
+ * @returns
+ */
+async function getCollectionMetadata(
+    baseUrl: string,
+    collectionId: string,
+    httpService: HttpService
+): Promise<CollectionMetadata> {
+    const collectionMetadataUrl = `${baseUrl}/collections/${collectionId}`;
+    const response = await httpService.fetch(collectionMetadataUrl, {
+        headers: {
+            Accept: "application/json"
+        }
+    });
+    if (!response.ok) {
+        throw new Error(
+            `Failed to fetch collection metadata for collection '${collectionId}' (status code ${response.status})`
+        );
+    }
+    return await response.json();
+}
+
+/**
+ * Determines the appropriate coordinate reference system (CRS) identifier to use for requests to the OGC API Features service, based on the map's current CRS, the collection's supported CRSs, and any explicitly configured CRS in the options.
+ *
+ * @param mapCrs the CRS used by the map that is requesting to load the features.
+ * @param supportedCrses list of supported CRS identifiers.
+ * @param configuredCrs an explicitly configured CRS identifier to use for requests, if any.
+ * @returns the CRS to use for feature requests based on the given information.
+ */
+function getRequestCrs(
+    mapCrs: string,
+    supportedCrses: string[] | undefined,
+    configuredCrs: string | undefined
+): string {
+    if (configuredCrs) {
+        LOG.warn(`Using configured CRS ${configuredCrs} instead of map CRS '${mapCrs}'.`);
+        return configuredCrs;
+    }
+
+    const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+    const matchingMapCrs = _findMatchingCrs(mapCrs, supportedCrses);
+    if (!matchingMapCrs) {
+        LOG.warn(
+            `Map CRS '${mapCrs}' not supported. Falling back to default CRS '${DEFAULT_CRS}'.`
+        );
+        return DEFAULT_CRS;
+    }
+
+    return matchingMapCrs;
+}
+
+/**
+ * @internal
+ * Checks if a given coordinate reference system (CRS) identifier  matches any of the available CRS URIs.
+ * The function especially supports matching a simple EPSG code like "EPSG:4326" with its corresponding CRS URI (e.g. "http://www.opengis.net/def/crs/EPSG/0/4326").
+ *
+ *
+ * @param testCrs a CRS identifier to test, e.g. "EPSG:4326" or "http://www.opengis.net/def/crs/EPSG/0/4326"
+ * @param availableCrsUris list of CRS URIs to check against, expected to be in the form of "http://www.opengis.net/def/crs/{authority}/{version}/{code}".
+ *
+ * @returns the matching CRS URI if a match is found, otherwise `undefined`.
+ */
+export function _findMatchingCrs(
+    testCrs: string,
+    availableCrsUris: string[] | undefined
+): string | undefined {
+    if (!availableCrsUris) {
+        return undefined;
+    }
+
+    if (testCrs.startsWith("EPSG:")) {
+        const testCode = testCrs.split(":")[1];
+        const testCrsUri = `http://www.opengis.net/def/crs/EPSG/0/${testCode}`;
+        return availableCrsUris.find((crsUri) => crsUri === testCrsUri);
+    } else {
+        return availableCrsUris.find((crsUri) => crsUri === testCrs);
+    }
 }

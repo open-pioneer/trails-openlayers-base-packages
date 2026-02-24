@@ -10,6 +10,7 @@ import { CollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import {
     LoadFeatureOptions,
     _createVectorSource,
+    _findMatchingCrs,
     loadAllFeaturesNextStrategy
 } from "./createVectorSource";
 import { FeatureResponse } from "./requestUtils";
@@ -240,5 +241,15 @@ describe("next strategy", () => {
         };
         await loadAllFeaturesNextStrategy(options);
         expect(addedFeatures.length).toBe(0);
+    });
+});
+
+describe("findMatchingCrs", () => {
+    it("matches an EPSG code against its equivalent OGC CRS URI", () => {
+        const available = ["http://www.opengis.net/def/crs/EPSG/0/4326"];
+        _findMatchingCrs("EPSG:4326", available);
+        expect(_findMatchingCrs("EPSG:4326", available)).toBe(
+            "http://www.opengis.net/def/crs/EPSG/0/4326"
+        );
     });
 });
