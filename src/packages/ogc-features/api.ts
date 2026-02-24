@@ -29,7 +29,7 @@ export interface OgcFeatureVectorSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** 
+    /**
      * The URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832
      * If not provided, the vector source will attempt to use the map's CRS if supported by the collection, or fall back to CRS84 otherwise.
      */
@@ -50,7 +50,14 @@ export interface OgcFeatureVectorSourceOptions {
     /** The maximum number of concurrent requests. Defaults to `6`. */
     maxConcurrentRequests?: number;
 
-    /** Optional attribution for the layer (e.g. copyright hints). */
+    /**
+     * Optional attribution for the layer (e.g. copyright hints).
+     *
+     * If set, this property is passed to the map as attribution information for this layer.
+     * If the property is not set or `undefined`, the layer will check if the collection metadata contains a non-standard `attribution` property and use it as attribution.
+     * Setting the this value to the empty string will explicitly disable attributions for this layer, even if the collection metadata contains an `attribution` property.
+     *
+     */
     attributions?: AttributionLike | undefined;
 
     /** Optional additional options for the VectorSource. */

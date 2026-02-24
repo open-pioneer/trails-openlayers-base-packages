@@ -48,7 +48,8 @@ export async function getCollectionMetadata(
 
 export interface CollectionMetadata {
     id: string;
-    crs: string[] | undefined;
+    crs?: string[];
+    attribution?: string;
 }
 
 /**

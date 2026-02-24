@@ -82,9 +82,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: this.vectorSourceFactory.createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/lika/v1",
                             collectionId: "katasterbezirk",
-                            limit: 1000,
-                            attributions:
-                                "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+                            limit: 1000
                         })
                     })
                 }),

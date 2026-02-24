@@ -126,6 +126,9 @@ export function _createVectorSource(
             collectionMetadata?.crs,
             options.crs
         ));
+        if (options.attributions === undefined) {
+            vectorSrc.setAttributions(collectionMetadata.attribution);
+        }
 
         collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
         let collectionInfos;
