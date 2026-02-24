@@ -104,7 +104,7 @@ export function _createVectorSource(
             vectorSrc.changed(); // Always trigger changed event to unstuck loading state
         };
 
-        collectionMetadataPromise = getCollectionMetadataFunc(
+        collectionMetadataPromise ??= getCollectionMetadataFunc(
             options.baseUrl,
             options.collectionId,
             httpService
