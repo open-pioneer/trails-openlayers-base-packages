@@ -5,8 +5,4 @@ messages:
   searchPlaceholder: "Suche..."
   ariaLabel:
     search: "Suchleiste"
-    instructions: "Benutze die Pfeiltasten Hoch und Runter um durch die Suchergebnisse zu scrollen, drücke Enter um das Suchergebnis zu selektieren, drücke Escape um zurückzukehren"
-    searchFocus: "fokussiert"
-    searchSelect: "selektiert"
-    searchClear: "gelöscht"
     clearButton: "Suche leeren"
