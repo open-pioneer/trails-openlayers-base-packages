@@ -12,10 +12,11 @@ import { sourceId } from "open-pioneer:source-info";
 import { OgcFeatureVectorSourceOptions } from "./api";
 import { CollectionInfos, getCollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./requestUtils";
+import { CollectionMetadata, getCollectionMetadata, getRequestCrs } from "./Metadata";
 
 const LOG = createLogger(sourceId);
 const DEFAULT_LIMIT = 5000;
-const DEFAULT_CONCURRENTY = 6;
+const DEFAULT_CONCURRENCY = 6;
 
 /**
  * This function creates an OpenLayers VectorSource for OGC API Features services to be used inside
@@ -40,6 +41,7 @@ export interface InternalOptions {
     queryFeaturesParam?: QueryFeaturesFunc | undefined;
     addFeaturesParam?: AddFeaturesFunc | undefined;
     getCollectionInfosParam?: GetCollectionInfosFunc | undefined;
+    getCollectionMetadataParam?: GetCollectionMetadataFunc | undefined;
 }
 
 /**
@@ -63,6 +65,7 @@ export function _createVectorSource(
 
     const queryFeaturesFunc = internals.queryFeaturesParam ?? queryFeatures;
     const getCollectionInfosFunc = internals.getCollectionInfosParam ?? getCollectionInfos;
+    const getCollectionMetadataFunc = internals.getCollectionMetadataParam ?? getCollectionMetadata;
     const addFeaturesFunc =
         internals.addFeaturesParam ||
         function (features: FeatureLike[]) {
@@ -79,10 +82,15 @@ export function _createVectorSource(
     let abortController: AbortController;
     let collectionInfosPromise: Promise<CollectionInfos | undefined> | undefined;
 
+    let collectionMetadataPromise: Promise<CollectionMetadata> | undefined;
+
+    // Maps a map CRS to the corresponding request CRS that should be used for requests to the OGC API Features service.
+    const mapCrsToRequestCrs: Record<string, string> = {};
+
     const loaderFunction: FeatureLoader = async (
         extent,
         _,
-        __,
+        projection,
         successImpl,
         failureImpl
     ): Promise<void> => {
@@ -95,6 +103,29 @@ export function _createVectorSource(
             failureImpl?.();
             vectorSrc.changed(); // Always trigger changed event to unstuck loading state
         };
+
+        collectionMetadataPromise ??= getCollectionMetadataFunc(
+            options.baseUrl,
+            options.collectionId,
+            httpService
+        );
+
+        let collectionMetadata;
+        try {
+            collectionMetadata = await collectionMetadataPromise;
+        } catch (e) {
+            LOG.error("Failed to retrieve collection metadata", e);
+            failure();
+            collectionMetadataPromise = undefined;
+            return;
+        }
+
+        const mapCrs = projection.getCode();
+        const requestCrs = (mapCrsToRequestCrs[mapCrs] ??= getRequestCrs(
+            mapCrs,
+            collectionMetadata?.crs,
+            options.crs
+        ));
 
         collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
         let collectionInfos;
@@ -116,7 +147,7 @@ export function _createVectorSource(
         const fullURL = createCollectionRequestUrl(
             collectionItemsURL,
             extent,
-            options.crs,
+            requestCrs,
             options.rewriteUrl
         );
 
@@ -135,7 +166,7 @@ export function _createVectorSource(
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,
-                maxConcurrentRequests: options.maxConcurrentRequests ?? DEFAULT_CONCURRENTY,
+                maxConcurrentRequests: options.maxConcurrentRequests ?? DEFAULT_CONCURRENCY,
                 signal: abortController.signal,
                 collectionInfos: collectionInfos
             });
@@ -162,6 +193,8 @@ export function _createVectorSource(
 type QueryFeaturesFunc = typeof queryFeatures;
 /** @internal **/
 type GetCollectionInfosFunc = typeof getCollectionInfos;
+/** @internal **/
+type GetCollectionMetadataFunc = typeof getCollectionMetadata;
 /** @internal **/
 type AddFeaturesFunc = (features: FeatureLike[]) => void;
 

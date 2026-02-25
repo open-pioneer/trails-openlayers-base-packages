@@ -29,8 +29,11 @@ export interface OgcFeatureVectorSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** the URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832 */
-    crs: string;
+    /** 
+     * The URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832
+     * If not provided, the vector source will attempt to use the map's CRS if supported by the collection, or fall back to CRS84 otherwise.
+     */
+    crs?: string;
 
     /**
      * The maximum number of features to fetch within a single request.
@@ -79,8 +82,7 @@ export interface OgcFeatureVectorSourceOptions {
  *
  * Use the interface name `"ogc-features.VectorSourceFactory"` to obtain an instance of this factory.
  */
-export interface OgcFeaturesVectorSourceFactory
-    extends DeclaredService<"ogc-features.VectorSourceFactory"> {
+export interface OgcFeaturesVectorSourceFactory extends DeclaredService<"ogc-features.VectorSourceFactory"> {
     /**
      * Creates a new {@link VectorSource} that loads features from the specified feature service.
      */
@@ -170,8 +172,7 @@ export interface FeatureResponse {
  *
  * Use the interface name `"ogc-features.SearchSourceFactory"` to obtain an instance of this factory.
  */
-export interface OgcFeaturesSearchSourceFactory
-    extends DeclaredService<"ogc-features.SearchSourceFactory"> {
+export interface OgcFeaturesSearchSourceFactory extends DeclaredService<"ogc-features.SearchSourceFactory"> {
     /**
      * Returns a new {@link SearchSource} that searches on the specified feature service.
      */
