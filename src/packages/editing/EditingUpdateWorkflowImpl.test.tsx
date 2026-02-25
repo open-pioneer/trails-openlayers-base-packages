@@ -318,7 +318,11 @@ async function renderMap() {
     return { map, layerFactory };
 }
 
-async function setupUpdateWorkflow(map: MapModel, layerFactory: LayerFactory, httpService: HttpService = HTTP_SERVICE) {
+async function setupUpdateWorkflow(
+    map: MapModel,
+    layerFactory: LayerFactory,
+    httpService: HttpService = HTTP_SERVICE
+) {
     const intl = {
         formatMessage(props: any) {
             return props.id;

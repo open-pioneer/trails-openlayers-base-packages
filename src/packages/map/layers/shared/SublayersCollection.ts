@@ -17,9 +17,9 @@ import { SublayerBaseType } from "./SublayerBaseType";
  * @group Layer Utilities
  */
 // NOTE: adding / removing sublayers currently not supported
-export class SublayersCollection<SublayerType extends SublayerBaseType>
-    implements ChildrenCollection<SublayerType>
-{
+export class SublayersCollection<
+    SublayerType extends SublayerBaseType
+> implements ChildrenCollection<SublayerType> {
     #sublayers: SublayerType[];
 
     /** @internal */

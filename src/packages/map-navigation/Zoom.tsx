@@ -33,9 +33,7 @@ export const ZoomOut: FC<ZoomOutProps> = function ZoomOut(props) {
 };
 
 export interface ZoomProps
-    extends CommonComponentProps,
-        RefAttributes<HTMLButtonElement>,
-        MapModelProps {
+    extends CommonComponentProps, RefAttributes<HTMLButtonElement>, MapModelProps {
     /**
      * Additional properties for the `Button` element.
      *
