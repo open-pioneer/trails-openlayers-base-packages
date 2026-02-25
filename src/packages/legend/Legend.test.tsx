@@ -883,7 +883,7 @@ async function findLegend() {
 
     // Wait until the <ul> is rendered
     await waitFor(() => {
-        const legendList = legendDiv.querySelector("> .legend-layer-list");
+        const legendList = legendDiv.querySelector(".legend-layer-list");
         if (!legendList) {
             throw new Error("legend list not mounted");
         }
