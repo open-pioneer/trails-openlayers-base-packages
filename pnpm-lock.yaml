@@ -414,6 +414,15 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/experimental-packages/new-editing:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(typescript@5.9.3)
+
   src/packages/basemap-switcher:
     dependencies:
       '@chakra-ui/react':
@@ -1360,6 +1369,48 @@ importers:
         specifier: 'catalog:'
         version: 1.5.1
     publishDirectory: dist
+
+  src/samples/editing-sample/editing-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:^
+        version: link:../../../packages/map-ui-components
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(typescript@5.9.3)
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))
+      '@open-pioneer/scale-bar':
+        specifier: workspace:^
+        version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/scale-viewer
+      '@open-pioneer/toc':
+        specifier: workspace:^
+        version: link:../../../packages/toc
+      new-editing:
+        specifier: workspace:^
+        version: link:../../../experimental-packages/new-editing
+      ol:
+        specifier: 'catalog:'
+        version: 10.7.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.3
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.2.3)
 
   src/samples/experimental-sidebar/sidebar-app:
     dependencies:

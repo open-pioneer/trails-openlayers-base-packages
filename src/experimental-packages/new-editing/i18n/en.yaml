@@ -1,0 +1,27 @@
+messages:
+  header:
+    defaultTitle: Editor
+  actionSelector:
+    editFeatureHeading: Edit Feature
+    createFeatureHeading: Create Feature
+    selectButtonTitle: Select
+    finishButtonTooltip: Finish drawing
+    resetButtonTooltip: Reset drawing
+    undoButtonTooltip: Undo
+    redoButtonTooltip: Redo
+  propertyEditor:
+    saveButtonTitle: Save
+    cancelButtonTitle: Cancel
+    deleteButtonTooltip: Delete Feature
+  deleteConfirmationDialog:
+    title: Delete Feature
+    message: Are you sure you want to delete this feature?
+    deleteButtonTitle: Delete Feature
+    cancelButtonTitle: Cancel
+  notifier:
+    creationSuccess: Feature created
+    creationFailure: The feature failed to be created.
+    updateSuccess: Feature updated
+    updateFailure: The feature failed to be updated.
+    deletionSuccess: Feature deleted
+    deletionFailure: The feature failed to be deleted.
