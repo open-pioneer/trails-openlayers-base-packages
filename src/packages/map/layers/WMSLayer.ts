@@ -35,7 +35,6 @@ import { SublayersCollection } from "./shared/SublayersCollection";
 import { getAttributions } from "./wms/getAttributions";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
-import { sanitizeAttributions } from "../utils/sanitize";
 import { Sublayer } from "./unions";
 
 /**
@@ -129,13 +128,11 @@ export class WMSLayer extends AbstractLayer {
             deps,
             internalTag
         );
-        const { attributions, ...sourceOptions } = config.sourceOptions ?? {};
         const source = new ImageWMS({
-            attributions: sanitizeAttributions(attributions),
-            ...sourceOptions,
+            ...config.sourceOptions,
             url: config.url,
             params: {
-                ...sourceOptions?.params
+                ...config.sourceOptions?.params
             },
             // Use http service to load tiles; needed for authentication etc.
             imageLoadFunction: (wrapper, url) => {
@@ -290,7 +287,7 @@ export class WMSLayer extends AbstractLayer {
         if (this.#source.getAttributions() == null) {
             const attributions = getAttributions(capabilities);
             if (attributions) {
-                this.#source.setAttributions(sanitizeAttributions(attributions));
+                this.#source.setAttributions(attributions);
             }
         }
 

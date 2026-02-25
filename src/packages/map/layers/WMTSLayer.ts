@@ -14,7 +14,6 @@ import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { fetchText } from "../utils/fetch";
-import { sanitizeAttributions } from "../utils/sanitize";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
@@ -201,9 +200,7 @@ export class WMTSLayer extends AbstractLayer {
             }
         }
 
-        const attributions = sanitizeAttributions(
-            explicitAttributions ?? getAttributions(capabilities)
-        );
+        const attributions = explicitAttributions ?? getAttributions(capabilities);
         const source = new WMTS({
             ...options,
             attributions,
