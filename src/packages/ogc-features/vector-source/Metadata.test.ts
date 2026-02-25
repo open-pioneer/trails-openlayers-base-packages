@@ -81,7 +81,7 @@ describe("getRequestCrs", () => {
         );
         expect(spy.mock.lastCall).toMatchInlineSnapshot(`
           [
-            "[WARN] @open-pioneer/ogc-features/Metadata: Map CRS 'EPSG:3857' not supported. Falling back to default CRS 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.",
+            "[WARN] @open-pioneer/ogc-features/vector-source/Metadata: Map CRS 'EPSG:3857' not supported. Falling back to default CRS 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.",
           ]
         `);
     });

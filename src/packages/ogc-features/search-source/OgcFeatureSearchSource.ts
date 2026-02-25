@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { isAbortError } from "@open-pioneer/core";
-import { SearchSource, SearchResult, SearchOptions } from "@open-pioneer/search";
-import { v4 as uuid4v } from "uuid";
-import GeoJSON from "ol/format/GeoJSON";
-import { OgcFeatureSearchSourceOptions } from "./api";
 import { HttpService } from "@open-pioneer/http";
+import { SearchOptions, SearchResult, SearchSource } from "@open-pioneer/search";
+import GeoJSON from "ol/format/GeoJSON";
+import { v4 as uuid4v } from "uuid";
+import { OgcFeatureSearchSourceOptions } from "../api";
 
 /** The general shape of features returned by an OGC API Features service. */
 export interface FeatureResponse {
