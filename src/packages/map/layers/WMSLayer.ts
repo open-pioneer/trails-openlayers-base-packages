@@ -286,8 +286,8 @@ export class WMSLayer extends AbstractLayer {
         const capabilities = parser.read(metadata);
         this.#capabilities = capabilities;
 
-        // Apply attributions from metadata none are set.
-        if (!this.#source.getAttributions()) {
+        // Apply attributions from metadata if none are set.
+        if (this.#source.getAttributions() == null) {
             const attributions = getAttributions(capabilities);
             if (attributions) {
                 this.#source.setAttributions(sanitizeAttributions(attributions));

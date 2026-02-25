@@ -51,12 +51,11 @@ export interface OgcFeatureVectorSourceOptions {
     maxConcurrentRequests?: number;
 
     /**
-     * Optional attribution for the layer (e.g. copyright hints).
+     * Optional attribution for the vector source (e.g. copyright hints).
      *
-     * If set, this property is passed to the map as attribution information for this layer.
-     * If the property is not set or `undefined`, the layer will check if the collection metadata contains a non-standard `attribution` property and use it as attribution.
-     * Setting the this value to the empty string will explicitly disable attributions for this layer, even if the collection metadata contains an `attribution` property.
-     *
+     * If set, this property is passed to the map as attribution information for this vector source.
+     * If the property is not set or `undefined`, the vector source will check if the collection metadata contains a non-standard `attribution` property and use it as attribution.
+     * Setting the this value to the empty string will explicitly disable attributions for this vector source, even if the collection metadata contains an `attribution` property.
      */
     attributions?: AttributionLike | undefined;
 

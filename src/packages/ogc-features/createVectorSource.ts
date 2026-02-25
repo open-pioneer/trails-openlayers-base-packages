@@ -126,7 +126,7 @@ export function _createVectorSource(
             collectionMetadata?.crs,
             options.crs
         ));
-        if (options.attributions === undefined) {
+        if (vectorSrc.getAttributions() == null && collectionMetadata.attribution) {
             vectorSrc.setAttributions(collectionMetadata.attribution);
         }
 
