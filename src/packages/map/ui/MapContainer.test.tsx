@@ -3,9 +3,11 @@
 import { BoxProps } from "@chakra-ui/react";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
+import { render, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapContainer, MapContainerProps } from "./MapContainer";
+import VectorSource from "ol/source/Vector";
+import VectorLayer from "ol/layer/Vector";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -144,8 +146,114 @@ it("reports an error if two map containers are used for the same map", async () 
     `);
 });
 
+describe("attributions", () => {
+    it("renders attributions for layers in the map", async () => {
+        const { map } = await setupMap({
+            layers: [
+                {
+                    title: "Layer1",
+                    olLayer: createAttributionLayer("attr 1")
+                },
+                {
+                    title: "Layer2",
+                    olLayer: createAttributionLayer("attr 2")
+                }
+            ]
+        });
+
+        const { container } = await renderMap({ map });
+        const attributionsDiv = await waitFor(() => {
+            const div = container.querySelector(".ol-attribution");
+            if (!div) {
+                throw new Error("Attribution widget not found in dom");
+            }
+            return div as HTMLElement;
+        });
+        const items = getAttributionHtml(attributionsDiv);
+        expect(items).toMatchInlineSnapshot(`
+          [
+            "attr 1",
+            "attr 2",
+          ]
+        `);
+    });
+
+    it("allows simple html in attributions", async () => {
+        const rawHtml = `<a href="https://example.com" target="_blank">&copy; ExampleCompany</a>`;
+        const { map } = await setupMap({
+            layers: [
+                {
+                    title: "Layer1",
+                    olLayer: createAttributionLayer(rawHtml)
+                }
+            ]
+        });
+
+        const { container } = await renderMap({ map });
+        const attributionsDiv = await waitFor(() => {
+            const div = container.querySelector(".ol-attribution");
+            if (!div) {
+                throw new Error("Attribution widget not found in dom");
+            }
+            return div as HTMLElement;
+        });
+        const items = getAttributionHtml(attributionsDiv);
+        expect(items).toMatchInlineSnapshot(`
+          [
+            "<a href="https://example.com" target="_blank">© ExampleCompany</a>",
+          ]
+        `);
+    });
+
+    it("sanitizes invalid html", async () => {
+        // This should be escaped
+        const invalidHtml = `<iframe>Foo`;
+
+        // This uses a script tag which should be removed
+        const xssString = `<a href="https://example.com" onclick="alert(1)">Link</a>`;
+
+        const { map } = await setupMap({
+            layers: [
+                {
+                    title: "Layer1",
+                    olLayer: createAttributionLayer(invalidHtml)
+                },
+                {
+                    title: "Layer2",
+                    olLayer: createAttributionLayer(xssString)
+                }
+            ]
+        });
+
+        const { container } = await renderMap({ map });
+        const attributionsDiv = await waitFor(() => {
+            const div = container.querySelector(".ol-attribution");
+            if (!div) {
+                throw new Error("Attribution widget not found in dom");
+            }
+            return div as HTMLElement;
+        });
+        const items = getAttributionHtml(attributionsDiv);
+        expect(items).toMatchInlineSnapshot(`
+          [
+            "&lt;iframe&gt;Foo",
+            "<a href="https://example.com">Link</a>",
+          ]
+        `);
+    });
+
+    function getAttributionHtml(attributionsDiv: HTMLElement) {
+        const list = Array.from(attributionsDiv.querySelector("ul")!.querySelectorAll("li")!);
+        return list.map((item) => item.innerHTML);
+    }
+});
+
 async function renderMap(props?: MapContainerProps) {
-    const { map } = await setupMap();
+    let map = props?.map;
+    if (!map) {
+        map = (await setupMap()).map;
+    }
+
     const getMapContainer = (props?: MapContainerProps) => {
         return <MapContainer {...props} map={map} data-testid="map" />;
     };
@@ -161,4 +269,12 @@ async function renderMap(props?: MapContainerProps) {
             renderResult.rerender(getMapContainer(props));
         }
     };
+}
+
+function createAttributionLayer(attributions: string) {
+    const vectorSource = new VectorSource({
+        features: []
+    });
+    vectorSource.setAttributions(attributions);
+    return new VectorLayer({ source: vectorSource });
 }

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
@@ -8,7 +9,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
 import { createMapModel } from "./createMapModel";
-import { watchValue } from "@conterra/reactivity-core";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
