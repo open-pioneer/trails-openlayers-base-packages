@@ -7,17 +7,17 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.5.0-dev.20260211105402
-  "@open-pioneer/core": 4.5.0-dev.20260211105402
-  "@open-pioneer/http": 4.5.0-dev.20260211105402
-  "@open-pioneer/integration": 4.5.0-dev.20260211105402
-  "@open-pioneer/local-storage": 4.5.0-dev.20260211105402
-  "@open-pioneer/notifier": 4.5.0-dev.20260211105402
-  "@open-pioneer/react-utils": 4.5.0-dev.20260211105402
-  "@open-pioneer/reactivity": 4.5.0-dev.20260211105402
-  "@open-pioneer/runtime": 4.5.0-dev.20260211105402
-  "@open-pioneer/test-utils": 4.5.0-dev.20260211105402
-  "@open-pioneer/chakra-snippets": 4.5.0-dev.20260211105402
+  "@open-pioneer/base-theme": 4.5.0-dev.20260225121659
+  "@open-pioneer/core": 4.5.0-dev.20260225121659
+  "@open-pioneer/http": 4.5.0-dev.20260225121659
+  "@open-pioneer/integration": 4.5.0-dev.20260225121659
+  "@open-pioneer/local-storage": 4.5.0-dev.20260225121659
+  "@open-pioneer/notifier": 4.5.0-dev.20260225121659
+  "@open-pioneer/react-utils": 4.5.0-dev.20260225121659
+  "@open-pioneer/reactivity": 4.5.0-dev.20260225121659
+  "@open-pioneer/runtime": 4.5.0-dev.20260225121659
+  "@open-pioneer/test-utils": 4.5.0-dev.20260225121659
+  "@open-pioneer/chakra-snippets": 4.5.0-dev.20260225121659
 
   "@chakra-ui/cli": ^3.32.0
   "@chakra-ui/react": ^3.32.0

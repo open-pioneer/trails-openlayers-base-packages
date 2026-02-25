@@ -40,35 +40,35 @@ catalogs:
       specifier: ^3.0.5
       version: 3.0.5
     '@open-pioneer/chakra-snippets':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/check-pnpm-duplicates':
       specifier: ^0.3.0
       version: 0.3.0
     '@open-pioneer/core':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/http':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/local-storage':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/notifier':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/react-utils':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/reactivity':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/runtime':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/test-utils':
-      specifier: 4.5.0-dev.20260211105402
-      version: 4.5.0-dev.20260211105402
+      specifier: 4.5.0-dev.20260225121659
+      version: 4.5.0-dev.20260225121659
     '@open-pioneer/vite-plugin-pioneer':
       specifier: ^5.1.0
       version: 5.1.0
@@ -266,7 +266,7 @@ importers:
         version: 0.3.0
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
-        version: 5.1.0(@open-pioneer/runtime@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3))(rollup@4.53.5)(sass@1.97.3)(vite@7.3.1(@types/node@20.19.32)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.1))
+        version: 5.1.0(@open-pioneer/runtime@4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3))(rollup@4.53.5)(sass@1.97.3)(vite@7.3.1(@types/node@20.19.32)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.1))
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.1
@@ -398,10 +398,10 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -424,19 +424,19 @@ importers:
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -452,7 +452,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -468,22 +468,22 @@ importers:
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -499,7 +499,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -518,13 +518,13 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -537,7 +537,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -550,16 +550,16 @@ importers:
         version: 0.8.1
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -582,7 +582,7 @@ importers:
         version: 0.8.1
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
@@ -591,16 +591,16 @@ importers:
         version: link:../map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -616,7 +616,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -632,13 +632,13 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -657,7 +657,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -679,19 +679,19 @@ importers:
         version: 4.1.0
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -716,7 +716,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       '@types/jsdom':
         specifier: 'catalog:'
         version: 27.0.0
@@ -741,13 +741,13 @@ importers:
         version: link:../map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -766,7 +766,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -782,7 +782,7 @@ importers:
         version: link:../map
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -802,10 +802,10 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -815,7 +815,7 @@ importers:
     devDependencies:
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -831,19 +831,19 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -859,7 +859,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -869,10 +869,10 @@ importers:
     dependencies:
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -888,7 +888,7 @@ importers:
         version: link:../search
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -904,10 +904,10 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -920,7 +920,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -933,22 +933,22 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -970,7 +970,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -989,22 +989,22 @@ importers:
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@tanstack/react-table':
         specifier: 'catalog:'
         version: 8.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1032,7 +1032,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1051,10 +1051,10 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1067,7 +1067,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1086,13 +1086,13 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1108,7 +1108,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1124,13 +1124,13 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -1140,7 +1140,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1153,19 +1153,19 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -1184,7 +1184,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1203,25 +1203,25 @@ importers:
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -1243,7 +1243,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1262,25 +1262,25 @@ importers:
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/local-storage':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -1302,7 +1302,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1321,19 +1321,19 @@ importers:
         version: link:../basemap-switcher
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -1352,7 +1352,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1383,10 +1383,10 @@ importers:
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1410,16 +1410,16 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
         version: 10.7.0
@@ -1449,7 +1449,7 @@ importers:
         version: link:../../../packages/editing
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1467,7 +1467,7 @@ importers:
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1476,16 +1476,16 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1527,7 +1527,7 @@ importers:
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1539,10 +1539,10 @@ importers:
         version: link:../../../packages/ogc-features
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1572,7 +1572,7 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/coordinate-search':
         specifier: workspace:*
         version: link:../../../packages/coordinate-search
@@ -1587,7 +1587,7 @@ importers:
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1602,7 +1602,7 @@ importers:
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1614,16 +1614,16 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1668,13 +1668,13 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1698,16 +1698,16 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -1725,10 +1725,10 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -1740,19 +1740,19 @@ importers:
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -1773,13 +1773,13 @@ importers:
         version: link:../../../packages/map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/search':
         specifier: workspace:*
         version: link:../../../packages/search
@@ -1815,13 +1815,13 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402
+        version: 4.5.0-dev.20260225121659
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -2389,8 +2389,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@open-pioneer/base-theme@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-7NwJv5gL5cClqQcotwSWF3DiP6wWtf6SyFLE62rzbXojsbCuvcMbsbJoxcuBhY/UUs3bF9IbKvzGZry3+Pitdg==}
+  '@open-pioneer/base-theme@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-5zMJUpBkNEUz9gDc5N3A8rUAlzM6hRlxeaBYdcC5nFTiJn1+hQIRiEx9Pzjqablg5uJr9yRgSREMpk5e+Gu7wg==}
 
   '@open-pioneer/build-common@3.2.0':
     resolution: {integrity: sha512-T0hL24sTkXy7QcoYbaTUX372B6yDnYQ9GYeAenuQtAMwbRDilthAoyJU79DZkhdcEfVuiQnR+grA6gMbjc0Cmw==}
@@ -2417,37 +2417,37 @@ packages:
     resolution: {integrity: sha512-hh3CiASsaTypL89TJ2N/8ydnEqPlpHXTbd1Q0HJ62zEjwDdRQDaabbuyZgtMlxcZ5QiMb7AAbGOgfreny+eetA==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/chakra-snippets@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-fRLVHETKjJLIqjFXcb/UvJ82a7X+gP3SNYL434tGJI5ZwDSbdOMDokJwb8908ZIcJmgQjz3WlizG79DkyevMtw==}
+  '@open-pioneer/chakra-snippets@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-4Ge5lCKPwU3ajegJ68f+Z9+h6nsAUVx9CFauQYjMn5Bj/t0BkmMsXf/cKnMo2bb7joqE456LIgfco96hwe4ffg==}
 
   '@open-pioneer/check-pnpm-duplicates@0.3.0':
     resolution: {integrity: sha512-CHz9NSmrH1MtgI01QU3BDwoZt/FpmaJuDpoBjk3DM+imkSX3UCes5n1Rk3ESgCupXZPqO/Hr2Rl+ngGEcUW9MQ==}
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/core@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-VZ1BOd6bIf1ZqHNM+4TfaPBNUircfLtc//zCq5jE21LQa8tb6t4JifvBVjPQ5EvEkLqMWQKWrx2eJvB5GfQv2Q==}
+  '@open-pioneer/core@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-NPFJLSGYRwRoVhbMQFQKgCfzfZ3PnwcC+ih8Waj/GK/21gwSwAK7rUL1oVoAw+OELlWc3ajhYI4udLY7w/u9cw==}
 
-  '@open-pioneer/http@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-czOyxWopTm4ZC1TyZkodHEVL/Rpulcu9mOFZlgFRfCoO625ilHO3RfgI7JspbTU5cTNMsugCWxuUhb2UXrMWSg==}
+  '@open-pioneer/http@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-8/7oilDLzvbOEvJvJb055qQB/nSJtmw71H1Z50eeb0Ea576RAvk2CaoYH0g58reNmj2gSXcBaE7AInoHZlUO7w==}
 
-  '@open-pioneer/local-storage@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-pajmZvXc0xWildrccNIvgBsQjTmW0nou87w0pGwHQe/znUM6gtU7iZulbVBarLar1emOm7BGrrqi8EpIMTwQQQ==}
+  '@open-pioneer/local-storage@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-0n+gkyKoxmDdzmYpAky6oGYb8z0o7+szNubSbqzuY3ytGzsALnRLXYncLcIv1BgKg8UVfDfkPNINyanF6E9Xzg==}
 
-  '@open-pioneer/notifier@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-h5Hb13lDBixDlv8fdyu8hhbO8VtdTrf/bxSJDbHmtH5BDPK4g0SadjV6Kdn27uQALkZhC95DBRV37Dof8Ziy5w==}
+  '@open-pioneer/notifier@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-/KrJVxQ8A4XWjHCK93SSERX2Fea4k55VOlmJ9WoeRfyW/6YE/rwiG76v40gP1Kl62SOz+CUrJlU83FFVOpanUg==}
 
-  '@open-pioneer/react-utils@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-ZsxP0dGB881pDpY0u1Qfy61vm7d8/jlEqUx7u3hU0m41NQBFYYZeFZYuxPlw4hh0J0bFo+H3WAz7E+2AmhsXKA==}
+  '@open-pioneer/react-utils@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-38ij/RzOxocOE1HFjUFkKNY77TduxeTzb9aIYeV/7b17JiU+7EpiMc7BwYEbptW8kgovPFJMylb+y7U2GsyV7w==}
 
-  '@open-pioneer/reactivity@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-kO+P12bRBx3JpKjCF5iVTnqqeG8zpvSbkVGeaGYYN9R0epX2g6rYS+ae2utZYWz/amfz32cTonxIdD3815A70A==}
+  '@open-pioneer/reactivity@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-/BbTwxtJjFRcT+Am2CvGlM0ocMijd1pJvpjHM9SRGfFo6CuCGO1GYVDUQC86V/Rq+clVOHWRqiftc3c1wh81sA==}
 
-  '@open-pioneer/runtime@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-/GCytFCGuC3osKuAxXZOF9nn2JISa3KNJAuw/uYhfXkPrBRptYs3PtlWPOY5b1f+Vuw+NxUvWk0YjdzstSLgNg==}
+  '@open-pioneer/runtime@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-iWduAJdEIkQQZnPau30HkBZIw2hKrtXS8b143dem9vHlGT3xUwZ7AUEIgHi+5cSwV3X/rAOKNRb4/mGyiilc8A==}
 
-  '@open-pioneer/test-utils@4.5.0-dev.20260211105402':
-    resolution: {integrity: sha512-FPl+/sjhUqmqR42COAZYXSUo1Mx4hh1C/n9bzsMU71sH/2H+YsO8iCgVZQZsqpvBNaXrCj1TjlshIkIsepvqSw==}
+  '@open-pioneer/test-utils@4.5.0-dev.20260225121659':
+    resolution: {integrity: sha512-lzdNFrxwN/Bluz5h5HvgicSo5J5FfQi7ttRuOAJHdSvxDxeM6y3+D6e/3bsER9jiMjlR+4bOatn57spRQpiLrw==}
 
   '@open-pioneer/vite-plugin-pioneer@5.1.0':
     resolution: {integrity: sha512-eIPNzub6e0pSPR7GSs6uSeydJ1nv69m8z0h8yhJEOrK2fBcziFsaX5bruUfBDxpC0p1vWuPhAIDAKC5F/sw75Q==}
@@ -6474,7 +6474,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@open-pioneer/base-theme@4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@open-pioneer/base-theme@4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     transitivePeerDependencies:
@@ -6526,12 +6526,12 @@ snapshots:
 
   '@open-pioneer/build-support@3.0.5': {}
 
-  '@open-pioneer/chakra-snippets@4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)':
+  '@open-pioneer/chakra-snippets@4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)':
     dependencies:
       '@ark-ui/react': 5.31.0(patch_hash=6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react: 19.2.4
       react-icons: 5.5.0(react@19.2.4)
     transitivePeerDependencies:
@@ -6551,32 +6551,32 @@ snapshots:
       commander: 14.0.2
       js-yaml: 4.1.1
 
-  '@open-pioneer/core@4.5.0-dev.20260211105402':
+  '@open-pioneer/core@4.5.0-dev.20260225121659':
     dependencies:
       '@conterra/reactivity-events': 0.8.1
 
-  '@open-pioneer/http@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)':
+  '@open-pioneer/http@4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)':
     dependencies:
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@types/react'
       - typescript
 
-  '@open-pioneer/local-storage@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)':
+  '@open-pioneer/local-storage@4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)':
     dependencies:
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@types/react'
       - typescript
 
-  '@open-pioneer/notifier@4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)':
+  '@open-pioneer/notifier@4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)':
     dependencies:
       '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/react-utils': 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/react-utils': 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       react: 19.2.4
       react-icons: 5.5.0(react@19.2.4)
     transitivePeerDependencies:
@@ -6585,43 +6585,43 @@ snapshots:
       - react-dom
       - typescript
 
-  '@open-pioneer/react-utils@4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))':
+  '@open-pioneer/react-utils@4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))':
     dependencies:
       '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@conterra/reactivity-core': 0.8.1
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/reactivity': 4.5.0-dev.20260211105402
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/reactivity': 4.5.0-dev.20260225121659
       classnames: 2.5.1
       react: 19.2.4
     transitivePeerDependencies:
       - '@emotion/react'
       - react-dom
 
-  '@open-pioneer/reactivity@4.5.0-dev.20260211105402':
+  '@open-pioneer/reactivity@4.5.0-dev.20260225121659':
     dependencies:
       '@conterra/reactivity-core': 0.8.1
       react: 19.2.4
 
-  '@open-pioneer/runtime@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)':
+  '@open-pioneer/runtime@4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)':
     dependencies:
       '@chakra-ui/react': 3.32.0(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@conterra/reactivity-core': 0.8.1
       '@emotion/cache': 11.14.0
       '@emotion/react': 11.14.0(@types/react@19.2.13)(react@19.2.4)
       '@formatjs/intl': 4.1.2(typescript@5.9.3)
-      '@open-pioneer/base-theme': 4.5.0-dev.20260211105402(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@open-pioneer/core': 4.5.0-dev.20260211105402
-      '@open-pioneer/reactivity': 4.5.0-dev.20260211105402
+      '@open-pioneer/base-theme': 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.13)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@open-pioneer/core': 4.5.0-dev.20260225121659
+      '@open-pioneer/reactivity': 4.5.0-dev.20260225121659
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
     transitivePeerDependencies:
       - '@types/react'
       - typescript
 
-  '@open-pioneer/test-utils@4.5.0-dev.20260211105402(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)':
+  '@open-pioneer/test-utils@4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(typescript@5.9.3)':
     dependencies:
       '@formatjs/intl': 4.1.2(typescript@5.9.3)
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       '@testing-library/dom': 10.4.1
       '@testing-library/react': 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
@@ -6631,13 +6631,13 @@ snapshots:
       - '@types/react-dom'
       - typescript
 
-  '@open-pioneer/vite-plugin-pioneer@5.1.0(@open-pioneer/runtime@4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3))(rollup@4.53.5)(sass@1.97.3)(vite@7.3.1(@types/node@20.19.32)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.1))':
+  '@open-pioneer/vite-plugin-pioneer@5.1.0(@open-pioneer/runtime@4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3))(rollup@4.53.5)(sass@1.97.3)(vite@7.3.1(@types/node@20.19.32)(sass@1.97.3)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.5
       '@open-pioneer/build-common': 3.2.0(rollup@4.53.5)
-      '@open-pioneer/runtime': 4.5.0-dev.20260211105402(@types/react@19.2.13)(typescript@5.9.3)
+      '@open-pioneer/runtime': 4.5.0-dev.20260225121659(@types/react@19.2.13)(typescript@5.9.3)
       debug: 4.4.3
       js-yaml: 4.1.1
       oxc-resolver: 11.16.2
