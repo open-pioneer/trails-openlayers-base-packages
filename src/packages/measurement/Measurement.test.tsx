@@ -16,7 +16,7 @@ it("should successfully create a measurement component", async () => {
         "map.LayerFactory": layerFactory
     };
     render(
-        <PackageContextProvider services = {injectedServices}>
+        <PackageContextProvider services={injectedServices}>
             <Measurement map={map} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -35,7 +35,7 @@ it("should successfully create a measurement component with additional css class
         "map.LayerFactory": layerFactory
     };
     render(
-        <PackageContextProvider services = {injectedServices}>
+        <PackageContextProvider services={injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -52,7 +52,7 @@ it("should successfully select a measurement from the select dropdown", async ()
         "map.LayerFactory": layerFactory
     };
     render(
-        <PackageContextProvider services = {injectedServices}>
+        <PackageContextProvider services={injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -77,7 +77,7 @@ it("should successfully add tooltip overlays to the map", async () => {
         "map.LayerFactory": layerFactory
     };
     render(
-        <PackageContextProvider services = {injectedServices}>
+        <PackageContextProvider services={injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -106,7 +106,7 @@ it("should successfully activate draw interaction for the right geometry type", 
         "map.LayerFactory": layerFactory
     };
     render(
-        <PackageContextProvider services = {injectedServices}>
+        <PackageContextProvider services={injectedServices}>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );

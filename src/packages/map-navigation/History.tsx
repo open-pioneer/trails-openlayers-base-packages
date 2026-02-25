@@ -39,9 +39,7 @@ export const HistoryBackward: FC<HistoryBackwardProps> = function HistoryBackwar
 };
 
 export interface HistoryProps
-    extends CommonComponentProps,
-        RefAttributes<HTMLButtonElement>,
-        MapModelProps {
+    extends CommonComponentProps, RefAttributes<HTMLButtonElement>, MapModelProps {
     /**
      * Additional properties for the `Button` element.
      *
