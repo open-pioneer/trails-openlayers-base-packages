@@ -42,13 +42,14 @@ export async function getCollectionMetadata(
     // Note: Currently no validation
     return await response.json();
 }
+
 /**
  * Metadata of a collection retrieved from the OGC API Features service as provided by the `/collections/{collectionId}` endpoint.
  */
-
 export interface CollectionMetadata {
     id: string;
     crs: string[] | undefined;
+    attribution?: string;
 }
 
 /**

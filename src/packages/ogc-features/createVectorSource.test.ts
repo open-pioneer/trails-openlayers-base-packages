@@ -168,6 +168,7 @@ it("expect url is created correctly on vector-source", async () => {
         const urlObj = new URL(fullUrl);
         const params = urlObj.searchParams;
         const pathIsCorrect = urlObj.pathname.includes("/collections/1/items");
+        const defaultCrs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
         const paramAreIncluded =
             params.get("crs") === defaultCrs &&
             params.get("bbox-crs") === defaultCrs &&
