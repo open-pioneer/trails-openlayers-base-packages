@@ -43,12 +43,12 @@ async function mockedCollectionMetadata(): Promise<CollectionMetadata> {
 const mockedFeatureResponse: FeatureResponse = {
     features: [new Feature({ geometry: new Point([395388, 5752928]) })],
     numberMatched: 1,
-    nextURL: undefined
+    nextLink: undefined
 };
 
 const mockedEmptyFeatureResponse: FeatureResponse = {
     features: [],
-    nextURL: undefined,
+    nextLink: undefined,
     numberMatched: undefined
 };
 
@@ -277,7 +277,7 @@ describe("offset strategy", () => {
             const isLast = offset + limit >= totalFeatures;
             return {
                 features,
-                nextURL: isLast ? undefined : "https://url-to-service.invalid",
+                nextLink: isLast ? undefined : "https://url-to-service.invalid",
                 numberMatched: totalFeatures
             };
         };

@@ -1,14 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, assert, describe, expect, it, vi } from "vitest";
-import {
-    createCollectionRequestUrl,
-    createOffsetURL,
-    getNextURL,
-    queryFeatures
-} from "./requestUtils";
-import GeoJSON from "ol/format/GeoJSON";
 import { HttpService } from "@open-pioneer/http";
+import GeoJSON from "ol/format/GeoJSON";
+import { afterEach, assert, describe, expect, it, vi } from "vitest";
+import { createCollectionRequestUrl, getNextLink, queryFeatures } from "./requestUtils";
 
 describe("collection items url", () => {
     it("expect items url contains extent and crs", () => {
@@ -23,22 +18,6 @@ describe("collection items url", () => {
     });
 });
 
-describe("offset urls", () => {
-    it("expect offset urls carry existing query params", () => {
-        const fullUrl = "https://url-to-service.de/items?f=json&foo=bar";
-        const url = createOffsetURL(fullUrl, 12345, 6789);
-        expect(url).toEqual(
-            "https://url-to-service.de/items?f=json&foo=bar&offset=12345&limit=6789"
-        );
-    });
-
-    it("expect offset urls replace existing limit / offset params", () => {
-        const fullUrl = "https://url-to-service.de/items?f=json&limit=1&offset=2";
-        const url = createOffsetURL(fullUrl, 12345, 6789);
-        expect(url).toEqual("https://url-to-service.de/items?f=json&limit=6789&offset=12345");
-    });
-});
-
 describe("next links", () => {
     it("expect next link to be returned", () => {
         const expectedResult = "testLink";
@@ -48,7 +27,7 @@ describe("next links", () => {
                 href: expectedResult
             }
         ];
-        const nextUrl = getNextURL(links);
+        const nextUrl = getNextLink(links);
         assert.strictEqual(nextUrl, expectedResult);
     });
 
@@ -59,7 +38,7 @@ describe("next links", () => {
                 href: "selfLink"
             }
         ];
-        const nextUrl = getNextURL(links);
+        const nextUrl = getNextLink(links);
         assert.strictEqual(nextUrl, undefined);
     });
 });
@@ -98,14 +77,14 @@ describe("query features", () => {
                 Accept: "application/geo+json"
             }
         };
-        const testUrl = "https://url-to-service.de/items?f=json";
+        const testUrl = new URL("https://url-to-service.de/items?f=json");
 
         const featureResponse = await queryFeatures(testUrl, new GeoJSON(), httpService, undefined);
         expect(httpService.fetch).toHaveBeenCalledWith!(testUrl, requestInit);
         const respondedCoordinates = (featureResponse.features[0]?.getGeometry() as any)
             .flatCoordinates;
         expect(respondedCoordinates).toStrictEqual([5752928, 395388]);
-        expect(featureResponse.nextURL).toStrictEqual(undefined);
+        expect(featureResponse.nextLink).toStrictEqual(undefined);
     });
 });
 

@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { MapModel } from "@open-pioneer/map";
 import { get as getProjection } from "ol/proj";
 import { afterEach, expect, it, vi } from "vitest";
 import { OgcFeatureSearchSource, SearchResponse } from "./OgcFeatureSearchSource";
-import { OgcFeatureSearchSourceOptions } from "./api";
-import { MapModel } from "@open-pioneer/map";
+import { OgcFeatureSearchSourceOptions } from "../api";
 
 const mockedFetch = vi.fn();
 

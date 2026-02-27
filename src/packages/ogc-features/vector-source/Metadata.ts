@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { sourceId } from "open-pioneer:source-info";
