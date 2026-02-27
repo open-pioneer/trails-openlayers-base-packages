@@ -1,5 +1,23 @@
 # @open-pioneer/map-test-utils
 
+## 1.3.0
+
+### Minor Changes
+
+- d54ccfd: Update to Chakra UI 3.32.0
+
+### Patch Changes
+
+- Updated dependencies [9b5d5f3]
+- Updated dependencies [fcbd505]
+- Updated dependencies [2ceb1ca]
+- Updated dependencies [73453af]
+- Updated dependencies [fcbd505]
+- Updated dependencies [d54ccfd]
+- Updated dependencies [4bcc8ce]
+- Updated dependencies [2ceb1ca]
+    - @open-pioneer/map@1.3.0
+
 ## 1.2.0
 
 ### Patch Changes
