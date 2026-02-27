@@ -1,5 +1,18 @@
 # @open-pioneer/ogc-features
 
+## 1.3.0
+
+### Minor Changes
+
+- 91cf8f1: Derive request CRS from map CRS.
+  The `crs` property of the layer configuration for OGC API Features layers is now _optional_.
+- 6f73670: Changes the behavior when no 'attributions' properties is set for OGC API Features layers. In that case, the 'attribution' value provided by the collection metadata is used, if available.
+- d54ccfd: Update to Chakra UI 3.32.0
+
+### Patch Changes
+
+- a96d004: VectorSource: trigger change events on error if no features were added. This should resolve an error where the map was permanently loading if the capabilities failed to load.
+
 ## 1.2.0
 
 ### Patch Changes
