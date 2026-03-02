@@ -27,7 +27,7 @@ export async function getCollectionMetadata(
     collectionId: string,
     httpService: HttpService
 ): Promise<CollectionMetadata> {
-    const collectionMetadataUrl = `${baseUrl}/collections/${collectionId}`;
+    const collectionMetadataUrl = `${baseUrl.replace(/\/+$/, "")}/collections/${collectionId}`;
     const response = await httpService.fetch(collectionMetadataUrl, {
         headers: {
             Accept: "application/json"

@@ -94,7 +94,9 @@ export class OgcFeatureSearchSource implements SearchSource {
     }
 
     #getUrl(inputValue: string, limit: number): URL {
-        const url = new URL(`${this.#baseUrl}/collections/${this.#options.collectionId}/items`);
+        const url = new URL(
+            `${this.#baseUrl.replace(/\/+$/, "")}/collections/${this.#options.collectionId}/items`
+        );
 
         for (const [k, v] of this.#params) {
             url.searchParams.append(k, v);

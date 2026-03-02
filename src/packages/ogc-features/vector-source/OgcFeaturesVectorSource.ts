@@ -52,7 +52,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
         this.#featureFormat = format;
         this.#httpService = httpService;
         this.#options = options;
-        this.#itemsUrl = `${options.baseUrl}/collections/${options.collectionId}/items`;
+        this.#itemsUrl = `${options.baseUrl.replace(/\/+$/, "")}/collections/${options.collectionId}/items`;
     }
 
     async #load(
