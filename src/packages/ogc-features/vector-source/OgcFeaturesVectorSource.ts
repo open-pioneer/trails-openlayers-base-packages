@@ -10,7 +10,7 @@ import { Projection } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import { sourceId } from "open-pioneer:source-info";
 import { OgcFeatureVectorSourceOptions } from "../api";
-import { CollectionMetadata, getCollectionMetadata, getRequestCrs } from "./Metadata";
+import { CollectionMetadata, findMatchingCrs, getCollectionMetadata } from "./Metadata";
 import { NextStrategy } from "./NextStrategy";
 import { OffsetStrategy, supportsOffsetStrategy } from "./OffsetStrategy";
 import { createCollectionRequestUrl } from "./requestUtils";
@@ -18,6 +18,8 @@ import { createCollectionRequestUrl } from "./requestUtils";
 const LOG = createLogger(sourceId);
 
 const DEFAULT_LIMIT = 5000;
+const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
+
 
 type SuccessCallback = (features: Feature[]) => void;
 type FailureCallback = () => void;
@@ -28,6 +30,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
 
     #options: OgcFeatureVectorSourceOptions;
     #itemsUrl: string;
+    #collectionUrl: string;
 
     #metadataPromise: Promise<CollectionMetadata> | undefined;
     #loadingStrategyPromise: Promise<"offset" | "next"> | undefined;
@@ -52,7 +55,8 @@ export class OgcFeaturesVectorSource extends VectorSource {
         this.#featureFormat = format;
         this.#httpService = httpService;
         this.#options = options;
-        this.#itemsUrl = `${options.baseUrl.replace(/\/+$/, "")}/collections/${options.collectionId}/items`;
+        this.#collectionUrl = `${options.baseUrl.replace(/\/+$/, "")}/collections/${options.collectionId}`;
+        this.#itemsUrl = `${this.#collectionUrl}/items`;
     }
 
     async #load(
@@ -135,8 +139,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
             let metadata;
             try {
                 metadata = await getCollectionMetadata(
-                    this.#options.baseUrl,
-                    this.#options.collectionId,
+                    this.#collectionUrl,
                     this.#httpService
                 );
             } catch (e) {
@@ -185,12 +188,23 @@ export class OgcFeaturesVectorSource extends VectorSource {
     // Computes the appropriate request crs for the current configuration.
     #getRequestCrs(collectionMetadata: CollectionMetadata | undefined, projection: Projection) {
         const mapCrs = projection.getCode();
-        const requestCrs = (this.#mapCrsToRequestCrs[mapCrs] ??= getRequestCrs(
-            mapCrs,
-            collectionMetadata?.crs,
-            this.#options.crs
-        ));
-        return requestCrs;
+
+        const requestCrs = this.#options.crs ?? this.#mapCrsToRequestCrs[mapCrs];
+        if (requestCrs) {
+            return requestCrs;
+        }
+
+        const matchingMapCrs = findMatchingCrs(mapCrs, collectionMetadata?.crs);
+        if (matchingMapCrs) {
+            this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
+            return matchingMapCrs;
+        } else {
+            LOG.warn(
+                `Map CRS '${mapCrs}' not supported by collection '${this.#collectionUrl}'. Falling back to default CRS '${DEFAULT_CRS}'.`
+            );
+            this.#mapCrsToRequestCrs[mapCrs] = DEFAULT_CRS;
+            return DEFAULT_CRS;
+        }
     }
 
     #getRequestUrl(extent: Extent, requestCrs: string) {

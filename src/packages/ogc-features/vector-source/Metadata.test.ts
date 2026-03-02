@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { findMatchingCrs, getRequestCrs } from "./Metadata";
+import { findMatchingCrs } from "./Metadata";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -42,47 +42,4 @@ describe("findMatchingCrs", () => {
     });
 });
 
-describe("getRequestCrs", () => {
-    it("expect returns explicitly configured CRS", () => {
-        const mapCrs = "EPSG:3857";
-        const supportedCrses = [
-            "http://www.opengis.net/def/crs/EPSG/0/4326",
-            "http://www.opengis.net/def/crs/EPSG/0/3857"
-        ];
-        const configuredCrs = "http://www.opengis.net/def/crs/EPSG/0/1111";
-        expect(getRequestCrs(mapCrs, supportedCrses, configuredCrs)).toBe(
-            "http://www.opengis.net/def/crs/EPSG/0/1111"
-        );
-    });
 
-    it("expect returns map CRS if supported", () => {
-        const mapCrs = "EPSG:3857";
-        const supportedCrses = [
-            "http://www.opengis.net/def/crs/EPSG/0/4326",
-            "http://www.opengis.net/def/crs/EPSG/0/3857"
-        ];
-        const configuredCrs = undefined;
-        expect(getRequestCrs(mapCrs, supportedCrses, configuredCrs)).toBe(
-            "http://www.opengis.net/def/crs/EPSG/0/3857"
-        );
-    });
-
-    it("expect returns CRS84 if map CRS is not supported", () => {
-        const spy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
-        const mapCrs = "EPSG:3857";
-        const supportedCrses = [
-            "http://www.opengis.net/def/crs/EPSG/0/4326",
-            "http://www.opengis.net/def/crs/EPSG/0/1111"
-        ];
-        const configuredCrs = undefined;
-        expect(getRequestCrs(mapCrs, supportedCrses, configuredCrs)).toBe(
-            "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-        );
-        expect(spy.mock.lastCall).toMatchInlineSnapshot(`
-          [
-            "[WARN] @open-pioneer/ogc-features/vector-source/Metadata: Map CRS 'EPSG:3857' not supported. Falling back to default CRS 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.",
-          ]
-        `);
-    });
-});

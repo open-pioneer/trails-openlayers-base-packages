@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { sourceId } from "open-pioneer:source-info";
 
 /**
  * @module
@@ -11,8 +9,6 @@ import { sourceId } from "open-pioneer:source-info";
  *
  *
  */
-
-const LOG = createLogger(sourceId);
 
 /**
  * Requests metadata for an OGC API Features service collection.
@@ -23,19 +19,17 @@ const LOG = createLogger(sourceId);
  * @returns
  */
 export async function getCollectionMetadata(
-    baseUrl: string,
-    collectionId: string,
+    collectionUrl: string,
     httpService: HttpService
 ): Promise<CollectionMetadata> {
-    const collectionMetadataUrl = `${baseUrl.replace(/\/+$/, "")}/collections/${collectionId}`;
-    const response = await httpService.fetch(collectionMetadataUrl, {
+    const response = await httpService.fetch(collectionUrl, {
         headers: {
             Accept: "application/json"
         }
     });
     if (!response.ok) {
         throw new Error(
-            `Failed to fetch collection metadata for collection '${collectionId}' (status code ${response.status})`
+            `Failed to fetch collection metadata for collection '${collectionUrl}' (status code ${response.status})`
         );
     }
     // Note: Currently no validation
@@ -49,35 +43,6 @@ export interface CollectionMetadata {
     id: string;
     crs: string[] | undefined;
     attribution?: string;
-}
-
-/**
- * Determines the appropriate coordinate reference system (CRS) identifier to use for requests to the OGC API Features service, based on the map's current CRS, the collection's supported CRSs, and any explicitly configured CRS in the options.
- *
- * @param mapCrs the CRS used by the map that is requesting to load the features.
- * @param supportedCrses list of supported CRS identifiers.
- * @param configuredCrs an explicitly configured CRS identifier to use for requests, if any.
- * @returns the CRS to use for feature requests based on the given information.
- */
-export function getRequestCrs(
-    mapCrs: string,
-    supportedCrses: string[] | undefined,
-    configuredCrs: string | undefined
-): string {
-    if (configuredCrs) {
-        return configuredCrs;
-    }
-
-    const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
-    const matchingMapCrs = findMatchingCrs(mapCrs, supportedCrses);
-    if (!matchingMapCrs) {
-        LOG.warn(
-            `Map CRS '${mapCrs}' not supported. Falling back to default CRS '${DEFAULT_CRS}'.`
-        );
-        return DEFAULT_CRS;
-    }
-
-    return matchingMapCrs;
 }
 
 /**
