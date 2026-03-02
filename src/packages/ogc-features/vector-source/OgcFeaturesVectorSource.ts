@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
+import { createAbortError, createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { Extent } from "ol/extent";
 import Feature from "ol/Feature";
@@ -87,7 +87,8 @@ export class OgcFeaturesVectorSource extends VectorSource {
         // An extent-change should cancel open requests for older extents, because otherwise,
         // old and expensive requests could block new requests for a new extent
         // => no features are drawn on the current map for a long time.
-        this.#featuresAbortController?.abort("Extent changed");
+        //TODO: More context
+        this.#featuresAbortController?.abort(createAbortError());
         const abortController = (this.#featuresAbortController = new AbortController());
         try {
             const requestCrs = this.#getRequestCrs(collectionMetadata, projection);
