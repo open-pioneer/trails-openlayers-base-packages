@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Extent } from "ol/extent";
 import FeatureFormat from "ol/format/Feature";
-import { FeatureLike } from "ol/Feature";
+import Feature from "ol/Feature";
 import { HttpService } from "@open-pioneer/http";
 
 const NEXT_LINK_PROP = "next";
@@ -11,35 +11,23 @@ const NEXT_LINK_PROP = "next";
  * Assembles the url to use for fetching features in the given extent.
  */
 export function createCollectionRequestUrl(
-    collectionItemsURL: string,
+    collectionItemsUrl: string,
     extent: Extent,
-    crs: string,
-    rewriteUrl?: (url: URL) => URL | undefined
+    crs: string
 ): URL {
-    const urlObj = new URL(collectionItemsURL);
-    const searchParams = urlObj.searchParams;
+    const url = new URL(collectionItemsUrl);
+    const searchParams = url.searchParams;
     searchParams.set("bbox", extent.join(","));
     searchParams.set("bbox-crs", crs);
     searchParams.set("crs", crs);
     searchParams.set("f", "json");
-    return rewriteUrl?.(new URL(urlObj)) ?? urlObj;
-}
-
-/**
- * Adds (or replaces) offset/limit params on the given url.
- */
-export function createOffsetURL(fullURL: string, offset: number, pageSize: number): string {
-    const url = new URL(fullURL);
-    const searchParams = url.searchParams;
-    searchParams.set("offset", offset.toString());
-    searchParams.set("limit", pageSize.toString());
-    return url.toString();
+    return url;
 }
 
 /**
  * Extracts the `next` link from the service response's `links` property.
  */
-export function getNextURL(rawLinks: unknown): string | undefined {
+export function getNextLink(rawLinks: unknown): string | undefined {
     if (!Array.isArray(rawLinks)) {
         return undefined;
     }
@@ -58,8 +46,8 @@ export function getNextURL(rawLinks: unknown): string | undefined {
 }
 
 export interface FeatureResponse {
-    features: FeatureLike[];
-    nextURL: string | undefined;
+    features: Feature[];
+    nextLink: string | undefined;
     numberMatched: number | undefined;
 }
 
@@ -67,30 +55,26 @@ export interface FeatureResponse {
  * Performs a single request against the service
  */
 export async function queryFeatures(
-    fullURL: string,
-    featureFormat: FeatureFormat | null,
+    fullUrl: URL,
+    featureFormat: FeatureFormat,
     httpService: HttpService,
     signal: AbortSignal | undefined
 ): Promise<FeatureResponse> {
-    let features: FeatureLike[] = [];
-    const requestInit: RequestInit = {
+    const response = await httpService.fetch(fullUrl, {
         headers: {
             Accept: "application/geo+json"
         },
         signal
-    };
-    const response = await httpService.fetch(fullURL, requestInit);
+    });
     if (response.status !== 200) {
         throw new Error(`Failed to query features from service (status code ${response.status})`);
     }
     const geoJson = await response.json();
-    if (featureFormat) {
-        features = featureFormat.readFeatures(geoJson);
-    }
-    const nextURL = getNextURL(geoJson.links);
+    const features = featureFormat.readFeatures(geoJson);
+    const nextLink = getNextLink(geoJson.links);
     return {
-        features: features,
+        features,
         numberMatched: geoJson.numberMatched,
-        nextURL: nextURL
+        nextLink
     };
 }
