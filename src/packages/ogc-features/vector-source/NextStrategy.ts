@@ -7,7 +7,7 @@ import { queryFeatures } from "./requestUtils";
 
 interface NextStrategyOptions {
     fullUrl: URL;
-    limit: number;
+    limit: number | undefined;
     featureFormat: FeatureFormat;
     httpService: HttpService;
     signal: AbortSignal;
@@ -15,6 +15,8 @@ interface NextStrategyOptions {
     // Called for partial results as they appear
     onFeaturesLoaded: (features: Feature[]) => void;
 }
+
+const DEFAULT_LIMIT = 5000;
 
 /**
  * Loads features from the OGC API Features collection by following the "next" links.
@@ -28,7 +30,7 @@ export class NextStrategy {
 
     async load(): Promise<Feature[]> {
         const options = this.options;
-        const limit = options.limit;
+        const limit = options.limit ?? DEFAULT_LIMIT;
 
         let url = new URL(options.fullUrl);
         url.searchParams.set("limit", limit.toString());

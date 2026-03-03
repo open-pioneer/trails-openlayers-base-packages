@@ -11,10 +11,11 @@ import { FeatureResponse, getNextLink, queryFeatures } from "./requestUtils";
 const LOG = createLogger(sourceId);
 
 const DEFAULT_CONCURRENCY = 6;
+const DEFAULT_LIMIT = 2500;
 
 export interface OffsetStrategyOptions {
     fullUrl: URL;
-    limit: number;
+    limit: number | undefined;
     featureFormat: FeatureFormat;
     httpService: HttpService;
     signal: AbortSignal;
@@ -43,7 +44,7 @@ export class OffsetStrategy {
     async load(): Promise<Feature[]> {
         const options = this.options;
         const fullUrl = options.fullUrl;
-        const pageSize = options.limit;
+        const pageSize = options.limit ?? DEFAULT_LIMIT;
         const concurrency = this.concurrency;
 
         let startOffset = 0;

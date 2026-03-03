@@ -17,7 +17,6 @@ import { createCollectionRequestUrl } from "./requestUtils";
 
 const LOG = createLogger(sourceId);
 
-const DEFAULT_LIMIT = 5000;
 const CRS_OGC_CRS84 = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
 type SuccessCallback = (features: Feature[]) => void;
@@ -101,36 +100,36 @@ export class OgcFeaturesVectorSource extends VectorSource {
         //TODO: More context
         this.#featuresAbortController?.abort(createAbortError());
         const abortController = (this.#featuresAbortController = new AbortController());
-            const requestCrs = this.#getRequestCrs(collectionMetadata, projection);
-            const fullUrl = this.#getRequestUrl(extent, requestCrs);
-            const sharedOptions = {
-                fullUrl,
-                featureFormat: this.#featureFormat,
-                limit: this.#options.limit ?? DEFAULT_LIMIT,
-                httpService: this.#httpService,
-                signal: abortController.signal,
-                onFeaturesLoaded: (features: Feature[]) => {
-                    LOG.debug(`Adding ${features.length} features`);
-                    this.addFeatures(features);
-                }
-            };
-            let strategyImpl;
-            switch (strategy) {
-                case "next": {
-                    strategyImpl = new NextStrategy(sharedOptions);
-                    break;
-                }
-                case "offset":
-                    strategyImpl = new OffsetStrategy({
-                        ...sharedOptions,
-                        concurrency: this.#options.maxConcurrentRequests
-                    });
-                    break;
+        const requestCrs = this.#getRequestCrs(collectionMetadata, projection);
+        const fullUrl = this.#getRequestUrl(extent, requestCrs);
+        const sharedOptions = {
+            fullUrl,
+            featureFormat: this.#featureFormat,
+            limit: this.#options.limit,
+            httpService: this.#httpService,
+            signal: abortController.signal,
+            onFeaturesLoaded: (features: Feature[]) => {
+                LOG.debug(`Adding ${features.length} features`);
+                this.addFeatures(features);
             }
+        };
+        let strategyImpl;
+        switch (strategy) {
+            case "next": {
+                strategyImpl = new NextStrategy(sharedOptions);
+                break;
+            }
+            case "offset":
+                strategyImpl = new OffsetStrategy({
+                    ...sharedOptions,
+                    concurrency: this.#options.maxConcurrentRequests
+                });
+                break;
+        }
 
-            const features = await strategyImpl.load();
-            LOG.debug("Finished loading features for extent:", extent);
-            return features;
+        const features = await strategyImpl.load();
+        LOG.debug("Finished loading features for extent:", extent);
+        return features;
     }
 
     // Fetches collection metadata from the service (once).
