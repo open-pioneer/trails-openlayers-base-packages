@@ -18,8 +18,7 @@ import { createCollectionRequestUrl } from "./requestUtils";
 const LOG = createLogger(sourceId);
 
 const DEFAULT_LIMIT = 5000;
-const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
-
+const CRS_OGC_CRS84 = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
 type SuccessCallback = (features: Feature[]) => void;
 type FailureCallback = () => void;
@@ -39,7 +38,15 @@ export class OgcFeaturesVectorSource extends VectorSource {
     #featuresAbortController: AbortController | undefined;
 
     // Maps a map CRS to the corresponding request CRS that should be used for requests to the OGC API Features service.
-    #mapCrsToRequestCrs: Record<string, string> = {};
+    #mapCrsToRequestCrs: Record<string, string> = {
+        // Special case: When map is in EPSG:4326, which defines lat/long-order for coordinate values,
+        // make sure features are requested in CRS84, which has long/lat-order.
+        // Reason for this special case is that OpenLayers always expects coordinates to be in long/lat-order,
+        // even when the CRS definition specifies lat/long-order (as is the case for EPSG:4326).
+        // CRS84 is mandated to be supported by all OGC API Features services, so we can safely assume that the service will support it.
+        ["4326"]: CRS_OGC_CRS84,
+        ["EPSG:4326"]: CRS_OGC_CRS84
+    };
 
     constructor(options: OgcFeatureVectorSourceOptions, httpService: HttpService) {
         const format = new GeoJSON();
@@ -138,10 +145,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
         const run = async () => {
             let metadata;
             try {
-                metadata = await getCollectionMetadata(
-                    this.#collectionUrl,
-                    this.#httpService
-                );
+                metadata = await getCollectionMetadata(this.#collectionUrl, this.#httpService);
             } catch (e) {
                 LOG.error("Failed to retrieve collection metadata", e);
                 throwAbortError(); // Report error up the stack but only log error once
@@ -196,14 +200,14 @@ export class OgcFeaturesVectorSource extends VectorSource {
 
         const matchingMapCrs = findMatchingCrs(mapCrs, collectionMetadata?.crs);
         if (matchingMapCrs) {
-            this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
+            if (matchingMapCrs) this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
             return matchingMapCrs;
         } else {
             LOG.warn(
-                `Map CRS '${mapCrs}' not supported by collection '${this.#collectionUrl}'. Falling back to default CRS '${DEFAULT_CRS}'.`
+                `Map CRS '${mapCrs}' not supported by collection '${this.#collectionUrl}'. Falling back to default CRS '${CRS_OGC_CRS84}'.`
             );
-            this.#mapCrsToRequestCrs[mapCrs] = DEFAULT_CRS;
-            return DEFAULT_CRS;
+            this.#mapCrsToRequestCrs[mapCrs] = CRS_OGC_CRS84;
+            return CRS_OGC_CRS84;
         }
     }
 
