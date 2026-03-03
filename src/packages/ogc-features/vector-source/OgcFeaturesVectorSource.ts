@@ -203,11 +203,8 @@ export class OgcFeaturesVectorSource extends VectorSource {
             this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
             return matchingMapCrs;
         } else {
-            LOG.warn(
-                `Map CRS '${mapCrs}' not supported by collection '${this.#collectionUrl}'. Falling back to default CRS '${CRS_OGC_CRS84}'.`
-            );
-            this.#mapCrsToRequestCrs[mapCrs] = CRS_OGC_CRS84;
-            return CRS_OGC_CRS84;
+            LOG.error(`Map CRS '${mapCrs}' not supported by collection '${this.#collectionUrl}'.`);
+            throwAbortError();
         }
     }
 
