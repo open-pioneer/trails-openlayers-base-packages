@@ -139,7 +139,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
             try {
                 metadata = await getCollectionMetadata(this.#collectionUrl, this.#httpService);
             } catch (e) {
-                LOG.error("Failed to retrieve collection metadata", e);
+                LOG.error(`Failed to retrieve collection metadata for collection '${this.#collectionUrl}'`, e);
                 throwAbortError(); // Report error up the stack but only log error once
             }
 
@@ -165,7 +165,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
             try {
                 supportsOffset = await supportsOffsetStrategy(this.#itemsUrl, this.#httpService);
             } catch (e) {
-                LOG.error("Failed to retrieve collection information", e);
+                LOG.error(`Failed to retrieve collection information for collection '${this.#collectionUrl}'`, e);
                 throwAbortError(); // Report error up the stack but only log error once
             }
 
