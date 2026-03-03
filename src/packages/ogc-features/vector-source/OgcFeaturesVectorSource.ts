@@ -101,7 +101,6 @@ export class OgcFeaturesVectorSource extends VectorSource {
         //TODO: More context
         this.#featuresAbortController?.abort(createAbortError());
         const abortController = (this.#featuresAbortController = new AbortController());
-        try {
             const requestCrs = this.#getRequestCrs(collectionMetadata, projection);
             const fullUrl = this.#getRequestUrl(extent, requestCrs);
             const sharedOptions = {
@@ -132,12 +131,6 @@ export class OgcFeaturesVectorSource extends VectorSource {
             const features = await strategyImpl.load();
             LOG.debug("Finished loading features for extent:", extent);
             return features;
-        } catch (e) {
-            if (isAbortError(e)) {
-                this.removeLoadedExtent(extent);
-            }
-            throw e;
-        }
     }
 
     // Fetches collection metadata from the service (once).
