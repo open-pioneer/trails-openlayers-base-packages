@@ -200,7 +200,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
 
         const matchingMapCrs = findMatchingCrs(mapCrs, collectionMetadata?.crs);
         if (matchingMapCrs) {
-            if (matchingMapCrs) this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
+            this.#mapCrsToRequestCrs[mapCrs] = matchingMapCrs;
             return matchingMapCrs;
         } else {
             LOG.warn(
