@@ -72,7 +72,7 @@ function useUpdateValidity(template: FormTemplate | undefined): void {
     useEffect(() => {
         const handle = effect(() => {
             if (template?.kind === "declarative") {
-                const properties = context.propertiesObject();
+                const properties = context.propertiesObject;
                 context.isValid = template.fields.every((field) => isValid(field, properties));
             }
         });

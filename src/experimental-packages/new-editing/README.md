@@ -106,7 +106,9 @@ const template: FeatureTemplate = {
 
 ### Editing Handler
 
-The editing handler provides callbacks for persisting feature changes. All handlers are async and should interact with your backend service:
+The editing handler provides callbacks for persisting feature changes.
+All handlers are async and should apply the changes made by the user to the backing storage of your layer(s).
+For example, to persist changes using a (fictional) REST API:
 
 ```tsx
 const editingHandler: EditingHandler = {
@@ -182,7 +184,7 @@ The drawing options will be merged with those of the selected feature template (
 When the user selects an existing feature on the map, the Editor needs to determine which form template to use.
 By default, it matches the feature's layer ID against the `layerId` of each template in the `templates` array and uses the first match.
 
-For more control—such as when features from the same layer require different forms based on their attributes—you can provide a custom `formTemplateProvider`:
+For more control — such as when features from the same layer require different forms based on their attributes — you can provide a custom `formTemplateProvider`:
 
 ```tsx
 const formTemplateProvider: FormTemplateProvider = (feature, layer) => {
@@ -293,7 +295,7 @@ const template: FeatureTemplate = {
             propertyName: "confidence",
             render: (value, onChange) => (
                 <Slider.Root
-                    value={[(value as number) ?? 50]}
+                    value={[(value as number | undefined) ?? 50]}
                     onValueChange={(details) => onChange(details.value[0])}
                     min={0}
                     max={100}

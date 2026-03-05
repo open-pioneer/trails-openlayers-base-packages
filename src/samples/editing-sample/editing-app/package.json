@@ -11,7 +11,7 @@
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
-        "new-editing": "workspace:^",
+        "@open-pioneer/new-editing": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"

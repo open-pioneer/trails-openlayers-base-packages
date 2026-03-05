@@ -1,16 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { ReactiveMap } from "@conterra/reactivity-core";
 import type { Layer } from "@open-pioneer/map";
 import type { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import type { ReactiveMap } from "@conterra/reactivity-core";
-
 import type { Feature } from "ol";
-
 import { usePropertyFormContext as usePropertyFormContextImpl } from "../../implementation/context/usePropertyFormContext";
-
-import type { FeatureTemplate } from "../model/FeatureTemplate";
 import type { CreationStep, ModificationStep, UpdateStep } from "../model/EditingStep";
-import type { DynamicFormTemplate } from "../model/FeatureTemplate";
+import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTemplate";
 
 /**
  * React hook for accessing the property form context.
@@ -88,7 +84,7 @@ export interface PropertyFormContext {
      *
      * @returns A plain object containing all feature properties (excluding geometry).
      */
-    readonly propertiesObject: () => Readonly<Record<string, unknown>>;
+    readonly propertiesObject: Record<string, unknown>;
 
     /**
      * The current editing step containing the feature and associated metadata.

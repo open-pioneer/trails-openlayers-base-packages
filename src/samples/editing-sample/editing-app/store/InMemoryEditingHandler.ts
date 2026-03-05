@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Layer } from "@open-pioneer/map";
 import type { Feature } from "ol";
-import type { EditingHandler, FeatureTemplate } from "new-editing";
+import type { EditingHandler, FeatureTemplate } from "@open-pioneer/new-editing";
 import { InMemoryStore } from "./InMemoryStore";
 
 export class InMemoryEditingHandler implements EditingHandler {

@@ -39,7 +39,7 @@ function useValue<T>(value: PropertyFunctionOr<T> | undefined): T | undefined {
 
     return useReactiveSnapshot(() => {
         if (isPropertyFunction(value)) {
-            const properties = context.propertiesObject();
+            const properties = context.propertiesObject;
             return value(properties);
         } else {
             return value;
