@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, expect, vi, it } from "vitest";
 import { SearchController } from "./SearchController";
-import { SearchSource } from "./api";
-import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
+import { SearchSource } from "../api";
+import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "../testSources";
 import { isAbortError } from "@open-pioneer/core";
 import { get as getProjection } from "ol/proj";
 import { MapModel } from "@open-pioneer/map";
@@ -94,7 +94,7 @@ it("expect controller to filter rejected queries and return only successfully re
       [MockFunction error] {
         "calls": [
           [
-            "[ERROR] @open-pioneer/search/SearchController: search for source Rejected failed",
+            "[ERROR] @open-pioneer/search/model/SearchController: search for source Rejected failed",
             [Error: search with aa rejected],
           ],
         ],

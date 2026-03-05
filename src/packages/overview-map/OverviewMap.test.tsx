@@ -93,7 +93,7 @@ async function setup() {
 async function waitForOverviewMap() {
     const overviewMapDiv = await screen.findByTestId("overview-map");
     const olOverviewDiv = await waitFor(() => {
-        const child = overviewMapDiv.querySelector("> .ol-overviewmap");
+        const child = overviewMapDiv.querySelector(".ol-overviewmap");
         if (!child) {
             throw new Error("OpenLayers overview map control did not mount");
         }

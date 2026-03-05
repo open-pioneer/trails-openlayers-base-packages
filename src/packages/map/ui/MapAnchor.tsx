@@ -1,7 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@chakra-ui/react";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { Box, BoxProps } from "@chakra-ui/react";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
@@ -74,15 +78,16 @@ export function MapAnchor(props: MapAnchorProps): ReactNode {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { mapAnchorsHost } = useMapContainerContext();
-    const styleProps = useMemo(
+    const css = useMemo(
         () => computeMapAnchorStyles(position, horizontalGap, verticalGap),
         [position, horizontalGap, verticalGap]
     );
 
-    return createPortal(
-        <Box {...containerProps} {...styleProps}>
-            {children}
-        </Box>,
-        mapAnchorsHost
+    const boxProps = mergeChakraProps<BoxProps>(
+        {
+            css
+        },
+        containerProps
     );
+    return createPortal(<Box {...boxProps}>{children}</Box>, mapAnchorsHost);
 }

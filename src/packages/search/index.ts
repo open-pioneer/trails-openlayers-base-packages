@@ -11,5 +11,4 @@ export type {
     SearchSelectEvent,
     SearchSource
 } from "./api";
-export { Search, type SearchProps } from "./Search";
-export { SearchApiImpl } from "./SearchApiImpl";
+export { Search, type SearchProps } from "./ui/Search";

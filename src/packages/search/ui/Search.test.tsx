@@ -5,9 +5,9 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Search } from "./Search";
-import { SearchClearEvent, SearchReadyEvent, SearchSelectEvent } from "./api";
-import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
-import userEvent from "@testing-library/user-event";
+import { SearchClearEvent, SearchReadyEvent, SearchSelectEvent } from "../api";
+import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "../testSources";
+import userEvent, { UserEvent } from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
 
 beforeEach(() => {
@@ -24,7 +24,7 @@ it("should successfully type into search", async () => {
     const user = userEvent.setup();
     await createSearch();
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    await inputText(user, searchInput, "Dortmund");
     expect(searchInput).toHaveValue("Dortmund");
 });
 
@@ -33,9 +33,10 @@ it("should successfully show a search suggestion", async () => {
     await createSearch();
 
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
-    const { suggestion } = await waitForSuggestion();
-    expect(suggestion).toHaveTextContent("Dortmund");
+    const cityName = "Dortmund";
+    await inputText(user, searchInput, cityName);
+    const { suggestion } = await waitForSuggestion(cityName);
+    expect(suggestion).toHaveTextContent(cityName);
 });
 
 it("should successfully call select handler after clicking a suggestion", async () => {
@@ -46,9 +47,9 @@ it("should successfully call select handler after clicking a suggestion", async 
     const citySource = sources[0]!;
 
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dort");
+    await inputText(user, searchInput, "Dort");
 
-    const { suggestion } = await waitForSuggestion();
+    const { suggestion } = await waitForSuggestion("Dort");
     await userEvent.click(suggestion);
 
     expect(searchInput).toHaveValue("Dortmund");
@@ -69,9 +70,10 @@ it("should successfully clear a suggestion select", async () => {
 
     await createSearch(selectHandler, clearHandler);
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    const cityName = "Dortmund";
+    await inputText(user, searchInput, cityName);
 
-    const { suggestion } = await waitForSuggestion();
+    const { suggestion } = await waitForSuggestion(cityName);
     await userEvent.click(suggestion);
     const { clearButton } = await waitForClearButton();
     await userEvent.click(clearButton);
@@ -87,7 +89,7 @@ it("should allow clearing the suggestion text even if no option has been selecte
 
     await createSearch(selectHandler, clearHandler);
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    await inputText(user, searchInput, "Dortmund");
     expect(searchInput).toHaveValue("Dortmund");
 
     const { clearButton } = await waitForClearButton();
@@ -129,23 +131,24 @@ describe("search api", () => {
     });
 
     it("should reset input when resetInput is called on the search api", async () => {
-        const selectHandler = vi.fn();
-        let clearEvent: SearchClearEvent | undefined;
-        const clearHandler = (e: SearchClearEvent) => {
-            clearEvent = e;
-        };
-        let readyEvent: SearchReadyEvent | undefined;
-        const readyHandler = (e: SearchReadyEvent) => {
-            readyEvent = e;
-        };
-        const readyMock = vi.fn().mockImplementation(readyHandler);
+        const user = userEvent.setup();
 
-        await createSearch(selectHandler, clearHandler, readyMock);
+        let clearEvent: SearchClearEvent | undefined;
+        const clearHandler = vi.fn((e: SearchClearEvent) => {
+            clearEvent = e;
+        });
+
+        let readyEvent: SearchReadyEvent | undefined;
+        const readyMock = vi.fn((e: SearchReadyEvent) => {
+            readyEvent = e;
+        });
+
+        await createSearch(vi.fn(), clearHandler, readyMock);
 
         const { searchInput } = await waitForInput();
-        await userEvent.type(searchInput, "Dortmund");
-
-        expect(searchInput).toHaveValue("Dortmund");
+        const cityName = "Dortmund";
+        await inputText(user, searchInput, cityName);
+        expect(searchInput).toHaveValue(cityName);
 
         // reset the input using the SearchApi
         readyEvent?.api.resetInput();
@@ -167,42 +170,50 @@ describe("search api", () => {
         await createSearch(selectHandler, undefined, readyHandler);
         const { searchInput } = await waitForInput();
 
-        readyEvent?.api.setInputValue("Dortmund");
+        const title = "Dortmund";
+        readyEvent?.api.setInputValue(title);
 
         // input value is set
         await waitFor(() => {
-            expect(searchInput).toHaveValue("Dortmund");
+            expect(searchInput).toHaveValue(title);
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForMenu(50)).rejects.toThrow("Menu not found");
         expect(selectHandler).not.toHaveBeenCalled();
     });
 
     it("should successfully replace input value when setInputValue is called", async () => {
+        const user = userEvent.setup();
+
         const selectHandler = vi.fn();
+
         let readyEvent: SearchReadyEvent | undefined;
-        const readyHandler = (e: SearchReadyEvent) => {
+        const readyHandler = vi.fn((e: SearchReadyEvent) => {
             readyEvent = e;
-        };
+        });
 
         await createSearch(selectHandler, undefined, readyHandler);
         const { searchInput } = await waitForInput();
+        const cityName = "Dortmund";
 
-        await userEvent.type(searchInput, "Dortmund");
-        expect(searchInput).toHaveValue("Dortmund");
-        const { suggestion } = await waitForSuggestion();
+        // Normal typing + selection --> menu closes after selection
+        await inputText(user, searchInput, cityName);
+        expect(searchInput).toHaveValue(cityName);
+        const { suggestion } = await waitForSuggestion(cityName);
         await userEvent.click(suggestion);
 
-        readyEvent?.api.setInputValue("Bonn");
+        // Change current value: menu does not open
+        const title2 = "Bonn";
+        readyEvent?.api.setInputValue(title2);
 
         // input value is replaced
         await waitFor(() => {
-            expect(searchInput).toHaveValue("Bonn");
+            expect(searchInput).toHaveValue(title2);
         });
 
         // do not trigger any actions
-        await expect(waitForSuggestion(100)).rejects.toThrow("Suggestion not found");
+        await expect(waitForMenu(50)).rejects.toThrow("Menu not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
 });
@@ -238,19 +249,31 @@ async function createSearch(
     return { sources, unmount };
 }
 
+// Faster than simulation via user.type()
+async function inputText(user: UserEvent, element: HTMLInputElement, text: string) {
+    element.value = "";
+    await user.click(element);
+    await user.paste(text);
+}
+
 async function waitForSearch() {
     const searchDiv = await screen.findByTestId<HTMLDivElement>("search");
     return { searchDiv };
 }
 
-async function waitForMenu() {
-    const menuDiv = await waitFor(() => {
-        const menuDiv = document.body.querySelector(".search-component-menu");
-        if (!menuDiv) {
-            throw new Error("Menu not found");
+async function waitForMenu(timeout?: number) {
+    const menuDiv = await waitFor(
+        () => {
+            const menuDiv = document.body.querySelector(".search-component-menu");
+            if (!menuDiv) {
+                throw new Error("Menu not found");
+            }
+            return menuDiv as HTMLElement;
+        },
+        {
+            timeout: timeout
         }
-        return menuDiv as HTMLElement;
-    });
+    );
     return { menuDiv };
 }
 
@@ -263,11 +286,14 @@ async function waitForInput() {
     return { searchInput };
 }
 
-async function waitForSuggestion(timeout?: number) {
+async function waitForSuggestion(title: string, timeout?: number) {
     const { suggestion } = await waitFor(
         async () => {
             const { menuDiv } = await waitForMenu();
-            const suggestion = menuDiv.getElementsByClassName("search-highlighted-match")[0];
+            const markElements = menuDiv.getElementsByTagName("mark");
+            const suggestion = Array.from(markElements).find(
+                (el) => el.textContent?.trim() === title
+            );
 
             if (!suggestion) {
                 throw new Error("Suggestion not found");

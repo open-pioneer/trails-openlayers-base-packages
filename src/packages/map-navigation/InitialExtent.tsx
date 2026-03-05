@@ -10,9 +10,7 @@ import { FC, RefAttributes } from "react";
 import { LuHouse } from "react-icons/lu";
 
 export interface InitialExtentProps
-    extends CommonComponentProps,
-        RefAttributes<HTMLButtonElement>,
-        MapModelProps {
+    extends CommonComponentProps, RefAttributes<HTMLButtonElement>, MapModelProps {
     /**
      * Additional properties for the `Button` element.
      *

@@ -1,0 +1,86 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a search component 1`] = `
+<div
+  class="search css-8atqhb"
+  data-testid="search"
+>
+  <div
+    aria-label="ariaLabel.search"
+    class="search-combobox-component chakra-combobox__root css-1oswll3"
+    data-part="root"
+    data-scope="combobox"
+    dir="ltr"
+    id="combobox:_r_0_"
+  >
+    <span
+      aria-live="polite"
+      class="css-cfk6a1"
+    >
+      resultLoaded
+    </span>
+    <div
+      class="chakra-combobox__control css-2vts3p"
+      data-part="control"
+      data-scope="combobox"
+      data-state="closed"
+      dir="ltr"
+      id="combobox:_r_0_:control"
+    >
+      <div
+        class="chakra-group css-1w66b0j"
+      >
+        <div
+          class="css-78gcoq"
+        >
+          <svg
+            aria-hidden="true"
+            class="chakra-icon search-icon css-1yhex1d"
+            fill="none"
+            focusable="false"
+            height="1em"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+            />
+            <path
+              d="m21 21-4.3-4.3"
+            />
+          </svg>
+        </div>
+        <input
+          aria-autocomplete="list"
+          aria-controls="combobox:_r_0_:content"
+          aria-expanded="false"
+          autocapitalize="none"
+          autocomplete="off"
+          autocorrect="off"
+          class="chakra-combobox__input css-nl9pxt"
+          data-part="input"
+          data-scope="combobox"
+          data-state="closed"
+          dir="ltr"
+          id="combobox:_r_0_:input"
+          placeholder="searchPlaceholder"
+          role="combobox"
+          spellcheck="false"
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="chakra-combobox__indicatorGroup css-19fqsky"
+      />
+    </div>
+  </div>
+</div>
+`;

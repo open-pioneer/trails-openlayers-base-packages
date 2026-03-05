@@ -3,14 +3,14 @@
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { sourceId } from "open-pioneer:source-info";
-import { SearchResult, SearchSource } from "./api";
+import { SearchResult, SearchSource } from "../api";
 
 const LOG = createLogger(sourceId);
 
 /**
  * Group of suggestions returned from one source.
  */
-export interface SuggestionGroup {
+export interface ResultGroup {
     label: string;
     source: SearchSource;
     results: SearchResult[];
@@ -52,7 +52,7 @@ export class SearchController {
         this.#abortController = undefined;
     }
 
-    async search(searchTerm: string): Promise<SuggestionGroup[]> {
+    async search(searchTerm: string): Promise<ResultGroup[]> {
         this.#abortController?.abort();
         this.#abortController = undefined;
         if (!searchTerm) {
@@ -69,7 +69,7 @@ export class SearchController {
             const settledSearches = await Promise.all(
                 this.#sources.map((source) => this.#searchSource(source, searchTerm, abort.signal))
             );
-            return settledSearches.filter((s): s is SuggestionGroup => s != null);
+            return settledSearches.filter((s): s is ResultGroup => s != null);
         } finally {
             if (this.#abortController === abort) {
                 this.#abortController = undefined;
@@ -81,7 +81,7 @@ export class SearchController {
         source: SearchSource,
         searchTerm: string,
         signal: AbortSignal
-    ): Promise<SuggestionGroup | undefined> {
+    ): Promise<ResultGroup | undefined> {
         const label = source.label;
         const projection = this.#mapModel.projection;
         try {

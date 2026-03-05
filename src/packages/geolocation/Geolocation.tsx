@@ -16,9 +16,7 @@ import { GeolocationController, OnErrorCallback } from "./GeolocationController"
  * These are properties supported by the {@link Geolocation} component.
  */
 export interface GeolocationProps
-    extends CommonComponentProps,
-        RefAttributes<HTMLButtonElement>,
-        MapModelProps {
+    extends CommonComponentProps, RefAttributes<HTMLButtonElement>, MapModelProps {
     /**
      * Additional properties for the `Button` element.
      *
@@ -143,7 +141,12 @@ function useController(
             });
         };
 
-        const geolocationController = new GeolocationController(map, layerFactory, onError, trackingOptions);
+        const geolocationController = new GeolocationController(
+            map,
+            layerFactory,
+            onError,
+            trackingOptions
+        );
         setController(geolocationController);
 
         return () => {

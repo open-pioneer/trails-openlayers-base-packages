@@ -218,9 +218,6 @@ function useCurrentSelectionSource(
     return [currentSource, setCurrentSource];
 }
 
-/**
- * Hook to manage source option in selection-source react-select
- */
 function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
     const source = props.source;
     const label: string | undefined = source?.label;

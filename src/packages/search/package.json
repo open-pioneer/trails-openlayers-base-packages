@@ -23,7 +23,6 @@
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "chakra-react-select": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",

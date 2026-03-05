@@ -211,16 +211,20 @@ async function findTools() {
 }
 
 async function findMenu(tools: Element) {
-    const menu = await waitFor(() => {
+    const toolsOpenButton = await waitFor(() => {
         const toolsOpenButton = tools.querySelector(".toc-tools-button");
         if (!toolsOpenButton) {
             throw Error("unable to find tools button in toc");
         }
-        //trigger menu because of lazy mounting
-        act(() => {
-            fireEvent.click(toolsOpenButton);
-        });
+        return toolsOpenButton;
+    });
 
+    //trigger menu because of lazy mounting
+    act(() => {
+        fireEvent.click(toolsOpenButton);
+    });
+
+    const menu = await waitFor(() => {
         const menu = document.querySelector(".toc-tools-menu");
         if (!menu) {
             throw new Error("Menu not found");

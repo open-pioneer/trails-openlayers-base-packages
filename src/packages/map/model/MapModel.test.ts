@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
@@ -124,6 +125,30 @@ it("tracks the OpenLayers target", async () => {
 
     model.olMap.setTarget(undefined);
     expect(model.container).toBeUndefined();
+});
+
+it("exposes the OpenLayers load status as a reactive property", async () => {
+    model = await create("foo", {});
+
+    const events: boolean[] = [];
+    watchValue(
+        () => model!.loading,
+        (loading) => {
+            events.push(loading);
+        },
+        { dispatch: "sync" }
+    );
+
+    expect(model.loading).toBe(false);
+    expect(events.length).toBe(0);
+
+    model.olMap.dispatchEvent("loadstart");
+    expect(model.loading).toBe(true);
+    expect(events).toEqual([true]);
+
+    model.olMap.dispatchEvent("loadend");
+    expect(model.loading).toBe(false);
+    expect(events).toEqual([true, false]);
 });
 
 describe("whenDisplayed", () => {
