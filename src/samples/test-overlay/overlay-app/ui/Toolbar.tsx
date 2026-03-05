@@ -43,7 +43,7 @@ export function Toolbar(props: { map: MapModel }) {
                         onCloseClicked={destroyOverlay}
                     />
                 ),
-                olOptions: {
+                advanced: {
                     autoPan: true,
                     insertFirst: false
                 }

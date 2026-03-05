@@ -99,7 +99,7 @@ it("render overlay at fixed position", async () => {
     expect(olOverlay.getPosition()).toEqual([40, 40]);
 });
 
-it("set overlay position according to pointer position (mode: followPointer)", async () => {
+it("set overlay position according to pointer position (mode: follow-pointer)", async () => {
     const { map, overlays } = await setup();
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
@@ -109,7 +109,7 @@ it("set overlay position according to pointer position (mode: followPointer)", a
     const overlay = overlays.addOverlay({
         content: overlayTextContent,
         className: testClassName,
-        mode: "followPointer"
+        mode: "follow-pointer"
     });
 
     const simulateMove = (x: number, y: number) => {
@@ -143,7 +143,7 @@ it("add class name to overlay element", async () => {
     const overlayElement = getOverlayDivElement(overlays, testClassName1);
     expect(overlayElement.className).toEqual(testClassName1);
 
-    overlay.setClassName(testClassName2);
+    overlay.element.className = testClassName2;
     expect(overlayElement.className).toEqual(testClassName2);
 });
 
@@ -163,7 +163,7 @@ it("add role to overlay element", async () => {
     const overlayElement = getOverlayDivElement(overlays, testClassName);
     expect(overlayElement.role).toEqual(role1);
 
-    overlay.setAriaRole(role2);
+    overlay.element.role = role2;
     expect(overlayElement.role).toEqual(role2);
 });
 
@@ -243,7 +243,7 @@ async function setup() {
 function getOverlayDivElement(overlays: Overlays, expectedClassname: string): HTMLDivElement {
     const allOverlays = overlays.getOverlays();
     const tooltips = allOverlays.filter((overlay) => {
-        const overlayClassname = overlay.className;
+        const overlayClassname = overlay.element.className;
         return overlayClassname.includes(expectedClassname);
     });
     if (tooltips.length === 0) {

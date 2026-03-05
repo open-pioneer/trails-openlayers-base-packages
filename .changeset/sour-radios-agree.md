@@ -24,14 +24,14 @@ const myOverlay = map.overlays.addOverlay({
     position: [7.6, 52.0], //coordinates in map projection
     className: "overlay-css-class",
     positioning: "bottom-center"
-    //mode: "followPointer" //overlay would automatically follow pointer movement (default "setPosition")
+    //mode: "follow-pointer" //overlay would automatically follow pointer movement (default "set-position")
 });
 
 //get all current overlays
 let currentOverlaysList = map.overlays.getOverlays();
 console.log(currentOverlaysList.length) //prints 1
 
-myOverlay.setPosition([7.75, 52.25]); //manually change position in mode "setPosition"
+myOverlay.setPosition([7.75, 52.25]); //manually change position in mode "set-position"
 myOverlay.setContent(<MyOverlayContent innerText="New Content!"></MyOverlayContent>); //render new content
 
 //remove and destroy overlay

@@ -81,7 +81,7 @@ async function createController() {
 function getTooltipElement(map: MapModel, expectedClassname: string): HTMLElement {
     const allOverlays = map.overlays.getOverlays();
     const tooltips = allOverlays.filter((overlay) => {
-        const overlayClassname = overlay.className;
+        const overlayClassname = overlay.element.className;
         return overlayClassname.includes(expectedClassname);
     });
     if (tooltips.length === 0) {

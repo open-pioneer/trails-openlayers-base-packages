@@ -258,7 +258,7 @@ class EditingViewModel {
                 map.olMap.addInteraction(selectInteraction);
 
                 tooltip = createEditingTooltip(this.intl, map);
-                tooltip.overlay.classList.remove("editing-tooltip-hidden");
+                tooltip.overlay.element.classList.remove("editing-tooltip-hidden");
 
                 let feature: Feature<Geometry> | undefined;
                 // eslint-disable-next-line no-constant-condition
@@ -318,7 +318,7 @@ function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
         offset: [15, 0],
         positioning: "center-left",
         className: "editing-tooltip editing-tooltip-hidden",
-        mode: "followPointer"
+        mode: "follow-pointer"
     });
 
     return {

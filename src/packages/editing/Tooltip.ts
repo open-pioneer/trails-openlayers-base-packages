@@ -21,7 +21,7 @@ export interface Tooltip extends Resource {
 export function createTooltip(map: MapModel, text: string): Tooltip {
     const overlay = map.overlays.addOverlay({
         content: text,
-        mode: "followPointer",
+        mode: "follow-pointer",
         offset: [15, 0],
         positioning: "center-left",
         ariaRole: "tooltip",
@@ -33,7 +33,7 @@ export function createTooltip(map: MapModel, text: string): Tooltip {
             overlay.destroy();
         },
         setVisible(visible) {
-            overlay.classList.toggle("editing-tooltip-hidden", !visible);
+            overlay.element.classList.toggle("editing-tooltip-hidden", !visible);
         },
         setText(text) {
             overlay.setContent(text);

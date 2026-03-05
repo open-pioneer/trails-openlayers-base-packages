@@ -74,7 +74,7 @@ export function AppUI() {
         const followPointerOverlay = map.overlays.addOverlay({
             positioning: "center-center",
             stopEvent: false,
-            mode: "followPointer",
+            mode: "follow-pointer",
             content: (
                 <Icon size={"2xl"} color={"red.solid"}>
                     <LuCrosshair />

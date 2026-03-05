@@ -365,16 +365,14 @@ class MeasurementInstance {
         }
 
         const projection = this.olMap.getView().getProjection();
-        let outputHtml;
+        let output;
         if (geometry instanceof Polygon) {
-            outputHtml = formatArea(geometry, projection, this.messages);
+            output = formatArea(geometry, projection, this.messages);
         } else if (geometry instanceof LineString) {
-            outputHtml = formatLength(geometry, projection, this.messages);
+            output = formatLength(geometry, projection, this.messages);
         }
-        if (outputHtml) {
-            this.tooltip.setContent(
-                createElement(MeasurementOverlayContent, { content: outputHtml })
-            );
+        if (output) {
+            this.tooltip.setContent(createElement(MeasurementOverlayContent, { content: output }));
         }
     }
 
@@ -397,7 +395,7 @@ class MeasurementInstance {
     }
 
     finishTooltip() {
-        this.tooltip.setClassName(FINISHED_MEASUREMENT_CLASSNAME);
+        this.tooltip.element.className = FINISHED_MEASUREMENT_CLASSNAME;
         this.tooltip.setOffset(FINISHED_MEASUREMENT_OFFSET);
         this.updateTooltipContent();
         this.updateTooltipPosition();
@@ -420,7 +418,7 @@ const FINISHED_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-finished
 function createHelpTooltip(map: MapModel): Overlay {
     const helpOverlay = map.overlays.addOverlay({
         className: "measurement-tooltip printing-hide",
-        mode: "followPointer",
+        mode: "follow-pointer",
         tag: "measurement-help-overlay",
         offset: [15, 0],
         positioning: "center-left",
@@ -439,7 +437,7 @@ function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
         className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,
         stopEvent: false,
         ariaRole: "tooltip",
-        olOptions: {
+        advanced: {
             insertFirst: false
         }
     });

@@ -166,7 +166,9 @@ class EditingController {
             });
 
             this.#mapModel.olMap.addInteraction(this.#selectInteraction);
-            this.#updateEditSelectTooltip.overlay.classList.remove("editing-tooltip-hidden");
+            this.#updateEditSelectTooltip.overlay.element.classList.remove(
+                "editing-tooltip-hidden"
+            );
 
             this.#editUpdateSelectHandler = this.#selectInteraction.on("select", (e) => {
                 const selected = e.selected;
@@ -244,7 +246,7 @@ class EditingController {
             offset: [15, 0],
             positioning: "center-left",
             className: "editing-tooltip editing-tooltip-hidden",
-            mode: "followPointer"
+            mode: "follow-pointer"
         });
 
         return {
