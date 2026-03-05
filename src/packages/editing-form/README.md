@@ -1,6 +1,7 @@
-# @open-pioneer/new-editing
+# @open-pioneer/editing-form
 
-This package provides editing functionality for map features. It supports creating, modifying, and deleting features with declarative form configuration and custom UI components.
+This package provides editing functionality for map features.
+It supports creating, modifying, and deleting features with declarative form configuration and custom UI components.
 
 ## Features
 
@@ -20,7 +21,7 @@ This package provides editing functionality for map features. It supports creati
 The simplest way to use the Editor is to provide feature templates and an editing handler:
 
 ```tsx
-import { Editor, type EditingHandler, type FeatureTemplate } from "@open-pioneer/new-editing";
+import { Editor, type EditingHandler, type FeatureTemplate } from "@open-pioneer/editing-form";
 
 function EditingComponent() {
     return <Editor templates={templates} editingHandler={editingHandler} />;
@@ -318,7 +319,7 @@ const template: FeatureTemplate = {
 For complete control over form layout and behavior, use a dynamic form template with the `usePropertyFormContext` hook:
 
 ```tsx
-import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/new-editing";
+import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/editing-form";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Field, Input, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -391,7 +392,7 @@ import {
     type EditingStep,
     type DrawingState,
     type FeatureTemplate
-} from "@open-pioneer/new-editing";
+} from "@open-pioneer/editing-form";
 
 import { useState } from "react";
 import type { Vector as VectorSource } from "ol/source";

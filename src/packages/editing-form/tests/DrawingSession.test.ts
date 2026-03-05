@@ -7,6 +7,7 @@ import {
     DrawingSession,
     type DrawingActionHandler
 } from "../implementation/hooks/editing/controller/DrawingSession";
+import { nextTick } from "@conterra/reactivity-core";
 
 describe("DrawingSession", () => {
     let session: DrawingSession;
@@ -472,6 +473,6 @@ describe("DrawingSession", () => {
     });
 });
 
-function waitForReactiveUpdate(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, 0));
+async function waitForReactiveUpdate(): Promise<void> {
+    await nextTick();
 }

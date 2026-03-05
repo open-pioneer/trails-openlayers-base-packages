@@ -33,13 +33,10 @@ export default {
 };
 
 function getPackageDirectories() {
-    const packageJsonPaths = fastGlob.sync(
-        ["./src/packages/**/package.json", "./src/experimental-packages/new-editing/package.json"],
-        {
-            ignore: ["**/dist/**", "**/node_modules/**", "**/test-data/**"],
-            followSymbolicLinks: false
-        }
-    );
+    const packageJsonPaths = fastGlob.sync(["./src/packages/**/package.json"], {
+        ignore: ["**/dist/**", "**/node_modules/**", "**/test-data/**"],
+        followSymbolicLinks: false
+    });
     const packageDirectories = packageJsonPaths
         .filter((path) => {
             const packageJsonContent = JSON.parse(readFileSync(path, "utf-8"));

@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { createLogger } from "@open-pioneer/core";
 import type { MapModel } from "@open-pioneer/map";
 import type { NotificationService } from "@open-pioneer/notifier";
-
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-
-import type { EditingCallbacks } from "../../components/propertyeditor/PropertyEditor";
 import type { EditingHandler } from "../../../api/model/EditingHandler";
 import type { EditingStep } from "../../../api/model/EditingStep";
+import type { EditingCallbacks } from "../../components/propertyeditor/PropertyEditor";
+
+const LOG = createLogger(sourceId);
 
 export function useEditingCallbacks(
     mapModel: MapModel,
@@ -113,8 +114,6 @@ function getTitleId(operation: Operation, success: boolean): TitleId {
             return success ? TitleId.DeletionSuccess : TitleId.DeletionFailure;
     }
 }
-
-const LOG = createLogger("new-editing:useEditingCallbacks");
 
 enum TitleId {
     CreationSuccess = "notifier.creationSuccess",

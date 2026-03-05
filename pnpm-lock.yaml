@@ -420,59 +420,6 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/experimental-packages/new-editing:
-    dependencies:
-      '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@conterra/reactivity-core':
-        specifier: 'catalog:'
-        version: 0.8.1
-      '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
-      '@open-pioneer/core':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659
-      '@open-pioneer/map':
-        specifier: workspace:*
-        version: link:../../packages/map
-      '@open-pioneer/notifier':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
-      '@open-pioneer/react-utils':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
-      '@open-pioneer/reactivity':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659
-      '@open-pioneer/runtime':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659(@types/react@19.2.14)(typescript@5.9.3)
-      ol:
-        specifier: 'catalog:'
-        version: 10.8.0
-      react:
-        specifier: 'catalog:'
-        version: 19.2.4
-      react-icons:
-        specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
-    devDependencies:
-      '@open-pioneer/map-test-utils':
-        specifier: workspace:*
-        version: link:../../packages/map-test-utils
-      '@open-pioneer/test-utils':
-        specifier: 'catalog:'
-        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
-      openlayers-base-packages:
-        specifier: workspace:*
-        version: link:../../..
-      test-utils:
-        specifier: workspace:*
-        version: link:../../testing/test-utils
-    publishDirectory: dist
-
   src/packages/basemap-switcher:
     dependencies:
       '@chakra-ui/react':
@@ -629,6 +576,59 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+    publishDirectory: dist
+
+  src/packages/editing-form:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@conterra/reactivity-core':
+        specifier: 'catalog:'
+        version: 0.8.1
+      '@open-pioneer/chakra-snippets':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+      '@open-pioneer/core':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659
+      '@open-pioneer/map':
+        specifier: workspace:*
+        version: link:../map
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
+      '@open-pioneer/reactivity':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659(@types/react@19.2.14)(typescript@5.9.3)
+      ol:
+        specifier: 'catalog:'
+        version: 10.8.0
+      react:
+        specifier: 'catalog:'
+        version: 19.2.4
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.2.4)
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:*
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: 'catalog:'
+        version: 4.5.0-dev.20260225121659(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/geolocation:
@@ -1428,15 +1428,15 @@ importers:
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/editing-form':
+        specifier: workspace:^
+        version: link:../../../packages/editing-form
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
       '@open-pioneer/map-ui-components':
         specifier: workspace:^
         version: link:../../../packages/map-ui-components
-      '@open-pioneer/new-editing':
-        specifier: workspace:^
-        version: link:../../../experimental-packages/new-editing
       '@open-pioneer/notifier':
         specifier: 'catalog:'
         version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
