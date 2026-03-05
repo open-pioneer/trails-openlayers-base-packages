@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useEvent } from "@open-pioneer/react-utils";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useReactiveSnapshot, DISPATCH_SYNC } from "@open-pioneer/reactivity";
 import type { ChangeEvent, ReactNode } from "react";
 
 import { ColorPickerControl } from "./ColorPickerControl";
@@ -25,7 +25,8 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
 
     const value = useReactiveSnapshot(
         () => properties.get(field.propertyName),
-        [field.propertyName, properties]
+        [field.propertyName, properties],
+        DISPATCH_SYNC
     );
 
     const onInputChange = useEvent((event: ChangeEvent<InputElement>) => {
