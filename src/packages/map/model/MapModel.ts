@@ -7,6 +7,7 @@ import {
     createAbortError,
     createLogger,
     createManualPromise,
+    deprecated,
     isAbortError,
     ManualPromise
 } from "@open-pioneer/core";
@@ -28,7 +29,7 @@ import {
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../utils/InternalConstructorTag";
-import { Highlights } from "./Highlights";
+import { DESTROY_HIGHLIGHTS, Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
@@ -37,6 +38,14 @@ const LOG = createLogger(sourceId);
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
+
+const deprecatedHighlights = deprecated({
+    name: "MapModel highlight function called",
+    packageName: "@open-pioneer/map",
+    since: "v1.3.0",
+    alternative: "call methods of myMapModel.highlights instead"
+});
+
 
 /**
  * Style options supported when creating a new {@link Highlight}.
@@ -262,7 +271,7 @@ export class MapModel {
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
-        this.#highlights.destroy();
+        this.#highlights[DESTROY_HIGHLIGHTS]();
         this.#olMap.dispose();
     }
 
@@ -389,8 +398,18 @@ export class MapModel {
         return this.#layerDeps;
     }
 
+    /**
+     * Create and receive map overlays
+     */
     get overlays(): Overlays {
         return this.#tooltips;
+    }
+
+    /**
+     * Create, receive and zoom to map highlights
+     */
+    get highlights(): Highlights{
+        return this.#highlights;
     }
 
     /**
@@ -416,38 +435,48 @@ export class MapModel {
         view.setResolution(pointResolution);
     }
 
-    /**
-     * Creates a highlight at the given targets.
-     *
-     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
-     *
-     * Call `destroy()` on the returned highlight object to remove the highlight again.
-     */
-    highlight(geometries: DisplayTarget[], options?: HighlightOptions | undefined): Highlight {
-        return this.#highlights.addHighlight(geometries, options);
-    }
 
     /**
      * Zooms to the given targets.
      */
     zoom(geometries: DisplayTarget[], options?: ZoomOptions | undefined): void {
-        this.#highlights.zoomToHighlight(geometries, options);
+        this.#highlights.zoom(geometries, options);
+    }
+
+    /**
+     * Creates a highlight at the given targets.
+     *
+     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
+     *
+     * Call `destroy()` on the returned highlight object to remove the highlight.
+     * 
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addHighlight} instead
+     */
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions | undefined): Highlight {
+        deprecatedHighlights();
+        return this.#highlights.addHighlight(geometries, options);
     }
 
     /**
      * Creates a highlight and zooms to the given targets.
      *
      * See also {@link highlight} and {@link zoom}.
+     * 
+     * * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addHighlightAndZoom} instead
      */
     highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions) {
+        deprecatedHighlights();
         return this.#highlights.addHighlightAndZoom(geometries, options ?? {});
     }
 
     /**
      * Removes any existing highlights from the map.
+     * 
+     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead
      */
     removeHighlights() {
-        this.#highlights.clearHighlight();
+        deprecatedHighlights();
+        this.#highlights.clear();
     }
 
     /**

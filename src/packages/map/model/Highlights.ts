@@ -26,6 +26,9 @@ import {
     ZoomOptions
 } from "./MapModel";
 
+export const DESTROY_HIGHLIGHTS = Symbol("DESTROY_HIGHLIGHTS");
+export const GET_HIGHLIGHT_LAYER = Symbol("GET_HIGHLIGHT_LAYER");
+
 type HighlightStyleType = keyof HighlightStyle;
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
@@ -66,32 +69,6 @@ export class Highlights {
         map.layers.addLayer(this.layer, { at: "topmost" });
 
         this.activeHighlights = new Set();
-    }
-
-    /**
-     * Returns the layer used for highlights.
-     */
-    getLayer() {
-        return this.olLayer;
-    }
-
-    /**
-     * This method removes all highlights before destroying the class
-     */
-    destroy() {
-        this.clearHighlight();
-    }
-
-    /**
-     * Method of filtering out objects that are not geometry or have no property geometry.
-     */
-    #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
-        const geometries: Geometry[] = [];
-        geoObjects.forEach((item) => {
-            if ("getType" in item) geometries.push(item);
-            if ("geometry" in item && item.geometry) geometries.push(item.geometry);
-        });
-        return geometries;
     }
 
     /**
@@ -143,9 +120,9 @@ export class Highlights {
     }
 
     /**
-     * This method zoom to geometries or BaseFeatures
+     * This method zooms to geometries or BaseFeatures
      */
-    zoomToHighlight(displayTarget: DisplayTarget[], options: ZoomOptions | undefined) {
+    zoom(displayTarget: DisplayTarget[], options: ZoomOptions | undefined) {
         const geometries = this.#filterGeoobjects(displayTarget);
 
         if (geometries.length === 0) {
@@ -187,14 +164,43 @@ export class Highlights {
         highlightZoomStyle: HighlightZoomOptions | undefined
     ) {
         const result = this.addHighlight(displayTarget, highlightZoomStyle);
-        this.zoomToHighlight(displayTarget, highlightZoomStyle);
+        this.zoom(displayTarget, highlightZoomStyle);
         return result;
     }
 
-    clearHighlight() {
+    /**
+     * This method destroys all active Highlights
+     */
+    clear() {
         for (const highlight of this.activeHighlights) {
             highlight.destroy();
         }
+    }
+
+    /**
+     * Returns the layer used for highlights.
+     */
+    [GET_HIGHLIGHT_LAYER]() {
+        return this.olLayer;
+    }
+
+    /**
+     * This method removes all highlights before destroying the class
+     */
+    [DESTROY_HIGHLIGHTS]() {
+        this.clear();
+    }
+
+    /**
+     * Method of filtering out objects that are not geometry or have no property geometry.
+     */
+    #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
+        const geometries: Geometry[] = [];
+        geoObjects.forEach((item) => {
+            if ("getType" in item) geometries.push(item);
+            if ("geometry" in item && item.geometry) geometries.push(item.geometry);
+        });
+        return geometries;
     }
 }
 

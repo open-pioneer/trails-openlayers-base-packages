@@ -7,7 +7,7 @@ import { approximatelyEquals } from "ol/extent";
 import { LineString, Point, Polygon } from "ol/geom";
 import { afterEach, expect, it, vi } from "vitest";
 import { BaseFeature } from "../utils/BaseFeature";
-import { Highlights } from "./Highlights";
+import { DESTROY_HIGHLIGHTS, GET_HIGHLIGHT_LAYER, Highlights } from "./Highlights";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -15,8 +15,10 @@ const MOCKED_HTTP_SERVICE = {
 
 let _highlights: Highlights | undefined;
 afterEach(() => {
-    _highlights?.destroy();
-    _highlights = undefined;
+    if(_highlights){
+        _highlights[DESTROY_HIGHLIGHTS]();
+        _highlights = undefined;
+    }
     vi.restoreAllMocks();
 });
 
@@ -82,20 +84,20 @@ it("should successfully zoom for geometries", async () => {
     const highlight = highlights.addHighlight([point], {});
     expect(highlight).toBeDefined();
 
-    highlights.zoomToHighlight([point], {});
+    highlights.zoom([point], {});
     const zoomLevel = olMap.getView().getZoom();
     expect(zoomLevel).toBeTruthy();
 
     const highlight2 = highlights.addHighlight([line], {});
     expect(highlight2).toBeDefined();
 
-    highlights.zoomToHighlight([line], {});
+    highlights.zoom([line], {});
     const zoomLevel2 = olMap.getView().getZoom();
     expect(zoomLevel2).toBeTruthy();
 
     expect(zoomLevel).not.toEqual(zoomLevel2);
 
-    highlights.zoomToHighlight([point], {});
+    highlights.zoom([point], {});
     const newZoomLevel = olMap.getView().getZoom();
     expect(newZoomLevel).toBeTruthy();
     expect(newZoomLevel).toEqual(zoomLevel);
@@ -110,11 +112,11 @@ it("should successfully zoom with buffered geometries", async () => {
         [859419.420804, 6790407.617885]
     ]);
 
-    highlights.zoomToHighlight([line], {});
+    highlights.zoom([line], {});
     const zoomLevel2 = olMap.getView().getZoom();
     expect(zoomLevel2).toBeTruthy();
 
-    highlights.zoomToHighlight([line], { buffer: 1.2 });
+    highlights.zoom([line], { buffer: 1.2 });
     const zoomLevel2WithBuffer = olMap.getView().getZoom();
     expect(zoomLevel2WithBuffer).toBeTruthy();
     expect(zoomLevel2WithBuffer).not.toEqual(zoomLevel2);
@@ -246,7 +248,7 @@ it("should successfully remove all markers or highlights", async () => {
 
     expect(source?.getFeatures()?.length).toBe(3);
 
-    highlights.clearHighlight();
+    highlights.clear();
     expect(source?.getFeatures()?.length).toBe(0);
 });
 
@@ -314,7 +316,7 @@ async function setup() {
 }
 
 function getLayerSource(highlights: Highlights) {
-    const highlightLayer = highlights.getLayer();
+    const highlightLayer = highlights[GET_HIGHLIGHT_LAYER]();
     if (!highlightLayer) return;
     return highlightLayer.getSource();
 }
