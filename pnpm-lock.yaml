@@ -424,10 +424,10 @@ importers:
     dependencies:
       '@chakra-ui/react':
         specifier: 'catalog:'
-        version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
 
   src/packages/basemap-switcher:
     dependencies:
@@ -1380,7 +1380,7 @@ importers:
     dependencies:
       '@chakra-ui/react':
         specifier: 'catalog:'
-        version: 3.31.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
@@ -1392,10 +1392,10 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(typescript@5.9.3)
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.4.0(@emotion/react@11.14.0(@types/react@19.2.8)(react@19.2.3))(react-dom@19.2.3(react@19.2.3))
+        version: 4.5.0-dev.20260225121659(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/scale-bar':
         specifier: workspace:^
         version: link:../../../packages/scale-bar
@@ -1410,13 +1410,13 @@ importers:
         version: link:../../../experimental-packages/new-editing
       ol:
         specifier: 'catalog:'
-        version: 10.7.0
+        version: 10.8.0
       react:
         specifier: 'catalog:'
-        version: 19.2.3
+        version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.3)
+        version: 5.5.0(react@19.2.4)
 
   src/samples/experimental-sidebar/sidebar-app:
     dependencies:
