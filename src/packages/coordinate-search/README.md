@@ -37,22 +37,22 @@ To define the selectable projections, set the optional `projections` property:
 />
 ```
 
-The optional property `precision` allows to specify the number of display digits (default: 3).
+The optional property `precision` allows to specify the number of displayed digits (default: 3).
 
-If no `projections` are specified, Web Mercator (EPSG:3857) and WGS 84 (EPSG:4326) are the default options.
+If no `projections` are specified, the default options are WGS 84 (EPSG:4326) with precision 3 and Web Mercator (EPSG:3857) with precision 2.
 
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 
-In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if a valid input is entered or if the selected projection is changed after entering an input.
+In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesSelectEvent`. The `onSelect` event gets called if a valid input is entered or if the selected projection is changed after entering an input.
 
-With the `onClear` option, you can set a callback function that gets called if the clear button is clicked.
+With the `onClear` option, you can set a callback function that gets called if the input is cleared.
 
 ```tsx
 <CoordinateSearch
     map={map}
-    onSelect={(event: CoordinatesEvent) => {
+    onSelect={(event: CoordinatesSelectEvent) => {
         // do something
     }}
     onClear={() => {
@@ -94,9 +94,9 @@ To define the selectable projections, set the optional `projections` property:
 />
 ```
 
-The optional property `precision` allows to specify the number of display digits (default: 3).
+The optional property `precision` allows to specify the number of displayed digits (default: 3).
 
-If no `projections` are specified, Web Mercator (EPSG:3857) and WGS 84 (EPSG:4326) are the default options.
+If no `projections` are specified, the default options are WGS 84 (EPSG:4326) with precision 3 and Web Mercator (EPSG:3857) with precision 2.
 
 ### Set the input value
 
@@ -129,14 +129,14 @@ The Coordinates have to be in the projection of the map.
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 
-In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if you enter the input, if value of the `input` property changes or if the selected projection is changed after entering an input.
+In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesSelectEvent`. The `onSelect` event gets called if you enter the input, if value of the `input` property changes or if the selected projection is changed after entering an input.
 
-With the `onClear` option, you can set a callback function that gets called if the clear button is clicked.
+With the `onClear` option, you can set a callback function that gets called if the input is cleared.
 
 ```tsx
 <CoordinateInput
-    onSelect={(event: CoordinatesEvent) => {
-        // do something
+    onSelect={(event: CoordinatesSelectEvent) => {
+        console.log("Coordinates:", event.coords, "Projection:", event.projection);
     }}
     onClear={() => {
         // do something
