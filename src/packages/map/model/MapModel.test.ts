@@ -5,6 +5,7 @@ import { HttpService } from "@open-pioneer/http";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
+import { LineString, Point } from "ol/geom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
@@ -149,6 +150,57 @@ it("exposes the OpenLayers load status as a reactive property", async () => {
     model.olMap.dispatchEvent("loadend");
     expect(model.loading).toBe(false);
     expect(events).toEqual([true, false]);
+});
+
+describe("zoom", () => {
+    it("should successfully zoom for geometries", async () => {
+        model = await create("foo", {});
+        const olMap = model.olMap;
+
+        const point = new Point([852011.307424, 6788511.322702]);
+        const line = new LineString([
+            [851890.680238, 6788133.616293],
+            [859419.420804, 6790407.617885]
+        ]);
+
+        model.zoom([point], {});
+        const zoomLevel = olMap.getView().getZoom();
+        expect(zoomLevel).toBeTruthy();
+
+        model.zoom([line], {});
+        const zoomLevel2 = olMap.getView().getZoom();
+        expect(zoomLevel2).toBeTruthy();
+
+        expect(zoomLevel).not.toEqual(zoomLevel2);
+
+        model.zoom([point], {});
+        const newZoomLevel = olMap.getView().getZoom();
+        expect(newZoomLevel).toBeTruthy();
+        expect(newZoomLevel).toEqual(zoomLevel);
+    });
+
+    it("should successfully zoom with buffered geometries", async () => {
+        model = await create("foo", {});
+        const olMap = model.olMap;
+
+        const line = new LineString([
+            [851890.680238, 6788133.616293],
+            [859419.420804, 6790407.617885]
+        ]);
+
+        model.zoom([line], {});
+        const zoomLevel2 = olMap.getView().getZoom();
+        expect(zoomLevel2).toBeTruthy();
+
+        model.zoom([line], { buffer: 1.2 });
+        const zoomLevel2WithBuffer = olMap.getView().getZoom();
+        expect(zoomLevel2WithBuffer).toBeTruthy();
+        expect(zoomLevel2WithBuffer).not.toEqual(zoomLevel2);
+        if (typeof zoomLevel2WithBuffer != "number") {
+            throw Error("Expected zoom level to be a number");
+        }
+        expect(zoomLevel2).toBeGreaterThan(zoomLevel2WithBuffer);
+    });
 });
 
 describe("whenDisplayed", () => {

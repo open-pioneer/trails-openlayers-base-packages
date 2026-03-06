@@ -1060,6 +1060,69 @@ To access the map model instance, use the React hooks `useMapModel` or `useMapMo
     }
     ```
 
+#### Map overlays
+
+Use the `mapModel.overlays` API to create overlays on the map.
+
+An overlay is a UI element that is displayed over the map.
+Overlays are tied to coordinates on the map and not to a position on the screen.
+The rendered content of an overlay is a `ReactNode`: you can use either simple text or arbitrarily rich React components.
+
+The new overlays API is implemented on top of the raw OpenLayers overlays and should be preferred for in most cases.
+You can access the raw `olOverlay` in advanced scenarios.
+
+Example:
+
+```tsx
+import { Span } from "@chakra-ui/react";
+import { MapModel } from "@open-pioneer/map";
+
+const map: MapModel = ... // the map model
+
+// Add a new overlay to map and get overlay instance
+const myOverlay = map.overlays.add({
+    content: <MyOverlayContent innerText="Initial Content!"></MyOverlayContent>, // initially rendered content
+    tag: "my-overlay", // custom identifier
+    position: [7.6, 52.0], // coordinates in map projection
+    className: "overlay-css-class",
+    positioning: "bottom-center"
+    // mode: "follow-pointer" // overlay would automatically follow pointer movement (default "set-position")
+});
+
+// Get all current overlays
+let currentOverlaysList = map.overlays.getAll();
+console.log(currentOverlaysList.length) // prints 1
+
+myOverlay.setPosition([7.75, 52.25]); // manually change position in mode "set-position"
+myOverlay.setContent(<MyOverlayContent innerText="New Content!"></MyOverlayContent>); // render new content
+
+// Remove and destroy overlay.
+// Destroyed overlays cannot be reused.
+myOverlay.destroy();
+
+currentOverlaysList = map.overlays.getAll();
+console.log(currentOverlaysList.length) //prints 0
+
+// React component that is rendered as overlay content
+function MyOverlayContent(props: { innerText: string }) {
+    const { innerText } = props;
+    return <Span>{innerText}</Span>;
+}
+```
+
+When within a plain TypeScript file, use React's `createElement` function instead of JSX:
+
+```ts
+import { createElement } from "react";
+
+const myOverlay = map.overlays.add({
+    content: createElement(MyOverlayContent, {
+        // props ...
+    })
+    // ...
+});
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)
