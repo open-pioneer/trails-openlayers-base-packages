@@ -162,8 +162,8 @@ The `Editor` component accepts the following props:
 | `formTemplateProvider`           | `FormTemplateProvider` | No       | Custom function to determine which form template to use when editing an existing feature (see below)        |
 | `title`                          | `string`               | No       | Title displayed at the top of the editor. Defaults to a localized title or the template name during editing |
 | `showActionBar`                  | `boolean`              | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                            |
-| `successNotifierDisplayDuration` | `number`               | No       | Duration in ms to display success notifications. By default, never disappears. Use `0` to hide entirely     |
-| `failureNotifierDisplayDuration` | `number`               | No       | Duration in ms to display failure notifications. By default, never disappears. Use `0` to hide entirely     |
+| `successNotifierDisplayDuration` | `number`               | No       | Duration in ms to display success notifications. By default, never disappears.                              |
+| `failureNotifierDisplayDuration` | `number`               | No       | Duration in ms to display failure notifications. By default, never disappears.                              |
 | `onEditingStepChange`            | `OnEditingStepChange`  | No       | Callback invoked when the editing workflow step changes                                                     |
 
 ### Interaction Options

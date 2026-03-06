@@ -184,8 +184,8 @@ catalogs:
       specifier: ^19.2.4
       version: 19.2.4
     react-icons:
-      specifier: ^5.5.0
-      version: 5.5.0
+      specifier: ^5.6.0
+      version: 5.6.0
     react-use:
       specifier: ^17.6.0
       version: 17.6.0
@@ -413,7 +413,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
@@ -451,7 +451,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -498,7 +498,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -615,7 +615,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -668,7 +668,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -709,7 +709,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -818,7 +818,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -1078,7 +1078,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
       react-use:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1160,7 +1160,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -1236,7 +1236,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -1292,7 +1292,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
       uuid:
         specifier: 'catalog:'
         version: 13.0.0
@@ -1351,7 +1351,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
       uuid:
         specifier: 'catalog:'
         version: 13.0.0
@@ -1404,7 +1404,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -1460,7 +1460,7 @@ importers:
         version: 19.2.4
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
 
   src/samples/experimental-sidebar/sidebar-app:
     dependencies:
@@ -1499,7 +1499,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
       react-use:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1613,7 +1613,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
       react-use:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1790,7 +1790,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
 
   src/samples/test-highlight-and-zoom/highlight-and-zoom-app:
     dependencies:
@@ -1895,7 +1895,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
 
   src/samples/test-toc/toc-app:
     dependencies:
@@ -1937,7 +1937,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       react-icons:
         specifier: 'catalog:'
-        version: 5.5.0(react@19.2.4)
+        version: 5.6.0(react@19.2.4)
 
   src/testing/test-utils: {}
 
@@ -5184,8 +5184,8 @@ packages:
     peerDependencies:
       react: ^19.2.4
 
-  react-icons@5.5.0:
-    resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
+  react-icons@5.6.0:
+    resolution: {integrity: sha512-RH93p5ki6LfOiIt0UtDyNg/cee+HLVR6cHHtW3wALfo+eOHTp8RnU2kRkI6E+H19zMIs03DyxUG/GfZMOGvmiA==}
     peerDependencies:
       react: '*'
 
@@ -6677,7 +6677,7 @@ snapshots:
       '@open-pioneer/core': 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime': 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react: 19.2.4
-      react-icons: 5.5.0(react@19.2.4)
+      react-icons: 5.6.0(react@19.2.4)
     transitivePeerDependencies:
       - '@emotion/react'
       - '@types/react'
@@ -6722,7 +6722,7 @@ snapshots:
       '@open-pioneer/react-utils': 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime': 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react: 19.2.4
-      react-icons: 5.5.0(react@19.2.4)
+      react-icons: 5.6.0(react@19.2.4)
     transitivePeerDependencies:
       - '@emotion/react'
       - '@types/react'
@@ -9829,7 +9829,7 @@ snapshots:
       react: 19.2.4
       scheduler: 0.27.0
 
-  react-icons@5.5.0(react@19.2.4):
+  react-icons@5.6.0(react@19.2.4):
     dependencies:
       react: 19.2.4
 
