@@ -355,7 +355,7 @@ function useDragSelection(
             : intl.formatMessage({ id: "noSourceTooltip" });
 
         const dragController = new DragController(
-            map.olMap,
+            map,
             intl.formatMessage({ id: "tooltip" }),
             disabledMessage,
             onExtentSelected

@@ -15,6 +15,7 @@ import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "reac
 import { MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
+import { OverlaysRenderer } from "./OverlaysRenderer";
 
 const LOG = createLogger(sourceId);
 
@@ -198,7 +199,12 @@ function MapContainerReady(
             mapAnchorsHost
         };
     }, [mapAnchorsHost]);
-    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
+    return (
+        <MapContainerContextProvider value={mapContext}>
+            <OverlaysRenderer map={map} />
+            {children}
+        </MapContainerContextProvider>
+    );
 }
 
 /**
