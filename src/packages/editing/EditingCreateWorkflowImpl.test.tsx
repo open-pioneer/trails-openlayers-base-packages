@@ -9,7 +9,7 @@ import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, waitFor } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { Interaction } from "ol/interaction";
@@ -309,7 +309,9 @@ describe("when create editing workflow complete", () => {
 
         workflow.triggerSave();
 
-        await sleep(DEFAULT_SLEEP);
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
 
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBe("test_id_1");
@@ -325,7 +327,9 @@ describe("when create editing workflow complete", () => {
 
         workflow.stop();
 
-        await sleep(DEFAULT_SLEEP);
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
 
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBeUndefined();

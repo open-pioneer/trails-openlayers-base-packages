@@ -11,7 +11,7 @@ import VectorLayer from "ol/layer/Vector";
 import { Fill, Style } from "ol/style";
 import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
-import { Feature, View } from "ol";
+import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { waitFor } from "@testing-library/dom";
@@ -78,12 +78,7 @@ it("should measure a polygon / area", async () => {
 });
 
 it("should respect the map's current projection (EPSG:3857)", async () => {
-    const { olMap, controller } = await setup();
-    olMap.setView(
-        new View({
-            projection: "EPSG:3857"
-        })
-    );
+    const { olMap, controller } = await setup("EPSG:3857");
 
     const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
@@ -102,12 +97,7 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
 });
 
 it("should respect the map's current projection (EPSG:4326)", async () => {
-    const { olMap, controller } = await setup();
-    olMap.setView(
-        new View({
-            projection: "EPSG:4326"
-        })
-    );
+    const { olMap, controller } = await setup("EPSG:4326");
 
     const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
@@ -364,8 +354,8 @@ function getFirstFeature(layer: VectorLayer<VectorSource, Feature>) {
     return layer.getSource()?.getFeatures()[0]?.getGeometry();
 }
 
-async function setup() {
-    const { map, layerFactory } = await setupMap();
+async function setup(projection: string | undefined = undefined) {
+    const { map, layerFactory } = await setupMap({ projection: projection });
 
     render(
         createElement(
