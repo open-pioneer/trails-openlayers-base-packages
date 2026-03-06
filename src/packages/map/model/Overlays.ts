@@ -18,6 +18,11 @@ export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
 
 const LOG = createLogger(sourceId);
 
+/**
+ * Manages active overlays on the map.
+ *
+ * @group Map Model
+ */
 export class Overlays {
     private olMap: OlMap;
     private overlays = reactiveSet<Overlay>();
@@ -45,7 +50,7 @@ export class Overlays {
     /**
      * Add new overlay to the map. Returns the newly created overlay instance.
      */
-    addOverlay(properties: OverlayProperties): Overlay {
+    add(properties: OverlayProperties): Overlay {
         const newModel = new Overlay(properties, this);
         return newModel;
     }
@@ -53,13 +58,15 @@ export class Overlays {
     /**
      * Returns list of all current overlays.
      */
-    getOverlays(): Overlay[] {
+    getAll(): Overlay[] {
         return Array.from(this.overlays);
     }
 }
 
 /**
- * Properties that define the initial state of an overlay
+ * Properties that define the initial state of an overlay.
+ *
+ * @group Map Model
  */
 export interface OverlayProperties {
     /**
@@ -116,6 +123,8 @@ export interface OverlayProperties {
 
 /**
  * Positioning of an overlay relative to its position (coordinates)
+ *
+ * @group Map Model
  */
 export type OverlayPositioning =
     | "bottom-left"
@@ -128,11 +137,14 @@ export type OverlayPositioning =
     | "top-center"
     | "top-right";
 
+/** @group Map Model */
 export interface OlOverlayOptions extends Omit<Partial<Options>, "id" | "element"> {}
 
 /**
  * An overlay is an UI element that is displayed over the map. Overlays are tied to coordinates on the map and not to a position on the screen.
  * The displayed content of an overlay is a ReactNode. Therefore, it can be simple text content or a complex React component.
+ *
+ * @group Map Model
  */
 export class Overlay {
     /**

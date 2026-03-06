@@ -239,7 +239,7 @@ class EditingController {
     }
 
     _createEditingSelectTooltip(): Tooltip {
-        const overlay = this.#mapModel.overlays.addOverlay({
+        const overlay = this.#mapModel.overlays.add({
             content: this.#intl.formatMessage({
                 id: "demos.editing.update.tooltip.select"
             }),

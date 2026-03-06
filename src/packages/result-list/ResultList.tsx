@@ -244,7 +244,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         }
 
         if (enableHighlight) {
-            const highlight = map.highlights.addHighlight(data, highlightOptions);
+            const highlight = map.highlights.add(data, highlightOptions);
             return () => highlight.destroy();
         }
     }, [map, data, zoomOptions, enableZoom, enableHighlight, highlightOptions]);

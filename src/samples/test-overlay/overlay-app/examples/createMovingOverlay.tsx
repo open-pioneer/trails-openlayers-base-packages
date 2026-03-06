@@ -16,7 +16,7 @@ export interface MovingOverlay {
  */
 export function createMovingOverlay(map: MapModel) {
     const position = reactive([410000, 5757000]); // used in react component
-    const overlay = map.overlays.addOverlay({
+    const overlay = map.overlays.add({
         position: position.value,
         tag: "sample-movable-overlay",
         content: (

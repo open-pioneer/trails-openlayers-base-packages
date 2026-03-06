@@ -14,7 +14,7 @@ export function createDynamicOverlay(map: MapModel) {
     ));
 
     let index = 0;
-    const overlay = map.overlays.addOverlay({
+    const overlay = map.overlays.add({
         positioning: "center-center",
         stopEvent: false,
         position: [410000, 5762000],

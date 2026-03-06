@@ -8,7 +8,7 @@ import { createPortal } from "react-dom";
 export function OverlaysRenderer(props: { map: MapModel }) {
     const { map } = props;
     const overlays = useReactiveSnapshot(() => {
-        return map.overlays.getOverlays();
+        return map.overlays.getAll();
     }, [map]);
     return overlays.map((overlay) => <OverlayRenderer key={overlay.id} overlay={overlay} />);
 }

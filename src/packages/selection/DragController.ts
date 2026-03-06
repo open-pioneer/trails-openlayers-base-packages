@@ -10,7 +10,7 @@ import Geometry from "ol/geom/Geometry";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
 import { createElement } from "react";
-import { SelectionOverlayContent } from "./Selection";
+import { SelectionTooltipContent } from "./SelectionTooltipContent";
 
 interface InteractionResource extends Resource {
     interaction: PointerInteraction;
@@ -50,7 +50,7 @@ export class DragController {
         this.tooltipSync = watch(
             () => [this.isActive.value, this.tooltipText],
             ([isActive, tooltipText]) => {
-                const tooltipContent = createElement(SelectionOverlayContent, {
+                const tooltipContent = createElement(SelectionTooltipContent, {
                     content: tooltipText
                 });
                 this.tooltip.setContent(tooltipContent);
@@ -183,10 +183,10 @@ export class DragController {
      * Method to generate a tooltip on the mouse cursor
      */
     private createHelpTooltip(map: MapModel, message: string): Overlay {
-        const tooltipContent = createElement(SelectionOverlayContent, {
+        const tooltipContent = createElement(SelectionTooltipContent, {
             content: message
         });
-        const tooltipOverlay = map.overlays.addOverlay({
+        const tooltipOverlay = map.overlays.add({
             content: tooltipContent,
             mode: "follow-pointer",
             offset: [15, 0],

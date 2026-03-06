@@ -17,10 +17,10 @@ import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/styl
 import {
     type MeasurementsChangeEvent,
     type MeasurementGeometry,
-    type MeasurementProps,
-    MeasurementOverlayContent
+    type MeasurementProps
 } from "./Measurement";
 import { createElement } from "react";
+import { MeasurementTooltipContent } from "./MeasurementTooltip";
 
 type MeasurementsChangeHandler = NonNullable<MeasurementProps["onMeasurementsChange"]>;
 
@@ -260,7 +260,7 @@ export class MeasurementController {
     private updateTooltip() {
         const overlay = this.helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.activeMeasurement);
-        const newContent = createElement(MeasurementOverlayContent, { content: helpMessage });
+        const newContent = createElement(MeasurementTooltipContent, { content: helpMessage });
         overlay.setContent(newContent);
     }
 
@@ -372,7 +372,7 @@ class MeasurementInstance {
             output = formatLength(geometry, projection, this.messages);
         }
         if (output) {
-            this.tooltip.setContent(createElement(MeasurementOverlayContent, { content: output }));
+            this.tooltip.setContent(createElement(MeasurementTooltipContent, { content: output }));
         }
     }
 
@@ -416,22 +416,22 @@ const ACTIVE_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-active-too
 const FINISHED_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-finished-tooltip";
 
 function createHelpTooltip(map: MapModel): Overlay {
-    const helpOverlay = map.overlays.addOverlay({
+    const helpOverlay = map.overlays.add({
         className: "measurement-tooltip printing-hide",
         mode: "follow-pointer",
         tag: "measurement-help-overlay",
         offset: [15, 0],
         positioning: "center-left",
         ariaRole: "tooltip",
-        content: createElement(MeasurementOverlayContent)
+        content: createElement(MeasurementTooltipContent)
     });
 
     return helpOverlay;
 }
 
 function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
-    const overlay = map.overlays.addOverlay({
-        content: createElement(MeasurementOverlayContent),
+    const overlay = map.overlays.add({
+        content: createElement(MeasurementTooltipContent),
         offset: !isFinished ? DEFAULT_MEASUREMENT_OFFSET : FINISHED_MEASUREMENT_OFFSET,
         positioning: "bottom-center",
         className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,

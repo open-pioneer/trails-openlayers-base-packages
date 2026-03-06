@@ -75,13 +75,13 @@ export function AppUI() {
     function handleClick(map: MapModel | undefined, resultGeometries: Geometry[], id: string) {
         if (map && !highlightMap.current.has(id)) {
             if (ownStyle) {
-                const highlight = map.highlights.addHighlightAndZoom(resultGeometries, {
+                const highlight = map.highlights.addAndZoom(resultGeometries, {
                     highlightStyle: ownHighlightStyle,
                     buffer: 1.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);
             } else {
-                const highlight = map.highlights.addHighlightAndZoom(resultGeometries, {
+                const highlight = map.highlights.addAndZoom(resultGeometries, {
                     buffer: 1.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);

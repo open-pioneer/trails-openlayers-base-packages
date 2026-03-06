@@ -19,7 +19,7 @@ export interface Tooltip extends Resource {
  * Note: the tooltip starts invisible, and must be toggled on via `setVisible(true)`.
  */
 export function createTooltip(map: MapModel, text: string): Tooltip {
-    const overlay = map.overlays.addOverlay({
+    const overlay = map.overlays.add({
         content: text,
         mode: "follow-pointer",
         offset: [15, 0],

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
-import type { Resource } from "@open-pioneer/core";
 import {
     createAbortError,
     createLogger,
@@ -17,27 +16,38 @@ import { unByKey } from "ol/Observable";
 import OlView from "ol/View";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
-import { getCenter } from "ol/extent";
-import { Geometry } from "ol/geom";
+import { createEmpty, extend, getArea, getCenter } from "ol/extent";
 import { getPointResolution, Projection } from "ol/proj";
-import type { StyleLike } from "ol/style/Style";
 import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
-import type { BaseFeature } from "../utils/BaseFeature";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../utils/InternalConstructorTag";
-import { DESTROY_HIGHLIGHTS, Highlights } from "./Highlights";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
+import {
+    DESTROY_HIGHLIGHTS,
+    Highlight,
+    HighlightOptions,
+    Highlights,
+    HighlightZoomOptions
+} from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
+import { getGeometries } from "./getGeometries";
+import { BaseFeature } from "../utils/BaseFeature";
+import { Geometry } from "ol/geom";
 
 const LOG = createLogger(sourceId);
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
+
+const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
+const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
+const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 const deprecatedHighlights = deprecated({
     name: "MapModel highlight function called",
@@ -46,21 +56,8 @@ const deprecatedHighlights = deprecated({
     alternative: "call methods of myMapModel.highlights instead"
 });
 
-
 /**
- * Style options supported when creating a new {@link Highlight}.
- *
- * @group Map Model
- **/
-export interface HighlightOptions {
-    /**
-     * Optional styles to override the default styles.
-     */
-    highlightStyle?: HighlightStyle;
-}
-
-/**
- * Zoom options supported when creating a new {@link Highlight}.
+ * Options supported when calling {@link MapModel.zoom}.
  *
  * @group Map Model
  **/
@@ -88,25 +85,11 @@ export interface ZoomOptions {
 }
 
 /**
- * Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method.
- *
- * @group Map Model
- **/
-export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
-
-/**
- * Custom styles when creating a new {@link Highlight}.
+ * Represents an object in the map.
  *
  * @group Map Model
  */
-export type HighlightStyle = {
-    Point?: StyleLike;
-    LineString?: StyleLike;
-    Polygon?: StyleLike;
-    MultiPolygon?: StyleLike;
-    MultiPoint?: StyleLike;
-    MultiLineString?: StyleLike;
-};
+export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Map padding, all values are pixels.
@@ -121,24 +104,6 @@ export interface MapPadding {
     top?: number;
     bottom?: number;
 }
-
-/**
- * Represents the additional graphical representations of objects.
- *
- * See also {@link MapModel.highlight}.
- *
- * @group Map Model
- */
-export interface Highlight extends Resource {
-    readonly isActive: boolean;
-}
-
-/**
- * Represents an object in the map.
- *
- * @group Map Model
- */
-export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Represents a map.
@@ -408,7 +373,7 @@ export class MapModel {
     /**
      * Create, receive and zoom to map highlights
      */
-    get highlights(): Highlights{
+    get highlights(): Highlights {
         return this.#highlights;
     }
 
@@ -435,12 +400,48 @@ export class MapModel {
         view.setResolution(pointResolution);
     }
 
-
     /**
      * Zooms to the given targets.
      */
-    zoom(geometries: DisplayTarget[], options?: ZoomOptions | undefined): void {
-        this.#highlights.zoom(geometries, options);
+    zoom(displayTargets: DisplayTarget[], options?: ZoomOptions | undefined): void {
+        const olView = this.olView;
+        const geometries = getGeometries(displayTargets);
+        if (geometries.length === 0) {
+            return;
+        }
+
+        let extent = createEmpty();
+        for (const geometry of geometries) {
+            extent = extend(extent, geometry.getExtent());
+        }
+
+        const bufferParameter = options?.buffer;
+        if (typeof bufferParameter === "number") {
+            extent = calculateBufferedExtent(extent, bufferParameter);
+        }
+
+        const center = getCenter(extent);
+        const isPoint = getArea(extent) === 0;
+        const zoomLevel = isPoint
+            ? (options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL)
+            : (options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL);
+        if (center && center.length) {
+            olView.setCenter(center);
+        }
+
+        const {
+            top = 0,
+            right = 0,
+            bottom = 0,
+            left = 0
+        } = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
+        const padding = [top, right, bottom, left];
+
+        if (extent) {
+            olView.fit(extent, { maxZoom: zoomLevel, padding });
+        } else if (zoomLevel) {
+            olView.setZoom(zoomLevel);
+        }
     }
 
     /**
@@ -449,32 +450,32 @@ export class MapModel {
      * A highlight is a temporary graphic on the map that calls attention to a point or an area.
      *
      * Call `destroy()` on the returned highlight object to remove the highlight.
-     * 
-     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addHighlight} instead
+     *
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.add} instead.
      */
     highlight(geometries: DisplayTarget[], options?: HighlightOptions | undefined): Highlight {
         deprecatedHighlights();
-        return this.#highlights.addHighlight(geometries, options);
+        return this.#highlights.add(geometries, options);
     }
 
     /**
      * Creates a highlight and zooms to the given targets.
      *
      * See also {@link highlight} and {@link zoom}.
-     * 
-     * * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addHighlightAndZoom} instead
+     *
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addAndZoom} instead.
      */
-    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions) {
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight {
         deprecatedHighlights();
-        return this.#highlights.addHighlightAndZoom(geometries, options ?? {});
+        return this.#highlights.addAndZoom(geometries, options ?? {});
     }
 
     /**
      * Removes any existing highlights from the map.
-     * 
-     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead
+     *
+     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead.
      */
-    removeHighlights() {
+    removeHighlights(): void {
         deprecatedHighlights();
         this.#highlights.clear();
     }

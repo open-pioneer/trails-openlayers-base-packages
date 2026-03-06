@@ -14,26 +14,26 @@ it("return all current overlays", async () => {
     const { overlays } = await setup();
     const testClassName = "overlay-test";
 
-    expect(overlays.getOverlays().length).toBe(0);
+    expect(overlays.getAll().length).toBe(0);
 
-    const overlay1 = overlays.addOverlay({
+    const overlay1 = overlays.add({
         content: "overlay 1",
         className: testClassName
     });
-    expect(overlays.getOverlays().length).toBe(1);
-    expect(overlays.getOverlays()).toContain(overlay1);
+    expect(overlays.getAll().length).toBe(1);
+    expect(overlays.getAll()).toContain(overlay1);
 
-    const overlay2 = overlays.addOverlay({
+    const overlay2 = overlays.add({
         content: "overlay 2",
         className: testClassName
     });
-    expect(overlays.getOverlays().length).toBe(2);
-    expect(overlays.getOverlays()).toContain(overlay1);
-    expect(overlays.getOverlays()).toContain(overlay2);
+    expect(overlays.getAll().length).toBe(2);
+    expect(overlays.getAll()).toContain(overlay1);
+    expect(overlays.getAll()).toContain(overlay2);
 
     overlay2.destroy();
     overlay1.destroy();
-    expect(overlays.getOverlays().length).toBe(0);
+    expect(overlays.getAll().length).toBe(0);
 });
 
 it("render an Overlay with simple text content", async () => {
@@ -41,7 +41,7 @@ it("render an Overlay with simple text content", async () => {
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
 
-    overlays.addOverlay({
+    overlays.add({
         content: overlayTextContent,
         className: testClassName
     });
@@ -56,7 +56,7 @@ it("reset content of an Overlay", async () => {
     const overlayTextContent2 = "Overlay Text Content 2";
     const testClassName = "overlay-test";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent1,
         className: testClassName
     });
@@ -72,7 +72,7 @@ it("render an Overlay with react component as content", async () => {
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
 
-    overlays.addOverlay({
+    overlays.add({
         content: <DummyOverlayContent innerText={overlayTextContent}></DummyOverlayContent>,
         className: testClassName
     });
@@ -86,7 +86,7 @@ it("render overlay at fixed position", async () => {
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName,
         position: [50, 50]
@@ -106,7 +106,7 @@ it("set overlay position according to pointer position (mode: follow-pointer)", 
     const expectedPosition1 = [777000, 6698400];
     const expectedPosition2 = [777500, 669900];
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName,
         mode: "follow-pointer"
@@ -135,7 +135,7 @@ it("add class name to overlay element", async () => {
     const testClassName1 = "overlay-test";
     const testClassName2 = "overlay-test2";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName1
     });
@@ -154,7 +154,7 @@ it("add role to overlay element", async () => {
     const role1 = "abc";
     const role2 = "xyz";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName,
         ariaRole: role1
@@ -172,7 +172,7 @@ it("set offset and positioning correctly", async () => {
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName,
         positioning: "bottom-center",
@@ -195,7 +195,7 @@ it("overlay is destroyed after calling destroy function", async () => {
     const overlayTextContent = "Overlay Text Content";
     const testClassName = "overlay-test";
 
-    const overlay = overlays.addOverlay({
+    const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName
     });
@@ -212,7 +212,7 @@ it("overlay is inside OL's container that stops event propagation if stopEvent i
     const testClassName = "overlay-test";
     const olStopEventContainerSelector = ".ol-overlaycontainer-stopevent";
 
-    overlays.addOverlay({
+    overlays.add({
         content: overlayTextContent,
         className: testClassName,
         stopEvent: true
@@ -241,7 +241,7 @@ async function setup() {
 }
 
 function getOverlayDivElement(overlays: Overlays, expectedClassname: string): HTMLDivElement {
-    const allOverlays = overlays.getOverlays();
+    const allOverlays = overlays.getAll();
     const tooltips = allOverlays.filter((overlay) => {
         const overlayClassname = overlay.element.className;
         return overlayClassname.includes(expectedClassname);

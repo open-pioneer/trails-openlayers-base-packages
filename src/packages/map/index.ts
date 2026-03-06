@@ -87,15 +87,24 @@ export {
 export {
     type MapModel,
     type DisplayTarget,
-    type Highlight,
-    type HighlightOptions,
-    type HighlightStyle,
-    type HighlightZoomOptions,
     type MapPadding,
     type ZoomOptions
 } from "./model/MapModel";
+export {
+    type Highlight,
+    type Highlights,
+    type HighlightOptions,
+    type HighlightStyle,
+    type HighlightZoomOptions
+} from "./model/Highlights";
 export { type LayerCollection } from "./model/LayerCollection";
-export { type Overlay, type OverlayProperties, type Overlays } from "./model/Overlays";
+export {
+    type Overlay,
+    type OverlayProperties,
+    type OlOverlayOptions,
+    type OverlayPositioning,
+    type Overlays
+} from "./model/Overlays";
 
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";

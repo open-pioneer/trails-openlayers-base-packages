@@ -67,7 +67,7 @@ class DemoModelImpl implements DemoModel {
 
 function highlightAndZoom(map: MapModel, geometries: Geometry[]): Highlight {
     const viewport: HTMLElement = map.olMap.getViewport();
-    return map.highlights.addHighlightAndZoom(geometries, {
+    return map.highlights.addAndZoom(geometries, {
         viewPadding:
             viewport && viewport.offsetWidth < 1000
                 ? { top: 150, right: 75, bottom: 50, left: 75 }

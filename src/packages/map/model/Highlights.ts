@@ -1,43 +1,77 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Resource } from "@open-pioneer/core";
 import { Feature } from "ol";
 import { FeatureLike } from "ol/Feature";
-import OlMap from "ol/Map";
-import { Coordinate } from "ol/coordinate";
-import { createEmpty, extend, Extent, getArea, getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { Type } from "ol/geom/Geometry";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
-import { toFunction as toStyleFunction } from "ol/style/Style";
+import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { SimpleLayer } from "../layers/SimpleLayer";
 import { LayerDependencies } from "../layers/shared/internals";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
-import { calculateBufferedExtent } from "../utils/geometry-utils";
-import {
-    DisplayTarget,
-    Highlight,
-    HighlightOptions,
-    HighlightStyle,
-    HighlightZoomOptions,
-    MapModel,
-    ZoomOptions
-} from "./MapModel";
+import { DisplayTarget, MapModel, ZoomOptions } from "./MapModel";
+import { getGeometries } from "./getGeometries";
 
 export const DESTROY_HIGHLIGHTS = Symbol("DESTROY_HIGHLIGHTS");
 export const GET_HIGHLIGHT_LAYER = Symbol("GET_HIGHLIGHT_LAYER");
 
+/**
+ * Style options supported when creating a new {@link Highlight}.
+ *
+ * @group Map Model
+ **/
+export interface HighlightOptions {
+    /**
+     * Optional styles to override the default styles.
+     */
+    highlightStyle?: HighlightStyle;
+}
+
+/**
+ * Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method.
+ *
+ * @group Map Model
+ **/
+export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
+
+/**
+ * Custom styles when creating a new {@link Highlight}.
+ *
+ * @group Map Model
+ */
+export type HighlightStyle = {
+    Point?: StyleLike;
+    LineString?: StyleLike;
+    Polygon?: StyleLike;
+    MultiPolygon?: StyleLike;
+    MultiPoint?: StyleLike;
+    MultiLineString?: StyleLike;
+};
+
+/**
+ * Represents the additional graphical representations of objects.
+ *
+ * See also {@link MapModel.highlight}.
+ *
+ * @group Map Model
+ */
+export interface Highlight extends Resource {
+    readonly isActive: boolean;
+}
+
 type HighlightStyleType = keyof HighlightStyle;
 
-const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
-const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
-const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
-
+/**
+ * Manages highlights on the map.
+ *
+ * @group Map Model
+ */
 export class Highlights {
     private map: MapModel;
-    private olMap: OlMap;
 
     private olLayer: VectorLayer<VectorSource, Feature>;
     private layer: SimpleLayer;
@@ -46,7 +80,6 @@ export class Highlights {
 
     constructor(map: MapModel, layerDeps: LayerDependencies) {
         this.map = map;
-        this.olMap = this.map.olMap;
         this.olSource = new VectorSource({
             features: undefined
         });
@@ -71,12 +104,19 @@ export class Highlights {
         this.activeHighlights = new Set();
     }
 
-    /**
-     * This method displays geometries or BaseFeatures with optional styling in the map
-     */
-    addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
-        const geometries = this.#filterGeoobjects(displayTarget);
+    [DESTROY_HIGHLIGHTS]() {
+        this.clear();
+    }
 
+    /**
+     * Creates a highlight at the given targets.
+     *
+     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
+     *
+     * Call `destroy()` on the returned highlight object to remove the highlight.
+     */
+    add(displayTargets: DisplayTarget[], options?: HighlightOptions | undefined): Highlight {
+        const geometries = getGeometries(displayTargets);
         if (geometries.length === 0) {
             return {
                 get isActive() {
@@ -92,7 +132,7 @@ export class Highlights {
                 type: type,
                 geometry: geometry
             });
-            feature.setStyle(getOwnStyle(type, highlightOptions?.highlightStyle));
+            feature.setStyle(getOwnStyle(type, options?.highlightStyle));
             return feature;
         });
 
@@ -120,56 +160,21 @@ export class Highlights {
     }
 
     /**
-     * This method zooms to geometries or BaseFeatures
+     * Creates a highlight and zooms to the given targets.
+     *
+     * See also {@link add} and {@link MapModel.zoom}.
      */
-    zoom(displayTarget: DisplayTarget[], options: ZoomOptions | undefined) {
-        const geometries = this.#filterGeoobjects(displayTarget);
-
-        if (geometries.length === 0) {
-            return;
-        }
-
-        let extent = createEmpty();
-        for (const geometry of geometries) {
-            extent = extend(extent, geometry.getExtent());
-        }
-
-        const bufferParameter = options?.buffer;
-        if (typeof bufferParameter === "number") {
-            extent = calculateBufferedExtent(extent, bufferParameter);
-        }
-
-        const center = getCenter(extent);
-        const isPoint = getArea(extent) === 0;
-        const zoomScale = isPoint
-            ? (options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL)
-            : (options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL);
-        setCenter(this.olMap, center);
-
-        const {
-            top = 0,
-            right = 0,
-            bottom = 0,
-            left = 0
-        } = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
-        const padding = [top, right, bottom, left];
-        zoomTo(this.olMap, extent, zoomScale, padding);
-    }
-
-    /**
-     * This method displays geometries or BaseFeatures with optional styling in the map and executed a zoom
-     */
-    addHighlightAndZoom(
+    addAndZoom(
         displayTarget: DisplayTarget[],
-        highlightZoomStyle: HighlightZoomOptions | undefined
-    ) {
-        const result = this.addHighlight(displayTarget, highlightZoomStyle);
-        this.zoom(displayTarget, highlightZoomStyle);
+        options?: HighlightZoomOptions | undefined
+    ): Highlight {
+        const result = this.add(displayTarget, options);
+        this.map.zoom(displayTarget, options);
         return result;
     }
 
     /**
-     * This method destroys all active Highlights
+     * This method destroys all active Highlights.
      */
     clear() {
         for (const highlight of this.activeHighlights) {
@@ -182,42 +187,6 @@ export class Highlights {
      */
     [GET_HIGHLIGHT_LAYER]() {
         return this.olLayer;
-    }
-
-    /**
-     * This method removes all highlights before destroying the class
-     */
-    [DESTROY_HIGHLIGHTS]() {
-        this.clear();
-    }
-
-    /**
-     * Method of filtering out objects that are not geometry or have no property geometry.
-     */
-    #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
-        const geometries: Geometry[] = [];
-        geoObjects.forEach((item) => {
-            if ("getType" in item) geometries.push(item);
-            if ("geometry" in item && item.geometry) geometries.push(item.geometry);
-        });
-        return geometries;
-    }
-}
-
-function setCenter(olMap: OlMap, coordinates: Coordinate | undefined) {
-    coordinates && coordinates.length && olMap.getView().setCenter(coordinates);
-}
-
-function zoomTo(
-    olMap: OlMap,
-    extent: Extent | undefined,
-    zoomLevel: number | undefined,
-    padding: number[]
-) {
-    if (extent) {
-        olMap.getView().fit(extent, { maxZoom: zoomLevel, padding: padding });
-    } else {
-        zoomLevel && olMap.getView().setZoom(zoomLevel);
     }
 }
 

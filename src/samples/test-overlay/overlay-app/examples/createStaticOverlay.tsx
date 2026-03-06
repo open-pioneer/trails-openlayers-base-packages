@@ -9,7 +9,7 @@ import { LuCamera, LuMapPin, LuTable } from "react-icons/lu";
  * Creates an overlay with fixed content.
  */
 export function createStaticOverlay(map: MapModel) {
-    return map.overlays.addOverlay({
+    return map.overlays.add({
         position: fromLonLat([7.613056, 51.9637], map.olView.getProjection()),
         positioning: "bottom-center",
         stopEvent: true,

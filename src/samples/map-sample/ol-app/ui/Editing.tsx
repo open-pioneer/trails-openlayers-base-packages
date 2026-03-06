@@ -313,7 +313,7 @@ interface Tooltip extends Resource {
 }
 
 function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
-    const overlay = map.overlays.addOverlay({
+    const overlay = map.overlays.add({
         content: intl.formatMessage({ id: "editing.update.tooltip.select" }),
         offset: [15, 0],
         positioning: "center-left",

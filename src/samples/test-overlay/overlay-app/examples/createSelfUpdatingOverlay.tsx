@@ -9,7 +9,7 @@ import { LuCalendarClock } from "react-icons/lu";
  * Creates an overlay with fixed `content`, where the content updates itself on state changes.
  */
 export function createSelfUpdatingOverlay(map: MapModel) {
-    return map.overlays.addOverlay({
+    return map.overlays.add({
         positioning: "center-center",
         stopEvent: false,
         position: [410000, 5760000],

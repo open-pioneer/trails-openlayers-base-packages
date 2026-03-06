@@ -260,7 +260,7 @@ export class AppModel implements Service, AppState {
         const viewport: HTMLElement = map.olMap.getViewport();
 
         this.clearHighlight();
-        this._featureHighlight = map.highlights.addHighlightAndZoom(geometries, {
+        this._featureHighlight = map.highlights.addAndZoom(geometries, {
             viewPadding:
                 viewport && viewport.offsetWidth < 1000
                     ? { top: 150, right: 75, bottom: 50, left: 75 }

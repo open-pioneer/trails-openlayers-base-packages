@@ -8,7 +8,7 @@ import { LuCrosshair } from "react-icons/lu";
  * Creates an overlay that follows the mouse.
  */
 export function createMouseFollowingOverlay(map: MapModel) {
-    return map.overlays.addOverlay({
+    return map.overlays.add({
         positioning: "center-center",
         stopEvent: false,
         mode: "follow-pointer",
