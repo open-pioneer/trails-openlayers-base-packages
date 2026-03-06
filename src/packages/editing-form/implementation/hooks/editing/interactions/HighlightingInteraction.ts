@@ -5,7 +5,7 @@ import type { Highlight, HighlightOptions } from "@open-pioneer/map";
 import type { Feature } from "ol";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
-import { BaseInteraction } from "../base/BaseInteraction";
+import { BaseInteraction } from "./BaseInteraction";
 
 export class HighlightingInteraction extends BaseInteraction<HighlightingParameters, Data> {
     protected override startInteraction(parameters: HighlightingParameters): Data {

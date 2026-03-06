@@ -6,14 +6,9 @@ import { unByKey } from "ol/Observable";
 import type { Feature } from "ol";
 import type { Coordinate } from "ol/coordinate";
 
-import {
-    canBeReset,
-    canBeFinished,
-    getLastCoordinate,
-    getNumberOfVertices
-} from "../auxiliary/geometryState";
+import { canBeReset, canBeFinished, getLastCoordinate, getNumberOfVertices } from "./geometryState";
 
-import { UndoManager } from "../auxiliary/UndoManager";
+import { UndoManager } from "./UndoManager";
 import type { DrawingState } from "../../../../api/model/DrawingState";
 
 export class DrawingSession implements DrawingTracker, DrawingState {

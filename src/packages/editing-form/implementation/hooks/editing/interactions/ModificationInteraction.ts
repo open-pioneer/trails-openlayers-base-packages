@@ -6,7 +6,7 @@ import { Modify } from "ol/interaction";
 import type { Geometry } from "ol/geom";
 import type { Layer as OlLayer } from "ol/layer";
 
-import { BaseInteraction } from "../base/BaseInteraction";
+import { BaseInteraction } from "./BaseInteraction";
 import type { ModificationOptions } from "../../../../api/model/InteractionOptions";
 
 export class ModificationInteraction extends BaseInteraction<ModificationParameters, Data> {

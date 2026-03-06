@@ -9,7 +9,7 @@ import type { Feature } from "ol";
 import type { EventsKey } from "ol/events";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 
-import { BaseInteraction } from "../base/BaseInteraction";
+import { BaseInteraction } from "./BaseInteraction";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import type { DrawingOptions } from "../../../../api/model/InteractionOptions";
 

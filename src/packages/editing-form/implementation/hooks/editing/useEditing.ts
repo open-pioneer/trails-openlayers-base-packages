@@ -24,7 +24,7 @@ export function useEditing({
     useEffect(() => {
         switch (editingStep.id) {
             case "none":
-                controller.stopCurrentInteraction();
+                controller.stopCurrentInteractions();
                 break;
 
             case "create-draw":
@@ -61,6 +61,9 @@ export function useEditing({
                 });
                 break;
         }
+        return () => {
+            controller.stopCurrentInteractions();
+        };
     }, [controller, editingStep, setEditingStep]);
 
     return controller.drawingState;

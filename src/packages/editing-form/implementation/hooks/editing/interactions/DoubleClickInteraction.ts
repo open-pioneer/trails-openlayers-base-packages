@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { MapModel } from "@open-pioneer/map";
 import { DoubleClickZoom, type Interaction } from "ol/interaction";
-import { BaseInteraction } from "../base/BaseInteraction";
+import { BaseInteraction } from "./BaseInteraction";
 
 // A double-click is used to finish drawing a feature. Hence, disable the double-click zoom
 // interaction, which would otherwise be triggered along with it.

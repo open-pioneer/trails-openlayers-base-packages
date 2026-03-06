@@ -3,9 +3,6 @@
 import type { MapModel } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
 
-import { CompositeInteraction } from "../base/CompositeInteraction";
-import type { EditingInteraction } from "../base/EditingInteraction";
-
 import { DrawingInteraction, type DrawingParameters } from "../interactions/DrawingInteraction";
 
 import {
@@ -26,6 +23,7 @@ import { SnappingInteraction } from "../interactions/SnappingInteraction";
 import { DrawingSession } from "./DrawingSession";
 import type { DrawingState } from "../../../../api/model/DrawingState";
 import type { InteractionOptions } from "../../../../api/model/InteractionOptions";
+import { BaseInteraction } from "../interactions/BaseInteraction";
 
 export class EditingController {
     constructor(private readonly mapModel: MapModel) {}
@@ -35,7 +33,7 @@ export class EditingController {
         drawingOptions,
         completionHandler
     }: StartDrawingFeatureOptions): void {
-        this.replaceInteraction(
+        this.replaceInteractions(
             new DrawingInteraction(this.mapModel, {
                 geometryType,
                 tracker: this.drawingSession,
@@ -54,7 +52,7 @@ export class EditingController {
     }
 
     startSelectingFeature({ layers, completionHandler }: StartSelectingFeatureOptions): void {
-        this.replaceInteraction(
+        this.replaceInteractions(
             new SelectionInteraction(this.mapModel, {
                 layers,
                 selectionOptions: this.interactionOptions.selectionOptions,
@@ -64,7 +62,7 @@ export class EditingController {
     }
 
     startModifyingFeature({ feature, drawLayer }: StartModifyingFeatureOptions): void {
-        this.replaceInteraction(
+        this.replaceInteractions(
             new ModificationInteraction(this.mapModel, {
                 feature,
                 drawLayer,
@@ -89,19 +87,23 @@ export class EditingController {
         this.interactionOptions = options;
     }
 
-    stopCurrentInteraction(): void {
-        this.currentInteraction?.stop();
-        this.currentInteraction = undefined;
+    stopCurrentInteractions(): void {
+        this.currentInteractions.forEach((interaction) => {
+            interaction.stop();
+        });
+        this.currentInteractions = [];
     }
 
     get drawingState(): DrawingState {
         return this.drawingSession;
     }
 
-    private replaceInteraction(...interactions: EditingInteraction[]): void {
-        this.currentInteraction?.stop();
-        this.currentInteraction = new CompositeInteraction(interactions);
-        this.currentInteraction.start();
+    private replaceInteractions(...interactions: BaseInteraction<unknown, unknown>[]): void {
+        this.stopCurrentInteractions();
+        this.currentInteractions = interactions;
+        this.currentInteractions.forEach((interaction) => {
+            interaction.start();
+        });
     }
 
     private currentInteraction: EditingInteraction | undefined;

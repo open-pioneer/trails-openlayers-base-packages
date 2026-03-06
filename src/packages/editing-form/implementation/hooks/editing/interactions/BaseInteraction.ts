@@ -3,12 +3,12 @@
 import type { MapModel } from "@open-pioneer/map";
 import type { Map } from "ol";
 
-import type { EditingInteraction } from "./EditingInteraction";
+export abstract class BaseInteraction<Params, Data> {
+    private state: EditingWorkflowState<Data> = { type: "idle" };
 
-export abstract class BaseInteraction<P, D> implements EditingInteraction {
     constructor(
         private readonly mapModelInstance: MapModel,
-        private readonly parameters: P
+        private readonly parameters: Params
     ) {}
 
     start(): void {
@@ -33,10 +33,8 @@ export abstract class BaseInteraction<P, D> implements EditingInteraction {
         return this.mapModelInstance;
     }
 
-    protected abstract startInteraction(parameters: P): D;
-    protected abstract stopInteraction(interactionData: D): void;
-
-    private state: EditingWorkflowState<D> = { type: "idle" };
+    protected abstract startInteraction(parameters: Params): Data;
+    protected abstract stopInteraction(interactionData: Data): void;
 }
 
 type EditingWorkflowState<T> = IdleState | ActiveState<T>;
