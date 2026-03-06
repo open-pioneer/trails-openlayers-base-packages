@@ -9,7 +9,7 @@ import type { Coordinate } from "ol/coordinate";
 import { canBeReset, canBeFinished, getLastCoordinate, getNumberOfVertices } from "./geometryState";
 
 import { UndoManager } from "./UndoManager";
-import type { DrawingState } from "../../../../api/model/DrawingState";
+import type { DrawingState } from "../../../api/model/DrawingState";
 
 export class DrawingSession implements DrawingTracker, DrawingState {
     trackCapabilities(feature: Feature, actionHandler: DrawingActionHandler): void {

@@ -2,18 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useMapModelValue } from "@open-pioneer/map";
 import type { ReactElement } from "react";
-
-import { DefaultPropertyForm } from "./components/propertyeditor/DefaultPropertyForm";
-import { ActionSelector } from "./components/actionselector/ActionSelector";
-import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
-
-import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
-
-import { useEditingStep, useOnActionChange, useSnappingSources } from "./hooks/editor/editorHooks";
-import { useEditing } from "./hooks/editing/useEditing";
-import { useEditingCallbacks } from "./hooks/editor/useEditingCallbacks";
-
 import type { EditorProps } from "../api/editor/editor";
+import { ActionSelector } from "./components/actionselector/ActionSelector";
+import { DefaultPropertyForm } from "./components/propertyeditor/DefaultPropertyForm";
+import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
+import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
+import { useEditing } from "./geometry-editing/useEditing";
+import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/editorHooks";
+import { useEditingCallbacks } from "./editor/useEditingCallbacks";
 
 export function Editor({
     map,

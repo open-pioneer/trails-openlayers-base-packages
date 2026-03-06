@@ -11,7 +11,7 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 
 import { BaseInteraction } from "./BaseInteraction";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
-import type { DrawingOptions } from "../../../../api/model/InteractionOptions";
+import type { DrawingOptions } from "../../../api/model/InteractionOptions";
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
     protected override startInteraction(parameters: DrawingParameters): DrawingData {

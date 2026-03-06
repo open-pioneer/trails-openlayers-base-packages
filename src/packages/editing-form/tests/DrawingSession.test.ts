@@ -6,7 +6,7 @@ import { LineString, Polygon, Point } from "ol/geom";
 import {
     DrawingSession,
     type DrawingActionHandler
-} from "../implementation/hooks/editing/controller/DrawingSession";
+} from "../implementation/geometry-editing/controller/DrawingSession";
 import { nextTick } from "@conterra/reactivity-core";
 
 describe("DrawingSession", () => {

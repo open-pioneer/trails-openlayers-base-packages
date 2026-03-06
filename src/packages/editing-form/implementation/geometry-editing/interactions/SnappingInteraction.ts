@@ -4,7 +4,7 @@ import { Snap } from "ol/interaction";
 import type { Vector as VectorSource } from "ol/source";
 
 import { BaseInteraction } from "./BaseInteraction";
-import type { SnappingOptions } from "../../../../api/model/InteractionOptions";
+import type { SnappingOptions } from "../../../api/model/InteractionOptions";
 
 export class SnappingInteraction extends BaseInteraction<SnappingParameters, SnappingData> {
     protected override startInteraction(parameters: SnappingParameters): SnappingData {

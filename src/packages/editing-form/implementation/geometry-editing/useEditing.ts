@@ -4,8 +4,8 @@ import { useMapModelValue, type MapModel } from "@open-pioneer/map";
 import { useEffect, useMemo } from "react";
 
 import { EditingController } from "./controller/EditingController";
-import type { DrawingState } from "../../../api/model/DrawingState";
-import type { EditingOptions } from "../../../api/editor/editing";
+import type { DrawingState } from "../../api/model/DrawingState";
+import type { EditingOptions } from "../../api/editor/editing";
 
 export function useEditing({
     map,

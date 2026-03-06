@@ -21,8 +21,8 @@ import { KeyboardInteraction } from "../interactions/KeyboardInteraction";
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
 
 import { DrawingSession } from "./DrawingSession";
-import type { DrawingState } from "../../../../api/model/DrawingState";
-import type { InteractionOptions } from "../../../../api/model/InteractionOptions";
+import type { DrawingState } from "../../../api/model/DrawingState";
+import type { InteractionOptions } from "../../../api/model/InteractionOptions";
 import { BaseInteraction } from "../interactions/BaseInteraction";
 
 export class EditingController {
@@ -106,7 +106,7 @@ export class EditingController {
         });
     }
 
-    private currentInteraction: EditingInteraction | undefined;
+    private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
     private snappingSources: VectorSource[] = [];
     private interactionOptions: InteractionOptions = {};
 

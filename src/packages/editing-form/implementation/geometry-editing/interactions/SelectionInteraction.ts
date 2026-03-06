@@ -10,7 +10,7 @@ import type { EventsKey } from "ol/events";
 import { Layer as OlLayer } from "ol/layer";
 
 import { BaseInteraction } from "./BaseInteraction";
-import type { SelectionOptions } from "../../../../api/model/InteractionOptions";
+import type { SelectionOptions } from "../../../api/model/InteractionOptions";
 
 export class SelectionInteraction extends BaseInteraction<SelectionParameters, SelectionData> {
     protected override startInteraction(parameters: SelectionParameters): SelectionData {

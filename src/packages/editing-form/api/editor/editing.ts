@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { MapModelProps } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
-import { useEditing as useEditingImpl } from "../../implementation/hooks/editing/useEditing";
+import { useEditing as useEditingImpl } from "../../implementation/geometry-editing/useEditing";
 import type { DrawingState } from "../model/DrawingState";
 import type { Editor } from "./editor";
 import type { EditingStep } from "../model/EditingStep";

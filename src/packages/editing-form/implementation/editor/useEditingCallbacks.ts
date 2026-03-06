@@ -7,9 +7,9 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-import type { EditingHandler } from "../../../api/model/EditingHandler";
-import type { EditingStep } from "../../../api/model/EditingStep";
-import type { EditingCallbacks } from "../../components/propertyeditor/PropertyEditor";
+import type { EditingHandler } from "../../api/model/EditingHandler";
+import type { EditingStep } from "../../api/model/EditingStep";
+import type { EditingCallbacks } from "../components/propertyeditor/PropertyEditor";
 
 const LOG = createLogger(sourceId);
 
