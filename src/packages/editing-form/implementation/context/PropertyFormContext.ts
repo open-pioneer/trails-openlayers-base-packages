@@ -33,7 +33,7 @@ export class PropertyFormContextClass implements PropertyFormContext {
     }
 
     get mode(): Mode {
-        return this.editingStep.id === "create-modify" ? "create" : "update";
+        return this.editingStep.id === "creation" ? "create" : "update";
     }
 
     get editingStep(): ModificationStep {
@@ -53,11 +53,11 @@ export class PropertyFormContextClass implements PropertyFormContext {
     }
 
     get template(): FeatureTemplate | undefined {
-        return this.editingStep.id === "create-modify" ? this.editingStep.template : undefined;
+        return this.editingStep.id === "creation" ? this.editingStep.template : undefined;
     }
 
     get layer(): Layer | undefined {
-        return this.editingStep.id === "update-modify" ? this.editingStep.layer : undefined;
+        return this.editingStep.id === "update" ? this.editingStep.layer : undefined;
     }
 
     private static getPropertyEntries(feature: Feature): [string, unknown][] {

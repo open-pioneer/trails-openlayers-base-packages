@@ -165,7 +165,7 @@ describe("Editor interaction", () => {
         await waitFor(() => {
             expect(onEditingStepChange).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    id: "create-draw",
+                    id: "drawing",
                     template: pointTemplate
                 })
             );
@@ -189,7 +189,7 @@ describe("Editor interaction", () => {
         );
 
         // Initial step should be "none"
-        expect(onEditingStepChange).toHaveBeenCalledWith({ id: "none" });
+        expect(onEditingStepChange).toHaveBeenCalledWith({ id: "initial" });
 
         // Find and click the select button
         const selectButton = await screen.findByRole("button", {
@@ -200,7 +200,7 @@ describe("Editor interaction", () => {
         // Should change to update-select step
         await waitFor(() => {
             expect(onEditingStepChange).toHaveBeenCalledWith(
-                expect.objectContaining({ id: "update-select" })
+                expect.objectContaining({ id: "selection" })
             );
         });
     });
@@ -231,7 +231,7 @@ describe("Editor interaction", () => {
         await waitFor(() => {
             // Should change to update-select step
             expect(onEditingStepChange).toHaveBeenCalledWith(
-                expect.objectContaining({ id: "update-select" })
+                expect.objectContaining({ id: "selection" })
             );
         });
 
@@ -242,7 +242,7 @@ describe("Editor interaction", () => {
             // Should go back to none step
             const calls = onEditingStepChange.mock.calls;
             const lastCall = calls[calls.length - 1]?.[0];
-            expect(lastCall).toEqual({ id: "none" });
+            expect(lastCall).toEqual({ id: "initial" });
         });
     });
 });

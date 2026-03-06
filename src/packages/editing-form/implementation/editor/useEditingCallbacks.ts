@@ -8,10 +8,12 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
 import type { EditingHandler } from "../../api/model/EditingHandler";
-import type { EditingStep } from "../../api/model/EditingStep";
+import type { EditingStep, InitialStep } from "../../api/model/EditingStep";
 import { useEvent } from "@open-pioneer/react-utils";
 
 const LOG = createLogger(sourceId);
+
+const INITIAL: InitialStep = { id: "initial" };
 
 export interface EditingCallbacks {
     readonly onSave: () => Promise<void>;
@@ -35,22 +37,22 @@ export function useEditingCallbacks(
     );
 
     const onSave = useEvent(async () => {
-        if (editingStep.id === "create-modify") {
+        if (editingStep.id === "creation") {
             const { feature, template } = editingStep;
             try {
-                await editingHandler.addFeature(feature, template, projection);
+                await editingHandler.addFeature({ feature, template, projection });
                 showNotifier("create", true);
-                setEditingStep({ id: "none" });
+                setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error creating feature", feature, error);
                 showNotifier("create", false, error);
             }
-        } else if (editingStep.id === "update-modify") {
+        } else if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
             try {
-                await editingHandler.updateFeature(feature, layer, projection);
+                await editingHandler.updateFeature({ feature, layer, projection });
                 showNotifier("update", true);
-                setEditingStep({ id: "none" });
+                setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error updating feature", feature, error);
                 showNotifier("update", false, error);
@@ -58,12 +60,12 @@ export function useEditingCallbacks(
         }
     });
     const onDelete = useEvent(async () => {
-        if (editingStep.id === "update-modify") {
+        if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
             try {
-                await editingHandler.deleteFeature(feature, layer, projection);
+                await editingHandler.deleteFeature({ feature, layer, projection });
                 showNotifier("delete", true);
-                setEditingStep({ id: "none" });
+                setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error deleting feature", feature, error);
                 showNotifier("delete", false, error);
@@ -71,7 +73,7 @@ export function useEditingCallbacks(
         }
     });
     const onCancel = useEvent(async () => {
-        setEditingStep({ id: "none" });
+        setEditingStep(INITIAL);
     });
 
     return useMemo(

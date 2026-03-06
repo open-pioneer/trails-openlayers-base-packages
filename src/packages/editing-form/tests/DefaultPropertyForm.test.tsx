@@ -814,7 +814,7 @@ function createTestEditingStep(): CreationStep {
     });
 
     return {
-        id: "create-modify",
+        id: "creation",
         feature,
         template: allInputTypesTemplate,
         drawOlLayer: {} as any // Mock OL layer

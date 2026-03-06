@@ -40,22 +40,22 @@ export function DefaultPropertyForm({
 }
 
 function useFormTemplate(provider: FormTemplateProvider): FormTemplate | undefined {
-    const { mode, feature, template, layer } = usePropertyFormContext();
+    const { mode, feature, template: explicitTemplate, layer } = usePropertyFormContext();
 
     return useMemo(() => {
-        if (template != null) {
-            return template;
+        if (explicitTemplate != null) {
+            return explicitTemplate;
         } else if (mode === "update") {
-            return provider(feature, layer);
+            return provider({ feature, layer });
         } else {
             return undefined;
         }
-    }, [feature, mode, template, layer, provider]);
+    }, [feature, mode, explicitTemplate, layer, provider]);
 }
 
 function useDefaultFormTemplateProvider(templates: FeatureTemplate[]): FormTemplateProvider {
     return useCallback(
-        (_, layer) => {
+        ({ layer }) => {
             if (layer?.id != null) {
                 return templates.find(({ layerId }) => layer.id === layerId);
             } else {

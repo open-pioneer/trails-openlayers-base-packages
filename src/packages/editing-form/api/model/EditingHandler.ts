@@ -5,6 +5,39 @@ import type { Feature } from "ol";
 import type { Projection } from "ol/proj";
 import type { FeatureTemplate } from "./FeatureTemplate";
 
+export interface AddFeatureOptions {
+    /** The OpenLayers feature that was created. */
+    feature: Feature;
+
+    /** The feature template used to create the feature. */
+    template: FeatureTemplate;
+
+    /** The projection of the feature's geometry, or `undefined` if not available. */
+    projection: Projection | undefined;
+}
+
+export interface UpdateFeatureOptions {
+    /** The OpenLayers feature that was modified. */
+    feature: Feature;
+
+    /** The layer containing the feature, or `undefined` if not available. */
+    layer: Layer | undefined;
+
+    /** The projection of the feature's geometry, or `undefined` if not available. */
+    projection: Projection | undefined;
+}
+
+export interface DeleteFeatureOptions {
+    /** The OpenLayers feature to be deleted. */
+    feature: Feature;
+
+    /** The layer containing the feature, or `undefined` if not available. */
+    layer: Layer | undefined;
+
+    /** The projection of the feature's geometry, or `undefined` if not available. */
+    projection: Projection | undefined;
+}
+
 /**
  * Interface defining the handlers for feature editing operations.
  *
@@ -18,13 +51,13 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * @example
  * ```ts
  * const editingHandler: EditingHandler = {
- *     addFeature: async (feature, template, projection) => {
+ *     addFeature: async ({feature, template, projection}) => {
  *         // Persist the new feature to your backend
  *     },
- *     updateFeature: async (feature, layer, projection) => {
+ *     updateFeature: async ({feature, layer, projection}) => {
  *         // Update the existing feature in your backend
  *     },
- *     deleteFeature: async (feature, layer, projection) => {
+ *     deleteFeature: async ({feature, layer, projection}) => {
  *         // Delete the feature from your backend
  *     }
  * };
@@ -38,14 +71,10 @@ export interface EditingHandler {
      * persist the feature to a backend service. If the handler throws an error, an error notification
      * is displayed to the user; otherwise, a success notification is shown.
      *
-     * @param feature - The OpenLayers feature that was created.
-     * @param template - The feature template used to create the feature, containing metadata such as
-     * geometry type, layer ID, and form configuration.
-     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
      * @returns A promise that resolves when the feature has been successfully added, or rejects with
      * an error if the operation fails.
      */
-    readonly addFeature: AddFeatureHandler;
+    addFeature(options?: AddFeatureOptions): Promise<void>;
 
     /**
      * Handler function for updating an existing feature.
@@ -54,13 +83,10 @@ export interface EditingHandler {
      * should persist the changes to a backend service. If the handler throws an error, an error
      * notification is displayed to the user; otherwise, a success notification is shown.
      *
-     * @param feature - The OpenLayers feature that was modified.
-     * @param layer - The layer containing the feature, or `undefined` if not available.
-     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
      * @returns A promise that resolves when the feature has been successfully updated, or rejects
      * with an error if the operation fails.
      */
-    readonly updateFeature: UpdateFeatureHandler;
+    updateFeature(options?: UpdateFeatureOptions): Promise<void>;
 
     /**
      * Handler function for deleting a feature.
@@ -69,32 +95,8 @@ export interface EditingHandler {
      * the feature from a backend service. If the handler throws an error, an error notification is
      * displayed to the user; otherwise, a success notification is shown.
      *
-     * @param feature - The OpenLayers feature to be deleted.
-     * @param layer - The layer containing the feature, or `undefined` if not available.
-     * @param projection - The projection of the feature's geometry, or `undefined` if not available.
      * @returns A promise that resolves when the feature has been successfully deleted, or rejects
      * with an error if the operation fails.
      */
-    readonly deleteFeature: DeleteFeatureHandler;
+    deleteFeature(options?: DeleteFeatureOptions): Promise<void>;
 }
-
-/** Handler function type for adding a new feature. */
-export type AddFeatureHandler = (
-    feature: Feature,
-    template: FeatureTemplate,
-    projection: Projection | undefined
-) => Promise<void>;
-
-/** Handler function type for updating an existing feature. */
-export type UpdateFeatureHandler = (
-    feature: Feature,
-    layer: Layer | undefined,
-    projection: Projection | undefined
-) => Promise<void>;
-
-/** Handler function type for deleting a feature. */
-export type DeleteFeatureHandler = (
-    feature: Feature,
-    layer: Layer | undefined,
-    projection: Projection | undefined
-) => Promise<void>;

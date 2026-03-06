@@ -162,6 +162,14 @@ export type FormTemplate = DeclarativeFormTemplate | DynamicFormTemplate;
  */
 export type FeatureTemplate = BaseFeatureTemplate & FormTemplate;
 
+export interface FormTemplateContext {
+    /** The OpenLayers feature being edited. */
+    feature: Feature;
+
+    /** The layer containing the feature, or `undefined` if not available. */
+    layer: Layer | undefined;
+}
+
 /**
  * Function type for providing a form template for a given feature and layer.
  *
@@ -171,13 +179,8 @@ export type FeatureTemplate = BaseFeatureTemplate & FormTemplate;
  *
  * Typically used during the update workflow to dynamically determine the form configuration based
  * on the feature's layer or other characteristics.
- *
- * @param feature - The OpenLayers feature being edited.
- * @param layer - The layer containing the feature, or `undefined` if not available.
+
  * @returns The form template to use for editing the feature's properties, or `undefined` if no
  * template is available.
  */
-export type FormTemplateProvider = (
-    feature: Feature,
-    layer: Layer | undefined
-) => FormTemplate | undefined;
+export type FormTemplateProvider = (context: FormTemplateContext) => FormTemplate | undefined;

@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import { EditingController } from "./controller/EditingController";
 import type { DrawingState } from "../../api/model/DrawingState";
 import type { EditingOptions } from "../../api/editor/editing";
+import { CreationStep, UpdateStep } from "../../api/model/EditingStep";
 
 export function useGeometryEditing({
     map,
@@ -23,39 +24,47 @@ export function useGeometryEditing({
 
     useEffect(() => {
         switch (editingStep.id) {
-            case "none":
-                controller.stopCurrentInteractions();
+            case "initial":
                 break;
 
-            case "create-draw":
+            case "drawing":
                 controller.startDrawingFeature({
                     geometryType: editingStep.template.geometryType,
                     drawingOptions: editingStep.template.drawingOptions ?? {},
                     completionHandler(feature, drawOlLayer) {
                         const template = editingStep.template;
                         feature.setProperties(template.prototype ?? {});
-                        setEditingStep({ id: "create-modify", feature, template, drawOlLayer });
+                        setEditingStep({
+                            id: "creation",
+                            feature,
+                            template,
+                            drawOlLayer
+                        } satisfies CreationStep);
                     }
                 });
                 break;
 
-            case "update-select":
+            case "selection":
                 controller.startSelectingFeature({
                     layers: editingStep.layers,
-                    completionHandler(feature, olLayer) {
-                        setEditingStep({ id: "update-modify", feature, layer: olLayer });
+                    completionHandler(feature, layer) {
+                        setEditingStep({
+                            id: "update",
+                            feature,
+                            layer
+                        } satisfies UpdateStep);
                     }
                 });
                 break;
 
-            case "create-modify":
+            case "creation":
                 controller.startModifyingFeature({
                     feature: editingStep.feature,
                     drawLayer: editingStep.drawOlLayer
                 });
                 break;
 
-            case "update-modify":
+            case "update":
                 controller.startModifyingFeature({
                     feature: editingStep.feature
                 });

@@ -12,7 +12,7 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * template to begin creating a new feature or switch to selection mode to edit existing features.
  */
 export interface InitialStep {
-    readonly id: "none";
+    readonly id: "initial";
 }
 
 /**
@@ -23,7 +23,7 @@ export interface InitialStep {
  * line, polygon, or circle) according to the template's configuration.
  */
 export interface DrawingStep {
-    readonly id: "create-draw";
+    readonly id: "drawing";
 
     /** The feature template defining the geometry type and properties for the new feature. */
     readonly template: FeatureTemplate;
@@ -36,7 +36,7 @@ export interface DrawingStep {
  * The user can click on features from the specified layers to begin editing them.
  */
 export interface SelectionStep {
-    readonly id: "update-select";
+    readonly id: "selection";
 
     /** The layers from which features can be selected for editing. */
     readonly layers: Layer[];
@@ -50,7 +50,7 @@ export interface SelectionStep {
  * persisted to the backend.
  */
 export interface CreationStep {
-    readonly id: "create-modify";
+    readonly id: "creation";
 
     /** The feature being created and modified. */
     readonly feature: Feature;
@@ -69,7 +69,7 @@ export interface CreationStep {
  * map. The user can change the feature's geometry or properties before saving the updates.
  */
 export interface UpdateStep {
-    readonly id: "update-modify";
+    readonly id: "update";
 
     /** The existing feature being modified. */
     readonly feature: Feature;

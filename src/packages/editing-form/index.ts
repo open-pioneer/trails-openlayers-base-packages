@@ -14,10 +14,10 @@ export { useGeometryEditing, type EditingOptions } from "./api/editor/editing";
 export type { DrawingActions, DrawingCapabilities, DrawingState } from "./api/model/DrawingState";
 
 export type {
-    AddFeatureHandler,
-    DeleteFeatureHandler,
     EditingHandler,
-    UpdateFeatureHandler
+    AddFeatureOptions,
+    DeleteFeatureOptions,
+    UpdateFeatureOptions
 } from "./api/model/EditingHandler";
 
 export type {
@@ -36,6 +36,7 @@ export type {
     DynamicFormTemplate,
     FeatureTemplate,
     FormTemplate,
+    FormTemplateContext,
     FormTemplateProvider
 } from "./api/model/FeatureTemplate";
 

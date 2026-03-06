@@ -106,7 +106,7 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
      * Duration in milliseconds to display success notifications.
      *
      * Controls how long success messages (e.g., "Feature saved") are shown to the user.
-     * By default, notifiers will never disappear. Use `0` to hide success notifiers entirely.
+     * By default, notifiers will never disappear.
      */
     readonly successNotifierDisplayDuration?: number;
 
@@ -114,7 +114,7 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
      * Duration in milliseconds to display failure notifications.
      *
      * Controls how long error messages are shown to the user. By default, notifiers will
-     * never disappear. Use `0` to hide failure notifiers entirely.
+     * never disappear.
      */
     readonly failureNotifierDisplayDuration?: number;
 

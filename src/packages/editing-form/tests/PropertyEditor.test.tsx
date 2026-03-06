@@ -59,7 +59,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([0, 0]));
 
             const step: ModificationStep = {
-                id: "create-modify",
+                id: "creation",
                 drawOlLayer: {} as any,
                 template,
                 feature
@@ -102,7 +102,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([0, 0]));
 
             const step: ModificationStep = {
-                id: "create-modify",
+                id: "creation",
                 drawOlLayer: {} as any,
                 template,
                 feature
@@ -139,7 +139,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([0, 0]));
 
             const step: ModificationStep = {
-                id: "create-modify",
+                id: "creation",
                 drawOlLayer: {} as any,
                 template,
                 feature
@@ -193,7 +193,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([0, 0]));
 
             const step: ModificationStep = {
-                id: "create-modify",
+                id: "creation",
                 drawOlLayer: {} as any,
                 template,
                 feature
@@ -237,7 +237,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -278,7 +278,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -323,7 +323,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -372,7 +372,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -421,7 +421,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -473,7 +473,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([10, 20]));
 
             const step: ModificationStep = {
-                id: "update-modify",
+                id: "update",
                 layer,
                 feature
             };
@@ -530,7 +530,7 @@ describe("PropertyEditor Integration", () => {
             feature.setGeometry(new Point([0, 0]));
 
             const step: ModificationStep = {
-                id: "create-modify",
+                id: "creation",
                 drawOlLayer: {} as any,
                 template,
                 feature

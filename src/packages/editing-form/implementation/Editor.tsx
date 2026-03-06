@@ -49,9 +49,9 @@ export function Editor({
     );
 
     switch (editingStep.id) {
-        case "none":
-        case "create-draw":
-        case "update-select":
+        case "initial":
+        case "drawing":
+        case "selection":
             return (
                 <ActionSelector
                     title={title}
@@ -62,8 +62,8 @@ export function Editor({
                 />
             );
 
-        case "create-modify":
-        case "update-modify":
+        case "creation":
+        case "update":
             return (
                 <PropertyFormContextProvider editingStep={editingStep} callbacks={editingCallbacks}>
                     <PropertyEditor>

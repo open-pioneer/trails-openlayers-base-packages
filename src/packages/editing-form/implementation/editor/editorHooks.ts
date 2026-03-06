@@ -8,13 +8,18 @@ import type { Vector as VectorSource } from "ol/source";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { Action } from "../components/action-selector/ActionSelector";
-import type { EditingStep } from "../../api/model/EditingStep";
+import type {
+    DrawingStep,
+    EditingStep,
+    InitialStep,
+    SelectionStep
+} from "../../api/model/EditingStep";
 import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
 
 export function useEditingStep(
     onEditingStepChange: ((newStep: EditingStep) => void) | undefined
 ): StatePair<EditingStep> {
-    const [editingStep, setEditingStep] = useState<EditingStep>({ id: "none" });
+    const [editingStep, setEditingStep] = useState<EditingStep>({ id: "initial" });
 
     useEffect(() => {
         onEditingStepChange?.(editingStep);
@@ -34,11 +39,14 @@ export function useOnActionChange(
     return useCallback(
         (action) => {
             if (action == null) {
-                setEditingStep({ id: "none" });
+                setEditingStep({ id: "initial" } satisfies InitialStep);
             } else if (action.mode === "update") {
-                setEditingStep({ id: "update-select", layers: selectableLayers ?? defaultLayers });
+                setEditingStep({
+                    id: "selection",
+                    layers: selectableLayers ?? defaultLayers
+                } satisfies SelectionStep);
             } else {
-                setEditingStep({ id: "create-draw", template: action.template });
+                setEditingStep({ id: "drawing", template: action.template } satisfies DrawingStep);
             }
         },
         [defaultLayers, selectableLayers, setEditingStep]
