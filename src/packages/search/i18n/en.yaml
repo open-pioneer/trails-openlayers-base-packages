@@ -5,8 +5,4 @@ messages:
   searchPlaceholder: "Search..."
   ariaLabel:
     search: "Search bar"
-    instructions: "Use Up and Down to choose options, press Enter to select the currently focused option, press Escape to exit the menu, press Tab to select the option and exit the menu."
-    searchFocus: "focused"
-    searchSelect: "selected"
-    searchClear: "cleared"
     clearButton: "Empty the search"

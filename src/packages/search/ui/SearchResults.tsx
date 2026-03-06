@@ -17,6 +17,8 @@ export const SearchResults = memo(function SearchResults(props: SearchResultsPro
         <Combobox.Content
             className="search-component-menu"
             minW="sm"
+            maxH="300px"
+            overflowY="auto"
             overflowX="hidden"
             visibility={input.length ? "visible" : "hidden"}
         >

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 import { FormatNumberOptions } from "@formatjs/intl";
 import {
     BaseFeature,
@@ -9,7 +9,11 @@ import {
     useMapModelValue,
     ZoomOptions
 } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
@@ -249,8 +253,12 @@ export const ResultList: FC<ResultListProps> = (props) => {
         }
     }, [map, data, zoomOptions, enableZoom, enableHighlight, highlightOptions]);
 
+    const mergedBoxProps = useMemo(
+        () => mergeChakraProps<BoxProps>({ height: "100%", overflowY: "auto" }, containerProps),
+        [containerProps]
+    );
     return (
-        <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
+        <Box ref={containerRef} {...mergedBoxProps}>
             <DataTable
                 columns={dataTableColumns}
                 data={data}

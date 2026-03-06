@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ms="http://mapserver.gis.umn.edu/mapserver" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd  http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd  http://mapserver.gis.umn.edu/mapserver https://www.wms.nrw.de/geobasis/wms_nw_dgk5?service=WMS&amp;version=1.3.0&amp;request=GetSchemaExtension">
+<Service>
+  <Name>WMS</Name>
+  <Title>WMS NW DGK5</Title>
+  <Abstract>Die Deutsche Grundkarte 1:5000 (DGK5) war bis Februar 2016 das topographische Basiskartenwerk in Nordrhein-Westfalen. Sie wird durch die Amtliche Basiskarte 1:5000 (ABK) abgelöst.</Abstract>
+  <KeywordList>
+      <Keyword>NW</Keyword>
+      <Keyword>NRW</Keyword>
+      <Keyword>Nordrhein-Westfalen</Keyword>
+      <Keyword>Bezirksregierung Köln</Keyword>
+      <Keyword>Abteilung 7</Keyword>
+      <Keyword>Geobasis NRW</Keyword>
+      <Keyword>Geobasisdaten</Keyword>
+      <Keyword>Landesvermessung</Keyword>
+      <Keyword>Deutsche Grundkarte</Keyword>
+      <Keyword>Gewässer</Keyword>
+      <Keyword>Flurstücke</Keyword>
+      <Keyword>Gebäude</Keyword>
+      <Keyword>Straßenbezeichnung</Keyword>
+      <Keyword>Topographie</Keyword>
+      <Keyword>Nutzungsarten</Keyword>
+      <Keyword>Gemeindegrenzen</Keyword>
+      <Keyword>Höhenlinie</Keyword>
+      <Keyword>Grundriss</Keyword>
+      <Keyword>AdV</Keyword>
+      <Keyword>Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder</Keyword>
+      <Keyword>WMS</Keyword>
+      <Keyword>WMS_NW_DGK5</Keyword>
+  </KeywordList>
+  <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/>
+  <ContactInformation>
+    <ContactPersonPrimary>
+      <ContactPerson/>
+      <ContactOrganization>Geobasis NRW</ContactOrganization>
+    </ContactPersonPrimary>
+      <ContactPosition/>
+    <ContactAddress>
+        <AddressType>postalisch</AddressType>
+        <Address/>
+        <City>Köln</City>
+        <StateOrProvince>Nordrhein-Westfalen</StateOrProvince>
+        <PostCode>50606</PostCode>
+        <Country>Deutschland</Country>
+    </ContactAddress>
+      <ContactVoiceTelephone>+49(0)221-147-4994</ContactVoiceTelephone>
+      <ContactFacsimileTelephone>+49(0)221-147-4874</ContactFacsimileTelephone>
+  <ContactElectronicMailAddress>geobasis@bezreg-koeln.nrw.de</ContactElectronicMailAddress>
+  </ContactInformation>
+  <Fees>Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: Es gelten die durch den IT-Planungsrat im Datenportal für Deutschland (GovData) veröffentlichten einheitlichen Lizenzbedingungen „Datenlizenz Deutschland – Zero“ (https://www.govdata.de/dl-de/zero-2-0). Jede Nutzung ist ohne Einschränkungen oder Bedingungen zulässig. Eine Haftung für die zur Verfügung gestellten Daten und Dienste wird ausgeschlossen. Dies gilt insbesondere für deren Aktualität, Richtigkeit, Verfügbarkeit, Qualität und Vollständigkeit sowie die Kompatibilität und Interoperabilität mit den Systemen des Nutzers. Vom Haftungsausschluss ausgenommen sind gesetzliche Schadensersatzansprüche für eine Verletzung des Lebens, des Körpers und der Gesundheit sowie die gesetzliche Haftung für sonstige Schäden, soweit diese auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung beruhen.</Fees>
+  <AccessConstraints>NONE</AccessConstraints>
+  <MaxWidth>5000</MaxWidth>
+  <MaxHeight>5000</MaxHeight>
+</Service>
+
+<Capability>
+  <Request>
+    <GetCapabilities>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetCapabilities>
+    <GetMap>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/tiff</Format>
+      <Format>image/png; mode=8bit</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetMap>
+    <GetFeatureInfo>
+      <Format>text/html</Format>
+      <Format>application/vnd.ogc.gml</Format>
+      <Format>text/plain</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </GetFeatureInfo>
+    <sld:DescribeLayer>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </sld:DescribeLayer>
+    <sld:GetLegendGraphic>
+      <Format>image/png</Format>
+      <Format>image/jpeg</Format>
+      <Format>image/png; mode=8bit</Format>
+      <Format>image/vnd.jpeg-png</Format>
+      <Format>image/vnd.jpeg-png8</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </sld:GetLegendGraphic>
+    <ms:GetStyles>
+      <Format>text/xml</Format>
+      <DCPType>
+        <HTTP>
+          <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Get>
+          <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.wms.nrw.de/geobasis/wms_nw_dgk5?"/></Post>
+        </HTTP>
+      </DCPType>
+    </ms:GetStyles>
+  </Request>
+  <Exception>
+    <Format>XML</Format>
+    <Format>INIMAGE</Format>
+    <Format>BLANK</Format>
+  </Exception>
+  <sld:UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0" InlineFeature="0" RemoteWCS="0"/>
+  <Layer queryable="1">
+    <Name>WMS_NW_DGK5</Name>
+    <Title>WMS NW DGK5</Title>
+    <Abstract>Die Deutsche Grundkarte 1:5000 (DGK5) war bis Februar 2016 das topographische Basiskartenwerk in Nordrhein-Westfalen. Sie wird durch die Amtliche Basiskarte 1:5000 (ABK) abgelöst.</Abstract>
+    <KeywordList>
+        <Keyword>NW</Keyword>
+        <Keyword>NRW</Keyword>
+        <Keyword>Nordrhein-Westfalen</Keyword>
+        <Keyword>Bezirksregierung Köln</Keyword>
+        <Keyword>Abteilung 7</Keyword>
+        <Keyword>Geobasis NRW</Keyword>
+        <Keyword>Geobasisdaten</Keyword>
+        <Keyword>Landesvermessung</Keyword>
+        <Keyword>Deutsche Grundkarte</Keyword>
+        <Keyword>Gewässer</Keyword>
+        <Keyword>Flurstücke</Keyword>
+        <Keyword>Gebäude</Keyword>
+        <Keyword>Straßenbezeichnung</Keyword>
+        <Keyword>Topographie</Keyword>
+        <Keyword>Nutzungsarten</Keyword>
+        <Keyword>Gemeindegrenzen</Keyword>
+        <Keyword>Höhenlinie</Keyword>
+        <Keyword>Grundriss</Keyword>
+        <Keyword>AdV</Keyword>
+        <Keyword>Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder</Keyword>
+        <Keyword>WMS</Keyword>
+        <Keyword>WMS_NW_DGK5</Keyword>
+    </KeywordList>
+    <CRS>EPSG:3034</CRS>
+    <CRS>EPSG:3035</CRS>
+    <CRS>EPSG:3043</CRS>
+    <CRS>EPSG:3044</CRS>
+    <CRS>EPSG:3045</CRS>
+    <CRS>EPSG:3857</CRS>
+    <CRS>EPSG:4258</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:4647</CRS>
+    <CRS>EPSG:5649</CRS>
+    <CRS>EPSG:5650</CRS>
+    <CRS>EPSG:5651</CRS>
+    <CRS>EPSG:5652</CRS>
+    <CRS>EPSG:5653</CRS>
+    <CRS>EPSG:28992</CRS>
+    <CRS>EPSG:25831</CRS>
+    <CRS>EPSG:25832</CRS>
+    <CRS>EPSG:25833</CRS>
+    <CRS>EPSG:31466</CRS>
+    <CRS>EPSG:31467</CRS>
+    <EX_GeographicBoundingBox>
+        <westBoundLongitude>5.556226</westBoundLongitude>
+        <eastBoundLongitude>10.129690</eastBoundLongitude>
+        <southBoundLatitude>50.265696</southBoundLatitude>
+        <northBoundLatitude>52.533281</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox CRS="EPSG:3034" minx="2.61812e+06" miny="3.7054e+06" maxx="2.86069e+06" maxy="4.0085e+06"/>
+    <BoundingBox CRS="EPSG:3035" minx="3.02166e+06" miny="4.01593e+06" maxx="3.27298e+06" maxy="4.3298e+06"/>
+    <BoundingBox CRS="EPSG:3043" minx="5.57171e+06" miny="673576" maxx="5.84368e+06" maxy="1.00366e+06"/>
+    <BoundingBox CRS="EPSG:3044" minx="5.57332e+06" miny="266173" maxx="5.82035e+06" maxy="576637"/>
+    <BoundingBox CRS="EPSG:3045" minx="5.58437e+06" miny="-160941" maxx="5.85682e+06" maxy="169701"/>
+    <BoundingBox CRS="EPSG:3857" minx="618516" miny="6.49242e+06" maxx="1.12763e+06" maxy="6.89713e+06"/>
+    <BoundingBox CRS="EPSG:4258" minx="50.265696" miny="5.556226" maxx="52.533281" maxy="10.129690"/>
+    <BoundingBox CRS="EPSG:4326" minx="50.265696" miny="5.556226" maxx="52.533281" maxy="10.129690"/>
+    <BoundingBox CRS="EPSG:4647" minx="3.22662e+07" miny="5.57332e+06" maxx="3.25766e+07" maxy="5.82035e+06"/>
+    <BoundingBox CRS="EPSG:5649" minx="3.16736e+07" miny="5.57171e+06" maxx="3.20037e+07" maxy="5.84368e+06"/>
+    <BoundingBox CRS="EPSG:5650" minx="3.28391e+07" miny="5.58437e+06" maxx="3.31697e+07" maxy="5.85682e+06"/>
+    <BoundingBox CRS="EPSG:5651" minx="5.57171e+06" miny="3.16736e+07" maxx="5.84368e+06" maxy="3.20037e+07"/>
+    <BoundingBox CRS="EPSG:5652" minx="5.57332e+06" miny="3.22662e+07" maxx="5.82035e+06" maxy="3.25766e+07"/>
+    <BoundingBox CRS="EPSG:5653" minx="5.58437e+06" miny="3.28391e+07" maxx="5.85682e+06" maxy="3.31697e+07"/>
+    <BoundingBox CRS="EPSG:28992" minx="166482" miny="252759" maxx="488868" maxy="514898"/>
+    <BoundingBox CRS="EPSG:25831" minx="673576" miny="5.57171e+06" maxx="1.00366e+06" maxy="5.84368e+06"/>
+    <BoundingBox CRS="EPSG:25832" minx="266173" miny="5.57332e+06" maxx="576637" maxy="5.82035e+06"/>
+    <BoundingBox CRS="EPSG:25833" minx="-160941" miny="5.58437e+06" maxx="169701" maxy="5.85682e+06"/>
+    <BoundingBox CRS="EPSG:31466" minx="5.57e+06" miny="2.46989e+06" maxx="5.82967e+06" maxy="2.79038e+06"/>
+    <BoundingBox CRS="EPSG:31467" minx="5.57511e+06" miny="3.26615e+06" maxx="5.82224e+06" maxy="3.57674e+06"/>
+    <Layer queryable="1" opaque="0" cascaded="0">
+        <Name>nw_dgk5_info</Name>
+        <Title>DGK5 1937-2016 Metadaten</Title>
+        <Abstract>Informationen zum jeweiligen Kartenblatt. Für die Angaben in den Metadaten wird keine Gewähr übernommen.</Abstract>
+        <CRS>EPSG:3034</CRS>
+        <CRS>EPSG:3035</CRS>
+        <CRS>EPSG:3043</CRS>
+        <CRS>EPSG:3044</CRS>
+        <CRS>EPSG:3045</CRS>
+        <CRS>EPSG:3857</CRS>
+        <CRS>EPSG:4258</CRS>
+        <CRS>EPSG:4326</CRS>
+        <CRS>EPSG:25831</CRS>
+        <CRS>EPSG:25832</CRS>
+        <CRS>EPSG:25833</CRS>
+        <CRS>EPSG:28992</CRS>
+        <CRS>EPSG:31466</CRS>
+        <CRS>EPSG:31467</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>5.724991</westBoundLongitude>
+            <eastBoundLongitude>9.531542</eastBoundLongitude>
+            <southBoundLatitude>50.150604</southBoundLatitude>
+            <northBoundLatitude>52.602020</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:3034" minx="2.60578e+06" miny="3.71664e+06" maxx="2.86794e+06" maxy="3.96934e+06"/>
+        <BoundingBox CRS="EPSG:3035" minx="3.00888e+06" miny="4.02757e+06" maxx="3.28046e+06" maxy="4.28926e+06"/>
+        <BoundingBox CRS="EPSG:3043" minx="5.55938e+06" miny="684725" maxx="5.84792e+06" maxy="964115"/>
+        <BoundingBox CRS="EPSG:3044" minx="5.56e+06" miny="278000" maxx="5.828e+06" maxy="536000"/>
+        <BoundingBox CRS="EPSG:3045" minx="5.57435e+06" miny="-150179" maxx="5.86348e+06" maxy="129782"/>
+        <BoundingBox CRS="EPSG:3857" minx="637303" miny="6.4724e+06" maxx="1.06105e+06" maxy="6.90972e+06"/>
+        <BoundingBox CRS="EPSG:4258" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:4326" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:25831" minx="684725" miny="5.55938e+06" maxx="964115" maxy="5.84792e+06"/>
+        <BoundingBox CRS="EPSG:25832" minx="278000" miny="5.56e+06" maxx="536000" maxy="5.828e+06"/>
+        <BoundingBox CRS="EPSG:25833" minx="-150179" miny="5.57435e+06" maxx="129782" maxy="5.86348e+06"/>
+        <BoundingBox CRS="EPSG:28992" minx="177908" miny="240027" maxx="448897" maxy="520511"/>
+        <BoundingBox CRS="EPSG:31466" minx="5.55717e+06" miny="2.48139e+06" maxx="5.83562e+06" maxy="2.75026e+06"/>
+        <BoundingBox CRS="EPSG:31467" minx="5.56178e+06" miny="3.27798e+06" maxx="5.82989e+06" maxy="3.53609e+06"/>
+        <AuthorityURL name="GDI-NW">
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.geoportal.nrw.de"/>
+        </AuthorityURL>
+        <Identifier authority="GDI-NW">https://registry.gdi-de.org/id/de.nw/DENWDGK5</Identifier>
+        <MetadataURL type="TC211">
+          <Format>application/xml</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://apps.geoportal.nrw.de/csw/service?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id=ba60b76f-9240-4940-afd3-a00398fc6840"/>
+        </MetadataURL>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="300" height="60">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://www.wms.nrw.de/legends/geobasis/wms_nw_dgk5/nw_dgk5_info.png"/>
+          </LegendURL>
+        </Style>
+    </Layer>
+    <Layer queryable="0" opaque="0" cascaded="0">
+        <Name>nw_dgk5_grundriss</Name>
+        <Title>DGK5 1937-2016 Grundriss</Title>
+        <Abstract>Die Grundrissinformation der DGK5 liegt flächendeckend für ganz Nordrhein-Westfalen vor. Die letzte Aktualisierung des Grundrisses erfolgte im Jahr 2015.</Abstract>
+        <CRS>EPSG:3034</CRS>
+        <CRS>EPSG:3035</CRS>
+        <CRS>EPSG:3043</CRS>
+        <CRS>EPSG:3044</CRS>
+        <CRS>EPSG:3045</CRS>
+        <CRS>EPSG:3857</CRS>
+        <CRS>EPSG:4258</CRS>
+        <CRS>EPSG:4326</CRS>
+        <CRS>EPSG:25831</CRS>
+        <CRS>EPSG:25832</CRS>
+        <CRS>EPSG:25833</CRS>
+        <CRS>EPSG:28992</CRS>
+        <CRS>EPSG:31466</CRS>
+        <CRS>EPSG:31467</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>5.724991</westBoundLongitude>
+            <eastBoundLongitude>9.531542</eastBoundLongitude>
+            <southBoundLatitude>50.150604</southBoundLatitude>
+            <northBoundLatitude>52.602020</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:3034" minx="2.60578e+06" miny="3.71664e+06" maxx="2.86794e+06" maxy="3.96934e+06"/>
+        <BoundingBox CRS="EPSG:3035" minx="3.00888e+06" miny="4.02757e+06" maxx="3.28046e+06" maxy="4.28926e+06"/>
+        <BoundingBox CRS="EPSG:3043" minx="5.55938e+06" miny="684725" maxx="5.84792e+06" maxy="964115"/>
+        <BoundingBox CRS="EPSG:3044" minx="5.56e+06" miny="278000" maxx="5.828e+06" maxy="536000"/>
+        <BoundingBox CRS="EPSG:3045" minx="5.57435e+06" miny="-150179" maxx="5.86348e+06" maxy="129782"/>
+        <BoundingBox CRS="EPSG:3857" minx="637303" miny="6.4724e+06" maxx="1.06105e+06" maxy="6.90972e+06"/>
+        <BoundingBox CRS="EPSG:4258" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:4326" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:25831" minx="684725" miny="5.55938e+06" maxx="964115" maxy="5.84792e+06"/>
+        <BoundingBox CRS="EPSG:25832" minx="278000" miny="5.56e+06" maxx="536000" maxy="5.828e+06"/>
+        <BoundingBox CRS="EPSG:25833" minx="-150179" miny="5.57435e+06" maxx="129782" maxy="5.86348e+06"/>
+        <BoundingBox CRS="EPSG:28992" minx="177908" miny="240027" maxx="448897" maxy="520511"/>
+        <BoundingBox CRS="EPSG:31466" minx="5.55717e+06" miny="2.48139e+06" maxx="5.83562e+06" maxy="2.75026e+06"/>
+        <BoundingBox CRS="EPSG:31467" minx="5.56178e+06" miny="3.27798e+06" maxx="5.82989e+06" maxy="3.53609e+06"/>
+        <AuthorityURL name="GDI-NW">
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.geoportal.nrw.de"/>
+        </AuthorityURL>
+        <Identifier authority="GDI-NW">https://registry.gdi-de.org/id/de.nw/DENWDGK5</Identifier>
+        <MetadataURL type="TC211">
+          <Format>application/xml</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://apps.geoportal.nrw.de/csw/service?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id=ba60b76f-9240-4940-afd3-a00398fc6840"/>
+        </MetadataURL>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="300" height="4655">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://www.wms.nrw.de/legends/geobasis/wms_nw_dgk5/nw_dgk5_grundriss.png"/>
+          </LegendURL>
+        </Style>
+        <MinScaleDenominator>1</MinScaleDenominator>
+        <MaxScaleDenominator>10050</MaxScaleDenominator>
+    </Layer>
+    <Layer queryable="0" opaque="0" cascaded="0">
+        <Name>nw_dgk5_hoehen</Name>
+        <Title>DGK5 1937-2016 Höhen</Title>
+        <Abstract>Die Höhenlinien liegen für 97,5 % der Landesfläche vor. Insbesondere in geschlossen bebauten Innenstädten werden keine Höhenlinien dargestellt. Seit 2010 werden die Höhenlinien der DGK 5 nicht mehr fortgeführt.</Abstract>
+        <CRS>EPSG:3034</CRS>
+        <CRS>EPSG:3035</CRS>
+        <CRS>EPSG:3043</CRS>
+        <CRS>EPSG:3044</CRS>
+        <CRS>EPSG:3045</CRS>
+        <CRS>EPSG:3857</CRS>
+        <CRS>EPSG:4258</CRS>
+        <CRS>EPSG:4326</CRS>
+        <CRS>EPSG:4647</CRS>
+        <CRS>EPSG:5649</CRS>
+        <CRS>EPSG:5650</CRS>
+        <CRS>EPSG:5651</CRS>
+        <CRS>EPSG:5652</CRS>
+        <CRS>EPSG:5653</CRS>
+        <CRS>EPSG:28992</CRS>
+        <CRS>EPSG:25831</CRS>
+        <CRS>EPSG:25832</CRS>
+        <CRS>EPSG:25833</CRS>
+        <CRS>EPSG:31466</CRS>
+        <CRS>EPSG:31467</CRS>
+        <EX_GeographicBoundingBox>
+            <westBoundLongitude>5.724991</westBoundLongitude>
+            <eastBoundLongitude>9.531542</eastBoundLongitude>
+            <southBoundLatitude>50.150604</southBoundLatitude>
+            <northBoundLatitude>52.602020</northBoundLatitude>
+        </EX_GeographicBoundingBox>
+        <BoundingBox CRS="EPSG:3034" minx="2.60578e+06" miny="3.71664e+06" maxx="2.86794e+06" maxy="3.96934e+06"/>
+        <BoundingBox CRS="EPSG:3035" minx="3.00888e+06" miny="4.02757e+06" maxx="3.28046e+06" maxy="4.28926e+06"/>
+        <BoundingBox CRS="EPSG:3043" minx="5.55938e+06" miny="684725" maxx="5.84792e+06" maxy="964115"/>
+        <BoundingBox CRS="EPSG:3044" minx="5.56e+06" miny="278000" maxx="5.828e+06" maxy="536000"/>
+        <BoundingBox CRS="EPSG:3045" minx="5.57435e+06" miny="-150179" maxx="5.86348e+06" maxy="129782"/>
+        <BoundingBox CRS="EPSG:3857" minx="637303" miny="6.4724e+06" maxx="1.06105e+06" maxy="6.90972e+06"/>
+        <BoundingBox CRS="EPSG:4258" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:4326" minx="50.150604" miny="5.724991" maxx="52.602020" maxy="9.531542"/>
+        <BoundingBox CRS="EPSG:4647" minx="3.2278e+07" miny="5.56e+06" maxx="3.2536e+07" maxy="5.828e+06"/>
+        <BoundingBox CRS="EPSG:5649" minx="3.16847e+07" miny="5.55938e+06" maxx="3.19641e+07" maxy="5.84792e+06"/>
+        <BoundingBox CRS="EPSG:5650" minx="3.28498e+07" miny="5.57435e+06" maxx="3.31298e+07" maxy="5.86348e+06"/>
+        <BoundingBox CRS="EPSG:5651" minx="5.55938e+06" miny="3.16847e+07" maxx="5.84792e+06" maxy="3.19641e+07"/>
+        <BoundingBox CRS="EPSG:5652" minx="5.56e+06" miny="3.2278e+07" maxx="5.828e+06" maxy="3.2536e+07"/>
+        <BoundingBox CRS="EPSG:5653" minx="5.57435e+06" miny="3.28498e+07" maxx="5.86348e+06" maxy="3.31298e+07"/>
+        <BoundingBox CRS="EPSG:28992" minx="177908" miny="240027" maxx="448897" maxy="520511"/>
+        <BoundingBox CRS="EPSG:25831" minx="684725" miny="5.55938e+06" maxx="964115" maxy="5.84792e+06"/>
+        <BoundingBox CRS="EPSG:25832" minx="278000" miny="5.56e+06" maxx="536000" maxy="5.828e+06"/>
+        <BoundingBox CRS="EPSG:25833" minx="-150179" miny="5.57435e+06" maxx="129782" maxy="5.86348e+06"/>
+        <BoundingBox CRS="EPSG:31466" minx="5.55717e+06" miny="2.48139e+06" maxx="5.83562e+06" maxy="2.75026e+06"/>
+        <BoundingBox CRS="EPSG:31467" minx="5.56178e+06" miny="3.27798e+06" maxx="5.82989e+06" maxy="3.53609e+06"/>
+        <AuthorityURL name="GDI-NW">
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.geoportal.nrw.de"/>
+        </AuthorityURL>
+        <Identifier authority="GDI-NW">https://registry.gdi-de.org/id/de.nw/DENWDGK5</Identifier>
+        <MetadataURL type="TC211">
+          <Format>application/xml</Format>
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://apps.geoportal.nrw.de/csw/service?Service=CSW&amp;Request=GetRecordById&amp;Version=2.0.2&amp;outputSchema=http://www.isotc211.org/2005/gmd&amp;elementSetName=full&amp;id=ba60b76f-9240-4940-afd3-a00398fc6840"/>
+        </MetadataURL>
+        <Style>
+          <Name>default</Name>
+          <Title>default</Title>
+          <LegendURL width="300" height="4655">
+             <Format>image/png</Format>
+             <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://www.wms.nrw.de/legends/geobasis/wms_nw_dgk5/nw_dgk5_hoehen.png"/>
+          </LegendURL>
+        </Style>
+        <MinScaleDenominator>1</MinScaleDenominator>
+        <MaxScaleDenominator>10050</MaxScaleDenominator>
+    </Layer>
+  </Layer>
+</Capability>
+</WMS_Capabilities>

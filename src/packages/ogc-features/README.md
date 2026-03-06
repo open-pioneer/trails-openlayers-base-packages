@@ -34,7 +34,6 @@ const vectorLayer = new VectorLayer({
     source: vectorSourceFactory.createVectorSource({
         baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
         collectionId: "governmentalservice",
-        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
         attributions:
             "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>",
 
@@ -72,7 +71,6 @@ Example:
 vectorSourceFactory.createVectorSource({
     baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
     collectionId: "governmentalservice",
-    crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
 
     strategy: "offset",
     limit: 2500,
@@ -94,7 +92,6 @@ Example:
 vectorSourceFactory.createVectorSource({
     baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
     collectionId: "governmentalservice",
-    crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
 
     rewriteUrl(url) {
         url.searchParams.set("property", "value");
