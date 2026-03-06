@@ -1,5 +1,37 @@
 # @open-pioneer/map
 
+## 1.3.0
+
+### Minor Changes
+
+- 9b5d5f3: Support for new common container props (role, aria-_, data-_ and css)
+- fcbd505: WMSLayer, WMTSLayer: Derive `attributions` from service capabilities if no explicit attributions have been configured.
+- 2ceb1ca: MapModel: implement new `loading` property.
+  This property is `true` if the map is currently loading any resources, `false` otherwise.
+  The property is based on OpenLayers `loadstart` and `loadend` events (see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart)).
+- 73453af: Update OpenLayers to 10.8.0
+- fcbd505: Sanitize HTML used for layer attributions.
+- 33ab02f: Move highlight methods to `mapModel.highlights`.
+    - `mapModel.highlight()` -> `mapModel.highlights.add()`
+    - `mapModel.highlightAndZoom()` -> `mapModel.highlights.addAndZoom()`
+    - `mapModel.removeHighlights()` -> `mapModel.highlights.clear()`
+
+    The old methods on the Map Model have been deprecated and will be removed in a future major release.
+
+- d54ccfd: Update to Chakra UI 3.32.0
+- 33ab02f: Add new `mapModel.overlays` API to render arbitrary React content on the map at certain coordinates.
+  This can be helpful for feature info, popups and for tooltips during map interactions.
+
+    Use `mapModel.overlay.add({ content: <SomeReactContent />, ...})` to create a new overlay.
+
+- 2ceb1ca: MapContainer: allow configuration of `rootProps` and `containerProps`.
+  This can be used to set custom attributes on the respective DOM elements.
+
+### Patch Changes
+
+- 4bcc8ce: Prevent update of `olMap.padding` by MapContainer if viewPadding did not change.
+  This caused running map animation to be cancelled.
+
 ## 1.2.0
 
 ### Patch Changes
