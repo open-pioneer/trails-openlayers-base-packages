@@ -1,5 +1,12 @@
 # @open-pioneer/map-ui-components
 
+## 1.3.0
+
+### Minor Changes
+
+- 9b5d5f3: Support for new common container props (role, aria-_, data-_ and css)
+- d54ccfd: Update to Chakra UI 3.32.0
+
 ## 1.2.0
 
 ### Patch Changes
