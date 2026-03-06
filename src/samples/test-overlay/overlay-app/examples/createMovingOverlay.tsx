@@ -1,10 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { CloseButton, Flex, Text } from "@chakra-ui/react";
-import { reactive, Reactive } from "@conterra/reactivity-core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { Coordinate } from "ol/coordinate";
 
 export interface MovingOverlay {
     overlay: Overlay;
@@ -15,24 +13,20 @@ export interface MovingOverlay {
  * Creates an overlay that changes its position.
  */
 export function createMovingOverlay(map: MapModel) {
-    const position = reactive([410000, 5757000]); // used in react component
     const overlay = map.overlays.add({
-        position: position.value,
+        position: [410000, 5757000],
         tag: "sample-movable-overlay",
-        content: (
-            <MovableOverlayContent position={position} onCloseClicked={() => overlay.destroy()} />
-        ),
         advanced: {
             autoPan: true,
             insertFirst: false
         }
     });
+    overlay.setContent(<MovableOverlayContent overlay={overlay} />);
 
     const updatePosition = (offsetX: number) => {
         if (overlay.position) {
             const [x = 0, y = 0] = overlay.position;
             const newPos = [x + offsetX, y];
-            position.value = newPos; // TODO: Consider watching on overlay.position
             overlay.setPosition(newPos);
         }
     };
@@ -43,11 +37,8 @@ export function createMovingOverlay(map: MapModel) {
     };
 }
 
-function MovableOverlayContent(props: {
-    position: Reactive<Coordinate>;
-    onCloseClicked: () => void;
-}) {
-    const position = useReactiveSnapshot(() => props.position.value, [props.position]);
+function MovableOverlayContent(props: { overlay: Overlay }) {
+    const position = useReactiveSnapshot(() => props.overlay.position ?? [0, 0], [props.overlay]);
     return (
         <Flex
             bg={"whiteAlpha.700"}
@@ -61,7 +52,7 @@ function MovableOverlayContent(props: {
             <Text>
                 X: {position[0]}, Y: {position[1]}
             </Text>
-            <CloseButton onClick={props.onCloseClicked} variant={"solid"} size={"xs"}></CloseButton>
+            <CloseButton onClick={() => props.overlay.destroy()} variant={"solid"} size={"xs"} />
         </Flex>
     );
 }

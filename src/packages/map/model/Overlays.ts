@@ -5,13 +5,14 @@ import { Map as OlMap, Overlay as OlOverlay } from "ol";
 import { MapModel } from "./MapModel";
 import { Coordinate } from "ol/coordinate";
 import { ReactNode } from "react";
-import { batch, reactive, Reactive, reactiveSet } from "@conterra/reactivity-core";
+import { batch, reactive, Reactive, reactiveSet, synchronized } from "@conterra/reactivity-core";
 import { v4 as uuid4v } from "uuid";
-import { createLogger, Resource } from "@open-pioneer/core";
+import { createLogger, destroyResources, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { Options } from "ol/Overlay";
 import { sourceId } from "open-pioneer:source-info";
+import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
 export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");
@@ -51,7 +52,7 @@ export class Overlays {
      * Add new overlay to the map. Returns the newly created overlay instance.
      */
     add(properties: OverlayProperties): Overlay {
-        const newModel = new Overlay(properties, this);
+        const newModel = new Overlay(INTERNAL_CONSTRUCTOR_TAG, properties, this);
         return newModel;
     }
 
@@ -70,9 +71,25 @@ export class Overlays {
  */
 export interface OverlayProperties {
     /**
-     * Displayed content of the overlay
+     * Optional, readonly tag that helps identifying the overlay instance
      */
-    content: ReactNode;
+    tag?: string;
+
+    /**
+     * Displayed content of the overlay.
+     */
+    content?: ReactNode;
+
+    /**
+     * CSS classes of the HTMLDivElement that wraps the overlay's content.
+     */
+    className?: string;
+
+    /**
+     * Role of the HTMLDivElement that wraps the overlay's content.
+     */
+    ariaRole?: string;
+
     /**
      * If mode is `set-position` the overlay remains at the provided position. The position can be changed manually by calling `setPosition` on the overlay instance.
      * If mode is `follow-pointer` the position is automatically updated to pointer position (coordinates) on the map.
@@ -80,10 +97,7 @@ export interface OverlayProperties {
      * By default the mode is `set-position`.
      */
     mode?: "set-position" | "follow-pointer"; //ToDo there might be a better name instead of set-position
-    /**
-     * Optional, readonly tag that helps identifying the overlay instance
-     */
-    tag?: string;
+
     /**
      * Initial position of the overlay. Overlay is not rendered if position is `undefined`.
      * Can be overridden immediately if `mode` is `follow-pointer`
@@ -91,30 +105,27 @@ export interface OverlayProperties {
      * ToDo: Makes no sense to provide coordinate if mode is follow-pointer, How to model this with Typescript? (also setPosition of Overlay)
      */
     position?: Coordinate;
+
     /**
-     * Positioning of an overlay relative to its position (coordinates)
+     * Positioning of an overlay relative to its position (coordinates).
      */
     positioning?: OverlayPositioning;
+
     /**
-     * Offsets in pixels relative to the overlay`s position. The first element in the array is the horizontal offset.
+     * Offsets in pixels relative to the overlay`s position (coordinates).
+     * The first element in the array is the horizontal offset.
      */
     offset?: number[];
+
     /**
-     * CSS classes of the HTMLDivElement that wraps the overlay's content
-     */
-    className?: string;
-    /**
-     * Determines if event propagation to the map viewport should be stopped
+     * Determines if event propagation to the map viewport should be stopped.
      *
-     * By default `stopEvent` is `true`
+     * By default `stopEvent` is `true`.
      */
     stopEvent?: boolean;
+
     /**
-     * Role of the HTMLDivElement that wraps the overlay's content
-     */
-    ariaRole?: string;
-    /**
-     * Raw Openlayers overlay properties. `OlOverlayOptions` override corresponding `OverlayProperties` except id and element.
+     * Raw OpenLayers overlay properties. `OlOverlayOptions` override corresponding `OverlayProperties` except id and element.
      *
      * **warning** Using OpenLayers options can create inconsistencies that lead to errors. The OpenLayers API can change with updates of OpenLayers.
      */
@@ -122,7 +133,7 @@ export interface OverlayProperties {
 }
 
 /**
- * Positioning of an overlay relative to its position (coordinates)
+ * Positioning of an overlay relative to its position (coordinates).
  *
  * @group Map Model
  */
@@ -141,22 +152,28 @@ export type OverlayPositioning =
 export interface OlOverlayOptions extends Omit<Partial<Options>, "id" | "element"> {}
 
 /**
- * An overlay is an UI element that is displayed over the map. Overlays are tied to coordinates on the map and not to a position on the screen.
- * The displayed content of an overlay is a ReactNode. Therefore, it can be simple text content or a complex React component.
+ * An overlay is an UI element that is displayed over the map.
+ *
+ * Overlays are tied to coordinates on the map and not to a position on the screen.
+ * The overlay renders a react node at the specified coordinates.
  *
  * @group Map Model
  */
 export class Overlay {
     /**
-     * Unique, readonly id of the overlay. Automatically assigned when the overlay is created. Use the `tag` property for custom identifiers.
+     * Unique, readonly id of the overlay.
+     *
+     * Automatically assigned when the overlay is created. Use the `tag` property for custom identifiers.
      */
     readonly id: string;
+
     /**
-     * Optional, readonly tag that helps identifying the overlay instance
+     * Optional, readonly tag that helps identifying the overlay instance.
      */
-    readonly tag?: string;
+    readonly tag: string | undefined;
+
     /**
-     * Raw, corresponding OpenLayers overlay object
+     * Raw, corresponding OpenLayers overlay object.
      *
      * **warning** Manipulation of the OpenLayers object can create inconsistencies that lead to errors. The OpenLayers API can change with updates of OpenLayers.
      */
@@ -168,21 +185,44 @@ export class Overlay {
     #resources: Resource[];
     #overlayDiv: HTMLDivElement;
 
-    constructor(properties: OverlayProperties, parent: Overlays) {
-        this.id = uuid4v();
-        this.tag = properties.tag;
-        this.#overlayDiv = document.createElement("div");
-        if (!properties.mode) {
-            properties.mode = "set-position";
+    #position = synchronized(
+        () => this.olOverlay.getPosition(),
+        (cb) => {
+            const key = this.olOverlay.on("change:position", cb);
+            return () => unByKey(key);
+        }
+    );
+    #positioning = synchronized(
+        () => this.olOverlay.getPositioning(),
+        (cb) => {
+            const key = this.olOverlay.on("change:positioning", cb);
+            return () => unByKey(key);
+        }
+    );
+    #offset = synchronized(
+        () => this.olOverlay.getOffset(),
+        (cb) => {
+            const key = this.olOverlay.on("change:offset", cb);
+            return () => unByKey(key);
+        }
+    );
+
+    constructor(
+        internalTag: InternalConstructorTag,
+        properties: OverlayProperties,
+        parent: Overlays
+    ) {
+        if (internalTag !== INTERNAL_CONSTRUCTOR_TAG) {
+            throw new Error("The overlay constructor is private.");
         }
 
         const { className, ariaRole, mode, ...copyProperties } = properties;
+        this.id = uuid4v();
+        this.tag = properties.tag;
+        this.#overlayDiv = createElement(ariaRole, className);
 
-        if (ariaRole) {
-            this.#overlayDiv.role = ariaRole;
-        }
-        if (className) {
-            this.#overlayDiv.className = className;
+        if (!properties.mode) {
+            properties.mode = "set-position";
         }
 
         //simply override with advanced OL Options if set
@@ -219,7 +259,7 @@ export class Overlay {
     }
 
     /**
-     * Destroys the overlay and removes it from the maps.
+     * Destroys the overlay and removes it from the map.
      * An overlay that is destroyed cannot be added to the map again.
      */
     destroy(): void {
@@ -231,7 +271,7 @@ export class Overlay {
             this.#isDestroyed.value = true;
             this.#parent[UNREGISTER_OVERLAY](this);
             this.olOverlay.dispose();
-            this.#resources.forEach((r) => r.destroy());
+            destroyResources(this.#resources);
         });
     }
 
@@ -250,32 +290,31 @@ export class Overlay {
     }
 
     /**
-     * Current position (coordinates) of the overlay
-     * ToDo: reactive?
+     * Current position (coordinates) of the overlay.
      */
-    get position() {
-        return this.olOverlay.getPosition();
+    get position(): Coordinate | undefined {
+        return this.#position.value;
     }
 
     /**
-     * The HTMLDivElement that that wraps the overlay's content
+     * The HTMLDivElement that that wraps the overlay's content.
      */
-    get element() {
+    get element(): HTMLElement {
         return this.#overlayDiv;
     }
 
     /**
      * Offsets in pixels relative to the overlay`s position. The first element in the array is the horizontal offset.
      */
-    get offset() {
-        return this.olOverlay.getOffset();
+    get offset(): number[] {
+        return this.#offset.value;
     }
 
     /**
-     * Positioning of an overlay relative to its position (coordinates)
+     * Positioning of an overlay relative to its position (coordinates).
      */
     get positioning(): OverlayPositioning {
-        return this.olOverlay.getPositioning();
+        return this.#positioning.value;
     }
 
     /**
@@ -287,6 +326,7 @@ export class Overlay {
 
     /**
      * Set the coordinates of the overlay. The overlay is not rendered if the position is `undefined`.
+     *
      * Can be overridden immediately if the overlay's `mode` is `follow-pointer` (see {@link OverlayProperties}).
      */
     setPosition(position: Coordinate | undefined) {
@@ -301,9 +341,23 @@ export class Overlay {
     }
 
     /**
-     * Set Positioning of an overlay relative to its position (coordinates)
+     * Set positioning of an overlay relative to its position (coordinates)
      */
     setPositioning(positioning: OverlayPositioning) {
         this.olOverlay.setPositioning(positioning);
     }
+}
+
+function createElement(ariaRole: string | undefined, classNameProp: string | undefined) {
+    const overlayDiv = document.createElement("div");
+    if (ariaRole) {
+        overlayDiv.role = ariaRole;
+    }
+
+    let className = "map-overlay";
+    if (classNameProp) {
+        className += ` ${classNameProp}`;
+    }
+    overlayDiv.className = className;
+    return overlayDiv;
 }

@@ -141,9 +141,9 @@ it("add class name to overlay element", async () => {
     });
 
     const overlayElement = getOverlayDivElement(overlays, testClassName1);
-    expect(overlayElement.className).toEqual(testClassName1);
+    expect(overlayElement.className).toEqual("map-overlay " + testClassName1);
 
-    overlay.element.className = testClassName2;
+    overlay.element.className = testClassName2; // Overrides
     expect(overlayElement.className).toEqual(testClassName2);
 });
 
