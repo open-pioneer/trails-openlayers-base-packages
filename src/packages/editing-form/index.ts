@@ -6,7 +6,7 @@
 // =================================================================
 export { Editor, type EditorProps, type OnEditingStepChange } from "./api/editor/editor";
 export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./api/editor/context";
-export { useEditing, type EditingOptions } from "./api/editor/editing";
+export { useGeometryEditing, type EditingOptions } from "./api/editor/editing";
 
 // =================================================================
 // Editing model types

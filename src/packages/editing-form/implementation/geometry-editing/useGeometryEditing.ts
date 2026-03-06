@@ -7,7 +7,7 @@ import { EditingController } from "./controller/EditingController";
 import type { DrawingState } from "../../api/model/DrawingState";
 import type { EditingOptions } from "../../api/editor/editing";
 
-export function useEditing({
+export function useGeometryEditing({
     map,
     editingStep,
     setEditingStep,
@@ -66,7 +66,7 @@ export function useEditing({
         };
     }, [controller, editingStep, setEditingStep]);
 
-    return controller.drawingState;
+    return controller.drawingSession;
 }
 
 function useEditingController(map: MapModel | undefined): EditingController {

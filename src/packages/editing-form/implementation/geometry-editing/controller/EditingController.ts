@@ -2,30 +2,30 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { MapModel } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
-
+import type { InteractionOptions } from "../../../api/model/InteractionOptions";
+import { BaseInteraction } from "../interactions/BaseInteraction";
+import { DoubleClickInteraction } from "../interactions/DoubleClickInteraction";
 import { DrawingInteraction, type DrawingParameters } from "../interactions/DrawingInteraction";
-
-import {
-    SelectionInteraction,
-    type SelectionParameters
-} from "../interactions/SelectionInteraction";
-
+import { HighlightingInteraction } from "../interactions/HighlightingInteraction";
+import { KeyboardInteraction } from "../interactions/KeyboardInteraction";
 import {
     ModificationInteraction,
     type ModificationParameters
 } from "../interactions/ModificationInteraction";
-
-import { DoubleClickInteraction } from "../interactions/DoubleClickInteraction";
-import { HighlightingInteraction } from "../interactions/HighlightingInteraction";
-import { KeyboardInteraction } from "../interactions/KeyboardInteraction";
+import {
+    SelectionInteraction,
+    type SelectionParameters
+} from "../interactions/SelectionInteraction";
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
-
 import { DrawingSession } from "./DrawingSession";
-import type { DrawingState } from "../../../api/model/DrawingState";
-import type { InteractionOptions } from "../../../api/model/InteractionOptions";
-import { BaseInteraction } from "../interactions/BaseInteraction";
 
 export class EditingController {
+    private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
+    private snappingSources: VectorSource[] = [];
+    private interactionOptions: InteractionOptions = {};
+
+    readonly drawingSession = new DrawingSession();
+
     constructor(private readonly mapModel: MapModel) {}
 
     startDrawingFeature({
@@ -94,10 +94,6 @@ export class EditingController {
         this.currentInteractions = [];
     }
 
-    get drawingState(): DrawingState {
-        return this.drawingSession;
-    }
-
     private replaceInteractions(...interactions: BaseInteraction<unknown, unknown>[]): void {
         this.stopCurrentInteractions();
         this.currentInteractions = interactions;
@@ -105,12 +101,6 @@ export class EditingController {
             interaction.start();
         });
     }
-
-    private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
-    private snappingSources: VectorSource[] = [];
-    private interactionOptions: InteractionOptions = {};
-
-    private readonly drawingSession = new DrawingSession();
 }
 
 type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker">>;

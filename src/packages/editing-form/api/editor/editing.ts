@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { MapModelProps } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
-import { useEditing as useEditingImpl } from "../../implementation/geometry-editing/useEditing";
+import { useGeometryEditing as useGeometryEditingImpl } from "../../implementation/geometry-editing/useGeometryEditing";
 import type { DrawingState } from "../model/DrawingState";
 import type { Editor } from "./editor";
 import type { EditingStep } from "../model/EditingStep";
@@ -27,16 +27,16 @@ import type { InteractionOptions } from "../model/InteractionOptions";
  * function CustomEditor() {
  *     const map = useMapModel();
  *     const [editingStep, setEditingStep] = useState<EditingStep>({ id: "none" });
- *     const drawingState = useEditing({ map, editingStep, setEditingStep });
+ *     const drawingState = useGeometryEditing({ map, editingStep, setEditingStep });
  *
  *     // Render custom UI and controls...
  * }
  * ```
  */
-export const useEditing = useEditingImpl;
+export const useGeometryEditing = useGeometryEditingImpl;
 
 /**
- * Options for the {@link useEditing} hook.
+ * Options for the {@link useGeometryEditing} hook.
  *
  * Extends {@link MapModelProps} and {@link InteractionOptions} to provide map integration and
  * interaction configuration, along with editing workflow state management.

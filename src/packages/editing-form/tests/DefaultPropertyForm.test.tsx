@@ -4,17 +4,28 @@ import { describe, expect, it } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import { useEffect, type ReactNode } from "react";
-
-import { DefaultPropertyForm } from "../implementation/components/propertyeditor/DefaultPropertyForm";
+import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
 import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { usePropertyFormContext } from "../implementation/context/usePropertyFormContext";
 import type { PropertyFormContext } from "../api/editor/context";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
 import type { CreationStep } from "../api/model/EditingStep";
+import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
+
+const DUMMY_CALLBACKS: EditingCallbacks = {
+    onSave: () => {
+        throw new Error("not implemented");
+    },
+    onDelete: () => {
+        throw new Error("not implemented");
+    },
+    onCancel: () => {
+        throw new Error("not implemented");
+    }
+};
 
 describe("DefaultPropertyForm input types", () => {
     it("renders text-field input and updates property on typing", async () => {
@@ -24,7 +35,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -58,7 +69,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -91,7 +102,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -124,7 +135,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -162,7 +173,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -200,7 +211,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -250,7 +261,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -298,7 +309,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -354,7 +365,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -390,7 +401,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -427,7 +438,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -477,7 +488,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -524,7 +535,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -571,7 +582,7 @@ describe("DefaultPropertyForm input types", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -610,7 +621,10 @@ describe("DefaultPropertyForm input types", () => {
         await waitFor(() => {
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={editingStep}>
+                    <PropertyFormContextProvider
+                        callbacks={DUMMY_CALLBACKS}
+                        editingStep={editingStep}
+                    >
                         <DefaultPropertyForm
                             title="All Fields"
                             templates={[allInputTypesTemplate]}
@@ -640,7 +654,10 @@ describe("DefaultPropertyForm input types", () => {
         await waitFor(() => {
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={editingStep}>
+                    <PropertyFormContextProvider
+                        callbacks={DUMMY_CALLBACKS}
+                        editingStep={editingStep}
+                    >
                         <DefaultPropertyForm
                             title={customTitle}
                             templates={[allInputTypesTemplate]}

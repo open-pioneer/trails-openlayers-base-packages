@@ -9,9 +9,15 @@ import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
 import type { EditingHandler } from "../../api/model/EditingHandler";
 import type { EditingStep } from "../../api/model/EditingStep";
-import type { EditingCallbacks } from "../components/propertyeditor/PropertyEditor";
+import { useEvent } from "@open-pioneer/react-utils";
 
 const LOG = createLogger(sourceId);
+
+export interface EditingCallbacks {
+    readonly onSave: () => Promise<void>;
+    readonly onDelete: () => Promise<void>;
+    readonly onCancel: () => void;
+}
 
 export function useEditingCallbacks(
     mapModel: MapModel,
@@ -28,49 +34,53 @@ export function useEditingCallbacks(
         failureNotifierDisplayDuration
     );
 
+    const onSave = useEvent(async () => {
+        if (editingStep.id === "create-modify") {
+            const { feature, template } = editingStep;
+            try {
+                await editingHandler.addFeature(feature, template, projection);
+                showNotifier("create", true);
+                setEditingStep({ id: "none" });
+            } catch (error) {
+                LOG.error("Error creating feature", feature, error);
+                showNotifier("create", false, error);
+            }
+        } else if (editingStep.id === "update-modify") {
+            const { feature, layer } = editingStep;
+            try {
+                await editingHandler.updateFeature(feature, layer, projection);
+                showNotifier("update", true);
+                setEditingStep({ id: "none" });
+            } catch (error) {
+                LOG.error("Error updating feature", feature, error);
+                showNotifier("update", false, error);
+            }
+        }
+    });
+    const onDelete = useEvent(async () => {
+        if (editingStep.id === "update-modify") {
+            const { feature, layer } = editingStep;
+            try {
+                await editingHandler.deleteFeature(feature, layer, projection);
+                showNotifier("delete", true);
+                setEditingStep({ id: "none" });
+            } catch (error) {
+                LOG.error("Error deleting feature", feature, error);
+                showNotifier("delete", false, error);
+            }
+        }
+    });
+    const onCancel = useEvent(async () => {
+        setEditingStep({ id: "none" });
+    });
+
     return useMemo(
         () => ({
-            async onSave() {
-                if (editingStep.id === "create-modify") {
-                    const { feature, template } = editingStep;
-                    try {
-                        await editingHandler.addFeature(feature, template, projection);
-                        showNotifier("create", true);
-                        setEditingStep({ id: "none" });
-                    } catch (error) {
-                        LOG.error("Error creating feature", feature, error);
-                        showNotifier("create", false, error);
-                    }
-                } else if (editingStep.id === "update-modify") {
-                    const { feature, layer } = editingStep;
-                    try {
-                        await editingHandler.updateFeature(feature, layer, projection);
-                        showNotifier("update", true);
-                        setEditingStep({ id: "none" });
-                    } catch (error) {
-                        LOG.error("Error updating feature", feature, error);
-                        showNotifier("update", false, error);
-                    }
-                }
-            },
-            async onDelete() {
-                if (editingStep.id === "update-modify") {
-                    const { feature, layer } = editingStep;
-                    try {
-                        await editingHandler.deleteFeature(feature, layer, projection);
-                        showNotifier("delete", true);
-                        setEditingStep({ id: "none" });
-                    } catch (error) {
-                        LOG.error("Error deleting feature", feature, error);
-                        showNotifier("delete", false, error);
-                    }
-                }
-            },
-            onCancel() {
-                setEditingStep({ id: "none" });
-            }
+            onSave,
+            onDelete,
+            onCancel
         }),
-        [editingStep, editingHandler, projection, showNotifier, setEditingStep]
+        [onSave, onDelete, onCancel]
     );
 }
 

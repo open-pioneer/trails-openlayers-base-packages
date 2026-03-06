@@ -3,15 +3,22 @@
 import { reactive, reactiveMap, type ReactiveMap } from "@conterra/reactivity-core";
 import type { Layer } from "@open-pioneer/map";
 
-import { createContext } from "react";
 import type { Feature } from "ol";
+import { createContext } from "react";
 
-import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
-import type { ModificationStep } from "../../api/model/EditingStep";
 import type { Mode, PropertyFormContext } from "../../api/editor/context";
+import type { ModificationStep } from "../../api/model/EditingStep";
+import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
+import { EditingCallbacks } from "../editor/useEditingCallbacks";
 
 export class PropertyFormContextClass implements PropertyFormContext {
-    constructor(private readonly modificationStep: ModificationStep) {
+    private readonly propertiesMap: ReactiveMap<string, unknown>;
+    private readonly isValidSignal = reactive(false);
+
+    constructor(
+        private readonly modificationStep: ModificationStep,
+        readonly callbacks: EditingCallbacks
+    ) {
         const entries = PropertyFormContextClass.getPropertyEntries(modificationStep.feature);
         this.propertiesMap = reactiveMap(entries);
     }
@@ -58,9 +65,6 @@ export class PropertyFormContextClass implements PropertyFormContext {
         const geometryName = feature.getGeometryName();
         return Object.entries(properties).filter(([key, _]) => key !== geometryName);
     }
-
-    private readonly propertiesMap: ReactiveMap<string, unknown>;
-    private readonly isValidSignal = reactive(false);
 }
 
 export const PropertyFormContextObject = createContext<PropertyFormContextClass | undefined>(

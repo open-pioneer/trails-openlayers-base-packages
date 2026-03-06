@@ -1,20 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, VStack, useDisclosure } from "@chakra-ui/react";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useEvent } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { ReactElement, ReactNode } from "react";
-
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ButtonRow } from "./ButtonRow";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 
-export function PropertyEditor({
-    children,
-    onSave,
-    onDelete,
-    onCancel
-}: PropertyEditorProps): ReactElement {
+export interface PropertyEditorProps {
+    readonly children: ReactNode;
+}
+
+export function PropertyEditor({ children }: PropertyEditorProps): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
     const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
@@ -22,11 +20,11 @@ export function PropertyEditor({
     const onSaveClick = useEvent(async () => {
         const properties = context.propertiesObject;
         context.feature.setProperties(properties);
-        await onSave();
+        await context.callbacks.onSave();
     });
 
     const onDeleteClick = useEvent(async () => {
-        await onDelete();
+        await context.callbacks.onDelete();
         closeDialog();
     });
 
@@ -41,7 +39,7 @@ export function PropertyEditor({
                     showDeleteButton={context.mode === "update"}
                     onSave={onSaveClick}
                     onDelete={openDialog}
-                    onCancel={onCancel}
+                    onCancel={context.callbacks.onCancel}
                 />
             </VStack>
             <DeleteConfirmationDialog
@@ -51,14 +49,4 @@ export function PropertyEditor({
             />
         </>
     );
-}
-
-interface PropertyEditorProps extends EditingCallbacks {
-    readonly children: ReactNode[] | ReactNode;
-}
-
-export interface EditingCallbacks {
-    readonly onSave: () => Promise<void>;
-    readonly onDelete: () => Promise<void>;
-    readonly onCancel: () => void;
 }

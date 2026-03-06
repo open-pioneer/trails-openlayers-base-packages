@@ -383,13 +383,13 @@ The `PropertyFormContext` provides:
 | `layer`            | `Layer \| undefined`            | Source layer (only in update mode)   |
 | `isValid`          | `boolean`                       | Controls save button enabled state   |
 
-### Custom Editor with useEditing()
+### Custom Editor with useGeometryEditing()
 
-For complete control over the editing UI, use the `useEditing` hook directly:
+For complete control over the editing UI, use the `useGeometryEditing` hook directly:
 
 ```tsx
 import {
-    useEditing,
+    useGeometryEditing,
     type EditingStep,
     type DrawingState,
     type FeatureTemplate
@@ -401,7 +401,7 @@ import type { Vector as VectorSource } from "ol/source";
 function CustomEditor({ templates, snappingSources }: CustomEditorProps) {
     const [editingStep, setEditingStep] = useState<EditingStep>({ id: "none" });
 
-    const drawingState: DrawingState = useEditing({
+    const drawingState: DrawingState = useGeometryEditing({
         map: myMapModel,
         editingStep,
         setEditingStep,
@@ -463,7 +463,7 @@ interface CustomEditorProps {
 }
 ```
 
-The `useEditing` hook manages map interactions and returns a `DrawingState` object with:
+The `useGeometryEditing` hook manages map interactions and returns a `DrawingState` object with:
 
 | Property    | Type         | Description                                  |
 | ----------- | ------------ | -------------------------------------------- |

@@ -4,14 +4,15 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { PropertyEditor } from "../implementation/components/propertyeditor/PropertyEditor";
-import { DefaultPropertyForm } from "../implementation/components/propertyeditor/DefaultPropertyForm";
+import { PropertyEditor } from "../implementation/components/property-editor/PropertyEditor";
+import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
 import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
 import type { Layer } from "@open-pioneer/map";
 import type { ModificationStep } from "../api/model/EditingStep";
+import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
 
 describe("PropertyEditor Integration", () => {
     const createTemplate = (): FeatureTemplate => ({
@@ -33,6 +34,24 @@ describe("PropertyEditor Integration", () => {
         ]
     });
 
+    const createCallbacks = (opts?: Partial<EditingCallbacks>): EditingCallbacks => {
+        const DUMMY_CALLBACKS: EditingCallbacks = {
+            onSave: () => {
+                throw new Error("not implemented");
+            },
+            onDelete: () => {
+                throw new Error("not implemented");
+            },
+            onCancel: () => {
+                throw new Error("not implemented");
+            }
+        };
+        return {
+            ...DUMMY_CALLBACKS,
+            ...opts
+        };
+    };
+
     describe("create mode workflow", () => {
         it("renders property form for creating a feature", () => {
             const template = createTemplate();
@@ -51,8 +70,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={vi.fn()} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
@@ -91,8 +113,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={vi.fn()} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
@@ -125,8 +150,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={vi.fn()} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
@@ -176,8 +204,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={vi.fn()} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
@@ -219,8 +250,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -257,8 +291,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -299,8 +336,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -345,8 +385,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -391,8 +434,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -440,8 +486,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={onDelete} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onDelete, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
@@ -492,8 +541,11 @@ describe("PropertyEditor Integration", () => {
 
             render(
                 <PackageContextProvider>
-                    <PropertyFormContextProvider editingStep={step}>
-                        <PropertyEditor onSave={onSave} onDelete={vi.fn()} onCancel={onCancel}>
+                    <PropertyFormContextProvider
+                        editingStep={step}
+                        callbacks={createCallbacks({ onSave, onCancel })}
+                    >
+                        <PropertyEditor>
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}

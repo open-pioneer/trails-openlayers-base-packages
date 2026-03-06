@@ -1,21 +1,35 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex } from "@chakra-ui/react";
-
 import { TitledSection, useEvent } from "@open-pioneer/react-utils";
-import { useIntl } from "open-pioneer:react-hooks";
-
-import { useMemo, useState, type ReactElement } from "react";
 import type { Type as GeometryType } from "ol/geom/Geometry";
-
+import { useIntl } from "open-pioneer:react-hooks";
+import { useMemo, useState, type ReactElement } from "react";
+import type { DrawingState } from "../../../api/model/DrawingState";
+import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
+import { Header } from "../header/Header";
 import { ActionBar } from "./ActionBar";
 import { SelectButton } from "./SelectButton";
 import { TemplateSelector } from "./TemplateSelector";
-import { Header } from "../header/Header";
 
-import type { Action } from "../../action/Action";
-import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
-import type { DrawingState } from "../../../api/model/DrawingState";
+export interface ActionSelectorProps {
+    readonly title: string | undefined;
+    readonly templates: FeatureTemplate[];
+    readonly showActionBar: boolean;
+    readonly drawingState: DrawingState;
+    readonly onActionChange: (newAction: Action | undefined) => void;
+}
+
+export interface CreateAction {
+    readonly mode: "create";
+    readonly template: FeatureTemplate;
+}
+
+export interface UpdateAction {
+    readonly mode: "update";
+}
+
+export type Action = CreateAction | UpdateAction;
 
 export function ActionSelector({
     title,
@@ -81,11 +95,3 @@ function shouldShowActionBar(template: FeatureTemplate | undefined): boolean {
 }
 
 const ACTION_GEOMETRY_TYPES = new Set<GeometryType>(["Polygon", "LineString"]);
-
-interface ActionSelectorProps {
-    readonly title: string | undefined;
-    readonly templates: FeatureTemplate[];
-    readonly showActionBar: boolean;
-    readonly drawingState: DrawingState;
-    readonly onActionChange: (newAction: Action | undefined) => void;
-}

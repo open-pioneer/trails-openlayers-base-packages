@@ -1,15 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, synchronized, watchValue, type CleanupHandle } from "@conterra/reactivity-core";
-
-import { unByKey } from "ol/Observable";
 import type { Feature } from "ol";
 import type { Coordinate } from "ol/coordinate";
-
-import { canBeReset, canBeFinished, getLastCoordinate, getNumberOfVertices } from "./geometryState";
-
-import { UndoManager } from "./UndoManager";
+import { unByKey } from "ol/Observable";
 import type { DrawingState } from "../../../api/model/DrawingState";
+import { canBeFinished, canBeReset, getLastCoordinate, getNumberOfVertices } from "./geometryState";
+import { UndoManager } from "./UndoManager";
 
 export class DrawingSession implements DrawingTracker, DrawingState {
     trackCapabilities(feature: Feature, actionHandler: DrawingActionHandler): void {

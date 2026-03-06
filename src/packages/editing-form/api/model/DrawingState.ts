@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * The state object returned by the `useEditing` hook, providing both operations and capabilities
+ * The state object returned by the `useGeometryEditing` hook, providing both operations and capabilities
  * for the current geometry drawing session.
  *
  * This type combines {@link DrawingActions} (methods to control editing operations) with
@@ -12,7 +12,7 @@
  *
  * @example
  * ```tsx
- * const drawingState = useEditing({ map, editingStep, setEditingStep });
+ * const drawingState = useGeometryEditing({ map, editingStep, setEditingStep });
  *
  * // Check capabilities before enabling buttons
  * <Button disabled={!drawingState.canUndo} onClick={drawingState.undo}>

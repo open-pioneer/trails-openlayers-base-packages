@@ -1,20 +1,31 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it } from "vitest";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import { useEffect } from "react";
-
-import { DefaultPropertyForm } from "../implementation/components/propertyeditor/DefaultPropertyForm";
+import { describe, expect, it } from "vitest";
+import type { PropertyFormContext } from "../api/editor/context";
+import type { CreationStep } from "../api/model/EditingStep";
+import type { FeatureTemplate } from "../api/model/FeatureTemplate";
+import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
 import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { usePropertyFormContext } from "../implementation/context/usePropertyFormContext";
-import type { PropertyFormContext } from "../api/editor/context";
-import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import type { CreationStep } from "../api/model/EditingStep";
+import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
+
+const DUMMY_CALLBACKS: EditingCallbacks = {
+    onSave: () => {
+        throw new Error("not implemented");
+    },
+    onDelete: () => {
+        throw new Error("not implemented");
+    },
+    onCancel: () => {
+        throw new Error("not implemented");
+    }
+};
 
 describe("DefaultPropertyForm property functions", () => {
     it("isRequired static value marks field as required", async () => {
@@ -36,7 +47,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -86,7 +97,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -145,7 +156,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -203,7 +214,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -266,7 +277,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
                     <DefaultPropertyForm
                         title="Test Form"
@@ -343,7 +354,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -405,7 +416,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -454,7 +465,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}
@@ -518,7 +529,7 @@ describe("DefaultPropertyForm property functions", () => {
 
         render(
             <PackageContextProvider>
-                <PropertyFormContextProvider editingStep={editingStep}>
+                <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <DefaultPropertyForm
                         title="Test Form"
                         templates={[template]}

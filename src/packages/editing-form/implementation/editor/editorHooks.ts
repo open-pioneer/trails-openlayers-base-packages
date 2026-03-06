@@ -7,7 +7,7 @@ import { Vector as VectorLayer } from "ol/layer";
 import type { Vector as VectorSource } from "ol/source";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import type { Action } from "../action/Action";
+import type { Action } from "../components/action-selector/ActionSelector";
 import type { EditingStep } from "../../api/model/EditingStep";
 import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
 
