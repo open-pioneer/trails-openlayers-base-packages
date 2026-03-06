@@ -154,19 +154,6 @@ overrides:
   # Ensure patched packages have the expected version (patch was tested with this version):
   "@ark-ui/react": "5.31.0"
 
-  "@open-pioneer/base-theme": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/core": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/http": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/integration": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/local-storage": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/notifier": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/react-utils": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/reactivity": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/runtime": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/test-utils": 4.5.0-dev-hook-timing.20260305145815
-  "@open-pioneer/chakra-snippets": 4.5.0-dev-hook-timing.20260305145815
-
-
 allowUnusedPatches: true
 ignorePatchFailures: false
 patchedDependencies:
