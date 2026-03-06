@@ -33,7 +33,7 @@ export default {
 };
 
 function getPackageDirectories() {
-    const packageJsonPaths = fastGlob.sync("./src/packages/**/package.json", {
+    const packageJsonPaths = fastGlob.sync(["./src/packages/**/package.json"], {
         ignore: ["**/dist/**", "**/node_modules/**", "**/test-data/**"],
         followSymbolicLinks: false
     });
