@@ -39,36 +39,9 @@ catalogs:
     '@open-pioneer/build-support':
       specifier: ^3.0.5
       version: 3.0.5
-    '@open-pioneer/chakra-snippets':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
     '@open-pioneer/check-pnpm-duplicates':
       specifier: ^0.3.0
       version: 0.3.0
-    '@open-pioneer/core':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/http':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/local-storage':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/notifier':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/react-utils':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/reactivity':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/runtime':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
-    '@open-pioneer/test-utils':
-      specifier: 4.5.0-dev-hook-timing.20260305145815
-      version: 4.5.0-dev-hook-timing.20260305145815
     '@open-pioneer/vite-plugin-pioneer':
       specifier: ^5.1.0
       version: 5.1.0
@@ -245,6 +218,17 @@ overrides:
   regenerator-runtime@<=0.13.11: ^0.14.0
   csstype@<3.2.3: '>=3.2.3'
   '@ark-ui/react': 5.31.0
+  '@open-pioneer/base-theme': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/core': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/http': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/integration': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/local-storage': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/notifier': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/react-utils': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/reactivity': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/runtime': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/test-utils': 4.5.0-dev-hook-timing.20260305145815
+  '@open-pioneer/chakra-snippets': 4.5.0-dev-hook-timing.20260305145815
 
 patchedDependencies:
   '@ark-ui/react@*':
@@ -403,10 +387,10 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
@@ -429,19 +413,19 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -457,7 +441,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -473,22 +457,22 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -504,7 +488,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -523,13 +507,13 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -542,7 +526,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -555,16 +539,16 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -587,25 +571,25 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -621,7 +605,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -640,7 +624,7 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
@@ -649,16 +633,16 @@ importers:
         specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -674,7 +658,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -690,13 +674,13 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -715,7 +699,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -737,19 +721,19 @@ importers:
         specifier: 'catalog:'
         version: 4.1.0
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -774,7 +758,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       '@types/jsdom':
         specifier: 'catalog:'
@@ -799,13 +783,13 @@ importers:
         specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -824,7 +808,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -840,7 +824,7 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       '@testing-library/react':
         specifier: 'catalog:'
@@ -860,10 +844,10 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       classnames:
         specifier: 'catalog:'
@@ -873,7 +857,7 @@ importers:
         version: 19.2.4
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       '@testing-library/react':
         specifier: 'catalog:'
@@ -889,19 +873,19 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -917,7 +901,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -927,10 +911,10 @@ importers:
   src/packages/ogc-features:
     dependencies:
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -946,7 +930,7 @@ importers:
         specifier: workspace:*
         version: link:../search
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -962,10 +946,10 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -978,7 +962,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -991,22 +975,22 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -1028,7 +1012,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1047,22 +1031,22 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@tanstack/react-table':
         specifier: 'catalog:'
@@ -1090,7 +1074,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1109,10 +1093,10 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -1125,7 +1109,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1144,13 +1128,13 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -1166,7 +1150,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1182,13 +1166,13 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
@@ -1198,7 +1182,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1211,19 +1195,19 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -1242,7 +1226,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1261,25 +1245,25 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -1301,7 +1285,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1320,25 +1304,25 @@ importers:
         specifier: 'catalog:'
         version: 0.8.1
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/core':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/local-storage':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -1360,7 +1344,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1379,19 +1363,19 @@ importers:
         specifier: workspace:*
         version: link:../basemap-switcher
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       classnames:
         specifier: 'catalog:'
@@ -1410,7 +1394,7 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(typescript@5.9.3)
       openlayers-base-packages:
         specifier: workspace:*
@@ -1438,10 +1422,10 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map-ui-components
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/scale-bar':
         specifier: workspace:^
@@ -1483,10 +1467,10 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -1510,16 +1494,16 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       ol:
         specifier: 'catalog:'
@@ -1549,7 +1533,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/editing
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/legend':
         specifier: workspace:*
@@ -1567,7 +1551,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
         specifier: workspace:*
@@ -1576,16 +1560,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
@@ -1627,7 +1611,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
@@ -1639,10 +1623,10 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/ogc-features
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
@@ -1672,7 +1656,7 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/coordinate-search':
         specifier: workspace:*
@@ -1687,7 +1671,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/legend':
         specifier: workspace:*
@@ -1702,7 +1686,7 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/ogc-features':
         specifier: workspace:*
@@ -1714,16 +1698,16 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
@@ -1768,13 +1752,13 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
@@ -1798,16 +1782,16 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
@@ -1825,10 +1809,10 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
@@ -1840,19 +1824,19 @@ importers:
         specifier: 'catalog:'
         version: 3.32.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       react:
         specifier: 'catalog:'
@@ -1873,13 +1857,13 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(typescript@5.9.3)
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/search':
         specifier: workspace:*
@@ -1915,13 +1899,13 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(react-dom@19.2.4(react@19.2.4))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
+        specifier: 4.5.0-dev-hook-timing.20260305145815
         version: 4.5.0-dev-hook-timing.20260305145815(@types/react@19.2.14)(typescript@5.9.3)
       '@open-pioneer/toc':
         specifier: workspace:*
@@ -2549,7 +2533,7 @@ packages:
     resolution: {integrity: sha512-eIPNzub6e0pSPR7GSs6uSeydJ1nv69m8z0h8yhJEOrK2fBcziFsaX5bruUfBDxpC0p1vWuPhAIDAKC5F/sw75Q==}
     engines: {node: '>= 20'}
     peerDependencies:
-      '@open-pioneer/runtime': '*'
+      '@open-pioneer/runtime': 4.5.0-dev-hook-timing.20260305145815
       sass: ^1.77.6
       vite: ^7.0.0
 
