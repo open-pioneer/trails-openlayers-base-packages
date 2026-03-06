@@ -7,6 +7,7 @@ import { Circle, Fill, Stroke, Style } from "ol/style";
 import type { StyleLike } from "ol/style/Style";
 
 import { PiRectangleBold } from "react-icons/pi";
+import { createElement } from "react";
 
 export const LAYER_CONFIG: LayerConfig[] = [
     {
@@ -365,7 +366,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
             name: "Aufforstungsfläche",
             kind: "declarative",
             geometryType: "Circle",
-            icon: PiRectangleBold({ size: 20 }),
+            icon: createElement(PiRectangleBold, { size: 20 }),
             prototype: {
                 aufforstungsjahr: new Date().getFullYear()
             },
