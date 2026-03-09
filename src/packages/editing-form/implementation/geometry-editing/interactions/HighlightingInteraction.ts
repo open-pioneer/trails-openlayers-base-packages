@@ -1,11 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Highlight, HighlightOptions } from "@open-pioneer/map";
-
 import type { Feature } from "ol";
 import { Circle, Fill, Stroke, Style } from "ol/style";
-
 import { BaseInteraction } from "./BaseInteraction";
+
+export interface HighlightingParameters {
+    readonly feature: Feature;
+    readonly highlightOptions?: HighlightOptions;
+}
+
+interface Data {
+    readonly highlight?: Highlight;
+}
 
 export class HighlightingInteraction extends BaseInteraction<HighlightingParameters, Data> {
     protected override startInteraction(parameters: HighlightingParameters): Data {
@@ -47,13 +54,4 @@ export class HighlightingInteraction extends BaseInteraction<HighlightingParamet
             radius: 12.0
         })
     });
-}
-
-export interface HighlightingParameters {
-    readonly feature: Feature;
-    readonly highlightOptions?: HighlightOptions;
-}
-
-interface Data {
-    readonly highlight?: Highlight;
 }

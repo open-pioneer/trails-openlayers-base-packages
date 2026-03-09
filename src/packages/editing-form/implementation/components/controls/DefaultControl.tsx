@@ -7,11 +7,9 @@ import {
     Textarea,
     type CheckboxCheckedChangeDetails
 } from "@chakra-ui/react";
-
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot, DISPATCH_SYNC } from "@open-pioneer/reactivity";
 import type { ChangeEvent, ReactNode } from "react";
-
 import { ColorPickerControl } from "./ColorPickerControl";
 import { ComboBoxControl } from "./ComboBoxControl";
 import { NumberFieldControl } from "./NumberFieldControl";
@@ -19,6 +17,12 @@ import { RadioGroupControl } from "./RadioGroupControl";
 import { SelectControl } from "./SelectControl";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { FieldConfig } from "../../../api/fields/FieldConfig";
+
+export interface DefaultControlProps {
+    readonly field: FieldConfig;
+}
+
+type InputElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
 export function DefaultControl({ field }: DefaultControlProps): ReactNode {
     const { properties } = usePropertyFormContext();
@@ -147,9 +151,3 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
             );
     }
 }
-
-export interface DefaultControlProps {
-    readonly field: FieldConfig;
-}
-
-type InputElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;

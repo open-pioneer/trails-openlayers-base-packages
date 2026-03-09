@@ -6,6 +6,12 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useMemo, type ReactElement, type ReactNode } from "react";
 import type { FormTemplate } from "../../../api/model/FeatureTemplate";
 
+interface HeaderProps {
+    readonly title: string | undefined;
+    readonly template?: FormTemplate;
+    readonly children: ReactNode;
+}
+
 export function Header({ title, template, children }: HeaderProps): ReactElement {
     const defaultTitle = useDefaultTitle();
 
@@ -26,10 +32,4 @@ export function Header({ title, template, children }: HeaderProps): ReactElement
 function useDefaultTitle(): string {
     const { formatMessage } = useIntl();
     return useMemo(() => formatMessage({ id: "header.defaultTitle" }), [formatMessage]);
-}
-
-interface HeaderProps {
-    readonly title: string | undefined;
-    readonly template?: FormTemplate;
-    readonly children: ReactNode;
 }

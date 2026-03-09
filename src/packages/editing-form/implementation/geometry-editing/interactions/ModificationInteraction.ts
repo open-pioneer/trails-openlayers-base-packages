@@ -2,12 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Collection, type Feature } from "ol";
 import { Modify } from "ol/interaction";
-
 import type { Geometry } from "ol/geom";
 import type { Layer as OlLayer } from "ol/layer";
-
 import { BaseInteraction } from "./BaseInteraction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
+
+export interface ModificationParameters {
+    readonly feature: Feature;
+    readonly drawLayer?: OlLayer;
+    readonly modificationOptions?: ModificationOptions;
+}
+
+interface Data {
+    readonly feature: Feature;
+    readonly modify: Modify;
+    readonly drawLayer: OlLayer | undefined;
+    readonly originalGeometry: Geometry | undefined;
+}
 
 export class ModificationInteraction extends BaseInteraction<ModificationParameters, Data> {
     protected override startInteraction(parameters: ModificationParameters): Data {
@@ -38,17 +49,4 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
             feature.setGeometry(originalGeometry);
         }
     }
-}
-
-export interface ModificationParameters {
-    readonly feature: Feature;
-    readonly drawLayer?: OlLayer;
-    readonly modificationOptions?: ModificationOptions;
-}
-
-interface Data {
-    readonly feature: Feature;
-    readonly modify: Modify;
-    readonly drawLayer: OlLayer | undefined;
-    readonly originalGeometry: Geometry | undefined;
 }

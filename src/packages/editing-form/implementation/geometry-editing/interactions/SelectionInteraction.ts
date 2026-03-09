@@ -1,16 +1,32 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Layer } from "@open-pioneer/map";
-
 import { Select } from "ol/interaction";
 import { unByKey } from "ol/Observable";
-
 import type { Feature } from "ol";
 import type { EventsKey } from "ol/events";
 import { Layer as OlLayer } from "ol/layer";
-
 import { BaseInteraction } from "./BaseInteraction";
 import type { SelectionOptions } from "../../../api/model/InteractionOptions";
+
+export interface SelectionParameters {
+    readonly layers: Layer[];
+    readonly selectionOptions?: SelectionOptions;
+    readonly completionHandler: (feature: Feature, layer: Layer | undefined) => void;
+}
+
+interface SelectionData {
+    readonly select: Select;
+    readonly eventsKey: EventsKey;
+}
+
+interface InternalSelect {
+    readonly featureLayerAssociation_?: Record<string, OlLayer>;
+}
+
+interface InternalFeature extends Feature {
+    readonly ol_uid?: string;
+}
 
 export class SelectionInteraction extends BaseInteraction<SelectionParameters, SelectionData> {
     protected override startInteraction(parameters: SelectionParameters): SelectionData {
@@ -57,23 +73,4 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
     }
 
     private static readonly DEFAULT_HIT_TOLERANCE = 22;
-}
-
-export interface SelectionParameters {
-    readonly layers: Layer[];
-    readonly selectionOptions?: SelectionOptions;
-    readonly completionHandler: (feature: Feature, layer: Layer | undefined) => void;
-}
-
-interface SelectionData {
-    readonly select: Select;
-    readonly eventsKey: EventsKey;
-}
-
-interface InternalSelect {
-    readonly featureLayerAssociation_?: Record<string, OlLayer>;
-}
-
-interface InternalFeature extends Feature {
-    readonly ol_uid?: string;
 }

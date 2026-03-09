@@ -3,11 +3,14 @@
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Field } from "@chakra-ui/react";
 import type { ReactElement } from "react";
-
 import { DefaultControl } from "../controls/DefaultControl";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { FieldConfig } from "../../../api/fields/FieldConfig";
 import type { PropertyFunction, PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
+
+interface DefaultFieldProps {
+    readonly field: FieldConfig;
+}
 
 export function DefaultField({ field }: DefaultFieldProps): ReactElement | undefined {
     const isRequired = useValue(field.isRequired) ?? false;
@@ -49,8 +52,4 @@ function useValue<T>(value: PropertyFunctionOr<T> | undefined): T | undefined {
 
 function isPropertyFunction<T>(value: PropertyFunctionOr<T>): value is PropertyFunction<T> {
     return typeof value === "function";
-}
-
-interface DefaultFieldProps {
-    readonly field: FieldConfig;
 }

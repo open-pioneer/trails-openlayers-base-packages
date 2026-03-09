@@ -19,6 +19,10 @@ import {
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
 import { DrawingSession } from "./DrawingSession";
 
+type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker">>;
+type StartSelectingFeatureOptions = Pick<SelectionParameters, "layers" | "completionHandler">;
+type StartModifyingFeatureOptions = Pick<ModificationParameters, "feature" | "drawLayer">;
+
 export class EditingController {
     private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
     private snappingSources: VectorSource[] = [];
@@ -102,7 +106,3 @@ export class EditingController {
         });
     }
 }
-
-type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker">>;
-type StartSelectingFeatureOptions = Pick<SelectionParameters, "layers" | "completionHandler">;
-type StartModifyingFeatureOptions = Pick<ModificationParameters, "feature" | "drawLayer">;

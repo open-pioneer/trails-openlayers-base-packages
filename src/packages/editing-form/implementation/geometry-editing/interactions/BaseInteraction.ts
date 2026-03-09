@@ -3,6 +3,17 @@
 import type { MapModel } from "@open-pioneer/map";
 import type { Map } from "ol";
 
+type EditingWorkflowState<T> = IdleState | ActiveState<T>;
+
+interface IdleState {
+    readonly type: "idle";
+}
+
+interface ActiveState<T> {
+    readonly type: "active";
+    readonly data: T;
+}
+
 export abstract class BaseInteraction<Params, Data> {
     private state: EditingWorkflowState<Data> = { type: "idle" };
 
@@ -35,15 +46,4 @@ export abstract class BaseInteraction<Params, Data> {
 
     protected abstract startInteraction(parameters: Params): Data;
     protected abstract stopInteraction(interactionData: Data): void;
-}
-
-type EditingWorkflowState<T> = IdleState | ActiveState<T>;
-
-interface IdleState {
-    readonly type: "idle";
-}
-
-interface ActiveState<T> {
-    readonly type: "active";
-    readonly data: T;
 }

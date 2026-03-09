@@ -2,9 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Table } from "@chakra-ui/react";
 import type { ReactElement } from "react";
-
 import { TemplateRow } from "./TemplateRow";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
+
+interface TemplateSelectorProps {
+    readonly templates: FeatureTemplate[];
+    readonly selectedTemplate: FeatureTemplate | undefined;
+    readonly onClick: (featureTemplate: FeatureTemplate) => void;
+}
 
 export function TemplateSelector({
     templates,
@@ -25,10 +30,4 @@ export function TemplateSelector({
             </Table.Body>
         </Table.Root>
     );
-}
-
-interface TemplateSelectorProps {
-    readonly templates: FeatureTemplate[];
-    readonly selectedTemplate: FeatureTemplate | undefined;
-    readonly onClick: (featureTemplate: FeatureTemplate) => void;
 }

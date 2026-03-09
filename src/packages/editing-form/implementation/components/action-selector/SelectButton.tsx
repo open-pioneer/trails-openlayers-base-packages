@@ -5,6 +5,11 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { LuMousePointerClick } from "react-icons/lu";
 import type { ReactElement } from "react";
 
+interface SelectButtonProps {
+    readonly isActive: boolean;
+    readonly onClick: () => void;
+}
+
 export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactElement {
     const { formatMessage } = useIntl();
 
@@ -21,9 +26,4 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
             {formatMessage({ id: "actionSelector.selectButtonTitle" })}
         </Button>
     );
-}
-
-interface SelectButtonProps {
-    readonly isActive: boolean;
-    readonly onClick: () => void;
 }

@@ -2,9 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Snap } from "ol/interaction";
 import type { Vector as VectorSource } from "ol/source";
-
 import { BaseInteraction } from "./BaseInteraction";
 import type { SnappingOptions } from "../../../api/model/InteractionOptions";
+
+export interface SnappingParameters {
+    readonly snappingSources: VectorSource[];
+    readonly snappingOptions?: SnappingOptions;
+}
+
+interface SnappingData {
+    readonly snaps: Snap[];
+}
 
 export class SnappingInteraction extends BaseInteraction<SnappingParameters, SnappingData> {
     protected override startInteraction(parameters: SnappingParameters): SnappingData {
@@ -24,13 +32,4 @@ export class SnappingInteraction extends BaseInteraction<SnappingParameters, Sna
             this.map.removeInteraction(snap);
         }
     }
-}
-
-export interface SnappingParameters {
-    readonly snappingSources: VectorSource[];
-    readonly snappingOptions?: SnappingOptions;
-}
-
-interface SnappingData {
-    readonly snaps: Snap[];
 }

@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { isLayer, type Layer, type MapModel } from "@open-pioneer/map";
-
 import { Vector as VectorLayer } from "ol/layer";
 import type { Vector as VectorSource } from "ol/source";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
 import type { Action } from "../components/action-selector/ActionSelector";
 import type {
     DrawingStep,
@@ -15,6 +13,8 @@ import type {
     SelectionStep
 } from "../../api/model/EditingStep";
 import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
+
+type StatePair<S> = [S, (newState: S) => void];
 
 export function useEditingStep(
     onEditingStepChange: ((newStep: EditingStep) => void) | undefined
@@ -82,5 +82,3 @@ function compactMap<T, U>(array: T[], mapper: (element: T) => U | undefined): U[
         return value != null ? [value] : [];
     });
 }
-
-type StatePair<S> = [S, (newState: S) => void];

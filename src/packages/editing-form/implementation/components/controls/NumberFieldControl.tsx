@@ -6,6 +6,12 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
 import type { NumberFieldConfig } from "../../../api/fields/standardFieldConfigs";
 
+interface NumberFieldControlProps {
+    readonly value: number | undefined;
+    readonly field: NumberFieldConfig;
+    readonly onChange: (newNumber: number | undefined) => void;
+}
+
 // This component allows its value to be specified as a number. The value is still stored as a
 // string internally to allow non-numeric characters (such as '-', '.', or 'e') to be entered.
 export function NumberFieldControl({
@@ -78,10 +84,4 @@ function useFormatNumber(formatOptions: Intl.NumberFormatOptions | undefined) {
         },
         [formatNumber, formatOptions]
     );
-}
-
-interface NumberFieldControlProps {
-    readonly value: number | undefined;
-    readonly field: NumberFieldConfig;
-    readonly onChange: (newNumber: number | undefined) => void;
 }

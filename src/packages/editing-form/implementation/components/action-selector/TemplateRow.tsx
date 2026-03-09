@@ -3,10 +3,18 @@
 import { HStack, Table, Text } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import type { ReactElement, ReactNode } from "react";
-
 import { PiCircleBold, PiDotOutlineBold, PiLineSegmentsFill, PiPolygonFill } from "react-icons/pi";
-
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
+
+interface TemplateRowProps {
+    readonly template: FeatureTemplate;
+    readonly isSelected: boolean;
+    readonly onClick: (featureTemplate: FeatureTemplate) => void;
+}
+
+interface TemplateIconProps {
+    readonly template: FeatureTemplate;
+}
 
 export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps): ReactElement {
     const onRowClick = useEvent(() => onClick(template));
@@ -49,14 +57,4 @@ function TemplateIcon({ template }: TemplateIconProps): ReactNode | undefined {
         default:
             return undefined;
     }
-}
-
-interface TemplateRowProps {
-    readonly template: FeatureTemplate;
-    readonly isSelected: boolean;
-    readonly onClick: (featureTemplate: FeatureTemplate) => void;
-}
-
-interface TemplateIconProps {
-    readonly template: FeatureTemplate;
 }

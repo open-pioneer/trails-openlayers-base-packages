@@ -8,6 +8,18 @@ import { DrawingState } from "../useGeometryEditing";
 import { canBeFinished, canBeReset, getLastCoordinate, getNumberOfVertices } from "./geometryState";
 import { UndoManager } from "./UndoManager";
 
+export interface DrawingTracker {
+    readonly trackCapabilities: (feature: Feature, actionHandler: DrawingActionHandler) => void;
+    readonly untrackCapabilities: () => void;
+}
+
+export interface DrawingActionHandler {
+    readonly undo: () => void;
+    readonly redo: (coordinate: Coordinate) => void;
+    readonly finish: () => void;
+    readonly reset: () => void;
+}
+
 export class DrawingSession implements DrawingTracker, DrawingState {
     trackCapabilities(feature: Feature, actionHandler: DrawingActionHandler): void {
         this.untrackCapabilities();
@@ -112,16 +124,4 @@ export class DrawingSession implements DrawingTracker, DrawingState {
     private readonly canFinishSignal = reactive<boolean>();
     private readonly canResetSignal = reactive<boolean>();
     private readonly undoManager = new UndoManager<Coordinate>();
-}
-
-export interface DrawingTracker {
-    readonly trackCapabilities: (feature: Feature, actionHandler: DrawingActionHandler) => void;
-    readonly untrackCapabilities: () => void;
-}
-
-export interface DrawingActionHandler {
-    readonly undo: () => void;
-    readonly redo: (coordinate: Coordinate) => void;
-    readonly finish: () => void;
-    readonly reset: () => void;
 }

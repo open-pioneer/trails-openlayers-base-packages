@@ -4,14 +4,26 @@ import { Draw } from "ol/interaction";
 import { Vector as VectorLayer } from "ol/layer";
 import { unByKey } from "ol/Observable";
 import { Vector as VectorSource } from "ol/source";
-
 import type { Feature } from "ol";
 import type { EventsKey } from "ol/events";
 import type { Type as GeometryType } from "ol/geom/Geometry";
-
 import { BaseInteraction } from "./BaseInteraction";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
+
+export interface DrawingParameters {
+    readonly geometryType: GeometryType;
+    readonly tracker: DrawingTracker;
+    readonly drawingOptions?: DrawingOptions;
+    readonly completionHandler: (feature: Feature, drawLayer: VectorLayer) => void;
+}
+
+interface DrawingData {
+    readonly draw: Draw;
+    readonly drawLayer: VectorLayer;
+    readonly eventsKeys: EventsKey[];
+    readonly tracker: DrawingTracker;
+}
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
     protected override startInteraction(parameters: DrawingParameters): DrawingData {
@@ -48,18 +60,4 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         unByKey(eventsKeys);
         tracker.untrackCapabilities();
     }
-}
-
-export interface DrawingParameters {
-    readonly geometryType: GeometryType;
-    readonly tracker: DrawingTracker;
-    readonly drawingOptions?: DrawingOptions;
-    readonly completionHandler: (feature: Feature, drawLayer: VectorLayer) => void;
-}
-
-interface DrawingData {
-    readonly draw: Draw;
-    readonly drawLayer: VectorLayer;
-    readonly eventsKeys: EventsKey[];
-    readonly tracker: DrawingTracker;
 }

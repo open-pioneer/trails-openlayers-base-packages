@@ -8,10 +8,20 @@ import {
     type SelectValueChangeDetails,
     type RadioGroupValueChangeDetails
 } from "@chakra-ui/react";
-
 import { useEvent } from "@open-pioneer/react-utils";
 import { useMemo } from "react";
 import type { SelectConfig, ComboBoxConfig } from "../../../api/fields/optionFieldConfigs";
+
+export interface OptionControlProps<T = SelectConfig | ComboBoxConfig> {
+    readonly value: string | number | undefined;
+    readonly field: T;
+    readonly onChange: (value: unknown) => void;
+}
+
+type ValueChangeDetails =
+    | SelectValueChangeDetails
+    | ComboboxValueChangeDetails
+    | RadioGroupValueChangeDetails;
 
 export function useOptionProps({ value, field, onChange }: OptionControlProps) {
     const selectedValue = useMemo(() => (value != undefined ? [value.toString()] : []), [value]);
@@ -56,14 +66,3 @@ function useCollection(field: SelectConfig | ComboBoxConfig) {
 
     return { collection, onInputValueChange };
 }
-
-export interface OptionControlProps<T = SelectConfig | ComboBoxConfig> {
-    readonly value: string | number | undefined;
-    readonly field: T;
-    readonly onChange: (value: unknown) => void;
-}
-
-type ValueChangeDetails =
-    | SelectValueChangeDetails
-    | ComboboxValueChangeDetails
-    | RadioGroupValueChangeDetails;

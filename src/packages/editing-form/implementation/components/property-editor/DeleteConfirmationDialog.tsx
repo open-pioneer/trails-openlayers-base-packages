@@ -5,6 +5,12 @@ import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
 
+interface DeleteConfirmationDialogProps {
+    readonly isOpen: boolean;
+    readonly onDelete: () => Promise<void>;
+    readonly onCancel: () => void;
+}
+
 export function DeleteConfirmationDialog({
     isOpen,
     onDelete,
@@ -61,10 +67,4 @@ export function DeleteConfirmationDialog({
             </Dialog.Positioner>
         </Dialog.Root>
     );
-}
-
-interface DeleteConfirmationDialogProps {
-    readonly isOpen: boolean;
-    readonly onDelete: () => Promise<void>;
-    readonly onCancel: () => void;
 }

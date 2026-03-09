@@ -1,13 +1,20 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Flex, Button, Spacer } from "@chakra-ui/react";
-
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-
 import { LuTrash2 } from "react-icons/lu";
 import { useMemo, useState, type ReactElement } from "react";
+
+interface ButtonRowProps {
+    readonly canSave: boolean;
+    readonly showDeleteButton: boolean;
+
+    readonly onSave: () => Promise<void>;
+    readonly onDelete: () => void;
+    readonly onCancel: () => void;
+}
 
 export function ButtonRow({
     canSave,
@@ -69,13 +76,4 @@ export function ButtonRow({
             </Button>
         </Flex>
     );
-}
-
-interface ButtonRowProps {
-    readonly canSave: boolean;
-    readonly showDeleteButton: boolean;
-
-    readonly onSave: () => Promise<void>;
-    readonly onDelete: () => void;
-    readonly onCancel: () => void;
 }

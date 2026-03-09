@@ -7,11 +7,20 @@ import {
     parseColor,
     type ColorPickerValueChangeDetails
 } from "@chakra-ui/react";
-
 import { useEvent } from "@open-pioneer/react-utils";
 import { LuCheck } from "react-icons/lu";
 import { useMemo, type ReactElement } from "react";
 import type { ColorPickerConfig } from "../../../api/fields/standardFieldConfigs";
+
+interface ColorPickerControlProps {
+    readonly hexColor: string | undefined;
+    readonly field: ColorPickerConfig;
+    readonly onChange: (newHexColor: string) => void;
+}
+
+interface SwatchGroupProps {
+    readonly swatchColors: string[] | undefined;
+}
 
 export function ColorPickerControl({
     hexColor,
@@ -64,14 +73,4 @@ function SwatchGroup({ swatchColors }: SwatchGroupProps): ReactElement | undefin
     } else {
         return undefined;
     }
-}
-
-interface ColorPickerControlProps {
-    readonly hexColor: string | undefined;
-    readonly field: ColorPickerConfig;
-    readonly onChange: (newHexColor: string) => void;
-}
-
-interface SwatchGroupProps {
-    readonly swatchColors: string[] | undefined;
 }

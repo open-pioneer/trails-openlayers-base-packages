@@ -3,6 +3,29 @@
 import { BaseInteraction } from "./BaseInteraction";
 import { type DrawingState } from "../useGeometryEditing";
 
+interface KeyboardParameters {
+    readonly actions: DrawingState;
+}
+
+interface KeyboardData {
+    readonly keyboardListener: KeyboardListener;
+}
+
+type KeyboardListener = Parameters<typeof document.addEventListener<"keydown">>[1];
+
+interface KeyboardShortcut {
+    readonly key: string;
+    readonly ctrlKey?: boolean;
+    readonly shiftKey?: boolean;
+    readonly action: () => void;
+}
+
+interface NewNavigator extends Navigator {
+    readonly userAgentData?: {
+        readonly platform: string | undefined;
+    };
+}
+
 export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, KeyboardData> {
     protected override startInteraction({ actions }: KeyboardParameters): KeyboardData {
         const keyboardListener = this.addKeyboardListener([
@@ -74,27 +97,4 @@ export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, Key
     }
 
     private static readonly APPLE_REGEX = /(Mac|iPad|iPhone|iPod)/i;
-}
-
-interface KeyboardParameters {
-    readonly actions: DrawingState;
-}
-
-interface KeyboardData {
-    readonly keyboardListener: KeyboardListener;
-}
-
-type KeyboardListener = Parameters<typeof document.addEventListener<"keydown">>[1];
-
-interface KeyboardShortcut {
-    readonly key: string;
-    readonly ctrlKey?: boolean;
-    readonly shiftKey?: boolean;
-    readonly action: () => void;
-}
-
-interface NewNavigator extends Navigator {
-    readonly userAgentData?: {
-        readonly platform: string | undefined;
-    };
 }
