@@ -45,11 +45,11 @@ const editingStorage: EditingStorage = {
         // Persist the new feature in your backend
         await myApi.createFeature(feature, template.layerId);
     },
-    async updateFeature(feature, layer, projection) {
+    async updateFeature({ feature, layer, projection }) {
         // Update the existing feature in your backend
         await myApi.updateFeature(feature, layer?.id);
     },
-    async deleteFeature(feature, layer, projection) {
+    async deleteFeature({ feature, layer, projection }) {
         // Delete the feature from your backend
         await myApi.deleteFeature(feature, layer?.id);
     }
@@ -138,7 +138,7 @@ For example, to persist changes using a (fictional) REST API:
 ```tsx
 const editingStorage: EditingStorage = {
     // Called when a new feature is created
-    async addFeature(feature, template, projection) {
+    async addFeature({ feature, template, projection }) {
         const geojson = new GeoJSON().writeFeatureObject(feature, {
             featureProjection: projection
         });
@@ -149,7 +149,7 @@ const editingStorage: EditingStorage = {
     },
 
     // Called when an existing feature is modified
-    async updateFeature(feature, layer, projection) {
+    async updateFeature({ feature, layer, projection }) {
         const id = feature.getId();
         const geojson = new GeoJSON().writeFeatureObject(feature, {
             featureProjection: projection
@@ -161,7 +161,7 @@ const editingStorage: EditingStorage = {
     },
 
     // Called when a feature is deleted
-    async deleteFeature(feature, layer, projection) {
+    async deleteFeature({ feature, layer, projection }) {
         const id = feature.getId();
         await fetch(`/api/layers/${layer?.id}/features/${id}`, {
             method: "DELETE"

@@ -25,6 +25,8 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  *
  * @example
  * ```tsx
+ * import { useReactiveSnapshot, DISPATCH_SYNC } from "@open-pioneer/reactivity";
+ *
  * function CustomForm() {
  *     const context = usePropertyFormContext();
  *     const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context], DISPATCH_SYNC);
