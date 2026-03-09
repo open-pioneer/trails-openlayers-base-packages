@@ -33,7 +33,7 @@
         "@open-pioneer/build-support": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
         "@open-pioneer/vite-plugin-pioneer": "catalog:",
-        "@open-pioneer/changesets-release-line": "0.1.0-dev.20260309143038",
+        "@open-pioneer/changesets-release-line": "catalog:",
         "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",
         "@testing-library/react": "catalog:",
