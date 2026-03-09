@@ -6,7 +6,9 @@ import type { BaseFieldConfig } from "./BaseFieldConfig";
  * Configuration for a combo box field.
  *
  * Renders a searchable combo box input that allows users to select from a list of options. The
- * field can store either string or number values depending on the {@link valueType} property.
+ * field can store either string or number values depending on the `valueType` property.
+ *
+ * @inlineType BaseComboBoxConfig
  */
 export type ComboBoxConfig = BaseComboBoxConfig & (StringOptions | NumberOptions);
 
@@ -14,7 +16,9 @@ export type ComboBoxConfig = BaseComboBoxConfig & (StringOptions | NumberOptions
  * Configuration for a select field.
  *
  * Renders a dropdown select input that allows users to choose from a list of predefined options.
- * The field can store either string or number values depending on the {@link valueType} property.
+ * The field can store either string or number values depending on the `valueType` property.
+ *
+ * @inlineType BaseSelectConfig
  */
 export type SelectConfig = BaseSelectConfig & (StringOptions | NumberOptions);
 
@@ -22,10 +26,13 @@ export type SelectConfig = BaseSelectConfig & (StringOptions | NumberOptions);
  * Configuration for a radio group field.
  *
  * Renders a group of radio buttons that allows users to select a single option from a list. The
- * field can store either string or number values depending on the {@link valueType} property.
+ * field can store either string or number values depending on the `valueType` property.
+ *
+ * @inlineType BaseRadioGroupConfig
  */
 export type RadioGroupConfig = BaseRadioGroupConfig & (StringOptions | NumberOptions);
 
+/** @inline */
 interface BaseComboBoxConfig extends BaseFieldConfig {
     /** Identifies this as a combo box field. */
     readonly type: "combo-box";
@@ -49,6 +56,7 @@ interface BaseComboBoxConfig extends BaseFieldConfig {
     readonly showClearTrigger?: boolean;
 }
 
+/** @inline */
 interface BaseSelectConfig extends BaseFieldConfig {
     /** Identifies this as a select field. */
     readonly type: "select";
@@ -72,11 +80,13 @@ interface BaseSelectConfig extends BaseFieldConfig {
     readonly showClearTrigger?: boolean;
 }
 
+/** @inline */
 interface BaseRadioGroupConfig extends BaseFieldConfig {
     /** Identifies this as a radio group field. */
     readonly type: "radio-group";
 }
 
+/** @inline */
 interface StringOptions {
     /** Indicates that option values are strings. */
     readonly valueType: "string";
@@ -85,6 +95,7 @@ interface StringOptions {
     readonly options: Option<string>[];
 }
 
+/** @inline */
 interface NumberOptions {
     /** Indicates that option values are numbers. */
     readonly valueType: "number";

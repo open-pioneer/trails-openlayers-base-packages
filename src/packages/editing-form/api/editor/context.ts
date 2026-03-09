@@ -44,7 +44,7 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  * }
  * ```
  */
-export const usePropertyFormContext = usePropertyFormContextImpl;
+export const usePropertyFormContext: () => PropertyFormContext = usePropertyFormContextImpl;
 
 /**
  * Context object providing access to feature properties and editing state during form editing.

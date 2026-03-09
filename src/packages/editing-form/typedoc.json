@@ -1,4 +1,9 @@
 {
     "extends": ["openlayers-base-packages/typedoc.base.json"],
-    "entryPoints": ["./index.ts"]
+    "entryPoints": ["./index.ts"],
+    "externalSymbolLinkMappings": {
+        "typescript": { "Intl.NumberFormatOptions": "#" },
+        "@conterra/reactivity-core": { "ReactiveMap": "#" },
+        "@open-pioneer/reactivity": { "useReactiveSnapshot": "#" }
+    }
 }
