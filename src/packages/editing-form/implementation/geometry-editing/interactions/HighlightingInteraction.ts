@@ -21,7 +21,7 @@ export class HighlightingInteraction extends BaseInteraction<HighlightingParamet
 
         if (geometry != null) {
             const options = this.getHighlightOptions(highlightOptions);
-            const highlight = this.mapModel.highlight([geometry], options);
+            const highlight = this.mapModel.highlights.add([geometry], options);
             return { highlight };
         } else {
             return {};
