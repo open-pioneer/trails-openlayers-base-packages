@@ -113,20 +113,18 @@ To create rectangle geometries, set `geometryType` to `"Circle"` and provide a `
 import { createBox } from "ol/interaction/Draw";
 
 const template: FeatureTemplate = {
-    name: "Aufforstungsfläche",
     kind: "declarative",
     geometryType: "Circle",
-    icon: createElement(PiRectangleBold, { size: 20 }),
-    defaultProperties: {
-        aufforstungsjahr: new Date().getFullYear()
-    },
+
+    // ...
+
     drawingOptions: {
         geometryFunction: createBox()
     },
     fields: [
-        ...
+        // ...
     ]
-}
+};
 ```
 
 ### Editing Storage

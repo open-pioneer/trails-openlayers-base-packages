@@ -23,7 +23,7 @@ export class PropertyFormContextClass implements PropertyFormContext {
         this.propertiesMap = reactiveMap(entries);
     }
 
-    get propertiesObject(): Record<string, unknown> {
+    getPropertiesAsObject(): Record<string, unknown> {
         const entries = this.properties.entries();
         return Object.fromEntries(entries);
     }

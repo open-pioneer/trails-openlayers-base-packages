@@ -43,7 +43,7 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully added, or rejects with
      * an error if the operation fails.
      */
-    addFeature(options?: AddFeatureOptions): Promise<void>;
+    addFeature(options: AddFeatureOptions): Promise<void>;
 
     /**
      * Called for updating an existing feature.
@@ -55,7 +55,7 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully updated, or rejects
      * with an error if the operation fails.
      */
-    updateFeature(options?: UpdateFeatureOptions): Promise<void>;
+    updateFeature(options: UpdateFeatureOptions): Promise<void>;
 
     /**
      * Called for deleting a feature.
@@ -67,7 +67,7 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully deleted, or rejects
      * with an error if the operation fails.
      */
-    deleteFeature(options?: DeleteFeatureOptions): Promise<void>;
+    deleteFeature(options: DeleteFeatureOptions): Promise<void>;
 }
 
 /** @group Model */

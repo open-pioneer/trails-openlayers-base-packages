@@ -18,7 +18,7 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
     const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 
     const onSaveClick = useEvent(async () => {
-        const properties = context.propertiesObject;
+        const properties = context.getPropertiesAsObject();
         context.feature.setProperties(properties);
         await context.callbacks.onSave();
     });

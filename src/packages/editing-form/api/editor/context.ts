@@ -93,7 +93,7 @@ export interface PropertyFormContext {
      *
      * @returns A plain object containing all feature properties (excluding geometry).
      */
-    readonly propertiesObject: Record<string, unknown>;
+    readonly getPropertiesAsObject: () => Record<string, unknown>;
 
     /**
      * The current editing step containing the feature and associated metadata.
