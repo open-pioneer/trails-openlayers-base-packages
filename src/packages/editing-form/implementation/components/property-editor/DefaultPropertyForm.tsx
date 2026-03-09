@@ -3,27 +3,26 @@
 import { VStack } from "@chakra-ui/react";
 import { effect } from "@conterra/reactivity-core";
 import { useCallback, useEffect, useMemo, type ReactElement } from "react";
-
-import { DefaultField } from "./DefaultField";
-import { Header } from "../header/Header";
-
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import type { FieldConfig } from "../../../api/fields/FieldConfig";
+import { FormTemplateContext } from "../../../api/editor/editor";
 import type { PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
+import type { FieldConfig } from "../../../api/fields/FieldConfig";
+import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
+import { Header } from "../header/Header";
+import { DefaultField } from "./DefaultField";
 
-import type {
-    FeatureTemplate,
-    FormTemplate,
-    FormTemplateProvider
-} from "../../../api/model/FeatureTemplate";
+export interface DefaultPropertyFormProps {
+    readonly title: string | undefined;
+    readonly templates: FeatureTemplate[];
+    readonly resolveFormTemplate?: (context: FormTemplateContext) => FormTemplate | undefined;
+}
 
 export function DefaultPropertyForm({
     title,
     templates,
-    formTemplateProvider
+    resolveFormTemplate
 }: DefaultPropertyFormProps): ReactElement {
-    const defaultProvider = useDefaultFormTemplateProvider(templates);
-    const template = useFormTemplate(formTemplateProvider ?? defaultProvider);
+    const template = useFormTemplate(templates, resolveFormTemplate);
     useUpdateValidity(template);
 
     return (
@@ -39,23 +38,28 @@ export function DefaultPropertyForm({
     );
 }
 
-function useFormTemplate(provider: FormTemplateProvider): FormTemplate | undefined {
+function useFormTemplate(
+    templates: FeatureTemplate[],
+    customResolver: DefaultPropertyFormProps["resolveFormTemplate"]
+): FormTemplate | undefined {
     const { mode, feature, template: explicitTemplate, layer } = usePropertyFormContext();
+    const defaultResolver = useDefaultFormTemplateResolver(templates);
+    const resolveFormTemplate = customResolver ?? defaultResolver;
 
     return useMemo(() => {
-        if (explicitTemplate != null) {
+        if (explicitTemplate) {
             return explicitTemplate;
         } else if (mode === "update") {
-            return provider({ feature, layer });
+            return resolveFormTemplate({ feature, layer });
         } else {
             return undefined;
         }
-    }, [feature, mode, explicitTemplate, layer, provider]);
+    }, [feature, mode, explicitTemplate, layer, resolveFormTemplate]);
 }
 
-function useDefaultFormTemplateProvider(templates: FeatureTemplate[]): FormTemplateProvider {
+function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
     return useCallback(
-        ({ layer }) => {
+        ({ layer }: FormTemplateContext) => {
             if (layer?.id != null) {
                 return templates.find(({ layerId }) => layer.id === layerId);
             } else {
@@ -93,10 +97,4 @@ function isTrue(
     defaultValue: boolean = false
 ): boolean {
     return typeof value === "function" ? value(properties) : (value ?? defaultValue);
-}
-
-export interface DefaultPropertyFormProps {
-    readonly title: string | undefined;
-    readonly templates: FeatureTemplate[];
-    readonly formTemplateProvider: FormTemplateProvider | undefined;
 }

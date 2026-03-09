@@ -7,7 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-import type { EditingHandler } from "../../api/model/EditingHandler";
+import type { EditingStorage } from "../../api/model/EditingStorage";
 import type { EditingStep, InitialStep } from "../../api/model/EditingStep";
 import { useEvent } from "@open-pioneer/react-utils";
 
@@ -24,7 +24,7 @@ export interface EditingCallbacks {
 export function useEditingCallbacks(
     mapModel: MapModel,
     editingStep: EditingStep,
-    editingHandler: EditingHandler,
+    storage: EditingStorage,
     setEditingStep: (newEditingStep: EditingStep) => void,
     successNotifierDisplayDuration: number | undefined,
     failureNotifierDisplayDuration: number | undefined
@@ -40,7 +40,7 @@ export function useEditingCallbacks(
         if (editingStep.id === "creation") {
             const { feature, template } = editingStep;
             try {
-                await editingHandler.addFeature({ feature, template, projection });
+                await storage.addFeature({ feature, template, projection });
                 showNotifier("create", true);
                 setEditingStep(INITIAL);
             } catch (error) {
@@ -50,7 +50,7 @@ export function useEditingCallbacks(
         } else if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
             try {
-                await editingHandler.updateFeature({ feature, layer, projection });
+                await storage.updateFeature({ feature, layer, projection });
                 showNotifier("update", true);
                 setEditingStep(INITIAL);
             } catch (error) {
@@ -63,7 +63,7 @@ export function useEditingCallbacks(
         if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
             try {
-                await editingHandler.deleteFeature({ feature, layer, projection });
+                await storage.deleteFeature({ feature, layer, projection });
                 showNotifier("delete", true);
                 setEditingStep(INITIAL);
             } catch (error) {

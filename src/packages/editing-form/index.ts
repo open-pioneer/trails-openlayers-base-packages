@@ -2,23 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // =================================================================
-// Editor, property form context, and editing hook
+// Editor and property form context
 // =================================================================
-export { Editor, type EditorProps, type OnEditingStepChange } from "./api/editor/editor";
+export { Editor, type EditorProps, type FormTemplateContext } from "./api/editor/editor";
 export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./api/editor/context";
-export { useGeometryEditing, type EditingOptions } from "./api/editor/editing";
 
 // =================================================================
 // Editing model types
 // =================================================================
-export type { DrawingActions, DrawingCapabilities, DrawingState } from "./api/model/DrawingState";
-
 export type {
-    EditingHandler,
+    EditingStorage,
     AddFeatureOptions,
     DeleteFeatureOptions,
     UpdateFeatureOptions
-} from "./api/model/EditingHandler";
+} from "./api/model/EditingStorage";
 
 export type {
     CreationStep,
@@ -35,9 +32,7 @@ export type {
     DeclarativeFormTemplate,
     DynamicFormTemplate,
     FeatureTemplate,
-    FormTemplate,
-    FormTemplateContext,
-    FormTemplateProvider
+    FormTemplate
 } from "./api/model/FeatureTemplate";
 
 export type {

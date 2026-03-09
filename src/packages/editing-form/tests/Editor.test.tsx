@@ -9,10 +9,10 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import type { NotificationService } from "@open-pioneer/notifier";
 
 import { Editor } from "../implementation/Editor";
-import type { EditingHandler } from "../api/model/EditingHandler";
+import type { EditingStorage } from "../api/model/EditingStorage";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
 
-const mockEditingHandler: EditingHandler = {
+const mockStorage: EditingStorage = {
     addFeature: vi.fn().mockResolvedValue(undefined),
     updateFeature: vi.fn().mockResolvedValue(undefined),
     deleteFeature: vi.fn().mockResolvedValue(undefined)
@@ -70,7 +70,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={injectedServices}>
-                <Editor map={map} templates={allTemplates} editingHandler={mockEditingHandler} />
+                <Editor map={map} templates={allTemplates} storage={mockStorage} />
             </PackageContextProvider>
         );
 
@@ -92,7 +92,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={injectedServices}>
-                <Editor map={map} templates={[]} editingHandler={mockEditingHandler} />
+                <Editor map={map} templates={[]} storage={mockStorage} />
             </PackageContextProvider>
         );
 
@@ -113,7 +113,7 @@ describe("Editor rendering", () => {
                 <Editor
                     map={map}
                     templates={allTemplates}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     title={customTitle}
                 />
             </PackageContextProvider>
@@ -130,7 +130,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={injectedServices}>
-                <Editor map={map} templates={allTemplates} editingHandler={mockEditingHandler} />
+                <Editor map={map} templates={allTemplates} storage={mockStorage} />
             </PackageContextProvider>
         );
 
@@ -153,7 +153,7 @@ describe("Editor interaction", () => {
                 <Editor
                     map={map}
                     templates={allTemplates}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -182,7 +182,7 @@ describe("Editor interaction", () => {
                 <Editor
                     map={map}
                     templates={allTemplates}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -215,7 +215,7 @@ describe("Editor interaction", () => {
                 <Editor
                     map={map}
                     templates={allTemplates}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -269,7 +269,7 @@ describe("Editor action bar buttons", () => {
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -294,7 +294,7 @@ describe("Editor action bar buttons", () => {
                 <Editor
                     map={map}
                     templates={[lineStringTemplate]}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -319,7 +319,7 @@ describe("Editor action bar buttons", () => {
                 <Editor
                     map={map}
                     templates={[pointTemplate]}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -345,7 +345,7 @@ describe("Editor action bar buttons", () => {
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     showActionBar={false}
                 />
             </PackageContextProvider>
@@ -371,7 +371,7 @@ describe("Editor action bar buttons", () => {
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
-                    editingHandler={mockEditingHandler}
+                    storage={mockStorage}
                     showActionBar={true}
                 />
             </PackageContextProvider>

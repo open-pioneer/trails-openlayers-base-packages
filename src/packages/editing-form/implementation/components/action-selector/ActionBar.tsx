@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HStack, IconButton } from "@chakra-ui/react";
-
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-
 import { useMemo, type ReactElement } from "react";
-import { LuCheck, LuX, LuUndo, LuRedo } from "react-icons/lu";
+import { LuCheck, LuRedo, LuUndo, LuX } from "react-icons/lu";
+import { type DrawingState } from "../../geometry-editing/useGeometryEditing";
 
-import type { DrawingState } from "../../../api/model/DrawingState";
+export interface ActionBarProps {
+    readonly drawingState: DrawingState;
+}
 
 export function ActionBar({ drawingState }: ActionBarProps): ReactElement {
     const capabilities = useReactiveSnapshot(
@@ -87,8 +88,4 @@ export function ActionBar({ drawingState }: ActionBarProps): ReactElement {
             </Tooltip>
         </HStack>
     );
-}
-
-interface ActionBarProps {
-    readonly drawingState: DrawingState;
 }

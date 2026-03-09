@@ -18,13 +18,13 @@ It supports creating, modifying, and deleting features with declarative form con
 
 ### Minimum Working Example
 
-The simplest way to use the Editor is to provide feature templates and an editing handler:
+The simplest way to use the Editor is to provide feature templates and a storage implementation:
 
 ```tsx
-import { Editor, type EditingHandler, type FeatureTemplate } from "@open-pioneer/editing-form";
+import { Editor, type EditingStorage, type FeatureTemplate } from "@open-pioneer/editing-form";
 
 function EditingComponent() {
-    return <Editor templates={templates} editingHandler={editingHandler} />;
+    return <Editor templates={templates} storage={editingStorage} />;
 }
 
 const templates: FeatureTemplate[] = [
@@ -40,7 +40,7 @@ const templates: FeatureTemplate[] = [
     }
 ];
 
-const editingHandler: EditingHandler = {
+const editingStorage: EditingStorage = {
     async addFeature(feature, template, projection) {
         // Persist the new feature in your backend
         await myApi.createFeature(feature, template.layerId);
@@ -129,14 +129,14 @@ const template: FeatureTemplate = {
 }
 ```
 
-### Editing Handler
+### Editing Storage
 
-The editing handler provides callbacks for persisting feature changes.
-All handlers are async and should apply the changes made by the user to the backing storage of your layer(s).
+The editing storage provides callbacks for persisting feature changes.
+All functions are async and should apply the changes made by the user to the backing storage of your layer(s).
 For example, to persist changes using a (fictional) REST API:
 
 ```tsx
-const editingHandler: EditingHandler = {
+const editingStorage: EditingStorage = {
     // Called when a new feature is created
     async addFeature(feature, template, projection) {
         const geojson = new GeoJSON().writeFeatureObject(feature, {
@@ -170,25 +170,26 @@ const editingHandler: EditingHandler = {
 };
 ```
 
-If a handler throws an error, it is caught and displayed to the user as an error notification. On success, a success notification is shown.
+If a storage function throws an error, it is caught and displayed to the user as an error notification.
+On success, a success notification is shown.
 
 ## Editor Props
 
 The `Editor` component accepts the following props:
 
-| Prop                             | Type                   | Required | Description                                                                                                 |
-| -------------------------------- | ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `map`                            | `MapModel`             | No       | Map model to use (defaults to context map)                                                                  |
-| `templates`                      | `FeatureTemplate[]`    | Yes      | Feature templates defining the types of features that can be created or edited                              |
-| `editingHandler`                 | `EditingHandler`       | Yes      | Handler for feature create, update, and delete operations                                                   |
-| `selectableLayers`               | `Layer[]`              | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                  |
-| `snappableLayers`                | `Layer[]`              | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                             |
-| `formTemplateProvider`           | `FormTemplateProvider` | No       | Custom function to determine which form template to use when editing an existing feature (see below)        |
-| `title`                          | `string`               | No       | Title displayed at the top of the editor. Defaults to a localized title or the template name during editing |
-| `showActionBar`                  | `boolean`              | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                            |
-| `successNotifierDisplayDuration` | `number`               | No       | Duration in ms to display success notifications. By default, never disappears.                              |
-| `failureNotifierDisplayDuration` | `number`               | No       | Duration in ms to display failure notifications. By default, never disappears.                              |
-| `onEditingStepChange`            | `OnEditingStepChange`  | No       | Callback invoked when the editing workflow step changes                                                     |
+| Prop                             | Type                                     | Required | Description                                                                                                 |
+| -------------------------------- | ---------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                  |
+| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                              |
+| `storage`                        | `EditingStorage`                         | Yes      | Storage implementation for feature create, update, and delete operations                                    |
+| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                  |
+| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                             |
+| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)        |
+| `title`                          | `string`                                 | No       | Title displayed at the top of the editor. Defaults to a localized title or the template name during editing |
+| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                            |
+| `successNotifierDisplayDuration` | `number`                                 | No       | Duration in ms to display success notifications. By default, never disappears.                              |
+| `failureNotifierDisplayDuration` | `number`                                 | No       | Duration in ms to display failure notifications. By default, never disappears.                              |
+| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                     |
 
 ### Interaction Options
 
@@ -204,23 +205,23 @@ The Editor also accepts OpenLayers interaction options for fine-grained control:
 
 The drawing options will be merged with those of the selected feature template (if any are given), with the ones of the template taking precedence.
 
-### Form Template Provider
+### Resolving Form Templates
 
 When the user selects an existing feature on the map, the Editor needs to determine which form template to use.
 By default, it matches the feature's layer ID against the `layerId` of each template in the `templates` array and uses the first match.
 
-For more control — such as when features from the same layer require different forms based on their attributes — you can provide a custom `formTemplateProvider`:
+For more control — such as when features from the same layer require different forms based on their attributes — you can provide a custom `resolveFormTemplate` callback:
 
 ```tsx
-const formTemplateProvider: FormTemplateProvider = (feature, layer) => {
+const resolveFormTemplate = ({ feature, layer }: FormTemplateContext) => {
     const type = feature.get("type");
     return type === "residential" ? residentialTemplate : commercialTemplate;
 };
 
 <Editor
     templates={[residentialTemplate, commercialTemplate]}
-    formTemplateProvider={formTemplateProvider}
-    editingHandler={handler}
+    resolveFormTemplate={resolveFormTemplate}
+    storage={editingStorage}
 />;
 ```
 

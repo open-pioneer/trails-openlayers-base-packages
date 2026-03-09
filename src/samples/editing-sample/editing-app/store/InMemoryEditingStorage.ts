@@ -3,12 +3,12 @@
 import type {
     AddFeatureOptions,
     DeleteFeatureOptions,
-    EditingHandler,
+    EditingStorage,
     UpdateFeatureOptions
 } from "@open-pioneer/editing-form";
 import { InMemoryStore } from "./InMemoryStore";
 
-export class InMemoryEditingHandler implements EditingHandler {
+export class InMemoryEditingStorage implements EditingStorage {
     async addFeature({ feature, template }: AddFeatureOptions): Promise<void> {
         const store = InMemoryStore.get(template.layerId);
         await this.addArtificialDelay();

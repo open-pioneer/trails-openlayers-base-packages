@@ -4,10 +4,10 @@ import { Box } from "@chakra-ui/react";
 import { Editor, type FeatureTemplate } from "@open-pioneer/editing-form";
 import { useMemo, type ReactElement } from "react";
 import { LAYER_CONFIG } from "../map/layerConfig";
-import { InMemoryEditingHandler } from "../store/InMemoryEditingHandler";
+import { InMemoryEditingStorage as InMemoryEditingStorage } from "../store/InMemoryEditingStorage";
 
 export function EditingComponent(): ReactElement | undefined {
-    const editingHandler = useMemo(() => new InMemoryEditingHandler(), []);
+    const storage = useMemo(() => new InMemoryEditingStorage(), []);
     const templates = useFeatureTemplates();
 
     return (
@@ -20,11 +20,7 @@ export function EditingComponent(): ReactElement | undefined {
             borderRadius="lg"
             boxShadow="lg"
         >
-            <Editor
-                templates={templates}
-                editingHandler={editingHandler}
-                successNotifierDisplayDuration={2000}
-            />
+            <Editor templates={templates} storage={storage} successNotifierDisplayDuration={2000} />
         </Box>
     );
 }

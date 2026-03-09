@@ -37,11 +37,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -71,11 +67,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -104,11 +96,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -137,11 +125,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -175,11 +159,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -213,11 +193,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -263,11 +239,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -311,11 +283,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -367,11 +335,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -403,11 +367,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -440,11 +400,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -490,11 +446,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -537,11 +489,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -584,11 +532,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm
-                        title="Test Form"
-                        templates={[allInputTypesTemplate]}
-                        formTemplateProvider={undefined}
-                    />
+                    <DefaultPropertyForm title="Test Form" templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -628,7 +572,6 @@ describe("DefaultPropertyForm input types", () => {
                         <DefaultPropertyForm
                             title="All Fields"
                             templates={[allInputTypesTemplate]}
-                            formTemplateProvider={undefined}
                         />
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
@@ -661,7 +604,6 @@ describe("DefaultPropertyForm input types", () => {
                         <DefaultPropertyForm
                             title={customTitle}
                             templates={[allInputTypesTemplate]}
-                            formTemplateProvider={undefined}
                         />
                     </PropertyFormContextProvider>
                 </PackageContextProvider>

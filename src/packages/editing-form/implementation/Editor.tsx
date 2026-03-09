@@ -7,15 +7,15 @@ import { ActionSelector } from "./components/action-selector/ActionSelector";
 import { DefaultPropertyForm } from "./components/property-editor/DefaultPropertyForm";
 import { PropertyEditor } from "./components/property-editor/PropertyEditor";
 import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
-import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/editorHooks";
 import { useEditingCallbacks } from "./editor/useEditingCallbacks";
+import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 
 export function Editor({
     map,
     templates,
-    editingHandler,
-    formTemplateProvider,
+    storage,
+    resolveFormTemplate,
     selectableLayers,
     snappableLayers = selectableLayers,
     title,
@@ -42,7 +42,7 @@ export function Editor({
     const editingCallbacks = useEditingCallbacks(
         mapModel,
         editingStep,
-        editingHandler,
+        storage,
         setEditingStep,
         successNotifierDisplayDuration,
         failureNotifierDisplayDuration
@@ -70,7 +70,7 @@ export function Editor({
                         <DefaultPropertyForm
                             title={title}
                             templates={templates}
-                            formTemplateProvider={formTemplateProvider}
+                            resolveFormTemplate={resolveFormTemplate}
                         />
                     </PropertyEditor>
                 </PropertyFormContextProvider>

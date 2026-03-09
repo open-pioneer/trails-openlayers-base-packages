@@ -27,7 +27,7 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  * ```tsx
  * function CustomForm() {
  *     const context = usePropertyFormContext();
- *     const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context]);
+ *     const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context], DISPATCH_SYNC);
  *
  *     useEffect(() => {
  *         context.isValid = name.length >= 1;
@@ -81,6 +81,9 @@ export interface PropertyFormContext {
      *
      * Converts the reactive properties map to a standard object with string keys and unknown
      * values. Useful when you need to pass properties to functions that expect plain objects.
+     *
+     * Note that a new object is created on every change.
+     * Prefer to use fine grained accesses to {@link properties} if performance matters.
      *
      * @returns A plain object containing all feature properties (excluding geometry).
      */

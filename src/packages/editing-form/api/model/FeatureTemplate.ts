@@ -1,13 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { Layer } from "@open-pioneer/map";
-import type { Feature } from "ol";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import type { ReactNode } from "react";
-
-import type { DrawingOptions } from "./InteractionOptions";
-import type { FieldConfig } from "../fields/FieldConfig";
 import type { PropertyFormContext } from "../editor/context";
+import type { FieldConfig } from "../fields/FieldConfig";
+import type { DrawingOptions } from "./InteractionOptions";
+import type { EditorProps } from "../editor/editor";
 
 /**
  * Base interface for feature template configuration.
@@ -53,7 +51,7 @@ export interface BaseFeatureTemplate {
      * Primarily used to determine which form template to display when editing features from a
      * specific layer. By default, when a feature is selected for editing, the first template
      * with a `layerId` matching the feature's layer ID is chosen to configure the property form.
-     * This behavior can be customized by providing a custom {@link FormTemplateProvider}.
+     * This behavior can be customized by providing a custom implementation of {@link EditorProps.resolveFormTemplate | resolveFormTemplate }.
      */
     readonly layerId?: string;
 
@@ -164,26 +162,3 @@ export type FormTemplate = DeclarativeFormTemplate | DynamicFormTemplate;
  * ```
  */
 export type FeatureTemplate = BaseFeatureTemplate & FormTemplate;
-
-export interface FormTemplateContext {
-    /** The OpenLayers feature being edited. */
-    feature: Feature;
-
-    /** The layer containing the feature, or `undefined` if not available. */
-    layer: Layer | undefined;
-}
-
-/**
- * Function type for providing a form template for a given feature and layer.
- *
- * This callback is used to determine which form template should be used when editing a feature's
- * properties. It receives the feature being edited and its associated layer, and returns the
- * appropriate {@link FormTemplate} to display, or `undefined` if no template is available.
- *
- * Typically used during the update workflow to dynamically determine the form configuration based
- * on the feature's layer or other characteristics.
-
- * @returns The form template to use for editing the feature's properties, or `undefined` if no
- * template is available.
- */
-export type FormTemplateProvider = (context: FormTemplateContext) => FormTemplate | undefined;

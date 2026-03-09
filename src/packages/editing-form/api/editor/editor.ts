@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Layer, MapModelProps } from "@open-pioneer/map";
+import Feature from "ol/Feature";
+import { FC } from "react";
 import { Editor as EditorImpl } from "../../implementation/Editor";
-import type { EditingHandler } from "../model/EditingHandler";
+import type { EditingStorage } from "../model/EditingStorage";
 import type { EditingStep } from "../model/EditingStep";
-import type { FeatureTemplate, FormTemplateProvider } from "../model/FeatureTemplate";
+import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
 import type { InteractionOptions } from "../model/InteractionOptions";
 
 /**
@@ -22,7 +24,7 @@ import type { InteractionOptions } from "../model/InteractionOptions";
  * <Editor
  *     map={mapModel}
  *     templates={featureTemplates}
- *     editingHandler={{
+ *     storage={{
  *         addFeature: async (feature) => { ... },
  *         updateFeature: async (feature) => { ... },
  *         deleteFeature: async (feature) => { ... }
@@ -31,13 +33,10 @@ import type { InteractionOptions } from "../model/InteractionOptions";
  * />
  * ```
  */
-export const Editor = EditorImpl;
+export const Editor: FC<EditorProps> = EditorImpl;
 
 /**
  * Props for the {@link Editor} component.
- *
- * Extends {@link MapModelProps} and {@link InteractionOptions} to provide both map integration
- * and interaction configuration capabilities.
  */
 export interface EditorProps extends MapModelProps, InteractionOptions {
     /**
@@ -49,12 +48,9 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
     readonly templates: FeatureTemplate[];
 
     /**
-     * Handler for feature create, update, and delete operations.
-     *
-     * Provides callbacks for adding, updating, and deleting features. These handlers are
-     * responsible for persisting changes to your data source.
+     * Responsible for persisting changes to your data source.
      */
-    readonly editingHandler: EditingHandler;
+    readonly storage: EditingStorage;
 
     /**
      * Optional function to provide custom form templates for features.
@@ -62,8 +58,11 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
      * When specified, this function is called to determine which form template to use
      * when editing an existing feature. If not provided, the first feature template
      * matching the feature's layer ID will be used.
+     *
+     * @returns The form template to use for editing the feature's properties, or `undefined` if no
+     * template is available.
      */
-    readonly formTemplateProvider?: FormTemplateProvider;
+    readonly resolveFormTemplate?: (context: FormTemplateContext) => FormTemplate | undefined;
 
     /**
      * Layers from which features can be selected for editing.
@@ -113,25 +112,26 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
     /**
      * Duration in milliseconds to display failure notifications.
      *
-     * Controls how long error messages are shown to the user. By default, notifiers will
-     * never disappear.
+     * Controls how long error messages are shown to the user.
+     * By default, notifiers will never disappear.
      */
     readonly failureNotifierDisplayDuration?: number;
 
     /**
      * Optional callback invoked when the editing step changes.
      *
+     * Called whenever the editing workflow transitions between steps (e.g., from drawing to
+     * attribute editing, or from attribute editing back to the initial state).
+     *
      * Use this to track or respond to changes in the editing workflow state.
      */
-    readonly onEditingStepChange?: OnEditingStepChange;
+    readonly onEditingStepChange?: (newEditingStep: EditingStep) => void;
 }
 
-/**
- * Callback function invoked when the editing step changes.
- *
- * Called whenever the editing workflow transitions between steps (e.g., from drawing to
- * attribute editing, or from attribute editing back to the initial state).
- *
- * @param newEditingStep - The new editing step that is now active
- */
-export type OnEditingStepChange = (newEditingStep: EditingStep) => void;
+export interface FormTemplateContext {
+    /** The OpenLayers feature being edited. */
+    feature: Feature;
+
+    /** The layer containing the feature, or `undefined` if not available. */
+    layer: Layer | undefined;
+}

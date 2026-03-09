@@ -4,7 +4,7 @@ import { reactive, synchronized, watchValue, type CleanupHandle } from "@conterr
 import type { Feature } from "ol";
 import type { Coordinate } from "ol/coordinate";
 import { unByKey } from "ol/Observable";
-import type { DrawingState } from "../../../api/model/DrawingState";
+import { DrawingState } from "../useGeometryEditing";
 import { canBeFinished, canBeReset, getLastCoordinate, getNumberOfVertices } from "./geometryState";
 import { UndoManager } from "./UndoManager";
 

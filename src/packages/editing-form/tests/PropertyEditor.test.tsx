@@ -78,7 +78,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -121,7 +121,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -158,7 +158,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -212,7 +212,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -258,7 +258,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -299,7 +299,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -344,7 +344,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -393,7 +393,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -442,7 +442,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -494,7 +494,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[{ ...template, layerId: "test-layer" }]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
@@ -549,7 +549,7 @@ describe("PropertyEditor Integration", () => {
                             <DefaultPropertyForm
                                 title=""
                                 templates={[]}
-                                formTemplateProvider={undefined}
+                                resolveFormTemplate={undefined}
                             />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
