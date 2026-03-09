@@ -85,7 +85,7 @@ const template: FeatureTemplate = {
     layerId: "forest-damage",
 
     // Default property values for new features
-    prototype: {
+    defaultProperties: {
         status: "pending",
         reportedAt: new Date().toISOString()
     },
@@ -114,10 +114,10 @@ import { createBox } from "ol/interaction/Draw";
 
 const template: FeatureTemplate = {
     name: "Aufforstungsfläche",
-        kind: "declarative",
-        geometryType: "Circle",
-        icon: createElement(PiRectangleBold, { size: 20 }),
-        prototype: {
+    kind: "declarative",
+    geometryType: "Circle",
+    icon: createElement(PiRectangleBold, { size: 20 }),
+    defaultProperties: {
         aufforstungsjahr: new Date().getFullYear()
     },
     drawingOptions: {

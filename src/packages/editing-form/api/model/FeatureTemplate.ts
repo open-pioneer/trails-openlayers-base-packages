@@ -63,7 +63,7 @@ export interface BaseFeatureTemplate {
      * These properties are applied to new features before the user edits them. Useful for setting
      * default attribute values or metadata.
      */
-    readonly prototype?: Record<string, unknown>;
+    readonly defaultProperties?: Record<string, unknown>;
 
     /**
      * Additional options to configure the drawing interaction.

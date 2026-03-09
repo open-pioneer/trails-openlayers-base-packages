@@ -29,7 +29,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
             name: "Waldschaden",
             kind: "declarative",
             geometryType: "Point",
-            prototype: {
+            defaultProperties: {
                 saniert: false
             },
             fields: [
@@ -195,7 +195,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
             name: "Schutzgebiet",
             kind: "declarative",
             geometryType: "Polygon",
-            prototype: {
+            defaultProperties: {
                 farbe: "#2196f3"
             },
             fields: [
@@ -367,7 +367,7 @@ export const LAYER_CONFIG: LayerConfig[] = [
             kind: "declarative",
             geometryType: "Circle",
             icon: createElement(PiRectangleBold, { size: 20 }),
-            prototype: {
+            defaultProperties: {
                 aufforstungsjahr: new Date().getFullYear()
             },
             drawingOptions: {

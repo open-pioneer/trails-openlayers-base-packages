@@ -180,7 +180,7 @@ export function useGeometryEditing({
                     drawingOptions: editingStep.template.drawingOptions ?? {},
                     completionHandler(feature, drawOlLayer) {
                         const template = editingStep.template;
-                        feature.setProperties(template.prototype ?? {});
+                        feature.setProperties(template.defaultProperties ?? {});
                         setEditingStep({
                             id: "creation",
                             feature,
