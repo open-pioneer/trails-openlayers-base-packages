@@ -8,7 +8,7 @@ import type { BaseFieldConfig } from "./BaseFieldConfig";
  * Renders a searchable combo box input that allows users to select from a list of options. The
  * field can store either string or number values depending on the `valueType` property.
  *
- * @inlineType BaseComboBoxConfig
+ * @group Fields
  */
 export type ComboBoxConfig = BaseComboBoxConfig & (StringOptions | NumberOptions);
 
@@ -18,7 +18,7 @@ export type ComboBoxConfig = BaseComboBoxConfig & (StringOptions | NumberOptions
  * Renders a dropdown select input that allows users to choose from a list of predefined options.
  * The field can store either string or number values depending on the `valueType` property.
  *
- * @inlineType BaseSelectConfig
+ * @group Fields
  */
 export type SelectConfig = BaseSelectConfig & (StringOptions | NumberOptions);
 
@@ -28,7 +28,7 @@ export type SelectConfig = BaseSelectConfig & (StringOptions | NumberOptions);
  * Renders a group of radio buttons that allows users to select a single option from a list. The
  * field can store either string or number values depending on the `valueType` property.
  *
- * @inlineType BaseRadioGroupConfig
+ * @group Fields
  */
 export type RadioGroupConfig = BaseRadioGroupConfig & (StringOptions | NumberOptions);
 
@@ -108,6 +108,8 @@ interface NumberOptions {
  * Represents a single option in a selection field (combo box, select, or radio group).
  *
  * @template T - The type of the option value (string or number)
+ *
+ * @group Fields
  */
 export interface Option<T> {
     /** The display text shown to the user. */

@@ -10,6 +10,9 @@
  *
  * All boolean and text properties can be either static values or functions that compute values
  * dynamically based on the current feature properties, enabling conditional field behavior.
+ *
+ * @group Fields
+ * @inline
  */
 export interface BaseFieldConfig {
     /**
@@ -89,6 +92,8 @@ export interface BaseFieldConfig {
  * properties.
  *
  * @template T - The type of the value
+ *
+ * @group Fields
  */
 export type PropertyFunctionOr<T> = T | PropertyFunction<T>;
 
@@ -98,5 +103,7 @@ export type PropertyFunctionOr<T> = T | PropertyFunction<T>;
  * @template T - The return type
  * @param properties - Current feature properties
  * @returns The computed value
+ *
+ * @group Fields
  */
 export type PropertyFunction<T> = (properties: Readonly<Record<string, unknown>>) => T;

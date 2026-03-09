@@ -10,6 +10,8 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  *
  * This is the default step when the editing workflow is idle. Users can select a feature
  * template to begin creating a new feature or switch to selection mode to edit existing features.
+ *
+ * @group Model
  */
 export interface InitialStep {
     readonly id: "initial";
@@ -21,6 +23,8 @@ export interface InitialStep {
  * This step is active when the user is drawing a new feature's geometry on the map using the
  * specified feature template. The user interacts with the map to define the geometry (point,
  * line, polygon, or circle) according to the template's configuration.
+ *
+ * @group Model
  */
 export interface DrawingStep {
     readonly id: "drawing";
@@ -34,6 +38,8 @@ export interface DrawingStep {
  *
  * This step is active when the user is selecting a feature from the map to modify or delete.
  * The user can click on features from the specified layers to begin editing them.
+ *
+ * @group Model
  */
 export interface SelectionStep {
     readonly id: "selection";
@@ -48,6 +54,8 @@ export interface SelectionStep {
  * This step is active after a user has finished drawing a new feature's geometry and is now
  * modifying its shape or editing its properties before saving. The feature has not yet been
  * persisted to the backend.
+ *
+ * @group Model
  */
 export interface CreationStep {
     readonly id: "creation";
@@ -67,6 +75,8 @@ export interface CreationStep {
  *
  * This step is active when the user is modifying an existing feature that was selected from the
  * map. The user can change the feature's geometry or properties before saving the updates.
+ *
+ * @group Model
  */
 export interface UpdateStep {
     readonly id: "update";
@@ -87,6 +97,8 @@ export interface UpdateStep {
  * - {@link CreationStep} - Modifying a newly drawn feature
  * - {@link SelectionStep} - Selecting an existing feature to edit
  * - {@link UpdateStep} - Modifying an existing feature
+ *
+ * @group Model
  */
 export type EditingStep = InitialStep | DrawingStep | SelectionStep | CreationStep | UpdateStep;
 
@@ -95,5 +107,7 @@ export type EditingStep = InitialStep | DrawingStep | SelectionStep | CreationSt
  *
  * This includes both creating new features ({@link CreationStep}) and updating existing features
  * ({@link UpdateStep}). Use this type when you need to handle both modification scenarios.
+ *
+ * @group Model
  */
 export type ModificationStep = CreationStep | UpdateStep;

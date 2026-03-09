@@ -7,6 +7,8 @@ import type { BaseFieldConfig } from "./BaseFieldConfig";
  *
  * Renders a checkbox input that stores a boolean value in the feature property. Use this for
  * simple true/false properties.
+ *
+ * @group Fields
  */
 export interface CheckBoxConfig extends BaseFieldConfig {
     /** Identifies this as a checkbox field. */
@@ -25,6 +27,8 @@ export interface CheckBoxConfig extends BaseFieldConfig {
  *
  * Renders a color picker input that stores a color value (in hexadecimal format) in the feature
  * property. Includes an optional swatch palette for quick color selection.
+ *
+ * @group Fields
  */
 export interface ColorPickerConfig extends BaseFieldConfig {
     /** Identifies this as a color picker field. */
@@ -44,6 +48,8 @@ export interface ColorPickerConfig extends BaseFieldConfig {
  *
  * Renders a date or datetime input that stores a date string in the feature property. Use this
  * for date-based properties such as creation dates, deadlines, or event timestamps.
+ *
+ * @group Fields
  */
 export interface DatePickerConfig extends BaseFieldConfig {
     /** Identifies this as a date picker field. */
@@ -66,6 +72,8 @@ export interface DatePickerConfig extends BaseFieldConfig {
  * Renders a numeric input that stores a number value in the feature property. Supports validation
  * constraints (min/max), precision control, and optional stepper buttons for incrementing/
  * decrementing the value.
+ *
+ * @group Fields
  */
 export interface NumberFieldConfig extends BaseFieldConfig {
     /** Identifies this as a number field. */
@@ -119,6 +127,8 @@ export interface NumberFieldConfig extends BaseFieldConfig {
  * Renders a toggle switch input that stores a boolean value in the feature property. Similar to
  * a checkbox but with a different visual representation. Use this for boolean settings or on/off
  * states.
+ *
+ * @group Fields
  */
 export interface SwitchConfig extends BaseFieldConfig {
     /** Identifies this as a switch field. */
@@ -137,6 +147,8 @@ export interface SwitchConfig extends BaseFieldConfig {
  *
  * Renders a textarea input that stores a string value in the feature property. Use this for
  * longer text content such as descriptions, comments, or notes that may span multiple lines.
+ *
+ * @group Fields
  */
 export interface TextAreaConfig extends BaseFieldConfig {
     /** Identifies this as a text area field. */
@@ -156,6 +168,8 @@ export interface TextAreaConfig extends BaseFieldConfig {
  *
  * Renders a text input that stores a string value in the feature property. Use this for short
  * text content such as names, titles, or identifiers.
+ *
+ * @group Fields
  */
 export interface TextFieldConfig extends BaseFieldConfig {
     /** Identifies this as a text field. */

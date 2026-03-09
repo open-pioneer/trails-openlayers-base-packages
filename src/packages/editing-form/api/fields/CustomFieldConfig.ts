@@ -12,6 +12,8 @@ import type { BaseFieldConfig } from "./BaseFieldConfig";
  *
  * The render function receives the current field value and a callback to update it, and must
  * return a React node to display in the form.
+ *
+ * @group Fields
  */
 export interface CustomFieldConfig extends BaseFieldConfig {
     /** Identifies this as a custom field. */
@@ -44,5 +46,7 @@ export interface CustomFieldConfig extends BaseFieldConfig {
  * Called by custom field rendering logic to update the field's value in the feature properties.
  *
  * @param newValue - The new value to set for the field
+ *
+ * @group Fields
  */
 export type OnCustomFieldChange = (newValue: unknown) => void;

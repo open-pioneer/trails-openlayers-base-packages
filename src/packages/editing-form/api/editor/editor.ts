@@ -32,11 +32,16 @@ import type { InteractionOptions } from "../model/InteractionOptions";
  *     selectableLayers={[myLayer]}
  * />
  * ```
+ *
+ * @group Editor
+ * @expandType EditorProps
  */
 export const Editor: FC<EditorProps> = EditorImpl;
 
 /**
  * Props for the {@link Editor} component.
+ *
+ * @group Editor
  */
 export interface EditorProps extends MapModelProps, InteractionOptions {
     /**
@@ -132,6 +137,7 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
     readonly onEditingStepChange?: (newEditingStep: EditingStep) => void;
 }
 
+/** @group Editor */
 export interface FormTemplateContext {
     /** The OpenLayers feature being edited. */
     feature: Feature;

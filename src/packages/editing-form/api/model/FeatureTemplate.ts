@@ -16,6 +16,8 @@ import type { EditorProps } from "../editor/editor";
  *
  * This interface is combined with {@link FormTemplate} to create a complete
  * {@link FeatureTemplate}.
+ *
+ * @group Model
  */
 export interface BaseFeatureTemplate {
     /**
@@ -81,6 +83,8 @@ export interface BaseFeatureTemplate {
  *
  * This is the recommended approach for most use cases as it provides a structured, declarative
  * way to define forms without writing custom rendering logic.
+ *
+ * @group Model
  */
 export interface DeclarativeFormTemplate {
     /** Identifies this as a declarative form template. */
@@ -106,6 +110,8 @@ export interface DeclarativeFormTemplate {
  * specialized UI components that cannot be expressed through declarative field configurations.
  *
  * The render function should use {@link PropertyFormContext} to read and update feature properties.
+ *
+ * @group Model
  */
 export interface DynamicFormTemplate {
     /** Identifies this as a dynamic form template. */
@@ -134,6 +140,8 @@ export interface DynamicFormTemplate {
  * Form templates define how feature properties are edited. Choose {@link DeclarativeFormTemplate}
  * for standard forms with predefined field types, or {@link DynamicFormTemplate} for custom
  * form rendering logic.
+ *
+ * @group Model
  */
 export type FormTemplate = DeclarativeFormTemplate | DynamicFormTemplate;
 
@@ -160,5 +168,7 @@ export type FormTemplate = DeclarativeFormTemplate | DynamicFormTemplate;
  *     ]
  * };
  * ```
+ *
+ * @group Model
  */
 export type FeatureTemplate = BaseFeatureTemplate & FormTemplate;

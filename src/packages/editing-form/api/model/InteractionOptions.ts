@@ -11,6 +11,8 @@ import type { Options as OlSnapOptions } from "ol/interaction/Snap";
  *
  * Provides fine-grained control over the behavior of drawing, selection, modification, snapping,
  * and highlighting interactions.
+ *
+ * @group Model
  */
 export interface InteractionOptions {
     /** Options for drawing new geometries. */
@@ -37,6 +39,8 @@ export interface InteractionOptions {
  * style, and maximum points.
  *
  * @see https://openlayers.org/en/latest/apidoc/module-ol_interaction_Draw.html
+ *
+ * @group Model
  */
 export type DrawingOptions = Omit<OlDrawOptions, "source" | "type">;
 
@@ -48,6 +52,8 @@ export type DrawingOptions = Omit<OlDrawOptions, "source" | "type">;
  * filtering.
  *
  * @see https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select.html
+ *
+ * @group Model
  */
 export type SelectionOptions = Omit<OlSelectOptions, "layers">;
 
@@ -59,6 +65,8 @@ export type SelectionOptions = Omit<OlSelectOptions, "layers">;
  * vertex style, pixel tolerance, and deletion conditions.
  *
  * @see https://openlayers.org/en/latest/apidoc/module-ol_interaction_Modify.html
+ *
+ * @group Model
  */
 export type ModificationOptions = Omit<OlModifyOptions, "features" | "source">;
 
@@ -70,5 +78,7 @@ export type ModificationOptions = Omit<OlModifyOptions, "features" | "source">;
  * and edge snapping.
  *
  * @see https://openlayers.org/en/latest/apidoc/module-ol_interaction_Snap.html
+ *
+ * @group Model
  */
 export type SnappingOptions = Omit<OlSnapOptions, "features" | "source">;

@@ -1,6 +1,8 @@
 {
     "extends": ["openlayers-base-packages/typedoc.base.json"],
     "entryPoints": ["./index.ts"],
+    "groupOrder": ["Editor", "Model", "Fields", "*"],
+    "sort": ["static-first", "visibility", "alphabetical-ignoring-documents"],
     "externalSymbolLinkMappings": {
         "typescript": { "Intl.NumberFormatOptions": "#" },
         "@conterra/reactivity-core": { "ReactiveMap": "#" },

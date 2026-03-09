@@ -20,6 +20,8 @@ import type { DeclarativeFormTemplate } from "../model/FeatureTemplate";
  *
  * Use this type when defining fields in a {@link DeclarativeFormTemplate}. Each field type
  * provides different input controls and validation options for editing feature properties.
+ *
+ * @group Fields
  */
 export type FieldConfig =
     | CheckBoxConfig
@@ -38,5 +40,7 @@ export type FieldConfig =
  * Discriminator type for field configurations.
  *
  * Represents all possible values of the `type` property across all field configurations.
+ *
+ * @group Fields
  */
 export type FieldConfigType = FieldConfig["type"];

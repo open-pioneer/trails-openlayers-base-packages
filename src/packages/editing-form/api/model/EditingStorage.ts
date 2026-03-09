@@ -29,6 +29,8 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  *     }
  * };
  * ```
+ *
+ * @group Model
  */
 export interface EditingStorage {
     /**
@@ -68,6 +70,7 @@ export interface EditingStorage {
     deleteFeature(options?: DeleteFeatureOptions): Promise<void>;
 }
 
+/** @group Model */
 export interface AddFeatureOptions {
     /** The OpenLayers feature that was created. */
     feature: Feature;
@@ -79,6 +82,7 @@ export interface AddFeatureOptions {
     projection: Projection | undefined;
 }
 
+/** @group Model */
 export interface UpdateFeatureOptions {
     /** The OpenLayers feature that was modified. */
     feature: Feature;
@@ -90,6 +94,7 @@ export interface UpdateFeatureOptions {
     projection: Projection | undefined;
 }
 
+/** @group Model */
 export interface DeleteFeatureOptions {
     /** The OpenLayers feature to be deleted. */
     feature: Feature;

@@ -43,6 +43,8 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  *     );
  * }
  * ```
+ *
+ * @group Editor
  */
 export const usePropertyFormContext: () => PropertyFormContext = usePropertyFormContextImpl;
 
@@ -54,6 +56,8 @@ export const usePropertyFormContext: () => PropertyFormContext = usePropertyForm
  * {@link ReactiveMap}, allowing components to automatically re-render when properties change.
  *
  * Access this context in custom forms using the {@link usePropertyFormContext} hook.
+ *
+ * @group Editor
  */
 export interface PropertyFormContext {
     /**
@@ -140,5 +144,7 @@ export interface PropertyFormContext {
  *
  * - `"create"`: Creating a new feature
  * - `"update"`: Editing an existing feature
+ *
+ * @group Editor
  */
 export type Mode = "create" | "update";
