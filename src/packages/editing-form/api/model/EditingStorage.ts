@@ -10,7 +10,7 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  *
  * The `EditingStorage` provides callback functions for creating, updating, and deleting features
  * in the editing workflow. Implementations of this interface are responsible for persisting
- * feature changes to a backend service or data store.
+ * feature changes to the appropriate underlying data structures or storage systems.
  *
  * If any function throws an error, it will be caught and displayed to the user as an error
  * notification via the NotificationService. On success, a success notification is shown.

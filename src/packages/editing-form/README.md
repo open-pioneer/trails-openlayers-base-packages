@@ -129,8 +129,16 @@ const template: FeatureTemplate = {
 
 ### Editing Storage
 
-The editing storage provides callbacks for persisting feature changes.
-All functions are async and should apply the changes made by the user to the backing storage of your layer(s).
+The editor does not manage the lifetime of any features in the map, except for the feature currently being edited.
+To persist changes made by the editor, you must implement the `EditingStorage` interface.
+
+The interface is flexible enough to work in many scenarios:
+
+- Transient client side state (e.g. an in-memory collection used for a `VectorSource`)
+- Persistent client side storage (e.g. Origin private file system)
+- Service side storage (e.g. REST APIs)
+
+All functions are async and should apply the changes made by the user to the backing data structures or services.
 For example, to persist changes using a (fictional) REST API:
 
 ```tsx
