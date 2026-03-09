@@ -31,10 +31,13 @@ export interface BaseFeatureTemplate {
     /**
      * The geometry type for features created with this template.
      *
-     * Determines the type of geometry that can be drawn: `"Point"`, `"LineString"`, `"Polygon"`,
-     * `"Circle"`, etc.
+     * Determines the type of geometry that can be drawn: `"Point"`, `"LineString"`, `"Polygon"` or
+     * `"Circle"`.
+     *
+     * Note: Geometry type "Circle" in combination with a `geometryFunction` can also be used to
+     * create rectangle geometries (see README.md for details).
      */
-    readonly geometryType: GeometryType;
+    readonly geometryType: Extract<GeometryType, "Point" | "LineString" | "Polygon" | "Circle">;
 
     /**
      * Optional icon to display alongside the template name in the UI.

@@ -42,7 +42,7 @@ const templates: FeatureTemplate[] = [
 
 const editingHandler: EditingHandler = {
     async addFeature(feature, template, projection) {
-        // Persist the new feature to your backend
+        // Persist the new feature in your backend
         await myApi.createFeature(feature, template.layerId);
     },
     async updateFeature(feature, layer, projection) {
@@ -62,7 +62,7 @@ const editingHandler: EditingHandler = {
 
 Feature templates define what types of features can be created and how their properties are edited. Each template specifies:
 
-- **Geometry type**: `"Point"`, `"LineString"`, `"Polygon"`, `"Circle"`, etc.
+- **Geometry type**: `"Point"`, `"LineString"`, `"Polygon"` or `"Circle"`. It is also possible to create _rectangle_ geometries (see example below).
 - **Form configuration**: Either declarative fields or a custom render function
 - **Layer association**: Links the template to a map layer for selection
 - **Drawing options**: Customizes the OpenLayers Draw interaction
@@ -103,6 +103,30 @@ const template: FeatureTemplate = {
         })
     }
 };
+```
+
+#### Example: Rectangle geometries
+
+To create rectangle geometries, set `geometryType` to `"Circle"` and provide a `geometryFunction` that creates rectangle geometries using the `createBox` function from OpenLayers:
+
+```tsx
+import { createBox } from "ol/interaction/Draw";
+
+const template: FeatureTemplate = {
+    name: "Aufforstungsfläche",
+        kind: "declarative",
+        geometryType: "Circle",
+        icon: createElement(PiRectangleBold, { size: 20 }),
+        prototype: {
+        aufforstungsjahr: new Date().getFullYear()
+    },
+    drawingOptions: {
+        geometryFunction: createBox()
+    },
+    fields: [
+        ...
+    ]
+}
 ```
 
 ### Editing Handler

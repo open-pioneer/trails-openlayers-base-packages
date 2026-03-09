@@ -4,13 +4,7 @@ import { HStack, Table, Text } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import type { ReactElement, ReactNode } from "react";
 
-import {
-    PiCircleBold,
-    PiDotOutlineBold,
-    PiDotsThreeOutlineBold,
-    PiLineSegmentsFill,
-    PiPolygonFill
-} from "react-icons/pi";
+import { PiCircleBold, PiDotOutlineBold, PiLineSegmentsFill, PiPolygonFill } from "react-icons/pi";
 
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 
@@ -39,23 +33,21 @@ export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps)
 // Render the icon provided for the template, or a default one if it is 'undefined'. Do not render
 // anything if the icon is 'null'.
 function TemplateIcon({ template }: TemplateIconProps): ReactNode | undefined {
-    if (template.icon === undefined) {
-        switch (template.geometryType) {
-            case "Polygon":
-                return <PiPolygonFill size={20} />;
-            case "Circle":
-                return <PiCircleBold size={20} />;
-            case "LineString":
-                return <PiLineSegmentsFill size={20} />;
-            case "Point":
-                return <PiDotOutlineBold size={20} />;
-            case "MultiPoint":
-                return <PiDotsThreeOutlineBold size={20} />;
-            default:
-                return undefined;
-        }
-    } else {
-        return template.icon ?? undefined;
+    if (template.icon !== undefined) {
+        return template.icon;
+    }
+
+    switch (template.geometryType) {
+        case "Polygon":
+            return <PiPolygonFill size={20} />;
+        case "Circle":
+            return <PiCircleBold size={20} />;
+        case "LineString":
+            return <PiLineSegmentsFill size={20} />;
+        case "Point":
+            return <PiDotOutlineBold size={20} />;
+        default:
+            return undefined;
     }
 }
 
