@@ -177,19 +177,19 @@ On success, a success notification is shown.
 
 The `Editor` component accepts the following props:
 
-| Prop                             | Type                                     | Required | Description                                                                                                 |
-| -------------------------------- | ---------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                  |
-| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                              |
-| `storage`                        | `EditingStorage`                         | Yes      | Storage implementation for feature create, update, and delete operations                                    |
-| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                  |
-| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                             |
-| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)        |
-| `title`                          | `string`                                 | No       | Title displayed at the top of the editor. Defaults to a localized title or the template name during editing |
-| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                            |
-| `successNotifierDisplayDuration` | `number`                                 | No       | Duration in ms to display success notifications. By default, never disappears.                              |
-| `failureNotifierDisplayDuration` | `number`                                 | No       | Duration in ms to display failure notifications. By default, never disappears.                              |
-| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                     |
+| Prop                             | Type                                     | Required | Description                                                                                                                     |
+| -------------------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                      |
+| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                  |
+| `storage`                        | `EditingStorage`                         | Yes      | Storage implementation for feature create, update, and delete operations                                                        |
+| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                      |
+| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                 |
+| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                            |
+| `title`                          | `string`                                 | No       | Title displayed at the top of the editor. Defaults to a localized title or the template name during editing                     |
+| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                |
+| `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification. |
+| `failureNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display failure notifications. By default, never disappears. Use `false` to completely hide the notification. |
+| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                                         |
 
 ### Interaction Options
 

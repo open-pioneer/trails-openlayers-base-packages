@@ -26,8 +26,8 @@ export function useEditingCallbacks(
     editingStep: EditingStep,
     storage: EditingStorage,
     setEditingStep: (newEditingStep: EditingStep) => void,
-    successNotifierDisplayDuration: number | undefined,
-    failureNotifierDisplayDuration: number | undefined
+    successNotifierDisplayDuration: number | false | undefined,
+    failureNotifierDisplayDuration: number | false | undefined
 ): EditingCallbacks {
     const projection = useReactiveSnapshot(() => mapModel.projection, [mapModel]);
 
@@ -87,8 +87,8 @@ export function useEditingCallbacks(
 }
 
 function useShowNotifier(
-    successNotifierDisplayDuration: number | undefined,
-    failureNotifierDisplayDuration: number | undefined
+    successNotifierDisplayDuration: number | false | undefined,
+    failureNotifierDisplayDuration: number | false | undefined
 ) {
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const { formatMessage } = useIntl();
@@ -96,20 +96,24 @@ function useShowNotifier(
     return useCallback(
         (operation: Operation, success: boolean, error?: unknown) => {
             if (success) {
-                notifier.success({
-                    title: formatMessage({
-                        id: getTitleId(operation, true)
-                    }),
-                    displayDuration: successNotifierDisplayDuration
-                });
+                if (successNotifierDisplayDuration !== false) {
+                    notifier.success({
+                        title: formatMessage({
+                            id: getTitleId(operation, true)
+                        }),
+                        displayDuration: successNotifierDisplayDuration
+                    });
+                }
             } else {
-                notifier.error({
-                    title: formatMessage({
-                        id: getTitleId(operation, false)
-                    }),
-                    message: error?.toString(),
-                    displayDuration: failureNotifierDisplayDuration
-                });
+                if (failureNotifierDisplayDuration !== false) {
+                    notifier.error({
+                        title: formatMessage({
+                            id: getTitleId(operation, false)
+                        }),
+                        message: error?.toString(),
+                        displayDuration: failureNotifierDisplayDuration
+                    });
+                }
             }
         },
         [formatMessage, notifier, successNotifierDisplayDuration, failureNotifierDisplayDuration]
