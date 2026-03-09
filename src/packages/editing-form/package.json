@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/editing-form",
     "version": "1.2.0",
-    "description": "Provides a component to create and edit feature geometries and attributes.",
+    "description": "Provides a component to create and edit feature geometries and properties.",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
