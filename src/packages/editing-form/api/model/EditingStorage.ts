@@ -12,8 +12,8 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * in the editing workflow. Implementations of this interface are responsible for persisting
  * feature changes to the appropriate underlying data structures or storage systems.
  *
- * If any function throws an error, it will be caught and displayed to the user as an error
- * notification via the NotificationService. On success, a success notification is shown.
+ * If any function throws an error, an error message will be shown to the user
+ * via the NotificationService. On success, a success notification is shown.
  *
  * @example
  * ```ts
@@ -30,6 +30,25 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * };
  * ```
  *
+ * @example Error handling
+ *
+ * If any function rejects with an error, that error will be logged and a generic error message
+ * will be presented to the user.
+ * Return an instance of {@link StorageError} instead if you want to include an additional user-visible message.
+ *
+ * ```ts
+ * const editingStorage: EditingStorage = {
+ *     addFeature: async ({feature, template, projection}) => {
+ *         // Option 1: Exceptions are logged and result in a generic error message
+ *         throw new Error("Something went wrong");
+ *
+ *         // Option 2: Custom user-visible error message
+ *         LOG.error("Failed to do X", error);
+ *         return { kind: "error", message: "Insufficient permissions" };
+ *     },
+ * };
+ * ```
+ *
  * @group Model
  */
 export interface EditingStorage {
@@ -43,7 +62,7 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully added, or rejects with
      * an error if the operation fails.
      */
-    addFeature(options: AddFeatureOptions): Promise<void>;
+    addFeature(options: AddFeatureOptions): Promise<StorageResult>;
 
     /**
      * Called for updating an existing feature.
@@ -55,7 +74,7 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully updated, or rejects
      * with an error if the operation fails.
      */
-    updateFeature(options: UpdateFeatureOptions): Promise<void>;
+    updateFeature(options: UpdateFeatureOptions): Promise<StorageResult>;
 
     /**
      * Called for deleting a feature.
@@ -67,7 +86,28 @@ export interface EditingStorage {
      * @returns A promise that resolves when the feature has been successfully deleted, or rejects
      * with an error if the operation fails.
      */
-    deleteFeature(options: DeleteFeatureOptions): Promise<void>;
+    deleteFeature(options: DeleteFeatureOptions): Promise<StorageResult>;
+}
+
+/**
+ * The result of a storage operation.
+ *
+ * - `void` and `undefined` indicate success
+ * - throwing an error will result in that error being logged and a generic error message being shown
+ * - use {@link StorageError} instead to show a custom error message to the user
+ */
+export type StorageResult = void | undefined | StorageError;
+
+/**
+ * Indicates a problem that occurred while saving or deleting a feature.
+ */
+export interface StorageError {
+    kind: "error";
+
+    /**
+     * This message is included in the error notification shown to the user.
+     */
+    message?: string;
 }
 
 /** @group Model */

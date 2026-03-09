@@ -7,7 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-import type { EditingStorage } from "../../api/model/EditingStorage";
+import type { EditingStorage, StorageResult } from "../../api/model/EditingStorage";
 import type { EditingStep, InitialStep } from "../../api/model/EditingStep";
 import { useEvent } from "@open-pioneer/react-utils";
 
@@ -39,37 +39,43 @@ export function useEditingCallbacks(
     const onSave = useEvent(async () => {
         if (editingStep.id === "creation") {
             const { feature, template } = editingStep;
+
+            let result: StorageResult;
             try {
-                await storage.addFeature({ feature, template, projection });
-                showNotifier("create", true);
+                result = await storage.addFeature({ feature, template, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error creating feature", feature, error);
-                showNotifier("create", false, error);
+                result = { kind: "error" };
             }
+            showNotifier("create", result);
         } else if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
+
+            let result: StorageResult;
             try {
-                await storage.updateFeature({ feature, layer, projection });
-                showNotifier("update", true);
+                result = await storage.updateFeature({ feature, layer, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error updating feature", feature, error);
-                showNotifier("update", false, error);
+                result = { kind: "error" };
             }
+            showNotifier("update", result);
         }
     });
     const onDelete = useEvent(async () => {
         if (editingStep.id === "update") {
             const { feature, layer } = editingStep;
+
+            let result: StorageResult;
             try {
-                await storage.deleteFeature({ feature, layer, projection });
-                showNotifier("delete", true);
+                result = await storage.deleteFeature({ feature, layer, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error deleting feature", feature, error);
-                showNotifier("delete", false, error);
+                result = { kind: "error" };
             }
+            showNotifier("delete", result);
         }
     });
     const onCancel = useEvent(async () => {
@@ -94,8 +100,9 @@ function useShowNotifier(
     const { formatMessage } = useIntl();
 
     return useCallback(
-        (operation: Operation, success: boolean, error?: unknown) => {
-            if (success) {
+        (operation: Operation, result: StorageResult) => {
+            if (!result) {
+                // void, undefined --> success
                 if (successNotifierDisplayDuration !== false) {
                     notifier.success({
                         title: formatMessage({
@@ -110,7 +117,7 @@ function useShowNotifier(
                         title: formatMessage({
                             id: getTitleId(operation, false)
                         }),
-                        message: error?.toString(),
+                        message: result.message,
                         displayDuration: failureNotifierDisplayDuration
                     });
                 }

@@ -30,7 +30,9 @@ export type {
     EditingStorage,
     AddFeatureOptions,
     DeleteFeatureOptions,
-    UpdateFeatureOptions
+    UpdateFeatureOptions,
+    StorageError,
+    StorageResult
 } from "./api/model/EditingStorage";
 
 export type {

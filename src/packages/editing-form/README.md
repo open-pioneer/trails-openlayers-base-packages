@@ -176,8 +176,20 @@ const editingStorage: EditingStorage = {
 };
 ```
 
-If a storage function throws an error, it is caught and displayed to the user as an error notification.
+If a storage function throws an error, it is logged and a generic error notification is shown to the user.
 On success, a success notification is shown.
+
+To supply an additional message for the error notification, return an object of type `StorageError` instead:
+
+```ts
+const editingStorage: EditingStorage = {
+    addFeature: async ({ feature, template, projection }) => {
+        // ...
+        LOG.error("Failed to do X", error);
+        return { kind: "error", message: "Insufficient permissions" };
+    }
+};
+```
 
 ## Editor Props
 
