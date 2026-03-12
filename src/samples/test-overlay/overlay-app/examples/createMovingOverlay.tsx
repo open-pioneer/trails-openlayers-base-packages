@@ -24,8 +24,8 @@ export function createMovingOverlay(map: MapModel) {
     overlay.setContent(<MovableOverlayContent overlay={overlay} />);
 
     const updatePosition = (offsetX: number) => {
-        if (overlay.position) {
-            const [x = 0, y = 0] = overlay.position;
+        if (overlay.coordinate) {
+            const [x = 0, y = 0] = overlay.coordinate;
             const newPos = [x + offsetX, y];
             overlay.setPosition(newPos);
         }
@@ -38,7 +38,7 @@ export function createMovingOverlay(map: MapModel) {
 }
 
 function MovableOverlayContent(props: { overlay: Overlay }) {
-    const position = useReactiveSnapshot(() => props.overlay.position ?? [0, 0], [props.overlay]);
+    const position = useReactiveSnapshot(() => props.overlay.coordinate ?? [0, 0], [props.overlay]);
     return (
         <Flex
             bg={"whiteAlpha.700"}

@@ -9,9 +9,9 @@ import { LuCrosshair } from "react-icons/lu";
  */
 export function createMouseFollowingOverlay(map: MapModel) {
     return map.overlays.add({
+        position: "follow-pointer",
         positioning: "center-center",
         stopEvent: false,
-        mode: "follow-pointer",
         content: (
             <Icon size={"2xl"} color={"red.solid"}>
                 <LuCrosshair />

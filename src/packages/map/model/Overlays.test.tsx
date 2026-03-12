@@ -109,7 +109,7 @@ it("set overlay position according to pointer position (mode: follow-pointer)", 
     const overlay = overlays.add({
         content: overlayTextContent,
         className: testClassName,
-        mode: "follow-pointer"
+        position: "follow-pointer"
     });
 
     const simulateMove = (x: number, y: number) => {
@@ -121,12 +121,12 @@ it("set overlay position according to pointer position (mode: follow-pointer)", 
     act(() => {
         simulateMove(expectedPosition1[0]!, expectedPosition1[1]!);
     });
-    expect(overlay.position).toEqual(expectedPosition1);
+    expect(overlay.coordinate).toEqual(expectedPosition1);
 
     act(() => {
         simulateMove(expectedPosition2[0]!, expectedPosition2[1]!);
     });
-    expect(overlay.position).toEqual(expectedPosition2);
+    expect(overlay.coordinate).toEqual(expectedPosition2);
 });
 
 it("add class name to overlay element", async () => {

@@ -71,37 +71,37 @@ type HighlightStyleType = keyof HighlightStyle;
  * @group Map Model
  */
 export class Highlights {
-    private map: MapModel;
+    #map: MapModel;
 
-    private olLayer: VectorLayer<VectorSource, Feature>;
-    private layer: SimpleLayer;
-    private olSource: VectorSource<Feature<Geometry>>;
-    private activeHighlights: Set<Highlight>;
+    #olLayer: VectorLayer<VectorSource, Feature>;
+    #layer: SimpleLayer;
+    #olSource: VectorSource<Feature<Geometry>>;
+    #activeHighlights: Set<Highlight>;
 
     constructor(map: MapModel, layerDeps: LayerDependencies) {
-        this.map = map;
-        this.olSource = new VectorSource({
+        this.#map = map;
+        this.#olSource = new VectorSource({
             features: undefined
         });
-        this.olLayer = new VectorLayer({
+        this.#olLayer = new VectorLayer({
             className: "highlight-layer",
-            source: this.olSource,
+            source: this.#olSource,
             style: function (feature, resolution) {
                 return resolveStyle(feature, resolution);
             }
         });
-        this.layer = new SimpleLayer(
+        this.#layer = new SimpleLayer(
             {
                 title: "highlight-layer",
                 internal: true,
-                olLayer: this.olLayer
+                olLayer: this.#olLayer
             },
             layerDeps,
             INTERNAL_CONSTRUCTOR_TAG
         );
-        map.layers.addLayer(this.layer, { at: "topmost" });
+        map.layers.addLayer(this.#layer, { at: "topmost" });
 
-        this.activeHighlights = new Set();
+        this.#activeHighlights = new Set();
     }
 
     [DESTROY_HIGHLIGHTS]() {
@@ -136,8 +136,8 @@ export class Highlights {
             return feature;
         });
 
-        const source = this.olSource;
-        const highlights = this.activeHighlights;
+        const source = this.#olSource;
+        const highlights = this.#activeHighlights;
         const highlight: Highlight = {
             get isActive() {
                 return highlights.has(highlight);
@@ -155,7 +155,7 @@ export class Highlights {
         };
 
         source.addFeatures(features);
-        this.activeHighlights.add(highlight);
+        this.#activeHighlights.add(highlight);
         return highlight;
     }
 
@@ -169,7 +169,7 @@ export class Highlights {
         options?: HighlightZoomOptions | undefined
     ): Highlight {
         const result = this.add(displayTarget, options);
-        this.map.zoom(displayTarget, options);
+        this.#map.zoom(displayTarget, options);
         return result;
     }
 
@@ -177,7 +177,7 @@ export class Highlights {
      * This method destroys all active Highlights.
      */
     clear() {
-        for (const highlight of this.activeHighlights) {
+        for (const highlight of this.#activeHighlights) {
             highlight.destroy();
         }
     }
@@ -186,7 +186,7 @@ export class Highlights {
      * Returns the layer used for highlights.
      */
     [GET_HIGHLIGHT_LAYER]() {
-        return this.olLayer;
+        return this.#olLayer;
     }
 }
 

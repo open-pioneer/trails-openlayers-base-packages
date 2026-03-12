@@ -21,7 +21,7 @@ export interface Tooltip extends Resource {
 export function createTooltip(map: MapModel, text: string): Tooltip {
     const overlay = map.overlays.add({
         content: text,
-        mode: "follow-pointer",
+        position: "follow-pointer",
         offset: [15, 0],
         positioning: "center-left",
         ariaRole: "tooltip",

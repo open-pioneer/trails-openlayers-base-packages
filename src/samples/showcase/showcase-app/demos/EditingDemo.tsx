@@ -246,7 +246,7 @@ class EditingController {
             offset: [15, 0],
             positioning: "center-left",
             className: "editing-tooltip editing-tooltip-hidden",
-            mode: "follow-pointer"
+            position: "follow-pointer"
         });
 
         return {

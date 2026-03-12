@@ -418,7 +418,7 @@ const FINISHED_MEASUREMENT_CLASSNAME = "measurement-tooltip measurement-finished
 function createHelpTooltip(map: MapModel): Overlay {
     const helpOverlay = map.overlays.add({
         className: "measurement-tooltip printing-hide",
-        mode: "follow-pointer",
+        position: "follow-pointer",
         tag: "measurement-help-overlay",
         offset: [15, 0],
         positioning: "center-left",

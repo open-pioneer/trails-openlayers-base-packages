@@ -100,10 +100,13 @@ export {
 export { type LayerCollection } from "./model/LayerCollection";
 export {
     type Overlay,
-    type OverlayProperties,
+    type OverlayOptions,
     type OlOverlayOptions,
     type OverlayPositioning,
-    type Overlays
+    type Overlays,
+    type OverlayPosition,
+    type OverlayPositionCoordinate,
+    type OverlayPositionFollowPointer
 } from "./model/Overlays";
 
 // Services
