@@ -318,7 +318,7 @@ function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
         offset: [15, 0],
         positioning: "center-left",
         className: "editing-tooltip editing-tooltip-hidden",
-        mode: "follow-pointer"
+        position: "follow-pointer"
     });
 
     return {
