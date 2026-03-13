@@ -58,13 +58,13 @@ export class Overlays {
     /**
      * Add new overlay to the map. Returns the newly created overlay instance.
      */
-    add(properties: OverlayOptions): Overlay {
-        const newModel = new Overlay(INTERNAL_CONSTRUCTOR_TAG, properties, this);
+    add(options: OverlayOptions): Overlay {
+        const newModel = new Overlay(INTERNAL_CONSTRUCTOR_TAG, options, this);
         return newModel;
     }
 
     /**
-     * Returns list of all current overlays.
+     * Returns the list of all current overlays.
      */
     getAll(): Overlay[] {
         return Array.from(this.#overlays);
@@ -81,28 +81,30 @@ export class Overlays {
 }
 
 /**
- * Properties that define the initial state of an overlay.
+ * Options that define the initial state of an overlay.
  *
  * @group Map Model
  */
 export interface OverlayOptions {
     /**
-     * Optional, readonly tag that helps identifying the overlay instance
+     * Optional, readonly tag that helps identifying the overlay instance.
      */
     tag?: string;
 
     /**
      * Displayed content of the overlay.
+     *
+     * @see {@link Overlay.setContent}.
      */
     content?: ReactNode;
 
     /**
-     * CSS classes of the HTMLDivElement that wraps the overlay's content.
+     * CSS classes of the HTML element that wraps the overlay's content.
      */
     className?: string;
 
     /**
-     * Role of the HTMLDivElement that wraps the overlay's content.
+     * Role of the HTML element that wraps the overlay's content.
      */
     ariaRole?: string;
 
@@ -110,21 +112,30 @@ export interface OverlayOptions {
      * Configures the position of the overlay.
      * The overlay is not rendered if position is `undefined` (the default).
      *
-     * Use a plain coordinate array to position the overlay at those coordinates.
+     * See {@link OverlayPosition} for all supported position options.
      *
-     * Use `follow-pointer` to create an overlay that automatically follows the cursor.
-     * See {@link OverlayPositionFollowPointer} for advanced options.
+     * The following shorthands are available:
+     * - A plain `Coordinate` array can be used to specify a static coordinate on the map.
+     * - `undefined` hides the overlay.
+     * - `"follow-pointer"` can be used as a shorthand to follow the user's cursor.
+     *
+     * @see {@link Overlay.setPosition} to reconfigure the position.
+     * @see {@link Overlay.currentCoordinate} to retrieve the actual position on the map.
      */
     position?: Coordinate | "follow-pointer" | OverlayPosition;
 
     /**
-     * Positioning of an overlay relative to its position (coordinates).
+     * Positioning of an overlay relative to its coordinates on the map.
+     *
+     * @see {@link Overlay.setPositioning}
      */
     positioning?: OverlayPositioning;
 
     /**
-     * Offsets in pixels relative to the overlay`s position (coordinates).
+     * Offsets in _pixels_ relative to the overlay`s coordinates on the map.
      * The first element in the array is the horizontal offset.
+     *
+     * @see {@link Overlay.setOffset}
      */
     offset?: number[];
 
@@ -136,11 +147,12 @@ export interface OverlayOptions {
     stopEvent?: boolean;
 
     /**
-     * Raw OpenLayers overlay properties. `OlOverlayOptions` override corresponding `OverlayProperties` except id and element.
+     * Raw OpenLayers overlay properties. `OlOverlayOptions` override corresponding `OverlayProperties`, except for id and element.
      *
-     * **warning** Using OpenLayers options can create inconsistencies that lead to errors. The OpenLayers API can change with updates of OpenLayers.
+     * **warning** Using OpenLayers options can create inconsistencies that lead to errors.
+     * The OpenLayers API can change with updates of OpenLayers.
      */
-    advanced?: OlOverlayOptions; //raw OL properties, overrides mutual properties from outer OverlayProperties (except id and element?)
+    advanced?: OlOverlayOptions;
 }
 
 /**
@@ -149,13 +161,15 @@ export interface OverlayOptions {
  * @group Map Model
  */
 export type OverlayPosition =
-    /** Explicit coordinate on the map. */
+    /** Explicit (static) coordinates on the map. */
     | OverlayPositionCoordinate
-    /** Update coordinate based on pointer movements on the map. */
+    /** Update coordinates based on pointer movements on the map, useful for tooltips. */
     | OverlayPositionFollowPointer;
 
 /**
  * Automatically positions the overlay on the mouse cursor's coordinates.
+ *
+ * This can be used, for example, to implement tooltips for map interactions.
  *
  * @group Map Model
  */
@@ -163,26 +177,31 @@ export interface OverlayPositionFollowPointer {
     kind: "follow-pointer";
 
     /**
-     * The initial coordinate.
+     * The initial coordinates.
+     *
      * Use `undefined` (the default) to hide until the first mouse event on the map.
      */
     initial?: Coordinate;
 }
 
 /**
- * Places the overlay at the given coordinate.
+ * Places the overlay at the given coordinates.
+ *
+ * @group Map Model
  */
 export interface OverlayPositionCoordinate {
     kind: "coordinate";
 
     /**
-     * The explicit coordinate of the overlay on the map.
+     * The explicit coordinates of the overlay on the map.
+     *
+     * Using `undefined` hides the overlay.
      */
-    coordinate: Coordinate;
+    coordinate?: Coordinate;
 }
 
 /**
- * Positioning of an overlay relative to its position (coordinates).
+ * Positioning of an overlay relative to its coordinates on the map.
  *
  * @group Map Model
  */
@@ -225,12 +244,14 @@ export class Overlay {
      * Raw, corresponding OpenLayers overlay object.
      *
      * **warning** Manipulation of the OpenLayers object can create inconsistencies that lead to errors. The OpenLayers API can change with updates of OpenLayers.
+     *
+     * @see https://openlayers.org/en/latest/apidoc/module-ol_Overlay-Overlay.html
      */
     readonly olOverlay: OlOverlay;
 
     #parent: Overlays;
     #isDestroyed = reactive(false);
-    #position = reactive<OverlayPosition>();
+    #position = reactive<OverlayPosition>({ kind: "coordinate" });
     #content: Reactive<ReactNode>;
     #overlayDiv: HTMLDivElement;
     #resources: Resource[] = [];
@@ -261,21 +282,32 @@ export class Overlay {
         if (internalTag !== INTERNAL_CONSTRUCTOR_TAG) {
             throw new Error("The overlay constructor is private.");
         }
-
-        const { className, ariaRole, position, ...copyProperties } = options;
+        const {
+            className,
+            ariaRole,
+            position,
+            tag,
+            content,
+            offset,
+            positioning,
+            stopEvent,
+            advanced
+        } = options;
         this.id = uuid4v();
-        this.tag = options.tag;
+        this.tag = tag;
         this.#overlayDiv = createElement(ariaRole, className);
 
         this.olOverlay = new OlOverlay({
             element: this.#overlayDiv,
             id: this.id,
-            ...copyProperties,
+            offset,
+            positioning,
+            stopEvent,
             //simply override with advanced OL Options if set
-            ...copyProperties.advanced
+            ...advanced
         });
         this.#parent = parent;
-        this.#content = reactive(options.content);
+        this.#content = reactive(content);
         this.setPosition(position);
 
         parent[REGISTER_OVERLAY](this);
@@ -336,8 +368,14 @@ export class Overlay {
 
     /**
      * Current coordinates of the overlay on the map.
+     *
+     * The coordinates on the map are configured via {@link OverlayOptions.position} or {@link setPosition}.
+     *
+     * - If configured with static coordinates (i.e. `position.kind === "coordinate"`), this is
+     *   the same as `position.coordinate`.
+     * - If configured with `"follow-pointer"` position, this is the result of the user's pointer movements.
      */
-    get coordinate(): Coordinate | undefined {
+    get currentCoordinate(): Coordinate | undefined {
         return this.#coordinate.value;
     }
 
@@ -349,14 +387,16 @@ export class Overlay {
     }
 
     /**
-     * The HTMLDivElement that that wraps the overlay's content.
+     * The HTML element that that wraps the overlay's content.
      */
     get element(): HTMLElement {
         return this.#overlayDiv;
     }
 
     /**
-     * Offsets in pixels relative to the overlay`s position. The first element in the array is the horizontal offset.
+     * Offset in _pixels_ relative to the overlay`s coordinates.
+     *
+     * The first element in the array is the horizontal offset.
      */
     get offset(): number[] {
         return this.#offset.value;
@@ -365,14 +405,18 @@ export class Overlay {
     /**
      * The configured position of the overlay on the map.
      *
-     * See also {@link coordinate} to get the coordinate of the overlay.
+     * See also {@link currentCoordinate} to get the coordinate
+     * that are the result of this configuration.
+     *
+     * > NOTE: The return value of the getter may not be the same
+     * > as the input to the setter (or constructor) due to normalization.
      */
-    get position(): OverlayPosition | undefined {
+    get position(): OverlayPosition {
         return this.#position.value;
     }
 
     /**
-     * Positioning of an overlay relative to its position (coordinates).
+     * Positioning of an overlay relative to its coordinates on the map.
      */
     get positioning(): OverlayPositioning {
         return this.#positioning.value;
@@ -387,9 +431,14 @@ export class Overlay {
 
     /**
      * Set the position of the overlay.
-     * The overlay is not rendered if the position is `undefined`.
      *
-     * See also {@link OverlayOptions.position}.
+     * This controls the coordinates of the map.
+     * The overlay is not rendered if the coordinates are `undefined`.
+     *
+     * See also {@link currentCoordinate} to get the coordinates
+     * that are the result of this configuration.
+     *
+     * @see {@link OverlayPosition}
      */
     setPosition(position: OverlayOptions["position"]) {
         const normalized = normalizePosition(position);
@@ -411,25 +460,23 @@ export class Overlay {
     }
 
     /**
-     * Set offset in pixels relative to the overlay`s position. The first element in the array is the horizontal offset.
+     * Set offset in _pixels_ relative to the overlay`s coordinates on the map.
+     * The first element in the array is the horizontal offset.
      */
     setOffset(offset: number[]) {
         this.olOverlay.setOffset(offset);
     }
 
     /**
-     * Set positioning of an overlay relative to its position (coordinates)
+     * Set positioning of an overlay relative to its coordinates on the map.
      */
     setPositioning(positioning: OverlayPositioning) {
         this.olOverlay.setPositioning(positioning);
     }
 }
 
-function normalizePosition(position: OverlayOptions["position"]): OverlayPosition | undefined {
-    if (!position) {
-        return undefined;
-    }
-    if (Array.isArray(position)) {
+function normalizePosition(position: OverlayOptions["position"]): OverlayPosition {
+    if (!position || Array.isArray(position)) {
         return { kind: "coordinate", coordinate: position };
     }
     if (position === "follow-pointer") {

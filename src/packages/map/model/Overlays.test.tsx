@@ -36,6 +36,26 @@ it("return all current overlays", async () => {
     expect(overlays.getAll().length).toBe(0);
 });
 
+it("clear() destroys all overlays", async () => {
+    const { overlays } = await setup();
+    expect(overlays.getAll().length).toBe(0);
+
+    const overlay1 = overlays.add({
+        content: "overlay 1"
+    });
+    const overlay2 = overlays.add({
+        content: "overlay 2"
+    });
+    expect(overlay1.isDestroyed).toBe(false);
+    expect(overlay2.isDestroyed).toBe(false);
+    expect(overlays.getAll().length).toBe(2);
+
+    overlays.clear();
+    expect(overlay1.isDestroyed).toBe(true);
+    expect(overlay2.isDestroyed).toBe(true);
+    expect(overlays.getAll().length).toBe(0);
+});
+
 it("render an Overlay with simple text content", async () => {
     const { overlays } = await setup();
     const overlayTextContent = "Overlay Text Content";
@@ -121,12 +141,12 @@ it("set overlay position according to pointer position (mode: follow-pointer)", 
     act(() => {
         simulateMove(expectedPosition1[0]!, expectedPosition1[1]!);
     });
-    expect(overlay.coordinate).toEqual(expectedPosition1);
+    expect(overlay.currentCoordinate).toEqual(expectedPosition1);
 
     act(() => {
         simulateMove(expectedPosition2[0]!, expectedPosition2[1]!);
     });
-    expect(overlay.coordinate).toEqual(expectedPosition2);
+    expect(overlay.currentCoordinate).toEqual(expectedPosition2);
 });
 
 it("add class name to overlay element", async () => {
