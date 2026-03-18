@@ -1,9 +1,21 @@
 messages:
   formLabel: "Configure map printing"
   title: "Title"
+  pageSize:
+    label: "Page Size"
+    a3: "DIN A3"
+    a4: "DIN A4"
+    a5: "DIN A5"
+  pageOrientation:
+    label: "Orientation"
+    landscape: "Landscape"
+    portrait: "Portrait"
   fileFormat: "File format"
+  resolution: "Resolution (DPI)"
   export: "Export map"
   input:
     placeholder: "Enter title"
+  scale:
+    label: "Scale"
   printingMap: "Map is printing ..."
   printingFailed: "Failed to print the map."
