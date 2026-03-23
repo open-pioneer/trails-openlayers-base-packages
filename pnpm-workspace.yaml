@@ -111,6 +111,8 @@ minimumReleaseAgeExclude:
   - "@conterra/*"
   - "immutable@5.1.5" # See overrides
   - "dompurify@3.3.2" # See overrides
+  # Renovate security update: jspdf@4.2.1
+  - jspdf@4.2.1
 
 overrides:
   # https://github.com/advisories/GHSA-7h2j-956f-4vf2
