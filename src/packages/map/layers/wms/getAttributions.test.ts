@@ -6,10 +6,6 @@ import { resolve } from "path";
 import { expect, it } from "vitest";
 import { getAttributions } from "./getAttributions";
 
-// happy dom does not implement a good XML parser
-import jsdom from "jsdom";
-window.DOMParser = new jsdom.JSDOM().window.DOMParser;
-
 it("should return undefined if no attribution is configured in service metadata", async () => {
     const attribution = readAttribution("./test-data/SimpleWMSCapas.xml");
     expect(attribution).toBeUndefined();

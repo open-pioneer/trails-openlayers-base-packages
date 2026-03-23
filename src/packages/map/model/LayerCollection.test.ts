@@ -1,9 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-/*
- * no xml parser in happy dom
- * @vitest-environment jsdom
- */
 import { effect, watch } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { throwAbortError } from "@open-pioneer/core";
