@@ -43,8 +43,8 @@ catalogs:
       specifier: 4.5.0-dev.20260225121659
       version: 4.5.0-dev.20260225121659
     '@open-pioneer/changesets-release-line':
-      specifier: 0.1.0-dev.20260309143038
-      version: 0.1.0-dev.20260309143038
+      specifier: ^0.1.0
+      version: 0.1.0
     '@open-pioneer/check-pnpm-duplicates':
       specifier: ^0.3.0
       version: 0.3.0
@@ -274,7 +274,7 @@ importers:
         version: 3.0.5
       '@open-pioneer/changesets-release-line':
         specifier: 'catalog:'
-        version: 0.1.0-dev.20260309143038
+        version: 0.1.0
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
         version: 0.3.0
@@ -2510,8 +2510,8 @@ packages:
   '@open-pioneer/chakra-snippets@4.5.0-dev.20260225121659':
     resolution: {integrity: sha512-4Ge5lCKPwU3ajegJ68f+Z9+h6nsAUVx9CFauQYjMn5Bj/t0BkmMsXf/cKnMo2bb7joqE456LIgfco96hwe4ffg==}
 
-  '@open-pioneer/changesets-release-line@0.1.0-dev.20260309143038':
-    resolution: {integrity: sha512-TfsZzs11UTFuw9d4sEWWtb/kHhm/tZ31uRJFcELjq4qs52NeEzXzV4CDzXrSqaKLzCW00mWDTmXQJtGs0hMu2w==}
+  '@open-pioneer/changesets-release-line@0.1.0':
+    resolution: {integrity: sha512-1Ipnbesv1lHQIODR01ltgB3lPC9MEN24j4QjeQU2atnZujGMPgNvVimL4/lZ0ZI6kZkeWQZIRE3derAPU1M+QQ==}
     engines: {node: '>= 20'}
 
   '@open-pioneer/check-pnpm-duplicates@0.3.0':
@@ -6787,7 +6787,7 @@ snapshots:
       - react-dom
       - typescript
 
-  '@open-pioneer/changesets-release-line@0.1.0-dev.20260309143038': {}
+  '@open-pioneer/changesets-release-line@0.1.0': {}
 
   '@open-pioneer/check-pnpm-duplicates@0.3.0':
     dependencies:
