@@ -30,7 +30,6 @@ catalog:
   "@formatjs/intl": ^4.1.4
   "@tanstack/react-table": ^8.21.3
   classnames: ^2.5.1
-  framer-motion: ^12.38.0
   html2canvas: ^1.4.1
   jspdf: ^4.2.1
   ol-mapbox-style: ^13.4.0
