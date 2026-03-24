@@ -57,6 +57,8 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
             forceRerender: reactive(0)
         };
     }, [table]);
+
+    // XXX: Bad practice, but works
     context.forceRerender.value += 1; // Force rerendering of the TableContent child.
 
     // Block click events while dragging the resize handle.
