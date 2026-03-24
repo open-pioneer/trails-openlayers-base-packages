@@ -13,17 +13,13 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import TileLayer from "ol/layer/Tile";
+import { ReactNode } from "react";
 import { expect, it, vi } from "vitest";
 import { Legend, LegendItemAttributes, LegendItemComponentProps } from "./Legend";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xml"), "utf-8");
-
-// Happy dom does not have an XML parser
-import jsdom from "jsdom";
-import { ReactNode } from "react";
-import TileLayer from "ol/layer/Tile";
-window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 
 const LEGEND_ITEM_CLASS = ".legend-item";
 const LEGEND_IMAGE_CLASS = ".legend-item__image";
@@ -883,7 +879,7 @@ async function findLegend() {
 
     // Wait until the <ul> is rendered
     await waitFor(() => {
-        const legendList = legendDiv.querySelector("> .legend-layer-list");
+        const legendList = legendDiv.querySelector(".legend-layer-list");
         if (!legendList) {
             throw new Error("legend list not mounted");
         }

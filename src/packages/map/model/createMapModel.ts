@@ -5,7 +5,7 @@ import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
-import OlMap, { MapOptions } from "ol/Map";
+import OlMap, { FrameState, MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
 import Attribution from "ol/control/Attribution";
 import { getCenter } from "ol/extent";
@@ -13,11 +13,13 @@ import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
+import { sourceId } from "open-pioneer:source-info";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
+import { sanitizeHtml } from "../utils/sanitize";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -29,7 +31,7 @@ registerProjections({
     "EPSG:25833":
         "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
 });
-const LOG = createLogger("map:createMapModel");
+const LOG = createLogger(sourceId);
 
 export async function createMapModel(
     mapId: string,
@@ -219,5 +221,25 @@ function createDefaultAttribution(intl: PackageIntl): Attribution {
         element.role = "region";
         element.ariaLabel = intl.formatMessage({ id: "attribution.label" });
     }
+    sanitizeAttributionsHtml(attr);
     return attr;
+}
+
+// Overrides the OpenLayers widget to sanitize HTML attributions.
+// Note that this depends on OpenLayers internals that may change between versions.
+function sanitizeAttributionsHtml(attr: Attribution) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type
+    const originalCollectSourceAttributions = (attr as any).collectSourceAttributions_ as Function;
+    if (!originalCollectSourceAttributions) {
+        throw new Error("Internal error: failed to override attributions widget");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (attr as any).collectSourceAttributions_ = (frameState: FrameState) => {
+        const attributions = originalCollectSourceAttributions.call(attr, frameState) as string[];
+        if (!Array.isArray(attributions)) {
+            throw new Error("Internal error: unexpected attributions result (should be an array)");
+        }
+        return attributions.map((a) => sanitizeHtml(a));
+    };
 }

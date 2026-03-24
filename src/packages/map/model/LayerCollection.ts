@@ -11,8 +11,11 @@ import {
 } from "@conterra/reactivity-core";
 import { createLogger, Resource } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
+import { sourceId } from "open-pioneer:source-info";
 import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
+import type { AddLayerOptions } from "../layers/shared/AddLayerOptions";
+import { getRecursiveLayers } from "../layers/shared/getRecursiveLayers";
 import {
     ATTACH_TO_MAP,
     DETACH_FROM_MAP,
@@ -20,17 +23,15 @@ import {
     GET_RAW_SUBLAYERS,
     SET_VISIBLE
 } from "../layers/shared/internals";
-import { assertInternalConstructor, InternalConstructorTag } from "../utils/InternalConstructorTag";
-import { AnyLayer, Layer, Sublayer } from "../layers/unions";
-import type { AddLayerOptions } from "../layers/shared/AddLayerOptions";
 import type {
     LayerRetrievalOptions,
     RecursiveRetrievalOptions
 } from "../layers/shared/LayerRetrievalOptions";
+import { AnyLayer, Layer, Sublayer } from "../layers/unions";
+import { assertInternalConstructor, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { MapModel } from "./MapModel";
-import { getRecursiveLayers } from "../layers/shared/getRecursiveLayers";
 
-const LOG = createLogger("map:LayerCollection");
+const LOG = createLogger(sourceId);
 
 type LayerType = AbstractLayer & Layer;
 type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);

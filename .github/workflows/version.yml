@@ -11,10 +11,13 @@ on:
         description: "A string (true or false) that indicates whether packages were published"
         value: ${{ jobs.version.outputs.published}}
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   version:
     runs-on: ubuntu-latest
-    permissions: write-all
     timeout-minutes: 15
     outputs:
       published: ${{ steps.changesets.outputs.published }}

@@ -29,8 +29,11 @@ export interface OgcFeatureVectorSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** the URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832 */
-    crs: string;
+    /**
+     * The URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832
+     * If not provided, the vector source will attempt to use the map's CRS if supported by the collection, or fall back to CRS84 otherwise.
+     */
+    crs?: string;
 
     /**
      * The maximum number of features to fetch within a single request.
@@ -47,7 +50,13 @@ export interface OgcFeatureVectorSourceOptions {
     /** The maximum number of concurrent requests. Defaults to `6`. */
     maxConcurrentRequests?: number;
 
-    /** Optional attribution for the layer (e.g. copyright hints). */
+    /**
+     * Optional attribution for the vector source (e.g. copyright hints).
+     *
+     * If set, this property is passed to the map as attribution information for this vector source.
+     * If the property is not set or `undefined`, the vector source will check if the collection metadata contains a non-standard `attribution` property and use it as attribution.
+     * Setting the this value to the empty string will explicitly disable attributions for this vector source, even if the collection metadata contains an `attribution` property.
+     */
     attributions?: AttributionLike | undefined;
 
     /** Optional additional options for the VectorSource. */
@@ -79,8 +88,7 @@ export interface OgcFeatureVectorSourceOptions {
  *
  * Use the interface name `"ogc-features.VectorSourceFactory"` to obtain an instance of this factory.
  */
-export interface OgcFeaturesVectorSourceFactory
-    extends DeclaredService<"ogc-features.VectorSourceFactory"> {
+export interface OgcFeaturesVectorSourceFactory extends DeclaredService<"ogc-features.VectorSourceFactory"> {
     /**
      * Creates a new {@link VectorSource} that loads features from the specified feature service.
      */
@@ -170,8 +178,7 @@ export interface FeatureResponse {
  *
  * Use the interface name `"ogc-features.SearchSourceFactory"` to obtain an instance of this factory.
  */
-export interface OgcFeaturesSearchSourceFactory
-    extends DeclaredService<"ogc-features.SearchSourceFactory"> {
+export interface OgcFeaturesSearchSourceFactory extends DeclaredService<"ogc-features.SearchSourceFactory"> {
     /**
      * Returns a new {@link SearchSource} that searches on the specified feature service.
      */

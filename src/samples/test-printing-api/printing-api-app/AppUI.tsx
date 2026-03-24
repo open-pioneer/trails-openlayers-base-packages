@@ -6,10 +6,11 @@ import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { PrintingService } from "@open-pioneer/printing";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { useEffect, useRef, useState } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
-const LOG = createLogger("printing");
+const LOG = createLogger(sourceId);
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);

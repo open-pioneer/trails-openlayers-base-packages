@@ -75,7 +75,7 @@ describe("point selection source", () => {
         expect(logSpy.mock.calls).toMatchInlineSnapshot(`
           [
             [
-              "[ERROR] selection:SelectionController: selection from source Rejected failed",
+              "[ERROR] @open-pioneer/selection/SelectionController: selection from source Rejected failed",
               [Error: select with {"type":"extent","extent":[404740,5754673,407354,5757893]} rejected],
             ],
           ]

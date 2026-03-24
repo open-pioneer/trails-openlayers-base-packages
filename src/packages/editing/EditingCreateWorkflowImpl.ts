@@ -18,12 +18,13 @@ import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { FlatStyle } from "ol/style/flat";
+import { sourceId } from "open-pioneer:source-info";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { Tooltip, createTooltip } from "./Tooltip";
 import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { createStyles } from "./style-utils";
 
-const LOG = createLogger("editing:EditingCreateWorkflowImpl");
+const LOG = createLogger(sourceId);
 
 export class EditingCreateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
@@ -86,7 +87,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         });
 
         this._tooltip = createTooltip(
-            this._olMap,
+            this._map,
             this._intl.formatMessage({ id: "create.tooltip.begin" })
         );
 

@@ -98,7 +98,7 @@ it("logs a warning when setVisible() is called on a base layer", async () => {
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] map:AbstractLayer: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
+            "[WARN] @open-pioneer/map/layers/AbstractLayer: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
           ],
         ],
         "results": [
@@ -230,7 +230,7 @@ describe("health checks", () => {
         expect(mockedWarn.mock.calls).toMatchInlineSnapshot(`
           [
             [
-              "[WARN] map:AbstractLayer: Health check failed for layer 'a' (http status 404)",
+              "[WARN] @open-pioneer/map/layers/AbstractLayer: Health check failed for layer 'a' (http status 404)",
             ],
           ]
         `);
@@ -318,7 +318,7 @@ describe("health checks", () => {
         expect(mockedWarn.mock.calls).toMatchInlineSnapshot(`
           [
             [
-              "[WARN] map:AbstractLayer: Health check failed for layer 'a'",
+              "[WARN] @open-pioneer/map/layers/AbstractLayer: Health check failed for layer 'a'",
               [Error: broken!],
             ],
           ]

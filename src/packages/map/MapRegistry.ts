@@ -11,12 +11,13 @@ import {
     ServiceOptions
 } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
+import { sourceId } from "open-pioneer:source-info";
 import { LayerFactory } from "./LayerFactory";
 import { createMapModel } from "./model/createMapModel";
 import { MapConfig } from "./model/MapConfig";
 import { MapModel } from "./model/MapModel";
 
-const LOG = createLogger("map:MapRegistry");
+const LOG = createLogger(sourceId);
 
 /**
  * Options passed to the {@link MapConfigProvider.getMapConfig} method.

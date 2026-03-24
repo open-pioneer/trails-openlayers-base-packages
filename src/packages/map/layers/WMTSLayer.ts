@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
+import { batch, reactive } from "@conterra/reactivity-core";
 import { createLogger, deprecated, isAbortError } from "@open-pioneer/core";
 import { ImageTile } from "ol";
 import Tile from "ol/Tile";
 import TileState from "ol/TileState";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import TileLayer from "ol/layer/Tile";
-import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import type TileSourceType from "ol/source/Tile";
-import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
+import WMTS, { optionsFromCapabilities, Options as WMTSSourceOptions } from "ol/source/WMTS";
+import { sourceId } from "open-pioneer:source-info";
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -17,6 +17,7 @@ import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
+import { getAttributions } from "./wmts/getAttributions";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 
 /**
@@ -40,10 +41,10 @@ export interface WMTSLayerConfig extends LayerConfig {
      * NOTE: These options are intended for advanced configuration:
      * the WMTS Layer manages some of the OpenLayers source options itself.
      */
-    sourceOptions?: Partial<WMSSourceOptions>;
+    sourceOptions?: Partial<WMTSSourceOptions>;
 }
 
-const LOG = createLogger("map:WMTSLayer");
+const LOG = createLogger(sourceId);
 
 const deprecatedConstructor = deprecated({
     name: "WMTSLayer constructor",
@@ -62,8 +63,7 @@ export class WMTSLayer extends AbstractLayer {
     #name: string;
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
-    #source: WMTS | undefined;
-    #sourceOptions?: Partial<WMSSourceOptions>;
+    #sourceOptions: Partial<WMTSSourceOptions>;
     #legend = reactive<string | undefined>();
 
     #loadStarted = false;
@@ -108,7 +108,7 @@ export class WMTSLayer extends AbstractLayer {
         this.#name = config.name;
         this.#layer = layer;
         this.#matrixSet = config.matrixSet;
-        this.#sourceOptions = config.sourceOptions;
+        this.#sourceOptions = config.sourceOptions ?? {};
     }
 
     destroy(): void {
@@ -159,41 +159,61 @@ export class WMTSLayer extends AbstractLayer {
         this.#loadStarted = true;
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
-                const parser = new WMTSCapabilities();
-                const capabilities = parser.read(result);
-                const options = optionsFromCapabilities(capabilities, {
-                    layer: this.#name,
-                    matrixSet: this.#matrixSet
+                batch(() => {
+                    this.#initializeWithMetadata(result);
                 });
-                if (!options) {
-                    throw new Error("Layer was not found in capabilities");
-                }
-                const source = new WMTS({
-                    ...options,
-                    ...this.#sourceOptions,
-                    tileLoadFunction: (tile, tileUrl) => {
-                        this.#loadTile(tile, tileUrl);
-                    }
-                });
-                this.#source = source;
-                this.#layer.setSource(this.#source);
-                const activeStyleId = source.getStyle();
-                const legendUrl = getLegendUrl(capabilities, this.name, activeStyleId);
-                this.#legend.value = legendUrl;
             })
             .catch((error) => {
                 if (isAbortError(error)) {
-                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
-                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
+                    LOG.debug(`Layer '${this.name}' has been destroyed before fetching the data`);
                     return;
                 }
-                LOG.error(`Failed fetching WMTS capabilities for Layer ${this.name}`, error);
+                LOG.error(`Failed to initialize WMTS layer '${this.name}'`, error);
+                //TODO: how to set the load state to error?
             });
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {
         const httpService = this[GET_DEPS]().httpService;
         return fetchText(this.#url, httpService, this.#abortController.signal);
+    }
+
+    #initializeWithMetadata(metadata: string) {
+        const parser = new WMTSCapabilities();
+        const capabilities = parser.read(metadata);
+        const options = optionsFromCapabilities(capabilities, {
+            layer: this.#name,
+            matrixSet: this.#matrixSet
+        });
+        if (!options) {
+            throw new Error(`Layer '${this.#name}' was not found in capabilities`);
+        }
+        if (options.matrixSet !== this.#matrixSet) {
+            throw new Error(`Tile matrix set '${this.#matrixSet}' was not found in capabilities`);
+        }
+
+        const { attributions: explicitAttributions, ...sourceOptions } = this.#sourceOptions;
+        if (sourceOptions.style && sourceOptions.style !== options.style) {
+            const styleToUse = this.#existsStyleInCapabilities(capabilities, sourceOptions.style);
+            if (!styleToUse) {
+                throw new Error(`Style '${sourceOptions.style}' was not found in capabilities`);
+            }
+        }
+
+        const attributions = explicitAttributions ?? getAttributions(capabilities);
+        const source = new WMTS({
+            ...options,
+            attributions,
+            ...sourceOptions,
+            tileLoadFunction: (tile, tileUrl) => {
+                this.#loadTile(tile, tileUrl);
+            }
+        });
+        this.#layer.setSource(source);
+
+        const activeStyleId = source.getStyle();
+        const legendUrl = getLegendUrl(capabilities, this.name, activeStyleId);
+        this.#legend.value = legendUrl;
     }
 
     async #loadTile(tile: Tile, tileUrl: string): Promise<void> {
@@ -233,6 +253,17 @@ export class WMTSLayer extends AbstractLayer {
             }
         }
     }
+
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    #existsStyleInCapabilities(capabilities: any, styleToUse: string): boolean {
+        // NOTE: we have a style override, check if the style exists in the capabilities
+        // the helper optionsFromCapabilities, supports style, too, but uses the Title instead of the Identifier, to find a match in the capabilities
+        const layerDesc = capabilities.Contents?.Layer?.find(
+            (layer: any) => layer.Identifier === this.#name
+        );
+        return layerDesc?.Style?.some((style: any) => style.Identifier === styleToUse) ?? false;
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).

@@ -37,10 +37,11 @@ import VectorLayer from "ol/layer/Vector";
 import { OSM } from "ol/source";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Style } from "ol/style";
+import { sourceId } from "open-pioneer:source-info";
 import { CustomLegendItem } from "./map/CustomLegendItems";
 import { PhotonGeocoder } from "./sources/searchSources";
 
-const LOG = createLogger("ol-app:AppModel");
+const LOG = createLogger(sourceId);
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -259,7 +260,7 @@ export class AppModel implements Service, AppState {
         const viewport: HTMLElement = map.olMap.getViewport();
 
         this.clearHighlight();
-        this._featureHighlight = map.highlightAndZoom(geometries, {
+        this._featureHighlight = map.highlights.addAndZoom(geometries, {
             viewPadding:
                 viewport && viewport.offsetWidth < 1000
                     ? { top: 150, right: 75, bottom: 50, left: 75 }
