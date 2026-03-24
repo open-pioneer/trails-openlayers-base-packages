@@ -43,10 +43,10 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.30.0
-  "@open-pioneer/build-package-cli": ^3.0.7
-  "@open-pioneer/build-support": ^3.0.5
-  "@open-pioneer/check-pnpm-duplicates": ^0.3.0
-  "@open-pioneer/vite-plugin-pioneer": ^5.1.0
+  "@open-pioneer/build-package-cli": ^3.0.8
+  "@open-pioneer/build-support": ^3.0.6
+  "@open-pioneer/check-pnpm-duplicates": ^0.3.1
+  "@open-pioneer/vite-plugin-pioneer": ^5.1.1
   "@open-pioneer/changesets-release-line": ^0.1.0
   "@testing-library/dom": ^10.4.1
   "@testing-library/jest-dom": ^6.9.1
