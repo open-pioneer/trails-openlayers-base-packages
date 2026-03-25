@@ -63,7 +63,7 @@ export function EditingComponent(props: { kind: EditingKind }) {
                         </Button>
                         <Button
                             onClick={() => {
-                                editingViewModel?.destroy();
+                                editingViewModel?.hide();
                             }}
                         >
                             {intl.formatMessage({
@@ -162,19 +162,25 @@ class EditingViewModel {
                     });
                 }
             })
-            .finally(() => {
-                this.destroy(); // Hide UI
+            .then(() => {
+                // Only hide if not destroyed already
+                if (this.job) {
+                    this.hide();
+                }
             });
     }
 
     destroy() {
         this.job?.destroy();
         this.job = undefined;
-        this.appModel.hideContent(`editing-${this.kind}`);
     }
 
     reset() {
         this.job?.reset();
+    }
+
+    hide() {
+        this.appModel.hideContent(`editing-${this.kind}`);
     }
 
     private createJob(): EditingJob {
