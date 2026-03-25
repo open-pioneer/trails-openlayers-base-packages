@@ -3,7 +3,7 @@
 exports[`renders as a button 1`] = `
 <button
   aria-label="Button Label"
-  class="chakra-button chakra-tooltip__trigger tool-button css-19gwppe"
+  class="chakra-button chakra-tooltip__trigger tool-button css-19u3ixl"
   data-part="trigger"
   data-scope="tooltip"
   data-state="closed"
