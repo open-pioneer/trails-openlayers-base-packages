@@ -1,5 +1,4 @@
 ---
-"@open-pioneer/toc": minor
 "@open-pioneer/experimental-layout-sidebar": minor
 "@open-pioneer/basemap-switcher": minor
 "@open-pioneer/coordinate-search": minor
@@ -22,6 +21,7 @@
 "@open-pioneer/search": minor
 "@open-pioneer/selection": minor
 "@open-pioneer/spatial-bookmarks": minor
+"@open-pioneer/toc": minor
 ---
 
-Update to Chakra UI 3.34.0
+Update to trails core packages 4.5.0
