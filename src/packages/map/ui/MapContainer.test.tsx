@@ -76,7 +76,7 @@ it("does not change view padding on map if padding values are not changed", asyn
 
     // render with same padding
     let changeFired = false;
-    map.olView.on("change", () => {
+    map.olView.on("change:center", () => {
         changeFired = true;
     });
     rerender({
@@ -100,7 +100,7 @@ it("does update view padding on map if padding values are changed", async () => 
 
     // update with changed padding
     let changeFired = false;
-    map.olView.on("change", () => {
+    map.olView.on("change:center", () => {
         changeFired = true;
     });
 
@@ -111,7 +111,7 @@ it("does update view padding on map if padding values are changed", async () => 
         }
     });
 
-    // expect padding is unchanged
+    // expect padding is changed
     expect(map.olView.padding).toEqual([15, 20, 30, 40]);
     expect(changeFired).toBe(true);
 });

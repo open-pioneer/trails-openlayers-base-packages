@@ -12,7 +12,7 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { sourceId } from "open-pioneer:source-info";
 import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { MapModel, MapPadding } from "../model/MapModel";
+import { DISPLAY_STATUS, MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { OverlaysRenderer } from "./OverlaysRenderer";
@@ -285,17 +285,30 @@ function useSyncViewPadding(
         const oldCenter = mapView.getCenter();
         const oldExtent = extentIncludingPadding(olMap, oldPadding);
         mapView.padding = toOlPadding(viewPadding);
+
+        const shouldAnimate = map[DISPLAY_STATUS] === "ready";
         switch (viewPaddingChangeBehavior) {
-            case "preserve-center":
-                mapView.animate({ center: oldCenter, duration: 300 });
+            case "preserve-center": {
+                if (shouldAnimate) {
+                    mapView.animate({ center: oldCenter, duration: 300 });
+                } else {
+                    mapView.setCenter(oldCenter);
+                }
                 break;
+            }
             case "preserve-extent": {
                 if (oldExtent) {
-                    mapView.animate({
-                        center: oldCenter,
-                        resolution: mapView.getResolutionForExtent(oldExtent),
-                        duration: 300
-                    });
+                    const res = mapView.getResolutionForExtent(oldExtent);
+                    if (shouldAnimate) {
+                        mapView.animate({
+                            center: oldCenter,
+                            resolution: res,
+                            duration: 300
+                        });
+                    } else {
+                        mapView.setCenter(oldCenter);
+                        mapView.setResolution(res);
+                    }
                 }
                 break;
             }
