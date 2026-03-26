@@ -146,6 +146,10 @@ overrides:
   "picomatch@>=3.0.0 <3.0.2": "^3.0.2"
   "picomatch@>=4.0.0 <4.0.4": "^4.0.4"
 
+  # https://github.com/advisories/GHSA-48c2-rrv3-qjmp
+  "yaml@>=1.0.0 <1.10.3": "^1.10.3"
+  "yaml@>=2.0.0 <2.8.3": "^2.8.3"
+
   # We don't actually use the babel plugin.
   # The babel runtime is also not used as a production dependency.
   # See e.g. https://github.com/emotion-js/emotion/issues/2371
