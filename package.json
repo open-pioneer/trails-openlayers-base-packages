@@ -1,6 +1,6 @@
 {
     "name": "openlayers-base-packages",
-    "version": "0.0.1",
+    "version": "1.3.0",
     "private": true,
     "type": "module",
     "license": "Apache-2.0",
