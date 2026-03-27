@@ -89,27 +89,6 @@ catalog:
   vitest: ^4.1.0
   zx: ^8.8.5
 
-auditConfig:
-  ignoreCves:
-    # This affects ajv, which is a transitive dependency of eslint.
-    # Eslint depends on ajv@v6, and an update to v8 might not be trivial.
-    # Only dev dependencies are (potentially) affected.
-    # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
-    - CVE-2025-69873
-
-    # See CVE CVE-2025-69873
-    - CVE-2026-26996
-
-# Install older versions by default
-resolutionMode: "lowest-direct"
-
-# Configure a release cooldown
-minimumReleaseAge: 4320 # 3 days in minutes
-minimumReleaseAgeExclude:
-  - "@open-pioneer/*"
-  - "@conterra/*"
-  - "picomatch" # See overrides
-
 overrides:
   # https://github.com/advisories/GHSA-7h2j-956f-4vf2
   "@isaacs/brace-expansion@<=5.0.0": "^5.0.1"
@@ -166,6 +145,7 @@ overrides:
 
   # Ensure patched packages have the expected version (patch was tested with this version):
   "@ark-ui/react": "5.34.1"
+  "@zag-js/splitter": "1.35.3"
 
 allowUnusedPatches: true
 ignorePatchFailures: false
@@ -173,11 +153,25 @@ patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
+  # Fix cursor styling
+  "@zag-js/splitter": patches/@zag-js__splitter.patch
+
 peerDependencyRules:
   allowedVersions:
     # See overrides
     "fdir>picomatch": "*"
     "rollup": "*"
+
+auditConfig:
+  ignoreCves:
+    # This affects ajv, which is a transitive dependency of eslint.
+    # Eslint depends on ajv@v6, and an update to v8 might not be trivial.
+    # Only dev dependencies are (potentially) affected.
+    # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
+    - CVE-2025-69873
+
+    # See CVE CVE-2025-69873
+    - CVE-2026-26996
 
 onlyBuiltDependencies:
   - "@parcel/watcher"
@@ -189,12 +183,21 @@ ignoredBuiltDependencies:
   - core-js
   - unrs-resolver
 
+# Install older versions by default
+resolutionMode: "lowest-direct"
+
+# Configure a release cooldown
+minimumReleaseAge: 4320 # 3 days in minutes
+minimumReleaseAgeExclude:
+  - "@open-pioneer/*"
+  - "@conterra/*"
+  - "picomatch" # See overrides
+
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true
+strictPeerDependencies: true
 
 # Workspace root itself depends on runtime, and all packages (including runtime) have a dev dependency on workspace root
 # for shared scripts.
 ignoreWorkspaceCycles: true
-
 linkWorkspacePackages: false
-strictPeerDependencies: true
