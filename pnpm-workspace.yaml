@@ -109,6 +109,8 @@ minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
   - "picomatch" # See overrides
+  # Renovate security update: happy-dom@20.8.8
+  - happy-dom@20.8.8
 
 overrides:
   # https://github.com/advisories/GHSA-7h2j-956f-4vf2
