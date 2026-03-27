@@ -1,5 +1,18 @@
 # @open-pioneer/search
 
+## 1.3.0
+
+### Minor Changes
+
+- 9b5d5f3: Support for new common container props (role, aria-\*, data-\* and css)
+- d05a3b8: Refactor user interface: now based on chakra's combobox instead of react-select.
+
+    NOTE: This causes changes to many internal CSS classes and attributes.
+    The UX of the control should be the same.
+
+- d54ccfd: Update to Chakra UI 3.34.0
+- 206b397: Update to trails core packages 4.5.0
+
 ## 1.2.0
 
 ### Minor Changes

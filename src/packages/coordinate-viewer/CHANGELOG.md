@@ -1,5 +1,13 @@
 # @open-pioneer/coordinate-viewer
 
+## 1.3.0
+
+### Minor Changes
+
+- 9b5d5f3: Support for new common container props (role, aria-\*, data-\* and css)
+- d54ccfd: Update to Chakra UI 3.34.0
+- 206b397: Update to trails core packages 4.5.0
+
 ## 1.2.0
 
 ### Patch Changes

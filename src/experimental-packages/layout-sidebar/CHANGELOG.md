@@ -1,5 +1,12 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 1.3.0
+
+### Minor Changes
+
+- d54ccfd: Update to Chakra UI 3.34.0
+- 206b397: Update to trails core packages 4.5.0
+
 ## 1.2.0
 
 ### Patch Changes
