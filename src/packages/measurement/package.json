@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/measurement",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "This package provides a UI component that allows the user to perform area and distance measurements on the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
