@@ -197,6 +197,8 @@ minimumReleaseAgeExclude:
   - "picomatch" # See overrides
   - "happy-dom@20.8.8" # https://github.com/advisories/GHSA-w4gp-fjgq-3q4g
   - "handlebars@4.7.9" # https://github.com/advisories/GHSA-2qvq-rjwj-gvw9
+  # Renovate security update: vite@7.3.2
+  - vite@7.3.2
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true
