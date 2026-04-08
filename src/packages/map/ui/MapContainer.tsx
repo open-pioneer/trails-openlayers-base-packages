@@ -262,6 +262,11 @@ function useViewPadding(viewPaddingProp: MapPadding | undefined): Required<MapPa
     ]);
 }
 
+interface TargetViewPoint {
+    center: Coordinate;
+    extent: Extent | undefined;
+}
+
 /**
  * Applies the current view padding to the view.
  */
@@ -271,13 +276,10 @@ function useSyncViewPadding(
     map: MapModel
 ) {
     const mapView = useReactiveSnapshot(() => map.olView, [map]);
-    const targetViewPoint = useRef<
-        | {
-              center: Coordinate;
-              extent: Extent | undefined;
-          }
-        | undefined
-    >(undefined);
+
+    // Tracks target state for in-progress animations.
+    const targetViewPoint = useRef<TargetViewPoint>(undefined);
+
     useEffect(() => {
         const olMap = map.olMap;
         if (!mapView) {

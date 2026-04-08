@@ -2,4 +2,4 @@
 "@open-pioneer/map": patch
 ---
 
-#587 - [map] Map center is not animated correctly if view padding changes multiple times in short succession
+Fix map center / map extent not being animated correctly if view padding changes multiple times in short succession (see [#587](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/587)).
