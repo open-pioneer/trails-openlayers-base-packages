@@ -1,6 +1,5 @@
 ---
 "@open-pioneer/toc": minor
-"@open-pioneer/experimental-layout-sidebar": minor
 "@open-pioneer/basemap-switcher": minor
 "@open-pioneer/coordinate-search": minor
 "@open-pioneer/coordinate-viewer": minor
