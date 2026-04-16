@@ -12,6 +12,7 @@ import type { BaseFieldConfig } from "./BaseFieldConfig";
  *
  * The render function receives the current field value and a callback to update it, and must
  * return a React node to display in the form.
+ * The React node will be rendered as a child of a Chakra `Field.Root`.
  *
  * @group Fields
  */
