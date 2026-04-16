@@ -129,6 +129,9 @@ overrides:
   "yaml@>=1.0.0 <1.10.3": "^1.10.3"
   "yaml@>=2.0.0 <2.8.3": "^2.8.3"
 
+  # https://github.com/advisories/GHSA-39q2-94rc-95cp
+  "dompurify@<3.4.0": "^3.4.0"
+
   # We don't actually use the babel plugin.
   # The babel runtime is also not used as a production dependency.
   # See e.g. https://github.com/emotion-js/emotion/issues/2371
@@ -194,7 +197,7 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "vite@7.3.2"
+  - "dompurify@3.4.0"
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true

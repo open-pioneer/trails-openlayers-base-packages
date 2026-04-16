@@ -246,6 +246,7 @@ overrides:
   picomatch@>=4.0.0 <4.0.4: ^4.0.4
   yaml@>=1.0.0 <1.10.3: ^1.10.3
   yaml@>=2.0.0 <2.8.3: ^2.8.3
+  dompurify@<3.4.0: ^3.4.0
   '@emotion/react>@emotion/babel-plugin': '-'
   '@emotion/styled>@emotion/babel-plugin': '-'
   '@emotion/react>@babel/runtime': '-'
@@ -3941,9 +3942,8 @@ packages:
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
-  dompurify@3.3.2:
-    resolution: {integrity: sha512-6obghkliLdmKa56xdbLOpUZ43pAR6xFy1uOrxBaIDjT+yaRuuybLjGS9eVBoSR/UPU5fq3OXClEHLJNGvbxKpQ==}
-    engines: {node: '>=20'}
+  dompurify@3.4.0:
+    resolution: {integrity: sha512-nolgK9JcaUXMSmW+j1yaSvaEaoXYHwWyGJlkoCTghc97KgGDDSnpoU/PlEnw63Ah+TGKFOyY+X5LnxaWbCSfXg==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -8464,7 +8464,7 @@ snapshots:
 
   dom-accessibility-api@0.6.3: {}
 
-  dompurify@3.3.2:
+  dompurify@3.4.0:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
     optional: true
@@ -9384,7 +9384,7 @@ snapshots:
     optionalDependencies:
       canvg: 3.0.11
       core-js: 3.41.0
-      dompurify: 3.3.2
+      dompurify: 3.4.0
       html2canvas: 1.4.1
 
   jsx-ast-utils@3.3.5:
