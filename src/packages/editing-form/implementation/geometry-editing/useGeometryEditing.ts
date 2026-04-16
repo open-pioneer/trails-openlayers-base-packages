@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModelValue, type MapModel } from "@open-pioneer/map";
+import { useMapModelValue, type MapModel, type LayerFactory } from "@open-pioneer/map";
 import { useEffect, useMemo } from "react";
 import { EditingController } from "./controller/EditingController";
 import { CreationStep, EditingStep, UpdateStep } from "../../api/model/EditingStep";
@@ -8,6 +8,7 @@ import type { MapModelProps } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
 import { InteractionOptions } from "../../api/model/InteractionOptions";
 import { Editor } from "../Editor";
+import { useService } from "open-pioneer:react-hooks";
 
 /**
  * Options for the {@link useGeometryEditing} hook.
@@ -162,7 +163,8 @@ export function useGeometryEditing({
     snappingSources,
     ...interactionOptions
 }: GeometryEditingOptions): DrawingState {
-    const controller = useEditingController(map);
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
+    const controller = useEditingController(map, layerFactory);
 
     useEffect(() => {
         controller.setSnappingSources(snappingSources);
@@ -178,14 +180,14 @@ export function useGeometryEditing({
                 controller.startDrawingFeature({
                     geometryType: editingStep.template.geometryType,
                     drawingOptions: editingStep.template.drawingOptions ?? {},
-                    completionHandler(feature, drawOlLayer) {
+                    completionHandler(feature, drawLayer) {
                         const template = editingStep.template;
                         feature.setProperties(template.defaultProperties ?? {});
                         setEditingStep({
                             id: "creation",
                             feature,
                             template,
-                            drawOlLayer
+                            drawLayer: drawLayer
                         } satisfies CreationStep);
                     }
                 });
@@ -207,7 +209,7 @@ export function useGeometryEditing({
             case "creation":
                 controller.startModifyingFeature({
                     feature: editingStep.feature,
-                    drawLayer: editingStep.drawOlLayer
+                    drawLayer: editingStep.drawLayer
                 });
                 break;
 
@@ -225,7 +227,10 @@ export function useGeometryEditing({
     return controller.drawingSession;
 }
 
-function useEditingController(map: MapModel | undefined): EditingController {
+function useEditingController(
+    map: MapModel | undefined,
+    layerFactory: LayerFactory
+): EditingController {
     const mapModel = useMapModelValue({ map });
-    return useMemo(() => new EditingController(mapModel), [mapModel]);
+    return useMemo(() => new EditingController(mapModel, layerFactory), [mapModel, layerFactory]);
 }

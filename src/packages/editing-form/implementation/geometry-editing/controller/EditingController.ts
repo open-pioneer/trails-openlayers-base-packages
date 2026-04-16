@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { MapModel } from "@open-pioneer/map";
+import { LayerFactory, MapModel } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
 import type { InteractionOptions } from "../../../api/model/InteractionOptions";
 import { BaseInteraction } from "../interactions/BaseInteraction";
@@ -19,7 +19,7 @@ import {
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
 import { DrawingSession } from "./DrawingSession";
 
-type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker">>;
+type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker" | "layerFactory">>;
 type StartSelectingFeatureOptions = Pick<SelectionParameters, "layers" | "completionHandler">;
 type StartModifyingFeatureOptions = Pick<ModificationParameters, "feature" | "drawLayer">;
 
@@ -30,7 +30,10 @@ export class EditingController {
 
     readonly drawingSession = new DrawingSession();
 
-    constructor(private readonly mapModel: MapModel) {}
+    constructor(
+        private readonly mapModel: MapModel,
+        private readonly layerFactory: LayerFactory
+    ) {}
 
     startDrawingFeature({
         geometryType,
@@ -42,7 +45,8 @@ export class EditingController {
                 geometryType,
                 tracker: this.drawingSession,
                 drawingOptions: { ...this.interactionOptions.drawingOptions, ...drawingOptions },
-                completionHandler
+                completionHandler,
+                layerFactory: this.layerFactory
             }),
             new KeyboardInteraction(this.mapModel, {
                 actions: this.drawingSession

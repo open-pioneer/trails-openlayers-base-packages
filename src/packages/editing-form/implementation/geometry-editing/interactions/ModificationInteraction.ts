@@ -3,20 +3,20 @@
 import { Collection, type Feature } from "ol";
 import { Modify } from "ol/interaction";
 import type { Geometry } from "ol/geom";
-import type { Layer as OlLayer } from "ol/layer";
 import { BaseInteraction } from "./BaseInteraction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
+import type { SimpleLayer } from "@open-pioneer/map";
 
 export interface ModificationParameters {
     readonly feature: Feature;
-    readonly drawLayer?: OlLayer;
+    readonly drawLayer?: SimpleLayer;
     readonly modificationOptions?: ModificationOptions;
 }
 
 interface Data {
     readonly feature: Feature;
     readonly modify: Modify;
-    readonly drawLayer: OlLayer | undefined;
+    readonly drawLayer: SimpleLayer | undefined;
     readonly originalGeometry: Geometry | undefined;
 }
 
@@ -29,7 +29,7 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
         const originalGeometry = feature.getGeometry()?.clone();
 
         if (drawLayer != null) {
-            this.map.addLayer(drawLayer);
+            this.mapModel.layers.addLayer(drawLayer);
         }
 
         this.map.addInteraction(modify);
@@ -43,7 +43,7 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
         this.map.removeInteraction(modify);
 
         if (drawLayer != null) {
-            this.map.removeLayer(drawLayer);
+            this.mapModel.layers.removeLayer(drawLayer);
         }
         if (originalGeometry != null) {
             feature.setGeometry(originalGeometry);

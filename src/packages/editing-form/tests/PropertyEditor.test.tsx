@@ -60,7 +60,7 @@ describe("PropertyEditor Integration", () => {
 
             const step: ModificationStep = {
                 id: "creation",
-                drawOlLayer: {} as any,
+                drawLayer: {} as any,
                 template,
                 feature
             };
@@ -99,7 +99,7 @@ describe("PropertyEditor Integration", () => {
 
             const step: ModificationStep = {
                 id: "creation",
-                drawOlLayer: {} as any,
+                drawLayer: {} as any,
                 template,
                 feature
             };
@@ -132,7 +132,7 @@ describe("PropertyEditor Integration", () => {
 
             const step: ModificationStep = {
                 id: "creation",
-                drawOlLayer: {} as any,
+                drawLayer: {} as any,
                 template,
                 feature
             };
@@ -182,7 +182,7 @@ describe("PropertyEditor Integration", () => {
 
             const step: ModificationStep = {
                 id: "creation",
-                drawOlLayer: {} as any,
+                drawLayer: {} as any,
                 template,
                 feature
             };
@@ -509,7 +509,7 @@ describe("PropertyEditor Integration", () => {
 
             const step: ModificationStep = {
                 id: "creation",
-                drawOlLayer: {} as any,
+                drawLayer: {} as any,
                 template,
                 feature
             };
