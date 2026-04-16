@@ -10,27 +10,37 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 import { BaseInteraction } from "./BaseInteraction";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
+import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
 
 export interface DrawingParameters {
     readonly geometryType: GeometryType;
     readonly tracker: DrawingTracker;
     readonly drawingOptions?: DrawingOptions;
-    readonly completionHandler: (feature: Feature, drawLayer: VectorLayer) => void;
+    readonly completionHandler: (feature: Feature, drawLayer: SimpleLayer) => void;
+    readonly layerFactory: LayerFactory;
 }
 
 interface DrawingData {
     readonly draw: Draw;
-    readonly drawLayer: VectorLayer;
+    readonly drawLayer: SimpleLayer;
     readonly eventsKeys: EventsKey[];
     readonly tracker: DrawingTracker;
 }
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
     protected override startInteraction(parameters: DrawingParameters): DrawingData {
-        const { geometryType, tracker, drawingOptions, completionHandler } = parameters;
+        const { geometryType, tracker, drawingOptions, completionHandler, layerFactory } =
+            parameters;
 
         const source = new VectorSource();
-        const drawLayer = new VectorLayer({ source });
+        const drawLayer = layerFactory.create({
+            type: SimpleLayer,
+            internal: true,
+            title: "editing-draw-layer",
+            olLayer: new VectorLayer<VectorSource, Feature>({
+                source: source
+            })
+        });
         const draw = new Draw({ source, type: geometryType, ...drawingOptions });
 
         const handler: DrawingActionHandler = {
@@ -46,7 +56,7 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
             draw.once("drawend", ({ feature }) => completionHandler(feature, drawLayer))
         ];
 
-        this.map.addLayer(drawLayer);
+        this.mapModel.layers.addLayer(drawLayer, { at: "topmost" });
         this.map.addInteraction(draw);
 
         return { draw, drawLayer, eventsKeys, tracker };
@@ -56,7 +66,7 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         const { draw, drawLayer, eventsKeys, tracker } = data;
 
         this.map.removeInteraction(draw);
-        this.map.removeLayer(drawLayer);
+        this.mapModel.layers.removeLayer(drawLayer);
         unByKey(eventsKeys);
         tracker.untrackCapabilities();
     }

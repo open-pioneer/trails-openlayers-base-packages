@@ -5,7 +5,7 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     i18n: ["en", "de"],
     ui: {
-        references: ["notifier.NotificationService"]
+        references: ["notifier.NotificationService", "map.LayerFactory"]
     },
     entryPoints: ["index.ts"],
     publishConfig: {

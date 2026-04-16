@@ -21,6 +21,14 @@ export interface DrawingActionHandler {
 }
 
 export class DrawingSession implements DrawingTracker, DrawingState {
+    private ignoreNextEdit = false;
+    private actionHandler: DrawingActionHandler | undefined;
+    private watchHandle: CleanupHandle | undefined;
+
+    private readonly canFinishSignal = reactive<boolean>();
+    private readonly canResetSignal = reactive<boolean>();
+    private readonly undoManager = new UndoManager<Coordinate>();
+
     trackCapabilities(feature: Feature, actionHandler: DrawingActionHandler): void {
         this.untrackCapabilities();
 
@@ -116,12 +124,4 @@ export class DrawingSession implements DrawingTracker, DrawingState {
     get canRedo(): boolean {
         return this.undoManager.canRedo;
     }
-
-    private ignoreNextEdit = false;
-    private actionHandler: DrawingActionHandler | undefined;
-    private watchHandle: CleanupHandle | undefined;
-
-    private readonly canFinishSignal = reactive<boolean>();
-    private readonly canResetSignal = reactive<boolean>();
-    private readonly undoManager = new UndoManager<Coordinate>();
 }
