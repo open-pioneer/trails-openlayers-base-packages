@@ -1,22 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { Layer } from "@open-pioneer/map";
 import { Collection, type Feature } from "ol";
-import { Modify } from "ol/interaction";
 import type { Geometry } from "ol/geom";
-import { BaseInteraction } from "./BaseInteraction";
+import { Modify } from "ol/interaction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
-import type { SimpleLayer } from "@open-pioneer/map";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface ModificationParameters {
     readonly feature: Feature;
-    readonly drawLayer?: SimpleLayer;
+    readonly drawLayer?: Layer;
     readonly modificationOptions?: ModificationOptions;
 }
 
 interface Data {
     readonly feature: Feature;
     readonly modify: Modify;
-    readonly drawLayer: SimpleLayer | undefined;
+    readonly drawLayer: Layer | undefined;
     readonly originalGeometry: Geometry | undefined;
 }
 
