@@ -11,6 +11,7 @@ import type { NotificationService } from "@open-pioneer/notifier";
 import { Editor } from "../implementation/Editor";
 import type { EditingStorage } from "../api/model/EditingStorage";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
+import { LayerFactory } from "@open-pioneer/map";
 
 const mockStorage: EditingStorage = {
     addFeature: vi.fn().mockResolvedValue(undefined),
@@ -53,23 +54,26 @@ const allTemplates: FeatureTemplate[] = [
     circleTemplate
 ];
 
-const injectedServices = {
-    "notifier.NotificationService": {
-        notify() {},
-        success() {},
-        error() {},
-        info() {},
-        warning() {},
-        closeAll() {}
-    } satisfies NotificationService
+const createInjectedServices = function (layerFactory: LayerFactory) {
+    return {
+        "notifier.NotificationService": {
+            notify() {},
+            success() {},
+            error() {},
+            info() {},
+            warning() {},
+            closeAll() {}
+        } satisfies NotificationService,
+        "map.LayerFactory": layerFactory
+    };
 };
 
 describe("Editor rendering", () => {
     it("renders all geometry type templates with correct names", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor map={map} templates={allTemplates} storage={mockStorage} />
             </PackageContextProvider>
         );
@@ -88,10 +92,10 @@ describe("Editor rendering", () => {
     });
 
     it("handles empty templates array", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor map={map} templates={[]} storage={mockStorage} />
             </PackageContextProvider>
         );
@@ -108,11 +112,11 @@ describe("Editor rendering", () => {
 describe("Editor interaction", () => {
     it("changes editing step when selecting template", async () => {
         const user = userEvent.setup();
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
         const onEditingStepChange = vi.fn();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={allTemplates}
@@ -137,11 +141,11 @@ describe("Editor interaction", () => {
 
     it("changes editing step when clicking the select button", async () => {
         const user = userEvent.setup();
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
         const onEditingStepChange = vi.fn();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={allTemplates}
@@ -170,11 +174,11 @@ describe("Editor interaction", () => {
 
     it("toggles select button state when clicked", async () => {
         const user = userEvent.setup();
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
         const onEditingStepChange = vi.fn();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={allTemplates}
@@ -225,10 +229,10 @@ describe("Editor action bar buttons", () => {
     };
 
     it("renders action bar with all buttons for polygon geometry", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
@@ -250,10 +254,10 @@ describe("Editor action bar buttons", () => {
     });
 
     it("renders action bar with all buttons for linestring geometry", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={[lineStringTemplate]}
@@ -275,10 +279,10 @@ describe("Editor action bar buttons", () => {
     });
 
     it("does not render action bar for point geometry", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={[pointTemplate]}
@@ -301,10 +305,10 @@ describe("Editor action bar buttons", () => {
     });
 
     it("does not render action bar when showActionBar is false", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
@@ -327,10 +331,10 @@ describe("Editor action bar buttons", () => {
     });
 
     it("has disabled buttons initially in action bar", async () => {
-        const { map } = await setupMap();
+        const { map, layerFactory } = await setupMap();
 
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
                 <Editor
                     map={map}
                     templates={[polygonTemplate]}
