@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Box } from "@chakra-ui/react";
 import { useMapModelValue } from "@open-pioneer/map";
-import type { ReactElement } from "react";
+import { useCommonComponentProps } from "@open-pioneer/react-utils";
+import type { ReactElement, ReactNode } from "react";
 import type { EditorProps } from "../api/editor/editor";
 import { ActionSelector } from "./components/action-selector/ActionSelector";
 import { DefaultPropertyForm } from "./components/property-editor/DefaultPropertyForm";
@@ -11,19 +13,21 @@ import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/
 import { useEditingCallbacks } from "./editor/useEditingCallbacks";
 import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 
-export function Editor({
-    map,
-    templates,
-    storage,
-    resolveFormTemplate,
-    selectableLayers,
-    snappableLayers = selectableLayers,
-    showActionBar = true,
-    successNotifierDisplayDuration,
-    failureNotifierDisplayDuration,
-    onEditingStepChange,
-    ...interactionOptions
-}: EditorProps): ReactElement {
+export function Editor(props: EditorProps): ReactElement {
+    const {
+        map,
+        templates,
+        storage,
+        resolveFormTemplate,
+        selectableLayers,
+        snappableLayers = selectableLayers,
+        showActionBar = true,
+        successNotifierDisplayDuration,
+        failureNotifierDisplayDuration,
+        onEditingStepChange,
+        ...interactionOptions
+    } = props;
+    const { containerProps } = useCommonComponentProps("editor", props);
     const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
 
     const mapModel = useMapModelValue({ map });
@@ -47,11 +51,12 @@ export function Editor({
         failureNotifierDisplayDuration
     );
 
+    let content: ReactNode;
     switch (editingStep.id) {
         case "initial":
         case "drawing":
         case "selection":
-            return (
+            content = (
                 <ActionSelector
                     templates={templates}
                     showActionBar={showActionBar}
@@ -59,10 +64,10 @@ export function Editor({
                     drawingState={drawingState}
                 />
             );
-
+            break;
         case "creation":
         case "update":
-            return (
+            content = (
                 <PropertyFormContextProvider editingStep={editingStep} callbacks={editingCallbacks}>
                     <PropertyEditor>
                         <DefaultPropertyForm
@@ -72,5 +77,12 @@ export function Editor({
                     </PropertyEditor>
                 </PropertyFormContextProvider>
             );
+            break;
     }
+
+    return (
+        <Box {...containerProps} h="full">
+            {content}
+        </Box>
+    );
 }

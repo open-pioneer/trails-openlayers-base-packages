@@ -8,6 +8,7 @@ import type { EditingStorage } from "../model/EditingStorage";
 import type { EditingStep } from "../model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
 import type { InteractionOptions } from "../model/InteractionOptions";
+import { CommonComponentProps } from "@open-pioneer/react-utils";
 
 /**
  * React component that provides a complete editing interface for creating and modifying map
@@ -43,7 +44,7 @@ export const Editor: FC<EditorProps> = EditorImpl;
  *
  * @group Editor
  */
-export interface EditorProps extends MapModelProps, InteractionOptions {
+export interface EditorProps extends CommonComponentProps, MapModelProps, InteractionOptions {
     /**
      * Feature templates defining the types of features that can be created or edited.
      *
