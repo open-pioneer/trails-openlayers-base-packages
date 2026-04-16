@@ -8,16 +8,19 @@ import type { FeatureTemplate } from "./FeatureTemplate";
 /**
  * Interface defining the backing storage for feature editing operations.
  *
- * The `EditingStorage` provides callback functions for creating, updating, and deleting features
+ * The `FeatureWriter` provides callback functions for creating, updating, and deleting features
  * in the editing workflow. Implementations of this interface are responsible for persisting
  * feature changes to the appropriate underlying data structures or storage systems.
+ *
+ * Note that the `FeatureWriter` does not _load_ features.
+ * Features and their attributes are taken from the map.
  *
  * If any function throws an error, an error message will be shown to the user
  * via the NotificationService. On success, a success notification is shown.
  *
  * @example
  * ```ts
- * const editingStorage: EditingStorage = {
+ * const featureWriter: FeatureWriter = {
  *     addFeature: async ({feature, template, projection}) => {
  *         // Persist the new feature to your backend
  *     },
@@ -37,7 +40,7 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * Return an instance of {@link StorageError} instead if you want to include an additional user-visible message.
  *
  * ```ts
- * const editingStorage: EditingStorage = {
+ * const featureWriter: FeatureWriter = {
  *     addFeature: async ({feature, template, projection}) => {
  *         // Option 1: Exceptions are logged and result in a generic error message
  *         throw new Error("Something went wrong");
@@ -51,7 +54,7 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  *
  * @group Model
  */
-export interface EditingStorage {
+export interface FeatureWriter {
     /**
      * Called for adding a new feature.
      *

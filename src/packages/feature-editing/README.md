@@ -18,17 +18,17 @@ It supports creating, modifying, and deleting features with declarative form con
 
 ### Minimum Working Example
 
-The simplest way to use the FeatureEditor is to provide feature templates and a storage implementation:
+The simplest way to use the FeatureEditor is to provide feature templates and a `writer` implementation:
 
 ```tsx
 import {
     FeatureEditor,
-    type EditingStorage,
+    type FeatureWriter,
     type FeatureTemplate
 } from "@open-pioneer/editing-form";
 
 function EditorComponent() {
-    return <FeatureEditor templates={templates} storage={editingStorage} />;
+    return <FeatureEditor templates={templates} writer={featureWriter} />;
 }
 
 const templates: FeatureTemplate[] = [
@@ -44,7 +44,7 @@ const templates: FeatureTemplate[] = [
     }
 ];
 
-const editingStorage: EditingStorage = {
+const featureWriter: FeatureWriter = {
     async addFeature(feature, template, projection) {
         // Persist the new feature in your backend
         await myApi.createFeature(feature, template.layerId);
@@ -134,7 +134,7 @@ const template: FeatureTemplate = {
 ### Editing Storage
 
 The editor does not manage the lifetime of any features in the map, except for the feature currently being edited.
-To persist changes made by the editor, you must implement the `EditingStorage` interface.
+To persist changes made by the editor, you must implement the `FeatureWriter` interface.
 
 The interface is flexible enough to work in many scenarios:
 
@@ -146,7 +146,7 @@ All functions are async and should apply the changes made by the user to the bac
 For example, to persist changes using a (fictional) REST API:
 
 ```tsx
-const editingStorage: EditingStorage = {
+const featureWriter: FeatureWriter = {
     // Called when a new feature is created
     async addFeature({ feature, template, projection }) {
         const geojson = new GeoJSON().writeFeatureObject(feature, {
@@ -186,7 +186,7 @@ On success, a success notification is shown.
 To supply an additional message for the error notification, return an object of type `StorageError` instead:
 
 ```ts
-const editingStorage: EditingStorage = {
+const featureWriter: FeatureWriter = {
     addFeature: async ({ feature, template, projection }) => {
         // ...
         LOG.error("Failed to do X", error);
@@ -203,7 +203,7 @@ The `FeatureEditor` component accepts the following props:
 | -------------------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                      |
 | `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                  |
-| `storage`                        | `EditingStorage`                         | Yes      | Storage implementation for feature create, update, and delete operations                                                        |
+| `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                        |
 | `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                      |
 | `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                 |
 | `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                            |
@@ -242,7 +242,7 @@ const resolveFormTemplate = ({ feature, layer }: FormTemplateContext) => {
 <FeatureEditor
     templates={[residentialTemplate, commercialTemplate]}
     resolveFormTemplate={resolveFormTemplate}
-    storage={editingStorage}
+    writer={featureWriter}
 />;
 ```
 

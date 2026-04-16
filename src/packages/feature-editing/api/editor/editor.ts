@@ -4,7 +4,7 @@ import type { Layer, MapModelProps } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import { FC } from "react";
 import { FeatureEditor as FeatureEditorImpl } from "../../implementation/FeatureEditor";
-import type { EditingStorage } from "../model/EditingStorage";
+import type { FeatureWriter } from "../model/FeatureWriter";
 import type { EditingStep } from "../model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
 import type { InteractionOptions } from "../model/InteractionOptions";
@@ -57,7 +57,7 @@ export interface FeatureEditorProps
     /**
      * Responsible for persisting changes to your data source.
      */
-    readonly storage: EditingStorage;
+    readonly writer: FeatureWriter;
 
     /**
      * Optional function to provide custom form templates for features.

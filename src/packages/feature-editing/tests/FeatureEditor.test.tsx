@@ -7,11 +7,11 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { EditingStorage } from "../api/model/EditingStorage";
+import type { FeatureWriter } from "../api/model/FeatureWriter";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
 import { FeatureEditor } from "../implementation/FeatureEditor";
 
-const mockStorage: EditingStorage = {
+const mockWriter: FeatureWriter = {
     addFeature: vi.fn().mockResolvedValue(undefined),
     updateFeature: vi.fn().mockResolvedValue(undefined),
     deleteFeature: vi.fn().mockResolvedValue(undefined)
@@ -72,7 +72,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <FeatureEditor map={map} templates={allTemplates} storage={mockStorage} />
+                <FeatureEditor map={map} templates={allTemplates} writer={mockWriter} />
             </PackageContextProvider>
         );
 
@@ -94,7 +94,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <FeatureEditor map={map} templates={[]} storage={mockStorage} />
+                <FeatureEditor map={map} templates={[]} writer={mockWriter} />
             </PackageContextProvider>
         );
 
@@ -118,7 +118,7 @@ describe("Editor interaction", () => {
                 <FeatureEditor
                     map={map}
                     templates={allTemplates}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -147,7 +147,7 @@ describe("Editor interaction", () => {
                 <FeatureEditor
                     map={map}
                     templates={allTemplates}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -180,7 +180,7 @@ describe("Editor interaction", () => {
                 <FeatureEditor
                     map={map}
                     templates={allTemplates}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
@@ -234,7 +234,7 @@ describe("Editor action bar buttons", () => {
                 <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -259,7 +259,7 @@ describe("Editor action bar buttons", () => {
                 <FeatureEditor
                     map={map}
                     templates={[lineStringTemplate]}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -284,7 +284,7 @@ describe("Editor action bar buttons", () => {
                 <FeatureEditor
                     map={map}
                     templates={[pointTemplate]}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     showActionBar={true}
                 />
             </PackageContextProvider>
@@ -310,7 +310,7 @@ describe("Editor action bar buttons", () => {
                 <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     showActionBar={false}
                 />
             </PackageContextProvider>
@@ -336,7 +336,7 @@ describe("Editor action bar buttons", () => {
                 <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
-                    storage={mockStorage}
+                    writer={mockWriter}
                     showActionBar={true}
                 />
             </PackageContextProvider>

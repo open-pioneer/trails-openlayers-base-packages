@@ -31,13 +31,13 @@ export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./a
 // Editing model types
 // =================================================================
 export type {
-    EditingStorage,
+    FeatureWriter,
     AddFeatureOptions,
     DeleteFeatureOptions,
     UpdateFeatureOptions,
     StorageError,
     StorageResult
-} from "./api/model/EditingStorage";
+} from "./api/model/FeatureWriter";
 
 export type {
     CreationStep,

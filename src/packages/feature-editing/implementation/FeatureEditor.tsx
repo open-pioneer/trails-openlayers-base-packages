@@ -17,7 +17,7 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
     const {
         map,
         templates,
-        storage,
+        writer,
         resolveFormTemplate,
         selectableLayers,
         snappableLayers = selectableLayers,
@@ -45,7 +45,7 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
     const editingCallbacks = useEditingCallbacks(
         mapModel,
         editingStep,
-        storage,
+        writer,
         setEditingStep,
         successNotifierDisplayDuration,
         failureNotifierDisplayDuration

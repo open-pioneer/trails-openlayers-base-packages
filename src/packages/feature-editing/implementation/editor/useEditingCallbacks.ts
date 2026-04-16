@@ -7,7 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-import type { EditingStorage, StorageResult } from "../../api/model/EditingStorage";
+import type { FeatureWriter, StorageResult } from "../../api/model/FeatureWriter";
 import type { EditingStep, InitialStep } from "../../api/model/EditingStep";
 import { useEvent } from "@open-pioneer/react-utils";
 
@@ -24,7 +24,7 @@ export interface EditingCallbacks {
 export function useEditingCallbacks(
     mapModel: MapModel,
     editingStep: EditingStep,
-    storage: EditingStorage,
+    writer: FeatureWriter,
     setEditingStep: (newEditingStep: EditingStep) => void,
     successNotifierDisplayDuration: number | false | undefined,
     failureNotifierDisplayDuration: number | false | undefined
@@ -42,7 +42,7 @@ export function useEditingCallbacks(
 
             let result: StorageResult;
             try {
-                result = await storage.addFeature({ feature, template, projection });
+                result = await writer.addFeature({ feature, template, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error creating feature", feature, error);
@@ -54,7 +54,7 @@ export function useEditingCallbacks(
 
             let result: StorageResult;
             try {
-                result = await storage.updateFeature({ feature, layer, projection });
+                result = await writer.updateFeature({ feature, layer, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error updating feature", feature, error);
@@ -69,7 +69,7 @@ export function useEditingCallbacks(
 
             let result: StorageResult;
             try {
-                result = await storage.deleteFeature({ feature, layer, projection });
+                result = await writer.deleteFeature({ feature, layer, projection });
                 setEditingStep(INITIAL);
             } catch (error) {
                 LOG.error("Error deleting feature", feature, error);

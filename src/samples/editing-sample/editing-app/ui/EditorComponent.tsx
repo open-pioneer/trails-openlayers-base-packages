@@ -6,12 +6,12 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useMemo, type ReactElement } from "react";
 import { LAYER_CONFIG } from "../map/layerConfig";
-import { InMemoryEditingStorage } from "../store/InMemoryEditingStorage";
+import { InMemoryFeatureWriter } from "../store/InMemoryFeatureWriter";
 
 export function EditorComponent(): ReactElement | undefined {
     const intl = useIntl();
     const title = intl.formatMessage({ id: "editor" });
-    const storage = useMemo(() => new InMemoryEditingStorage(), []);
+    const writer = useMemo(() => new InMemoryFeatureWriter(), []);
     const templates = useFeatureTemplates();
 
     return (
@@ -33,7 +33,7 @@ export function EditorComponent(): ReactElement | undefined {
                 <Box flex="1" overflowY="auto">
                     <FeatureEditor
                         templates={templates}
-                        storage={storage}
+                        writer={writer}
                         successNotifierDisplayDuration={2000}
                     />
                 </Box>
