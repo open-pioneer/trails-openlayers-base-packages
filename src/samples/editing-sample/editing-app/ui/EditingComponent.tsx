@@ -5,22 +5,39 @@ import { Editor, type FeatureTemplate } from "@open-pioneer/editing-form";
 import { useMemo, type ReactElement } from "react";
 import { LAYER_CONFIG } from "../map/layerConfig";
 import { InMemoryEditingStorage as InMemoryEditingStorage } from "../store/InMemoryEditingStorage";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useIntl } from "open-pioneer:react-hooks";
 
 export function EditingComponent(): ReactElement | undefined {
+    const intl = useIntl();
+    const title = intl.formatMessage({ id: "editor" });
     const storage = useMemo(() => new InMemoryEditingStorage(), []);
     const templates = useFeatureTemplates();
 
     return (
         <Box
-            width={380}
-            height={570}
+            width="380px"
+            height="570px"
             padding={4}
             backgroundColor="white"
             borderWidth="1px"
             borderRadius="lg"
             boxShadow="lg"
+            display="flex"
+            flexDirection="column"
         >
-            <Editor templates={templates} storage={storage} successNotifierDisplayDuration={2000} />
+            <TitledSection>
+                <SectionHeading size="md" mb={2}>
+                    {title}
+                </SectionHeading>
+                <Box flex="1" overflowY="auto">
+                    <Editor
+                        templates={templates}
+                        storage={storage}
+                        successNotifierDisplayDuration={2000}
+                    />
+                </Box>
+            </TitledSection>
         </Box>
     );
 }

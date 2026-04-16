@@ -18,7 +18,6 @@ export function Editor({
     resolveFormTemplate,
     selectableLayers,
     snappableLayers = selectableLayers,
-    title,
     showActionBar = true,
     successNotifierDisplayDuration,
     failureNotifierDisplayDuration,
@@ -54,7 +53,6 @@ export function Editor({
         case "selection":
             return (
                 <ActionSelector
-                    title={title}
                     templates={templates}
                     showActionBar={showActionBar}
                     onActionChange={onActionChange}
@@ -68,7 +66,6 @@ export function Editor({
                 <PropertyFormContextProvider editingStep={editingStep} callbacks={editingCallbacks}>
                     <PropertyEditor>
                         <DefaultPropertyForm
-                            title={title}
                             templates={templates}
                             resolveFormTemplate={resolveFormTemplate}
                         />

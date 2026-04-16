@@ -1,6 +1,4 @@
 messages:
-  header:
-    defaultTitle: Editor
   actionSelector:
     editFeatureHeading: Geoobjekt bearbeiten
     createFeatureHeading: Geoobjekt erstellen
@@ -10,6 +8,8 @@ messages:
     undoButtonTooltip: Rückgängig machen
     redoButtonTooltip: Wiederholen
   propertyEditor:
+    defaultEditHeading: Geoobjekt bearbeiten
+    defaultCreateHeading: Geoobjekt erstellen
     saveButtonTitle: Speichern
     cancelButtonTitle: Abbrechen
     deleteButtonTooltip: Geoobjekt löschen

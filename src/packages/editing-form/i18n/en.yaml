@@ -1,6 +1,4 @@
 messages:
-  header:
-    defaultTitle: Editor
   actionSelector:
     editFeatureHeading: Edit Feature
     createFeatureHeading: Create Feature
@@ -10,6 +8,8 @@ messages:
     undoButtonTooltip: Undo
     redoButtonTooltip: Redo
   propertyEditor:
+    defaultEditHeading: Edit Feature
+    defaultCreateHeading: Create Feature
     saveButtonTitle: Save
     cancelButtonTitle: Cancel
     deleteButtonTooltip: Delete Feature

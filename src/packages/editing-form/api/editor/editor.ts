@@ -89,14 +89,6 @@ export interface EditorProps extends MapModelProps, InteractionOptions {
     readonly snappableLayers?: Layer[];
 
     /**
-     * Optional title displayed at the top of the editor interface.
-     *
-     * When not specified, defaults to a localized title in the action selector, or the
-     * template name during attribute editing.
-     */
-    readonly title?: string;
-
-    /**
      * Whether to show the action bar with undo/redo/finish/reset controls during drawing.
      *
      * When `false`, the action bar is hidden. Only applies to templates with geometry types

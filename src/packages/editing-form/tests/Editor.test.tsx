@@ -103,43 +103,6 @@ describe("Editor rendering", () => {
             ).toBeInTheDocument();
         });
     });
-
-    it("renders custom title correctly", async () => {
-        const { map } = await setupMap();
-        const customTitle = "My Custom Editor";
-
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <Editor
-                    map={map}
-                    templates={allTemplates}
-                    storage={mockStorage}
-                    title={customTitle}
-                />
-            </PackageContextProvider>
-        );
-
-        await waitFor(() => {
-            const titleElement = screen.getByText(customTitle);
-            expect(titleElement).toBeInTheDocument();
-        });
-    });
-
-    it("renders default title when no title is provided", async () => {
-        const { map } = await setupMap();
-
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <Editor map={map} templates={allTemplates} storage={mockStorage} />
-            </PackageContextProvider>
-        );
-
-        await waitFor(() => {
-            // Default title is a translation key
-            const defaultTitleElement = screen.getByText("header.defaultTitle");
-            expect(defaultTitleElement).toBeInTheDocument();
-        });
-    });
 });
 
 describe("Editor interaction", () => {

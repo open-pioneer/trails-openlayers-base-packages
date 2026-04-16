@@ -7,13 +7,11 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useMemo, useState, type ReactElement } from "react";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 import { DrawingState } from "../../geometry-editing/useGeometryEditing";
-import { Header } from "../header/Header";
 import { ActionBar } from "./ActionBar";
 import { SelectButton } from "./SelectButton";
 import { TemplateSelector } from "./TemplateSelector";
 
 export interface ActionSelectorProps {
-    readonly title: string | undefined;
     readonly templates: FeatureTemplate[];
     readonly showActionBar: boolean;
     readonly drawingState: DrawingState;
@@ -32,7 +30,6 @@ export interface UpdateAction {
 export type Action = CreateAction | UpdateAction;
 
 export function ActionSelector({
-    title,
     templates,
     showActionBar,
     drawingState,
@@ -64,29 +61,24 @@ export function ActionSelector({
     );
 
     return (
-        <Header title={title}>
-            <Flex direction="column" height="full" rowGap={3} align="stretch">
-                <TitledSection title={editFeatureHeading} sectionHeadingProps={{ size: "sm" }}>
-                    <SelectButton isActive={selectButtonIsActive} onClick={onButtonClick} />
-                </TitledSection>
+        <Flex direction="column" height="full" rowGap={3} align="stretch" overflowY="auto">
+            <TitledSection title={editFeatureHeading} sectionHeadingProps={{ size: "sm" }}>
+                <SelectButton isActive={selectButtonIsActive} onClick={onButtonClick} />
+            </TitledSection>
 
-                <TitledSection
-                    title={createFeatureHeading}
-                    sectionHeadingProps={{ size: "sm", mt: 3 }}
-                >
-                    <Box flex={1} overflowY="auto" mb={2}>
-                        <TemplateSelector
-                            templates={templates}
-                            selectedTemplate={selectedTemplate}
-                            onClick={onTemplateClick}
-                        />
-                    </Box>
-                    {showActionBar && shouldShowActionBar(selectedTemplate) && (
-                        <ActionBar drawingState={drawingState} />
-                    )}
-                </TitledSection>
-            </Flex>
-        </Header>
+            <TitledSection title={createFeatureHeading} sectionHeadingProps={{ size: "sm", mt: 3 }}>
+                <Box flex={1} overflowY="auto" mb={2}>
+                    <TemplateSelector
+                        templates={templates}
+                        selectedTemplate={selectedTemplate}
+                        onClick={onTemplateClick}
+                    />
+                </Box>
+                {showActionBar && shouldShowActionBar(selectedTemplate) && (
+                    <ActionBar drawingState={drawingState} />
+                )}
+            </TitledSection>
+        </Flex>
     );
 }
 
