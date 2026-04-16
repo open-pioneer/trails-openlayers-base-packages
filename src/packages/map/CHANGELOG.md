@@ -783,12 +783,6 @@
 - b5bb7a1: Adjusted name of Open Pioneer project to Open Pioneer Trails
 - 81bc7da: Update trails dependencies
 - 2c092dc: Update dependencies
-- Updated dependencies [4140646]
-- Updated dependencies [4140646]
-- Updated dependencies [81bc7da]
-- Updated dependencies [2c092dc]
-- Updated dependencies [4140646]
-    - @open-pioneer/react-utils@0.2.3
 
 ## 0.5.0
 
@@ -811,8 +805,6 @@
 - 6162979: Update versions of core packages
 - ac7fdd1: Update documentation
 - 13ea342: Remove duplicate viewPadding application.
-- Updated dependencies [1a8ad89]
-    - @open-pioneer/react-utils@0.2.2
 
 ## 0.3.1
 
@@ -830,19 +822,12 @@
 ### Patch Changes
 
 - a582e5e: Add property `viewPadding` to `HighlightOptions`.
-- Updated dependencies [762e7b9]
-    - @open-pioneer/react-utils@0.2.1
 
 ## 0.2.0
 
 ### Minor Changes
 
 - 70349a8: Update to new core packages major versions
-
-### Patch Changes
-
-- Updated dependencies [70349a8]
-    - @open-pioneer/react-utils@0.2.0
 
 ## 0.1.1
 
@@ -858,8 +843,3 @@
 ### Minor Changes
 
 - bb2f27a: Initial release.
-
-### Patch Changes
-
-- Updated dependencies [182da1c]
-    - @open-pioneer/react-utils@0.1.0

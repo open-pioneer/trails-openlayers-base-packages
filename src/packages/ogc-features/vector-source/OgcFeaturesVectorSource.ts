@@ -53,8 +53,13 @@ export class OgcFeaturesVectorSource extends VectorSource {
             format,
             strategy: bbox,
             attributions: options.attributions,
-            loader: (...args) => {
-                this.#load(...args);
+
+            // NOTE: it is IMPORTANT that every individual parameter is named here.
+            // OpenLayers tests the length of the signature, `...args` to forward these parameters
+            // will _not_ work!
+            // See also https://github.com/openlayers/openlayers/blob/da23cb2025bec601439fdc69076cf34af7582cb9/src/ol/source/Vector.js#L1041-L1042
+            loader: (e, r, p, s, f) => {
+                this.#load(e, r, p, s, f);
             },
             ...options.additionalOptions
         });

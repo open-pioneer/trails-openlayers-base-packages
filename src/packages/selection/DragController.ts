@@ -188,7 +188,7 @@ export class DragController {
         });
         const tooltipOverlay = map.overlays.add({
             content: tooltipContent,
-            mode: "follow-pointer",
+            position: "follow-pointer",
             offset: [15, 0],
             positioning: "center-left",
             ariaRole: "tooltip",

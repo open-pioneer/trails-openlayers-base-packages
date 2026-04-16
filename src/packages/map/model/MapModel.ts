@@ -49,6 +49,8 @@ const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
+export const DISPLAY_STATUS = Symbol("DISPLAY_STATUS");
+
 const deprecatedHighlights = deprecated({
     name: "MapModel highlight function called",
     packageName: "@open-pioneer/map",
@@ -105,6 +107,8 @@ export interface MapPadding {
     bottom?: number;
 }
 
+type DisplayStatus = "waiting" | "ready" | "error";
+
 /**
  * Represents a map.
  *
@@ -131,7 +135,7 @@ export class MapModel {
     #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
-    #displayStatus: "waiting" | "ready" | "error";
+    #displayStatus: DisplayStatus;
     #displayWaiter: ManualPromise<void> | undefined;
 
     /**
@@ -245,6 +249,16 @@ export class MapModel {
      */
     get destroyed(): EventSource<void> {
         return this.#destroyed;
+    }
+
+    /**
+     * Returns the map's current display status.
+     * This is `waiting` during initialization and `error` or `ready` when done.
+     *
+     * @internal
+     */
+    get [DISPLAY_STATUS](): DisplayStatus {
+        return this.#displayStatus;
     }
 
     /**

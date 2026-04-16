@@ -76,7 +76,7 @@ it("does not change view padding on map if padding values are not changed", asyn
 
     // render with same padding
     let changeFired = false;
-    map.olView.on("change", () => {
+    map.olView.on("change:center", () => {
         changeFired = true;
     });
     rerender({
@@ -100,7 +100,7 @@ it("does update view padding on map if padding values are changed", async () => 
 
     // update with changed padding
     let changeFired = false;
-    map.olView.on("change", () => {
+    map.olView.on("change:center", () => {
         changeFired = true;
     });
 
@@ -111,9 +111,64 @@ it("does update view padding on map if padding values are changed", async () => 
         }
     });
 
-    // expect padding is unchanged
+    // expect padding is changed
     expect(map.olView.padding).toEqual([15, 20, 30, 40]);
     expect(changeFired).toBe(true);
+});
+
+it("does keep center if padding is changed during animation", async () => {
+    const initialPadding = { top: 10, right: 20, bottom: 30, left: 40 };
+    const { map, rerender } = await renderMap({
+        viewPadding: initialPadding
+    });
+
+    // expect initial padding is set
+    expect(map.olView.padding).toEqual([10, 20, 30, 40]);
+    await map.whenDisplayed();
+
+    // update with changed padding
+    const centerValuesDuringAnimation: any[] = [];
+    map.olView.on("change:center", () => {
+        centerValuesDuringAnimation.push(map.olView.getCenter());
+    });
+    const currentCenter = map.olView.getCenter();
+
+    rerender({
+        viewPadding: {
+            ...initialPadding,
+            top: 15
+        }
+    });
+
+    // expect padding is changed
+    expect(map.olView.padding).toEqual([15, 20, 30, 40]);
+
+    // change of padding triggers set of new center
+    await vi.waitFor(() => {
+        expect(centerValuesDuringAnimation.length).toBeGreaterThan(0);
+    });
+
+    // animation to "old center" is still running
+    expect(map.olView.getAnimating()).toBe(true);
+
+    // update padding again during animation
+    rerender({
+        viewPadding: {
+            ...initialPadding,
+            top: 25
+        }
+    });
+
+    // padding is updated immediately
+    expect(map.olView.padding).toEqual([25, 20, 30, 40]);
+
+    // wait until animation is finished
+    await vi.waitFor(() => {
+        expect(map.olView.getAnimating()).toBe(false);
+    });
+
+    // the center during the animation is still the original center of the first padding change
+    expect(centerValuesDuringAnimation.pop()).toEqual(currentCenter);
 });
 
 it("reports an error if two map containers are used for the same map", async () => {

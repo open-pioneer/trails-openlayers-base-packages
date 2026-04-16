@@ -3,119 +3,241 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>OpenLayers Base Packages for Open Pioneer Trails</title>
+        <title>Open Pioneer Trails - OpenLayers Base Packages</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico" />
         <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
             body {
-                max-width: 800px;
+                font:
+                    500 14px/1.5 system-ui,
+                    -apple-system,
+                    sans-serif;
+                background: #f8f9fa;
+                color: #1a1d21;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            :is(header h1, main, footer) {
+                max-width: 640px;
                 margin: 0 auto;
-                padding: 10px;
-                font-family: Arial, Helvetica, sans-serif;
             }
-            p {
-                line-height: 1.6;
+
+            :is(h1, h2) {
+                font-weight: 600;
             }
-            li {
-                margin-bottom: 10px;
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1rem;
+                margin: 1.75rem 0 0.75rem;
+                color: #005587;
+            }
+
+            h3 {
+                font-size: 0.875rem;
+                font-weight: 600;
+                margin: 0 0 0.5rem;
+                color: #1a1d21;
+            }
+
+            header {
+                position: sticky;
+                top: 0;
+                background: rgba(255, 255, 255, 0.95);
+                border-bottom: 1px solid #e0e4e8;
+                padding: 1rem;
+                backdrop-filter: blur(8px);
+                z-index: 100;
+                text-align: center;
+            }
+
+            main {
+                padding: 2rem 1rem;
+                flex: 1;
+            }
+
+            .app-list {
+                list-style: none;
+                display: grid;
+                gap: 0.375rem;
+
+                & li {
+                    position: relative;
+                    background: #fff;
+                    border: 1px solid #e0e4e8;
+                    border-radius: 4px;
+                    transition: all 0.15s;
+
+                    &:hover {
+                        border-color: #005587;
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+                        & a {
+                            color: #005587;
+
+                            &::after {
+                                opacity: 1;
+                                transform: translateX(0);
+                            }
+                        }
+                    }
+
+                    &:has(a:focus-visible) {
+                        outline: 2px solid;
+                        outline-offset: -1px;
+                    }
+
+                    & a {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 0.625rem 0.75rem;
+                        color: inherit;
+                        text-decoration: none;
+
+                        &:focus-visible {
+                            outline: none;
+                        }
+
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                        }
+
+                        &::after {
+                            content: "→";
+                            opacity: 0;
+                            transform: translateX(-4px);
+                            transition: all 0.15s;
+                        }
+
+                        & + p {
+                            margin-top: -0.375rem;
+                            padding: 0 0.75rem 0.625rem;
+                            font-size: 0.8125rem;
+                            color: #5a6169;
+                        }
+                    }
+                }
+            }
+
+            footer {
+                padding: 2rem 1rem;
+                text-align: right;
+                color: #5a6169;
+                font-size: 0.8125rem;
             }
         </style>
     </head>
     <body>
-        <h1>Samples overview</h1>
+        <header>
+            <h1>Open Pioneer Trails - OpenLayers Base Packages</h1>
+        </header>
 
-        <p>
-            Welcome to the samples overview for
-            <a
-                href="https://github.com/open-pioneer/trails-openlayers-base-packages"
-                target="_blank"
-                >OpenLayers Base Packages</a
-            >. These packages are intended to be used with the
-            <a href="https://github.com/open-pioneer#open-pioneer-trails" target="_blank"
-                >Open Pioneer Trails</a
-            >
-            framework. The source code for the samples can be found in the
-            <code>src/samples/</code> directory.
-        </p>
-        <h2>Samples</h2>
-        <ul>
-            <li>
-                <a href="./samples/showcase/">Showcase</a>
-                <br />
-                This application demonstrates the main components of the OpenLayers Base Packages.
-            </li>
-            <li>
-                <a href="./samples/map-sample/">Sample App</a>
-                <br />
-                This application combines multiple components of the OpenLayers Base Packages. It
-                can be used as a starting point for new applications.
-            </li>
-            <li>
-                <a href="./samples/ogc-api-sample/">OGC API Features and OGC API Tiles</a>
-                <br />
-                Demonstrates the usage of an "OGC API Features" and "OGC API Tiles" layer in the
-                map.
-            </li>
-        </ul>
+        <main>
+            <p>
+                Welcome to the overview page for
+                <a
+                    href="https://github.com/open-pioneer/trails-openlayers-base-packages"
+                    target="_blank"
+                >
+                    Trails OpenLayers Base Packages</a
+                >. These packages are intended to be used with the
+                <a href="https://github.com/open-pioneer#open-pioneer-trails" target="_blank"
+                    >Open Pioneer Trails</a
+                >
+                framework. The source code for the apps can found in the
+                <code>src/samples/</code> directory.
+            </p>
 
-        <h2>Test applications</h2>
-        <p>These apps are primarily used for testing.</p>
-        <ul>
-            <li>
-                <a href="./samples/map-anchors/">Map Anchors</a>
-                <br />
-                Test app for map anchors.
-            </li>
-            <li>
-                <a href="./samples/test-highlight-and-zoom/">Highlight and zoom</a>
-                <br />
-                Test app the map model's highlight and zoom API.
-            </li>
-            <li>
-                <a href="./samples/test-overlay/">Overlays</a>
-                <br />
-                Test app for map overlays.
-            </li>
-            <li>
-                <a href="./samples/test-result-list/">Result List</a>
-                <br />
-                Test app for the result list.
-            </li>
-            <li>
-                <a href="./samples/test-printing-api/">Printing API</a>
-                <br />
-                Test app for the printing api.
-            </li>
-            <li>
-                <a href="./samples/test-toc/">TOC + Health Check</a>
-                <br />
-                Demonstrates the TOC and health check to detect unavailable services.
-            </li>
+            <h2>Showcases</h2>
+            <ul class="app-list">
+                <li>
+                    <a href="./samples/showcase/">Showcase</a>
+                    <p>
+                        This application demonstrates the main components of the OpenLayers Base
+                        Packages.
+                    </p>
+                </li>
+            </ul>
 
-            <li>
-                <a href="./samples/test-dynamic-map/">Dynamic Map</a>
-                <br />
-                Test app for dynamic map content (adding and removing layers).
-            </li>
-            <li>
-                <a href="./samples/test-search/">Search</a>
-                <br />
-                Test app for the search API.
-            </li>
-        </ul>
+            <h2>Samples</h2>
+            <ul class="app-list">
+                <li>
+                    <a href="./samples/map-sample/">Sample App</a>
+                    <p>
+                        This application combines multiple components of the OpenLayers Base
+                        Packages. It can be used as a starting point for new applications.
+                    </p>
+                </li>
+                <li>
+                    <a href="./samples/ogc-api-sample/">OGC API Features and OGC API Tiles</a>
+                    <p>
+                        Demonstrates the usage of an "OGC API Features" and "OGC API Tiles" layer in
+                        the map.
+                    </p>
+                </li>
+            </ul>
 
-        <h2>Experimental features</h2>
-        <p>These apps show features that are in an experimental state.</p>
-        <ul>
-            <li>
-                <a href="./samples/experimental-sidebar/">Sidebar</a>
-                <br />
-                Test app for a sidebar.
-            </li>
-            <li>
-                <a href="./samples/editing-sample/">Editing</a>
-                <br />
-                Test app for the <code>editing-form</code> package.
-            </li>
-        </ul>
+            <h2>Test Apps</h2>
+            <ul class="app-list">
+                <li>
+                    <a href="./samples/map-anchors/">Map Anchors</a>
+                    <p>Test app for map anchors.</p>
+                </li>
+                <li>
+                    <a href="./samples/test-highlight-and-zoom/">Highlight and zoom</a>
+                    <p>Test app the map model's highlight and zoom API.</p>
+                </li>
+                <li>
+                    <a href="./samples/test-overlay/">Overlays</a>
+                    <p>Test app for map overlays.</p>
+                </li>
+                <li>
+                    <a href="./samples/test-dynamic-map/">Dynamic Map</a>
+                    <p>Test app for dynamic map content (adding and removing layers).</p>
+                </li>
+                <li>
+                    <a href="./samples/test-toc/">TOC</a>
+                    <p>
+                        Tests various features of the TOC component (multiple layer types, health
+                        checks, layer states, ...).
+                    </p>
+                </li>
+                <li>
+                    <a href="./samples/test-search/">Search</a>
+                    <p>Test app for the search component.</p>
+                </li>
+                <li>
+                    <a href="./samples/test-result-list/">Result List</a>
+                    <p>Test app for the result list.</p>
+                </li>
+                <li>
+                    <a href="./samples/editing-sample/">Editing</a>
+                    <p>Test app for the <code>editing-form</code> package.</p>
+                </li>
+                <li>
+                    <a href="./samples/test-printing-api/">Printing API</a>
+                    <p>Test app for the printing api.</p>
+                </li>
+            </ul>
+        </main>
+        <footer>Built at <span id="build-date"></span></footer>
+        <script type="module">
+            const buildDate = document.getElementById("build-date");
+            const date = import.meta.env.DEV ? new Date() : new Date(__BUILD_TIMESTAMP__);
+            buildDate.textContent = date.toISOString();
+        </script>
     </body>
 </html>

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
 import { SearchSource, SearchResult } from "@open-pioneer/search";
-import { SearchOptions } from "@open-pioneer/search/api";
+import { SearchOptions } from "@open-pioneer/search";
 import GeoJSON from "ol/format/GeoJSON";
 
 interface PhotonResponseFeature {

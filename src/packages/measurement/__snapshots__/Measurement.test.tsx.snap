@@ -61,7 +61,7 @@ exports[`should successfully create a measurement component 1`] = `
     </div>
   </div>
   <button
-    class="chakra-button measurement-delete-button css-1ie6ju0"
+    class="chakra-button measurement-delete-button css-1r08lcu"
     type="button"
   >
     deleteMeasurementLabel

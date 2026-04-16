@@ -12,10 +12,11 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { sourceId } from "open-pioneer:source-info";
 import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { MapModel, MapPadding } from "../model/MapModel";
+import { DISPLAY_STATUS, MapModel, MapPadding } from "../model/MapModel";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
 import { OverlaysRenderer } from "./OverlaysRenderer";
+import { Coordinate } from "ol/coordinate";
 
 const LOG = createLogger(sourceId);
 
@@ -261,6 +262,11 @@ function useViewPadding(viewPaddingProp: MapPadding | undefined): Required<MapPa
     ]);
 }
 
+interface TargetViewPoint {
+    center: Coordinate;
+    extent: Extent | undefined;
+}
+
 /**
  * Applies the current view padding to the view.
  */
@@ -270,6 +276,10 @@ function useSyncViewPadding(
     map: MapModel
 ) {
     const mapView = useReactiveSnapshot(() => map.olView, [map]);
+
+    // Tracks target state for in-progress animations.
+    const targetViewPoint = useRef<TargetViewPoint>(undefined);
+
     useEffect(() => {
         const olMap = map.olMap;
         if (!mapView) {
@@ -282,20 +292,55 @@ function useSyncViewPadding(
             return;
         }
 
-        const oldCenter = mapView.getCenter();
-        const oldExtent = extentIncludingPadding(olMap, oldPadding);
+        let target = targetViewPoint.current;
+        if (!target || !mapView.getAnimating()) {
+            const currentCenter = mapView.getCenter();
+            if (!currentCenter) {
+                return;
+            }
+            targetViewPoint.current = target = {
+                center: currentCenter,
+                extent: extentIncludingPadding(olMap, oldPadding)
+            };
+        }
         mapView.padding = toOlPadding(viewPadding);
+
+        const shouldAnimate = map[DISPLAY_STATUS] === "ready";
         switch (viewPaddingChangeBehavior) {
-            case "preserve-center":
-                mapView.animate({ center: oldCenter, duration: 300 });
-                break;
-            case "preserve-extent": {
-                if (oldExtent) {
-                    mapView.animate({
-                        center: oldCenter,
-                        resolution: mapView.getResolutionForExtent(oldExtent),
-                        duration: 300
+            case "preserve-center": {
+                if (shouldAnimate) {
+                    mapView.animate({ center: target.center, duration: 300 }, (done) => {
+                        if (done) {
+                            targetViewPoint.current = undefined;
+                        }
                     });
+                } else {
+                    mapView.setCenter(target.center);
+                    targetViewPoint.current = undefined;
+                }
+                break;
+            }
+            case "preserve-extent": {
+                if (target.extent) {
+                    const res = mapView.getResolutionForExtent(target.extent);
+                    if (shouldAnimate) {
+                        mapView.animate(
+                            {
+                                center: target.center,
+                                resolution: res,
+                                duration: 300
+                            },
+                            (done) => {
+                                if (done) {
+                                    targetViewPoint.current = undefined;
+                                }
+                            }
+                        );
+                    } else {
+                        mapView.setCenter(target.center);
+                        mapView.setResolution(res);
+                        targetViewPoint.current = undefined;
+                    }
                 }
                 break;
             }

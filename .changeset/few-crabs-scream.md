@@ -20,4 +20,4 @@
 "@open-pioneer/scale-setter": minor
 ---
 
-Support for new common container props (role, aria-_, data-_ and css)
+Support for new common container props (role, aria-\*, data-\* and css)
