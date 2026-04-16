@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { HStack, Table, Text } from "@chakra-ui/react";
+import { HStack, Span, Table, Text } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import type { ReactElement, ReactNode } from "react";
 import { PiCircleBold, PiDotOutlineBold, PiLineSegmentsFill, PiPolygonFill } from "react-icons/pi";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 
-interface TemplateRowProps {
+interface TemplateItemProps {
     readonly template: FeatureTemplate;
     readonly isSelected: boolean;
     readonly onClick: (featureTemplate: FeatureTemplate) => void;
@@ -16,7 +16,7 @@ interface TemplateIconProps {
     readonly template: FeatureTemplate;
 }
 
-export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps): ReactElement {
+export function TemplateItem({ template, isSelected, onClick }: TemplateItemProps): ReactElement {
     const onRowClick = useEvent(() => onClick(template));
 
     return (
@@ -29,8 +29,10 @@ export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps)
             onClick={onRowClick}
         >
             <Table.Cell>
-                <HStack gap="4">
-                    <TemplateIcon template={template} />
+                <HStack className="editor__template-selector-item" gap="4">
+                    <Span aria-hidden="true">
+                        <TemplateIcon template={template} />
+                    </Span>
                     <Text>{template.name}</Text>
                 </HStack>
             </Table.Cell>

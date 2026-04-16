@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Table } from "@chakra-ui/react";
 import type { ReactElement } from "react";
-import { TemplateRow } from "./TemplateRow";
+import { TemplateItem } from "./TemplateItem";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 
 interface TemplateSelectorProps {
@@ -17,10 +17,10 @@ export function TemplateSelector({
     onClick
 }: TemplateSelectorProps): ReactElement {
     return (
-        <Table.Root variant="line" size="sm">
+        <Table.Root className="editor__template-selector" variant="line" size="sm">
             <Table.Body>
                 {templates.map((template, index) => (
-                    <TemplateRow
+                    <TemplateItem
                         key={index}
                         template={template}
                         isSelected={selectedTemplate === template}

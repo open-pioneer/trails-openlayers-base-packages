@@ -7,7 +7,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useMemo, useState, type ReactElement } from "react";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 import { DrawingState } from "../../geometry-editing/useGeometryEditing";
-import { ActionBar } from "./ActionBar";
+import { DrawingControls } from "./DrawingControls";
 import { SelectButton } from "./SelectButton";
 import { TemplateSelector } from "./TemplateSelector";
 
@@ -61,7 +61,14 @@ export function ActionSelector({
     );
 
     return (
-        <Flex direction="column" height="full" rowGap={3} align="stretch" overflowY="auto">
+        <Flex
+            className="editor__action-selector"
+            direction="column"
+            height="full"
+            rowGap={3}
+            align="stretch"
+            overflowY="auto"
+        >
             <TitledSection title={editFeatureHeading} sectionHeadingProps={{ size: "sm" }}>
                 <SelectButton isActive={selectButtonIsActive} onClick={onButtonClick} />
             </TitledSection>
@@ -75,7 +82,7 @@ export function ActionSelector({
                     />
                 </Box>
                 {showActionBar && shouldShowActionBar(selectedTemplate) && (
-                    <ActionBar drawingState={drawingState} />
+                    <DrawingControls drawingState={drawingState} />
                 )}
             </TitledSection>
         </Flex>

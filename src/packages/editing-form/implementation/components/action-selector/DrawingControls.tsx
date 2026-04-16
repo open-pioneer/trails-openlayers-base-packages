@@ -8,11 +8,11 @@ import { useMemo, type ReactElement } from "react";
 import { LuCheck, LuRedo, LuUndo, LuX } from "react-icons/lu";
 import { type DrawingState } from "../../geometry-editing/useGeometryEditing";
 
-export interface ActionBarProps {
+export interface DrawingControlsProps {
     readonly drawingState: DrawingState;
 }
 
-export function ActionBar({ drawingState }: ActionBarProps): ReactElement {
+export function DrawingControls({ drawingState }: DrawingControlsProps): ReactElement {
     const capabilities = useReactiveSnapshot(
         () => ({
             canUndo: drawingState.canUndo,
@@ -46,7 +46,7 @@ export function ActionBar({ drawingState }: ActionBarProps): ReactElement {
     );
 
     return (
-        <HStack justify="right" gap={3}>
+        <HStack className="editor__drawing-controls" justify="right" gap={3}>
             <Tooltip content={tooltips.finishButton}>
                 <IconButton
                     aria-label={tooltips.finishButton}

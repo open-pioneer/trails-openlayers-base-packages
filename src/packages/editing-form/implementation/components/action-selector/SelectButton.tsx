@@ -15,6 +15,7 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
 
     return (
         <Button
+            className="editor__action-selector-select-button"
             variant="outline"
             width="100%"
             bg={isActive ? "gray.400" : "white"}
@@ -22,7 +23,7 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
             _active={{ bg: "gray.500" }}
             onClick={onClick}
         >
-            <LuMousePointerClick />
+            <LuMousePointerClick aria-hidden="true" />
             {formatMessage({ id: "actionSelector.selectButtonTitle" })}
         </Button>
     );
