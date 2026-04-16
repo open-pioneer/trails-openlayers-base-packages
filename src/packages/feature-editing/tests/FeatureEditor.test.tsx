@@ -1,17 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it, vi } from "vitest";
+import { LayerFactory } from "@open-pioneer/map";
+import { setupMap } from "@open-pioneer/map-test-utils";
+import type { NotificationService } from "@open-pioneer/notifier";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-
-import { setupMap } from "@open-pioneer/map-test-utils";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import type { NotificationService } from "@open-pioneer/notifier";
-
-import { Editor } from "../implementation/Editor";
+import { describe, expect, it, vi } from "vitest";
 import type { EditingStorage } from "../api/model/EditingStorage";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import { LayerFactory } from "@open-pioneer/map";
+import { FeatureEditor } from "../implementation/FeatureEditor";
 
 const mockStorage: EditingStorage = {
     addFeature: vi.fn().mockResolvedValue(undefined),
@@ -74,7 +72,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor map={map} templates={allTemplates} storage={mockStorage} />
+                <FeatureEditor map={map} templates={allTemplates} storage={mockStorage} />
             </PackageContextProvider>
         );
 
@@ -96,7 +94,7 @@ describe("Editor rendering", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor map={map} templates={[]} storage={mockStorage} />
+                <FeatureEditor map={map} templates={[]} storage={mockStorage} />
             </PackageContextProvider>
         );
 
@@ -117,7 +115,7 @@ describe("Editor interaction", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={allTemplates}
                     storage={mockStorage}
@@ -146,7 +144,7 @@ describe("Editor interaction", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={allTemplates}
                     storage={mockStorage}
@@ -179,7 +177,7 @@ describe("Editor interaction", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={allTemplates}
                     storage={mockStorage}
@@ -233,7 +231,7 @@ describe("Editor action bar buttons", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
                     storage={mockStorage}
@@ -258,7 +256,7 @@ describe("Editor action bar buttons", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={[lineStringTemplate]}
                     storage={mockStorage}
@@ -283,7 +281,7 @@ describe("Editor action bar buttons", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={[pointTemplate]}
                     storage={mockStorage}
@@ -309,7 +307,7 @@ describe("Editor action bar buttons", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
                     storage={mockStorage}
@@ -335,7 +333,7 @@ describe("Editor action bar buttons", () => {
 
         render(
             <PackageContextProvider services={createInjectedServices(layerFactory)}>
-                <Editor
+                <FeatureEditor
                     map={map}
                     templates={[polygonTemplate]}
                     storage={mockStorage}

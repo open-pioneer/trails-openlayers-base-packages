@@ -3,7 +3,7 @@
 import type { Layer, MapModelProps } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import { FC } from "react";
-import { Editor as EditorImpl } from "../../implementation/Editor";
+import { FeatureEditor as FeatureEditorImpl } from "../../implementation/FeatureEditor";
 import type { EditingStorage } from "../model/EditingStorage";
 import type { EditingStep } from "../model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
@@ -37,7 +37,7 @@ import { CommonComponentProps } from "@open-pioneer/react-utils";
  * @group Editor
  * @expandType EditorProps
  */
-export const FeatureEditor: FC<FeatureEditorProps> = EditorImpl;
+export const FeatureEditor: FC<FeatureEditorProps> = FeatureEditorImpl;
 
 /**
  * Props for the {@link FeatureEditor} component.

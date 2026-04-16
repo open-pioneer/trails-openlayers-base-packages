@@ -13,7 +13,7 @@ import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/
 import { useEditingCallbacks } from "./editor/useEditingCallbacks";
 import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 
-export function Editor(props: FeatureEditorProps): ReactElement {
+export function FeatureEditor(props: FeatureEditorProps): ReactElement {
     const {
         map,
         templates,

@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModelValue, type MapModel, type LayerFactory } from "@open-pioneer/map";
-import { useEffect, useMemo } from "react";
-import { EditingController } from "./controller/EditingController";
-import { CreationStep, EditingStep, UpdateStep } from "../../api/model/EditingStep";
 import type { MapModelProps } from "@open-pioneer/map";
+import { useMapModelValue, type LayerFactory, type MapModel } from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
-import { InteractionOptions } from "../../api/model/InteractionOptions";
-import { Editor } from "../Editor";
 import { useService } from "open-pioneer:react-hooks";
+import { useEffect, useMemo } from "react";
+import { CreationStep, EditingStep, UpdateStep } from "../../api/model/EditingStep";
+import { InteractionOptions } from "../../api/model/InteractionOptions";
+import { EditingController } from "./controller/EditingController";
 
 /**
  * Options for the {@link useGeometryEditing} hook.
@@ -135,8 +134,8 @@ export interface DrawingState {
  * current editing step. This hook handles drawing, selection, and modification interactions, and
  * returns the current drawing state for controlling undo/redo/finish/reset actions.
  *
- * Use this hook when building custom editing implementations that don't use the {@link Editor}
- * component. For most use cases, the {@link Editor} component is recommended as it provides a
+ * Use this hook when building custom editing implementations that don't use the {@link type }
+ * component. For most use cases, the {@link type } component is recommended as it provides a
  * complete editing interface with built-in UI.
  *
  * @param options - Configuration options for the editing workflow
