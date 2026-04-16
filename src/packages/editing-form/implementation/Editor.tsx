@@ -6,7 +6,7 @@ import { useCommonComponentProps } from "@open-pioneer/react-utils";
 import type { ReactElement, ReactNode } from "react";
 import type { EditorProps } from "../api/editor/editor";
 import { ActionSelector } from "./components/action-selector/ActionSelector";
-import { DefaultPropertyForm } from "./components/property-editor/DefaultPropertyForm";
+import { PropertyForm } from "./components/property-editor/PropertyForm";
 import { PropertyEditor } from "./components/property-editor/PropertyEditor";
 import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/editorHooks";
@@ -28,11 +28,11 @@ export function Editor(props: EditorProps): ReactElement {
         ...interactionOptions
     } = props;
     const { containerProps } = useCommonComponentProps("editor", props);
-    const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
+    const mapModel = useMapModelValue(props);
 
-    const mapModel = useMapModelValue({ map });
-    const onActionChange = useOnActionChange(mapModel, selectableLayers, templates, setEditingStep);
+    const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
     const snappingSources = useSnappingSources(mapModel, snappableLayers, templates);
+    const onActionChange = useOnActionChange(mapModel, selectableLayers, templates, setEditingStep);
 
     const drawingState = useGeometryEditing({
         map,
@@ -70,7 +70,7 @@ export function Editor(props: EditorProps): ReactElement {
             content = (
                 <PropertyFormContextProvider editingStep={editingStep} callbacks={editingCallbacks}>
                     <PropertyEditor>
-                        <DefaultPropertyForm
+                        <PropertyForm
                             templates={templates}
                             resolveFormTemplate={resolveFormTemplate}
                         />

@@ -3,30 +3,27 @@
 import { Box, Flex, VStack } from "@chakra-ui/react";
 import { effect } from "@conterra/reactivity-core";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useEffect, useMemo, type ReactElement } from "react";
 import { FormTemplateContext } from "../../../api/editor/editor";
 import type { PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
 import type { FieldConfig } from "../../../api/fields/FieldConfig";
 import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import { DefaultField } from "./DefaultField";
-import { useIntl } from "open-pioneer:react-hooks";
+import { PropertyField } from "./PropertyField";
 
-export interface DefaultPropertyFormProps {
+export interface PropertyForm {
     readonly templates: FeatureTemplate[];
     readonly resolveFormTemplate?: (context: FormTemplateContext) => FormTemplate | undefined;
 }
 
-export function DefaultPropertyForm({
-    templates,
-    resolveFormTemplate
-}: DefaultPropertyFormProps): ReactElement {
+export function PropertyForm({ templates, resolveFormTemplate }: PropertyForm): ReactElement {
     const template = useFormTemplate(templates, resolveFormTemplate);
     const heading = useHeading(template);
     useUpdateValidity(template);
 
     return (
-        <Flex direction="column" height="full">
+        <Flex className="editor__property-form" direction="column" height="full">
             <TitledSection>
                 <SectionHeading mb={2} size="sm">
                     {heading}
@@ -36,7 +33,7 @@ export function DefaultPropertyForm({
                         {template?.kind === "dynamic"
                             ? template.renderForm()
                             : template?.fields.map((field, index) => (
-                                  <DefaultField key={index} field={field} />
+                                  <PropertyField key={index} field={field} />
                               ))}
                     </VStack>
                 </Box>
@@ -47,7 +44,7 @@ export function DefaultPropertyForm({
 
 function useFormTemplate(
     templates: FeatureTemplate[],
-    customResolver: DefaultPropertyFormProps["resolveFormTemplate"]
+    customResolver: PropertyForm["resolveFormTemplate"]
 ): FormTemplate | undefined {
     const { mode, feature, template: explicitTemplate, layer } = usePropertyFormContext();
     const defaultResolver = useDefaultFormTemplateResolver(templates);

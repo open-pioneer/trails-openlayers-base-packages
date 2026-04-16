@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, it, expect, vi } from "vitest";
+import type { Layer } from "@open-pioneer/map";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { PropertyEditor } from "../implementation/components/property-editor/PropertyEditor";
-import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
-import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
-import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import type { Layer } from "@open-pioneer/map";
+import { describe, expect, it, vi } from "vitest";
 import type { ModificationStep } from "../api/model/EditingStep";
+import type { FeatureTemplate } from "../api/model/FeatureTemplate";
+import { PropertyEditor } from "../implementation/components/property-editor/PropertyEditor";
+import { PropertyForm } from "../implementation/components/property-editor/PropertyForm";
+import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
 
 describe("PropertyEditor Integration", () => {
@@ -75,7 +75,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm templates={[]} resolveFormTemplate={undefined} />
+                            <PropertyForm templates={[]} resolveFormTemplate={undefined} />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
@@ -114,7 +114,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm templates={[]} resolveFormTemplate={undefined} />
+                            <PropertyForm templates={[]} resolveFormTemplate={undefined} />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
@@ -147,7 +147,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm templates={[]} resolveFormTemplate={undefined} />
+                            <PropertyForm templates={[]} resolveFormTemplate={undefined} />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
@@ -197,7 +197,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm templates={[]} resolveFormTemplate={undefined} />
+                            <PropertyForm templates={[]} resolveFormTemplate={undefined} />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
@@ -239,7 +239,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -279,7 +279,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -323,7 +323,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -371,7 +371,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -419,7 +419,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -470,7 +470,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onDelete, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm
+                            <PropertyForm
                                 templates={[{ ...template, layerId: "test-layer" }]}
                                 resolveFormTemplate={undefined}
                             />
@@ -524,7 +524,7 @@ describe("PropertyEditor Integration", () => {
                         callbacks={createCallbacks({ onSave, onCancel })}
                     >
                         <PropertyEditor>
-                            <DefaultPropertyForm templates={[]} resolveFormTemplate={undefined} />
+                            <PropertyForm templates={[]} resolveFormTemplate={undefined} />
                         </PropertyEditor>
                     </PropertyFormContextProvider>
                 </PackageContextProvider>

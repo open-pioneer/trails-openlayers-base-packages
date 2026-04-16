@@ -30,7 +30,7 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
 
     return (
         <>
-            <VStack height="full" gap={5} align="stretch">
+            <VStack className="editor__property-editor" height="full" gap={5} align="stretch">
                 <Box flex={1} overflowY="auto">
                     {children}
                 </Box>

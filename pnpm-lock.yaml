@@ -596,6 +596,9 @@ importers:
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.5.0(@types/react@19.2.14)
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       ol:
         specifier: 'catalog:'
         version: 10.8.0

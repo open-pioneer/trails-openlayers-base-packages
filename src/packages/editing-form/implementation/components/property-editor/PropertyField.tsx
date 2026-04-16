@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Field } from "@chakra-ui/react";
-import type { ReactElement } from "react";
-import { DefaultControl } from "../controls/DefaultControl";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import type { FieldConfig } from "../../../api/fields/FieldConfig";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { type ReactElement } from "react";
 import type { PropertyFunction, PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
+import type { FieldConfig } from "../../../api/fields/FieldConfig";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
+import { DefaultControl } from "../controls/DefaultControl";
 
-interface DefaultFieldProps {
+export interface PropertyFieldProps {
     readonly field: FieldConfig;
 }
 
-export function DefaultField({ field }: DefaultFieldProps): ReactElement | undefined {
+export function PropertyField({ field }: PropertyFieldProps): ReactElement | undefined {
     const isRequired = useValue(field.isRequired) ?? false;
     const isEnabled = useValue(field.isEnabled) ?? true;
     const isVisible = useValue(field.isVisible) ?? true;
@@ -22,7 +22,13 @@ export function DefaultField({ field }: DefaultFieldProps): ReactElement | undef
 
     if (isVisible) {
         return (
-            <Field.Root required={isRequired} disabled={!isEnabled} invalid={!isValid}>
+            <Field.Root
+                className="editor__property-field"
+                required={isRequired}
+                disabled={!isEnabled}
+                invalid={!isValid}
+                data-editor-property-name={field.propertyName}
+            >
                 <Field.Label>
                     {field.label}
                     <Field.RequiredIndicator />

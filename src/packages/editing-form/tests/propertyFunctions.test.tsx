@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 import type { PropertyFormContext } from "../api/editor/context";
 import type { CreationStep } from "../api/model/EditingStep";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
+import { PropertyForm } from "../implementation/components/property-editor/PropertyForm";
 import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { usePropertyFormContext } from "../implementation/context/usePropertyFormContext";
 import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
@@ -48,7 +48,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -94,7 +94,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -149,7 +149,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -203,7 +203,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -263,7 +263,7 @@ describe("DefaultPropertyForm property functions", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -335,7 +335,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -393,7 +393,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -438,7 +438,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -498,7 +498,7 @@ describe("DefaultPropertyForm property functions", () => {
         render(
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                    <DefaultPropertyForm templates={[template]} />
+                    <PropertyForm templates={[template]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );

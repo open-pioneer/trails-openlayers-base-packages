@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import { useEffect, type ReactNode } from "react";
-import { DefaultPropertyForm } from "../implementation/components/property-editor/DefaultPropertyForm";
+import { describe, expect, it } from "vitest";
+import type { PropertyFormContext } from "../api/editor/context";
+import type { CreationStep } from "../api/model/EditingStep";
+import type { FeatureTemplate } from "../api/model/FeatureTemplate";
+import { PropertyForm } from "../implementation/components/property-editor/PropertyForm";
 import { PropertyFormContextProvider } from "../implementation/context/PropertyFormContextProvider";
 import { usePropertyFormContext } from "../implementation/context/usePropertyFormContext";
-import type { PropertyFormContext } from "../api/editor/context";
-import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import type { CreationStep } from "../api/model/EditingStep";
 import { EditingCallbacks } from "../implementation/editor/useEditingCallbacks";
 
 const DUMMY_CALLBACKS: EditingCallbacks = {
@@ -37,7 +37,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -67,7 +67,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -96,7 +96,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -125,7 +125,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -159,7 +159,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -193,7 +193,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -239,7 +239,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -283,7 +283,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -335,7 +335,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -367,7 +367,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -400,7 +400,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -446,7 +446,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -489,7 +489,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -532,7 +532,7 @@ describe("DefaultPropertyForm input types", () => {
             <PackageContextProvider>
                 <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
                     <ContextCapture onCapture={(ctx) => (context = ctx)} />
-                    <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                    <PropertyForm templates={[allInputTypesTemplate]} />
                 </PropertyFormContextProvider>
             </PackageContextProvider>
         );
@@ -569,7 +569,7 @@ describe("DefaultPropertyForm input types", () => {
                         callbacks={DUMMY_CALLBACKS}
                         editingStep={editingStep}
                     >
-                        <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                        <PropertyForm templates={[allInputTypesTemplate]} />
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
             );
@@ -597,7 +597,7 @@ describe("DefaultPropertyForm input types", () => {
                         callbacks={DUMMY_CALLBACKS}
                         editingStep={editingStep}
                     >
-                        <DefaultPropertyForm templates={[allInputTypesTemplate]} />
+                        <PropertyForm templates={[allInputTypesTemplate]} />
                     </PropertyFormContextProvider>
                 </PackageContextProvider>
             );
