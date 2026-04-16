@@ -1,1 +1,1 @@
-# @open-pioneer/editing-form
+# @open-pioneer/feature-editing

@@ -4,7 +4,7 @@
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
-        "@open-pioneer/editing-form": "workspace:^",
+        "@open-pioneer/feature-editing": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/notifier": "catalog:",

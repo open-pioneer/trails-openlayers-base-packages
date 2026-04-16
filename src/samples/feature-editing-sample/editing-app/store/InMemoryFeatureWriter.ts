@@ -5,7 +5,7 @@ import type {
     DeleteFeatureOptions,
     FeatureWriter,
     UpdateFeatureOptions
-} from "@open-pioneer/editing-form";
+} from "@open-pioneer/feature-editing";
 import { InMemoryStore } from "./InMemoryStore";
 
 export class InMemoryFeatureWriter implements FeatureWriter {

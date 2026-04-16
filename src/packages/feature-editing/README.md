@@ -25,7 +25,7 @@ import {
     FeatureEditor,
     type FeatureWriter,
     type FeatureTemplate
-} from "@open-pioneer/editing-form";
+} from "@open-pioneer/feature-editing";
 
 function EditorComponent() {
     return <FeatureEditor templates={templates} writer={featureWriter} />;
@@ -366,7 +366,7 @@ const template: FeatureTemplate = {
 For complete control over form layout and behavior, use a dynamic form template with the `usePropertyFormContext` hook:
 
 ```tsx
-import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/editing-form";
+import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Field, Input, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
