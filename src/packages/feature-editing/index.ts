@@ -6,7 +6,7 @@
  *
  * @groupDescription Editor
  *
- * The main {@link Editor} component, including associated hooks and types.
+ * The main {@link FeatureEditor} component, including associated hooks and types.
  *
  * @groupDescription Model
  *
@@ -20,7 +20,11 @@
 // =================================================================
 // Editor and property form context
 // =================================================================
-export { Editor, type EditorProps, type FormTemplateContext } from "./api/editor/editor";
+export {
+    FeatureEditor,
+    type FeatureEditorProps,
+    type FormTemplateContext
+} from "./api/editor/editor";
 export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./api/editor/context";
 
 // =================================================================

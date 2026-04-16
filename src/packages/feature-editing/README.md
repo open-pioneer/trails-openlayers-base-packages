@@ -1,4 +1,4 @@
-# @open-pioneer/editing-form
+# @open-pioneer/feature-editing
 
 This package provides editing functionality for map features.
 It supports creating, modifying, and deleting features with declarative form configuration and custom UI components.
@@ -18,13 +18,17 @@ It supports creating, modifying, and deleting features with declarative form con
 
 ### Minimum Working Example
 
-The simplest way to use the Editor is to provide feature templates and a storage implementation:
+The simplest way to use the FeatureEditor is to provide feature templates and a storage implementation:
 
 ```tsx
-import { Editor, type EditingStorage, type FeatureTemplate } from "@open-pioneer/editing-form";
+import {
+    FeatureEditor,
+    type EditingStorage,
+    type FeatureTemplate
+} from "@open-pioneer/editing-form";
 
-function EditingComponent() {
-    return <Editor templates={templates} storage={editingStorage} />;
+function EditorComponent() {
+    return <FeatureEditor templates={templates} storage={editingStorage} />;
 }
 
 const templates: FeatureTemplate[] = [
@@ -191,9 +195,9 @@ const editingStorage: EditingStorage = {
 };
 ```
 
-## Editor Props
+## FeatureEditor Props
 
-The `Editor` component accepts the following props:
+The `FeatureEditor` component accepts the following props:
 
 | Prop                             | Type                                     | Required | Description                                                                                                                     |
 | -------------------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -210,7 +214,7 @@ The `Editor` component accepts the following props:
 
 ### Interaction Options
 
-The Editor also accepts OpenLayers interaction options for fine-grained control:
+The FeatureEditor also accepts OpenLayers interaction options for fine-grained control:
 
 | Prop                  | Type                  | Description                        |
 | --------------------- | --------------------- | ---------------------------------- |
@@ -224,7 +228,7 @@ The drawing options will be merged with those of the selected feature template (
 
 ### Resolving Form Templates
 
-When the user selects an existing feature on the map, the Editor needs to determine which form template to use.
+When the user selects an existing feature on the map, the FeatureEditor needs to determine which form template to use.
 By default, it matches the feature's layer ID against the `layerId` of each template in the `templates` array and uses the first match.
 
 For more control — such as when features from the same layer require different forms based on their attributes — you can provide a custom `resolveFormTemplate` callback:
@@ -235,7 +239,7 @@ const resolveFormTemplate = ({ feature, layer }: FormTemplateContext) => {
     return type === "residential" ? residentialTemplate : commercialTemplate;
 };
 
-<Editor
+<FeatureEditor
     templates={[residentialTemplate, commercialTemplate]}
     resolveFormTemplate={resolveFormTemplate}
     storage={editingStorage}

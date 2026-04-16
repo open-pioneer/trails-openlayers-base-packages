@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 import { useMapModelValue } from "@open-pioneer/map";
 import { useCommonComponentProps } from "@open-pioneer/react-utils";
 import type { ReactElement, ReactNode } from "react";
-import type { EditorProps } from "../api/editor/editor";
+import type { FeatureEditorProps } from "../api/editor/editor";
 import { ActionSelector } from "./components/action-selector/ActionSelector";
 import { PropertyForm } from "./components/property-editor/PropertyForm";
 import { PropertyEditor } from "./components/property-editor/PropertyEditor";
@@ -13,7 +13,7 @@ import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/
 import { useEditingCallbacks } from "./editor/useEditingCallbacks";
 import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 
-export function Editor(props: EditorProps): ReactElement {
+export function Editor(props: FeatureEditorProps): ReactElement {
     const {
         map,
         templates,

@@ -18,7 +18,7 @@ import { LuMenu } from "react-icons/lu";
 import { PiPencil } from "react-icons/pi";
 
 import { MAP_ID } from "../map/MainMapProvider";
-import { EditingComponent } from "./EditingComponent";
+import { EditorComponent } from "./EditorComponent";
 
 export function AppUI(): ReactElement | undefined {
     const { map } = useMapModel(MAP_ID);
@@ -35,7 +35,7 @@ export function AppUI(): ReactElement | undefined {
                         <MapContainer>
                             {editingIsActive && (
                                 <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                                    <EditingComponent />
+                                    <EditorComponent />
                                 </MapAnchor>
                             )}
                             {tocIsActive && (

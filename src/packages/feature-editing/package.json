@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/editing-form",
+    "name": "@open-pioneer/feature-editing",
     "version": "1.2.0",
     "description": "Provides a component to create and edit feature geometries and properties.",
     "license": "Apache-2.0",
@@ -7,7 +7,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
-        "directory": "src/packages/packages/editing-form"
+        "directory": "src/packages/packages/feature-editing"
     },
     "homepage": "https://github.com/open-pioneer",
     "keywords": [

@@ -37,14 +37,15 @@ import { CommonComponentProps } from "@open-pioneer/react-utils";
  * @group Editor
  * @expandType EditorProps
  */
-export const Editor: FC<EditorProps> = EditorImpl;
+export const FeatureEditor: FC<FeatureEditorProps> = EditorImpl;
 
 /**
- * Props for the {@link Editor} component.
+ * Props for the {@link FeatureEditor} component.
  *
  * @group Editor
  */
-export interface EditorProps extends CommonComponentProps, MapModelProps, InteractionOptions {
+export interface FeatureEditorProps
+    extends CommonComponentProps, MapModelProps, InteractionOptions {
     /**
      * Feature templates defining the types of features that can be created or edited.
      *

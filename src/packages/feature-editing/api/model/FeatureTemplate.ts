@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import type { PropertyFormContext } from "../editor/context";
 import type { FieldConfig } from "../fields/FieldConfig";
 import type { DrawingOptions } from "./InteractionOptions";
-import type { EditorProps } from "../editor/editor";
+import type { FeatureEditorProps } from "../editor/editor";
 
 /**
  * Base interface for feature template configuration.
@@ -53,7 +53,7 @@ export interface BaseFeatureTemplate {
      * Primarily used to determine which form template to display when editing features from a
      * specific layer. By default, when a feature is selected for editing, the first template
      * with a `layerId` matching the feature's layer ID is chosen to configure the property form.
-     * This behavior can be customized by providing a custom implementation of {@link EditorProps.resolveFormTemplate | resolveFormTemplate }.
+     * This behavior can be customized by providing a custom implementation of {@link FeatureEditorProps.resolveFormTemplate | resolveFormTemplate }.
      */
     readonly layerId?: string;
 

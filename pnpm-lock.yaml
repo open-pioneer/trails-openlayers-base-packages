@@ -567,7 +567,7 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/packages/editing-form:
+  src/packages/feature-editing:
     dependencies:
       '@chakra-ui/react':
         specifier: 'catalog:'
@@ -1422,7 +1422,7 @@ importers:
         version: link:../../../packages/coordinate-viewer
       '@open-pioneer/editing-form':
         specifier: workspace:^
-        version: link:../../../packages/editing-form
+        version: link:../../../packages/feature-editing
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map

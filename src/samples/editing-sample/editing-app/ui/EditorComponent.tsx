@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@chakra-ui/react";
-import { Editor, type FeatureTemplate } from "@open-pioneer/editing-form";
-import { useMemo, type ReactElement } from "react";
-import { LAYER_CONFIG } from "../map/layerConfig";
-import { InMemoryEditingStorage as InMemoryEditingStorage } from "../store/InMemoryEditingStorage";
+import { FeatureEditor, type FeatureTemplate } from "@open-pioneer/editing-form";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
+import { useMemo, type ReactElement } from "react";
+import { LAYER_CONFIG } from "../map/layerConfig";
+import { InMemoryEditingStorage } from "../store/InMemoryEditingStorage";
 
-export function EditingComponent(): ReactElement | undefined {
+export function EditorComponent(): ReactElement | undefined {
     const intl = useIntl();
     const title = intl.formatMessage({ id: "editor" });
     const storage = useMemo(() => new InMemoryEditingStorage(), []);
@@ -31,7 +31,7 @@ export function EditingComponent(): ReactElement | undefined {
                     {title}
                 </SectionHeading>
                 <Box flex="1" overflowY="auto">
-                    <Editor
+                    <FeatureEditor
                         templates={templates}
                         storage={storage}
                         successNotifierDisplayDuration={2000}
