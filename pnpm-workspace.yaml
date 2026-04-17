@@ -162,6 +162,10 @@ patchedDependencies:
   # Fix cursor styling
   "@zag-js/splitter": patches/@zag-js__splitter.patch
 
+  # Fixes 'interact-outside' logic not tabbing between elements within the same shadow dom.
+  # Can be removed if https://github.com/chakra-ui/zag/issues/3088 is fixed.
+  "@zag-js/interact-outside": patches/@zag-js__interact-outside.patch
+
 peerDependencyRules:
   allowedVersions:
     # See overrides
