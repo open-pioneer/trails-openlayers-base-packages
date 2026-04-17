@@ -131,7 +131,30 @@ const template: FeatureTemplate = {
 };
 ```
 
-### Editing Storage
+### Data flow
+
+The editor supports editing _existing_ features or creating _new_ features:
+
+- Existing features are taken from the map, using a workflow based on OpenLayer's [Select](https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html) interaction.
+  The feature and its attributes are taken directly from the layer (typically some kind of `VectorLayer`).
+- New features are created based on the configured feature template (i.e. `defaultProperties`, `geometryType`, etc.).
+  The user can draw the feature's geometry on a temporary layer.
+
+In both cases, feature attributes can be editing using the editor's form controls.
+Note however, that the (preexisting) features on the map are **never** modified directly.
+Instead, the editor calls the `FeatureWriter`'s methods to apply any changes made by the user (see [FeatureWriter](#featurewriter) below).
+
+In summary, the sequence of steps when creating or editing a feature is as follows:
+
+1. A feature is either selected from the map or created based on the feature template.
+2. The user edits the feature's geometry or properties using the editor component.
+3. The editor calls `addFeature`, `updateFeature` or `deleteFeature` on the `featureWriter` based on the user's actions.
+   The feature writer ensures that:
+    - Changes are persisted (if needed)
+    - _Vector sources are updated_, i.e. changes are applied to the map
+4. Optional: if the user selects a feature again, they will observe the updated attributes / geometries.
+
+### FeatureWriter
 
 The editor does not manage the lifetime of any features in the map, except for the feature currently being edited.
 To persist changes made by the editor, you must implement the `FeatureWriter` interface.
@@ -156,6 +179,7 @@ const featureWriter: FeatureWriter = {
             method: "POST",
             body: JSON.stringify(geojson)
         });
+        // Update map/layers (e.g. VectorSources)
     },
 
     // Called when an existing feature is modified
@@ -168,6 +192,7 @@ const featureWriter: FeatureWriter = {
             method: "PUT",
             body: JSON.stringify(geojson)
         });
+        // Update map/layers (e.g. VectorSources)
     },
 
     // Called when a feature is deleted
@@ -176,6 +201,7 @@ const featureWriter: FeatureWriter = {
         await fetch(`/api/layers/${layer?.id}/features/${id}`, {
             method: "DELETE"
         });
+        // Update map/layers (e.g. VectorSources)
     }
 };
 ```
