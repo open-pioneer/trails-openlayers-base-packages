@@ -132,6 +132,9 @@ overrides:
   # https://github.com/advisories/GHSA-39q2-94rc-95cp
   "dompurify@<3.4.0": "^3.4.0"
 
+  # https://github.com/advisories/GHSA-j452-xhg8-qg39
+  "protocol-buffers-schema@<3.6.1": "^3.6.1"
+
   # We don't actually use the babel plugin.
   # The babel runtime is also not used as a production dependency.
   # See e.g. https://github.com/emotion-js/emotion/issues/2371
@@ -158,6 +161,10 @@ patchedDependencies:
 
   # Fix cursor styling
   "@zag-js/splitter": patches/@zag-js__splitter.patch
+
+  # Fixes 'interact-outside' logic not tabbing between elements within the same shadow dom.
+  # Can be removed if https://github.com/chakra-ui/zag/issues/3088 is fixed.
+  "@zag-js/interact-outside": patches/@zag-js__interact-outside.patch
 
 peerDependencyRules:
   allowedVersions:
