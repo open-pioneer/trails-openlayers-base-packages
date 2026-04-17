@@ -25,3 +25,11 @@ messages:
     updateFailure: The feature failed to be updated.
     deletionSuccess: Feature deleted
     deletionFailure: The feature failed to be deleted.
+  tooltips:
+    drawingMessagePoint: Click on the map to draw the point.
+    drawingMessageLineString: Click to start drawing. Double-click to finish drawing.
+    drawingMessagePolygon: Click to start drawing. Double-click to finish drawing.
+    drawingMessageCircle: Click to start drawing. Move mouse to sketch. Double-click to finish.
+    selectionMessage: Click on a feature in the map to select it.
+    modificationMessage: Click on a feature's vertex, hold and drag to edit it.
+    modificationMessagePoint: Click on the point, hold and drag to edit it.

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { Layer } from "@open-pioneer/map";
+import { Layer, MapModel, Overlay } from "@open-pioneer/map";
 import { Select } from "ol/interaction";
 import { unByKey } from "ol/Observable";
 import type { Feature } from "ol";
@@ -8,11 +8,13 @@ import type { EventsKey } from "ol/events";
 import { Layer as OlLayer } from "ol/layer";
 import { BaseInteraction } from "./BaseInteraction";
 import type { SelectionOptions } from "../../../api/model/InteractionOptions";
+import { TooltipMessages } from "../controller/EditingController";
 
 export interface SelectionParameters {
     readonly layers: Layer[];
     readonly selectionOptions?: SelectionOptions;
     readonly completionHandler: (feature: Feature, layer: Layer | undefined) => void;
+    readonly tooltipMessages: TooltipMessages;
 }
 
 interface SelectionData {
@@ -29,8 +31,10 @@ interface InternalFeature extends Feature {
 }
 
 export class SelectionInteraction extends BaseInteraction<SelectionParameters, SelectionData> {
+    private tooltip?: Overlay;
+
     protected override startInteraction(parameters: SelectionParameters): SelectionData {
-        const { layers, selectionOptions, completionHandler } = parameters;
+        const { layers, selectionOptions, completionHandler, tooltipMessages } = parameters;
 
         const olLayers = layers
             .map((layer) => layer.olLayer)
@@ -50,6 +54,8 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
             }
         });
 
+        this.tooltip = this.createHelpTooltip(this.mapModel, tooltipMessages);
+
         this.map.addInteraction(select);
 
         return { select, eventsKey };
@@ -58,6 +64,7 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
     protected override stopInteraction({ select, eventsKey }: SelectionData): void {
         unByKey(eventsKey);
         this.map.removeInteraction(select);
+        this.tooltip?.destroy();
     }
 
     private getLayer(select: Select, feature: Feature): Layer | undefined {
@@ -70,6 +77,23 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
         const { featureLayerAssociation_ } = select as unknown as InternalSelect;
         const { ol_uid } = feature as InternalFeature;
         return ol_uid != null ? featureLayerAssociation_?.[ol_uid] : undefined;
+    }
+
+    private createHelpTooltip(
+        mapModel: MapModel,
+        tooltipMessages: TooltipMessages
+    ): Overlay | undefined {
+        const helpOverlay = mapModel.overlays.add({
+            className: "editing-tooltip printing-hide",
+            position: "follow-pointer",
+            tag: "editing-selection-overlay",
+            offset: [15, 0],
+            positioning: "center-left",
+            ariaRole: "tooltip",
+            content: tooltipMessages.getSelectionMessage()
+        });
+
+        return helpOverlay;
     }
 
     private static readonly DEFAULT_HIT_TOLERANCE = 22;

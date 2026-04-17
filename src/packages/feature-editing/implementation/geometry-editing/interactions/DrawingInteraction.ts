@@ -10,7 +10,8 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 import { BaseInteraction } from "./BaseInteraction";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
-import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
+import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
+import { TooltipMessages } from "../controller/EditingController";
 
 export interface DrawingParameters {
     readonly geometryType: GeometryType;
@@ -18,6 +19,7 @@ export interface DrawingParameters {
     readonly drawingOptions?: DrawingOptions;
     readonly completionHandler: (feature: Feature, drawLayer: SimpleLayer) => void;
     readonly layerFactory: LayerFactory;
+    readonly tooltipMessages: TooltipMessages;
 }
 
 interface DrawingData {
@@ -28,9 +30,17 @@ interface DrawingData {
 }
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
+    private tooltip?: Overlay;
+
     protected override startInteraction(parameters: DrawingParameters): DrawingData {
-        const { geometryType, tracker, drawingOptions, completionHandler, layerFactory } =
-            parameters;
+        const {
+            geometryType,
+            tracker,
+            drawingOptions,
+            completionHandler,
+            layerFactory,
+            tooltipMessages
+        } = parameters;
 
         const source = new VectorSource();
         const drawLayer = layerFactory.create({
@@ -56,7 +66,10 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
             draw.once("drawend", ({ feature }) => completionHandler(feature, drawLayer))
         ];
 
+        this.tooltip = this.createHelpTooltip(this.mapModel, tooltipMessages, geometryType);
+
         this.mapModel.layers.addLayer(drawLayer, { at: "topmost" });
+
         this.map.addInteraction(draw);
 
         return { draw, drawLayer, eventsKeys, tracker };
@@ -67,7 +80,31 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
 
         this.map.removeInteraction(draw);
         this.mapModel.layers.removeLayer(drawLayer);
+        this.tooltip?.destroy();
         unByKey(eventsKeys);
         tracker.untrackCapabilities();
+    }
+
+    private createHelpTooltip(
+        mapModel: MapModel,
+        tooltipMessages: TooltipMessages,
+        geometryType: GeometryType
+    ): Overlay | undefined {
+        const message = tooltipMessages.getDrawingMessages().get(geometryType);
+        if (!message) {
+            return undefined;
+        }
+
+        const helpOverlay = mapModel.overlays.add({
+            className: "editing-tooltip printing-hide",
+            position: "follow-pointer",
+            tag: "editing-draw-overlay",
+            offset: [15, 0],
+            positioning: "center-left",
+            ariaRole: "tooltip",
+            content: message
+        });
+
+        return helpOverlay;
     }
 }

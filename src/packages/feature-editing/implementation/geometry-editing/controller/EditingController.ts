@@ -18,10 +18,20 @@ import {
 } from "../interactions/SelectionInteraction";
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
 import { DrawingSession } from "./DrawingSession";
+import type { Type as GeometryType } from "ol/geom/Geometry";
+import { ReactNode } from "react";
 
-type StartDrawingFeatureOptions = Required<Omit<DrawingParameters, "tracker" | "layerFactory">>;
+type StartDrawingFeatureOptions = Required<
+    Omit<DrawingParameters, "tracker" | "layerFactory" | "tooltipMessages">
+>;
 type StartSelectingFeatureOptions = Pick<SelectionParameters, "layers" | "completionHandler">;
 type StartModifyingFeatureOptions = Pick<ModificationParameters, "feature" | "drawLayer">;
+
+export interface TooltipMessages {
+    getSelectionMessage(): ReactNode;
+    getDrawingMessages(): Map<GeometryType, ReactNode>;
+    getModificationMessages(): Map<string, ReactNode>;
+}
 
 export class EditingController {
     private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
@@ -32,7 +42,8 @@ export class EditingController {
 
     constructor(
         private readonly mapModel: MapModel,
-        private readonly layerFactory: LayerFactory
+        private readonly layerFactory: LayerFactory,
+        private readonly tooltipMessages: TooltipMessages
     ) {}
 
     startDrawingFeature({
@@ -46,7 +57,8 @@ export class EditingController {
                 tracker: this.drawingSession,
                 drawingOptions: { ...this.interactionOptions.drawingOptions, ...drawingOptions },
                 completionHandler,
-                layerFactory: this.layerFactory
+                layerFactory: this.layerFactory,
+                tooltipMessages: this.tooltipMessages
             }),
             new KeyboardInteraction(this.mapModel, {
                 actions: this.drawingSession
@@ -64,7 +76,8 @@ export class EditingController {
             new SelectionInteraction(this.mapModel, {
                 layers,
                 selectionOptions: this.interactionOptions.selectionOptions,
-                completionHandler
+                completionHandler,
+                tooltipMessages: this.tooltipMessages
             })
         );
     }
@@ -74,7 +87,8 @@ export class EditingController {
             new ModificationInteraction(this.mapModel, {
                 feature,
                 drawLayer,
-                modificationOptions: this.interactionOptions.modificationOptions
+                modificationOptions: this.interactionOptions.modificationOptions,
+                tooltipMessages: this.tooltipMessages
             }),
             new HighlightingInteraction(this.mapModel, {
                 feature,

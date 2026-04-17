@@ -7,7 +7,7 @@ import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useMemo } from "react";
 import { CreationStep, EditingStep, UpdateStep } from "../../api/model/EditingStep";
 import { InteractionOptions } from "../../api/model/InteractionOptions";
-import { EditingController } from "./controller/EditingController";
+import { EditingController, TooltipMessages } from "./controller/EditingController";
 
 /**
  * Options for the {@link useGeometryEditing} hook.
@@ -40,6 +40,11 @@ export interface GeometryEditingOptions extends MapModelProps, InteractionOption
      * snap to existing features for precise alignment.
      */
     readonly snappingSources?: VectorSource[];
+
+    /**
+     * Messages shown in the help tooltips of selection, drawing and modification interactions.
+     */
+    readonly tooltipMessages: TooltipMessages;
 }
 
 /**
@@ -160,10 +165,11 @@ export function useGeometryEditing({
     editingStep,
     setEditingStep,
     snappingSources,
+    tooltipMessages,
     ...interactionOptions
 }: GeometryEditingOptions): DrawingState {
     const layerFactory = useService<LayerFactory>("map.LayerFactory");
-    const controller = useEditingController(map, layerFactory);
+    const controller = useEditingController(map, layerFactory, tooltipMessages);
 
     useEffect(() => {
         controller.setSnappingSources(snappingSources);
@@ -221,15 +227,19 @@ export function useGeometryEditing({
         return () => {
             controller.stopCurrentInteractions();
         };
-    }, [controller, editingStep, setEditingStep]);
+    }, [controller, editingStep, setEditingStep, tooltipMessages]);
 
     return controller.drawingSession;
 }
 
 function useEditingController(
     map: MapModel | undefined,
-    layerFactory: LayerFactory
+    layerFactory: LayerFactory,
+    tooltipMessages: TooltipMessages
 ): EditingController {
     const mapModel = useMapModelValue({ map });
-    return useMemo(() => new EditingController(mapModel, layerFactory), [mapModel, layerFactory]);
+    return useMemo(
+        () => new EditingController(mapModel, layerFactory, tooltipMessages),
+        [mapModel, layerFactory, tooltipMessages]
+    );
 }
