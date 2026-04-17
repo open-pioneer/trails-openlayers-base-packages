@@ -12,11 +12,13 @@ import type { DrawingTracker, DrawingActionHandler } from "../controller/Drawing
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
 import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
 import { TooltipMessages } from "../controller/EditingController";
+import { destroyResource } from "@open-pioneer/core";
 
 export interface DrawingParameters {
     readonly geometryType: GeometryType;
     readonly tracker: DrawingTracker;
     readonly drawingOptions?: DrawingOptions;
+    /** The completion handler takes ownership of the drawLayer and needs to destroy it if it is no longer needed. */
     readonly completionHandler: (feature: Feature, drawLayer: SimpleLayer) => void;
     readonly layerFactory: LayerFactory;
     readonly tooltipMessages: TooltipMessages;
@@ -24,13 +26,13 @@ export interface DrawingParameters {
 
 interface DrawingData {
     readonly draw: Draw;
-    readonly drawLayer: SimpleLayer;
     readonly eventsKeys: EventsKey[];
     readonly tracker: DrawingTracker;
 }
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
     private tooltip?: Overlay;
+    private drawLayer: SimpleLayer | undefined;
 
     protected override startInteraction(parameters: DrawingParameters): DrawingData {
         const {
@@ -43,14 +45,14 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         } = parameters;
 
         const source = new VectorSource();
-        const drawLayer = layerFactory.create({
+        const drawLayer = (this.drawLayer = layerFactory.create({
             type: SimpleLayer,
             internal: true,
             title: "editing-draw-layer",
             olLayer: new VectorLayer<VectorSource, Feature>({
                 source: source
             })
-        });
+        }));
         const draw = new Draw({ source, type: geometryType, ...drawingOptions });
 
         const handler: DrawingActionHandler = {
@@ -63,7 +65,17 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         const eventsKeys = [
             draw.on("drawstart", ({ feature }) => tracker.trackCapabilities(feature, handler)),
             draw.on("drawabort", () => tracker.untrackCapabilities()),
-            draw.once("drawend", ({ feature }) => completionHandler(feature, drawLayer))
+            draw.once("drawend", ({ feature }) => {
+                const drawLayer = this.drawLayer;
+                if (!drawLayer) {
+                    return;
+                }
+
+                // Remove from map but DO NOT destroy: completionHandler takes ownership
+                this.mapModel.layers.removeLayer(drawLayer);
+                this.drawLayer = undefined;
+                completionHandler(feature, drawLayer);
+            })
         ];
 
         this.tooltip = this.createHelpTooltip(this.mapModel, tooltipMessages, geometryType);
@@ -72,14 +84,19 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
 
         this.map.addInteraction(draw);
 
-        return { draw, drawLayer, eventsKeys, tracker };
+        return { draw, eventsKeys, tracker };
     }
 
     protected override stopInteraction(data: DrawingData): void {
-        const { draw, drawLayer, eventsKeys, tracker } = data;
+        const { draw, eventsKeys, tracker } = data;
 
         this.map.removeInteraction(draw);
-        this.mapModel.layers.removeLayer(drawLayer);
+
+        // Cleanup draw layer if it wasn't passed to the completionHandler
+        if (this.drawLayer) {
+            this.mapModel.layers.removeLayer(this.drawLayer);
+            this.drawLayer = destroyResource(this.drawLayer);
+        }
         this.tooltip?.destroy();
         unByKey(eventsKeys);
         tracker.untrackCapabilities();

@@ -34,7 +34,7 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
         const originalGeometry = feature.getGeometry()?.clone();
 
         if (drawLayer != null) {
-            this.mapModel.layers.addLayer(drawLayer);
+            this.mapModel.layers.addLayer(drawLayer, { at: "topmost" });
         }
 
         this.tooltip = this.createHelpTooltip(
@@ -55,6 +55,7 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
 
         if (drawLayer != null) {
             this.mapModel.layers.removeLayer(drawLayer);
+            drawLayer.destroy();
         }
         if (originalGeometry != null) {
             feature.setGeometry(originalGeometry);
