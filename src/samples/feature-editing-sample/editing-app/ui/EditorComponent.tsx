@@ -16,8 +16,7 @@ export function EditorComponent(): ReactElement | undefined {
 
     return (
         <Box
-            width="380px"
-            height="570px"
+            height="full"
             padding={4}
             backgroundColor="white"
             borderWidth="1px"

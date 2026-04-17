@@ -34,7 +34,18 @@ export function AppUI(): ReactElement | undefined {
                     <Flex direction="column" flex={1}>
                         <MapContainer>
                             {editingIsActive && (
-                                <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                                <MapAnchor
+                                    position="top-right"
+                                    horizontalGap={10}
+                                    verticalGap={10}
+                                    css={{
+                                        w: "380px",
+                                        maxW: "calc(100% - 20px)",
+                                        h: "570px",
+                                        maxH: "calc(100% - 20px)",
+                                        overflowY: "auto !important"
+                                    }}
+                                >
                                     <EditorComponent />
                                 </MapAnchor>
                             )}
