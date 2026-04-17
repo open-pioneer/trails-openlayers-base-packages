@@ -263,6 +263,9 @@ patchedDependencies:
   '@ark-ui/react@*':
     hash: 6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb
     path: patches/@ark-ui__react.patch
+  '@zag-js/interact-outside':
+    hash: 7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d
+    path: patches/@zag-js__interact-outside.patch
   '@zag-js/splitter':
     hash: 075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb
     path: patches/@zag-js__splitter.patch
@@ -7696,7 +7699,7 @@ snapshots:
   '@zag-js/dismissable@1.35.3':
     dependencies:
       '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3
+      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
       '@zag-js/utils': 1.35.3
 
   '@zag-js/dom-query@1.35.3':
@@ -7720,7 +7723,7 @@ snapshots:
       '@zag-js/anatomy': 1.35.3
       '@zag-js/core': 1.35.3
       '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3
+      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
       '@zag-js/types': 1.35.3
       '@zag-js/utils': 1.35.3
 
@@ -7781,7 +7784,7 @@ snapshots:
       '@zag-js/types': 1.35.3
       '@zag-js/utils': 1.35.3
 
-  '@zag-js/interact-outside@1.35.3':
+  '@zag-js/interact-outside@1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)':
     dependencies:
       '@zag-js/dom-query': 1.35.3
       '@zag-js/utils': 1.35.3
@@ -8021,7 +8024,7 @@ snapshots:
       '@zag-js/auto-resize': 1.35.3
       '@zag-js/core': 1.35.3
       '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3
+      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
       '@zag-js/live-region': 1.35.3
       '@zag-js/types': 1.35.3
       '@zag-js/utils': 1.35.3
@@ -8076,7 +8079,7 @@ snapshots:
       '@zag-js/dismissable': 1.35.3
       '@zag-js/dom-query': 1.35.3
       '@zag-js/focus-trap': 1.35.3
-      '@zag-js/interact-outside': 1.35.3
+      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
       '@zag-js/popper': 1.35.3
       '@zag-js/types': 1.35.3
       '@zag-js/utils': 1.35.3
