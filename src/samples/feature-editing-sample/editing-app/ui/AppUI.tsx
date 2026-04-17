@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, HStack } from "@chakra-ui/react";
-
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
@@ -10,13 +9,10 @@ import { TitledSection } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
-
 import { useIntl } from "open-pioneer:react-hooks";
-
 import { useCallback, useState, type ReactElement } from "react";
 import { LuMenu } from "react-icons/lu";
 import { PiPencil } from "react-icons/pi";
-
 import { MAP_ID } from "../map/MainMapProvider";
 import { EditorComponent } from "./EditorComponent";
 
@@ -26,9 +22,8 @@ export function AppUI(): ReactElement | undefined {
 
     const [editingIsActive, toggleEditing] = useToolState(true);
     const [tocIsActive, toggleToc] = useToolState(false);
-
-    if (map != null) {
-        return (
+    return (
+        map && (
             <Flex direction="column" height="full" overflow="hidden">
                 <DefaultMapProvider map={map}>
                     <Flex direction="column" flex={1}>
@@ -94,10 +89,8 @@ export function AppUI(): ReactElement | undefined {
                 </DefaultMapProvider>
                 <Notifier />
             </Flex>
-        );
-    } else {
-        return undefined;
-    }
+        )
+    );
 }
 
 function useToolState(initialState: boolean): [boolean, () => void] {

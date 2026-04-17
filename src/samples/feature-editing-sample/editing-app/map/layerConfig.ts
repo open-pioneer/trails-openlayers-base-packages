@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { FeatureTemplate } from "@open-pioneer/feature-editing";
-
 import { createBox } from "ol/interaction/Draw";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import type { StyleLike } from "ol/style/Style";
-
-import { PiRectangleBold } from "react-icons/pi";
 import { createElement } from "react";
+import { PiRectangleBold } from "react-icons/pi";
+
+interface LayerConfig {
+    readonly id: string;
+    readonly title: string;
+    readonly style: StyleLike;
+    readonly template: FeatureTemplate;
+}
 
 export const LAYER_CONFIG: LayerConfig[] = [
     {
@@ -420,10 +425,3 @@ export const LAYER_CONFIG: LayerConfig[] = [
         }
     }
 ];
-
-interface LayerConfig {
-    readonly id: string;
-    readonly title: string;
-    readonly style: StyleLike;
-    readonly template: FeatureTemplate;
-}

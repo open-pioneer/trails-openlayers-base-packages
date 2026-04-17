@@ -8,14 +8,26 @@ import {
     type MapConfigProvider,
     type MapConfigProviderOptions
 } from "@open-pioneer/map";
-
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM, Vector as VectorSource } from "ol/source";
-
 import { InMemoryStore } from "../store/InMemoryStore";
 import { LAYER_CONFIG } from "./layerConfig";
 
+export const MAP_ID = "main";
+
 export class MainMapProvider implements MapConfigProvider {
+    private static readonly MAP_SETTINGS: Omit<MapConfig, "layers"> = {
+        initialView: {
+            kind: "position",
+            center: {
+                x: 847541.0,
+                y: 6793584.0
+            },
+            zoom: 14
+        },
+        projection: "EPSG:3857"
+    };
+
     getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return Promise.resolve({
             ...MainMapProvider.MAP_SETTINGS,
@@ -61,18 +73,4 @@ export class MainMapProvider implements MapConfigProvider {
             });
         });
     }
-
-    private static readonly MAP_SETTINGS: Omit<MapConfig, "layers"> = {
-        initialView: {
-            kind: "position",
-            center: {
-                x: 847541.0,
-                y: 6793584.0
-            },
-            zoom: 14
-        },
-        projection: "EPSG:3857"
-    };
 }
-
-export const MAP_ID = "main";
