@@ -51,8 +51,9 @@ export function DeleteConfirmationDialog({
                     <Dialog.Body>{message}</Dialog.Body>
                     <Dialog.Footer>
                         <Button
-                            colorPalette="red"
-                            _hover={{ bg: "red.800" }}
+                            bg="red.solid"
+                            color="red.contrast"
+                            _hover={{ bg: "red.solid/90" }}
                             loading={isDeleting}
                             loadingText={deleteButtonTitle}
                             onClick={onDeleteClick}

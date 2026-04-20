@@ -34,12 +34,13 @@ export function TemplateItem({ template, isSelected, onClick }: TemplateItemProp
             aria-selected={isSelected}
             aria-labelledby={templateNameId}
             role={"option"}
-            bg={isSelected ? "trails.400" : "white"}
-            _hover={{ bg: isSelected ? "trails.300" : "trails.100" }}
-            _active={{ bg: "trails.500" }}
+            bg={isSelected ? "colorPalette.800" : "bg"}
+            color={isSelected ? "colorPalette.contrast" : "fg"}
+            _hover={{ bg: isSelected ? "colorPalette.700" : "colorPalette.subtle" }}
+            _active={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
             _focusVisible={{
                 outline: "2px solid",
-                outlineColor: "trails.500",
+                outlineColor: "colorPalette.800",
                 outlineOffset: "-2px"
             }}
             onClick={onRowClick}

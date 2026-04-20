@@ -18,8 +18,8 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
             <Button
                 className="editor__action-selector-select-button"
                 variant="outline"
-                _hover={{ bg: isActive ? "trails.400" : "trails.100" }}
-                _pressed={{ bg: "trails.500", color: "white" }}
+                _hover={{ bg: isActive ? "colorPalette.700" : "colorPalette.subtle" }}
+                _pressed={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
                 width="calc(100% - 8px)"
                 marginX={"4px"}
                 onClick={onClick}

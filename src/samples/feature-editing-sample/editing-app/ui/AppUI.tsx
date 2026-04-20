@@ -47,7 +47,7 @@ export function AppUI(): ReactElement | undefined {
                             {tocIsActive && (
                                 <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                                     <Box
-                                        backgroundColor="white"
+                                        backgroundColor="bg"
                                         borderWidth="1px"
                                         borderRadius="lg"
                                         padding={4}

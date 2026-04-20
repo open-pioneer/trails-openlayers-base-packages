@@ -1,8 +1,8 @@
 .editing-tooltip {
     position: relative;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--chakra-colors-bg);
     border-radius: 4px;
-    color: black;
+    color: var(--chakra-colors-fg);
     padding: 4px 8px;
     opacity: 1;
     white-space: nowrap;
