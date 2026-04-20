@@ -17,9 +17,7 @@ It supports creating, modifying, and deleting features with declarative form con
 The Editing works with all vector layer sources and can therefore be used with any layer type that supports feature selection, such as `GeoJSON`, `WFS`, or `OGC API Features`.
 As the package does not manage feature storage or how changes are applied to the map, it fits a wide range of data management strategies and provides full flexibility to the using app.
 
-## Getting Started
-
-### Minimum Working Example
+## Usage
 
 The simplest way to use the FeatureEditor is to provide feature templates and a `writer` implementation:
 
@@ -39,7 +37,7 @@ const templates: FeatureTemplate[] = [
         name: "Point of Interest",
         kind: "declarative",
         geometryType: "Point",
-        layerId: "poi-layer",
+        layerId: "poi-layer", // creation not shown in this example
         fields: [
             { label: "Name", type: "text-field", propertyName: "name", isRequired: true },
             { label: "Description", type: "text-area", propertyName: "description" }
@@ -49,15 +47,15 @@ const templates: FeatureTemplate[] = [
 
 const featureWriter: FeatureWriter = {
     async addFeature(feature, template, projection) {
-        // Persist the new feature in your backend
+        // Persist the new feature in your backend, then update the map
         await myApi.createFeature(feature, template.layerId);
     },
     async updateFeature({ feature, layer, projection }) {
-        // Update the existing feature in your backend
+        // Update the existing feature in your backend, then update the map
         await myApi.updateFeature(feature, layer?.id);
     },
     async deleteFeature({ feature, layer, projection }) {
-        // Delete the feature from your backend
+        // Delete the feature from your backend, then update the map
         await myApi.deleteFeature(feature, layer?.id);
     }
 };
@@ -139,12 +137,12 @@ const template: FeatureTemplate = {
 The editor supports editing _existing_ features or creating _new_ features:
 
 - Existing features are taken from the map, using a workflow based on OpenLayer's [Select](https://openlayers.org/en/latest/apidoc/module-ol_interaction_Select-Select.html) interaction.
-  The feature and its attributes are taken directly from the layer (typically some kind of `VectorLayer`).
-- New features are created based on the configured feature template (i.e. `defaultProperties`, `geometryType`, etc.).
+  The feature object and its attributes are taken directly from the layer (typically some kind of `VectorLayer`).
+- New feature objects are created based on the configured feature template (i.e. `defaultProperties`, `geometryType`, etc.).
   The user can draw the feature's geometry on a temporary layer.
 
 In both cases, feature attributes can be edited using the editor's form controls.
-Note however, that the (preexisting) features on the map are **never** modified directly.
+Note however, that the layers or their sources in the map are **never** modified directly.
 Instead, the editor calls the `FeatureWriter`'s methods to apply any changes made by the user (see [FeatureWriter](#featurewriter) below).
 
 In summary, the sequence of steps when creating or editing a feature is as follows:
@@ -156,6 +154,109 @@ In summary, the sequence of steps when creating or editing a feature is as follo
     - Changes are persisted (if needed)
     - _Vector sources are updated_, i.e. changes are applied to the map
 4. Optional: if the user selects a feature again, they will observe the updated attributes / geometries.
+
+#### Example
+
+The following self contained example demonstrates of all the relevant bits and pieces.
+
+```tsx
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
+import { LayerFactory, MapModel, SimpleLayer, useMapModelValue } from "@open-pioneer/map";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { Collection, Feature } from "ol";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { useService } from "open-pioneer:react-hooks";
+import { useEffect, useMemo } from "react";
+
+export function SimpleEditorComponent() {
+    const map = useMapModelValue();
+    const { featureWriter, template } = useEditingSetup(map);
+
+    return (
+        <TitledSection>
+            <SectionHeading size="md" mb={2}>
+                Editor
+            </SectionHeading>
+            <FeatureEditor templates={[template]} writer={featureWriter} />
+        </TitledSection>
+    );
+}
+
+// Extremely basic editing example to demonstrate the different bits and their interactions.
+// In a real application, you would typically:
+// - have more than one layer (maybe even more than one feature template per layer)
+// - have actual persistence
+// - split the bits into multiple classes and files in more sensible locations
+// - ...
+function useEditingSetup(map: MapModel) {
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
+    const options = useMemo(() => {
+        // The collection contains the layer's features.
+        // The collection is shared by the layer (read side, OpenLayers support) and the FeatureWriter implementation (write side).
+        // This is the simplest way to notify the OpenLayers VectorLayer about changes in the underlying data.
+        const featureCollection = new Collection<Feature>();
+
+        // Callback to "store" data (just a fancy array in this case).
+        const featureWriter: FeatureWriter = {
+            addFeature: async ({ feature }) => {
+                featureCollection.push(feature);
+            },
+            updateFeature: async ({ feature }) => {
+                const index = featureCollection.getArray().indexOf(feature);
+                if (index >= 0) {
+                    // Triggers an update, even though we write the same feature again.
+                    featureCollection.setAt(index, feature);
+                }
+            },
+            deleteFeature: async ({ feature }) => {
+                featureCollection.remove(feature);
+            }
+        };
+
+        // The template defines the orm content when a feature is being edited / created.
+        // It also contains the defaultAttributes and the geometryType for _new_ features.
+        const template: FeatureTemplate = {
+            name: "Simple Point Feature",
+            kind: "declarative",
+            geometryType: "Point",
+            layerId: "simple-editable-layer",
+            fields: [
+                { label: "Title", type: "text-field", propertyName: "title", isRequired: false }
+            ],
+            defaultProperties: {
+                title: ""
+            }
+        };
+        return { featureCollection, featureWriter, template };
+    }, []);
+
+    // Quick and dirty: mount layer in the map
+    useEffect(() => {
+        // Layer for visualization and selection in the map.
+        const layer = layerFactory.create({
+            type: SimpleLayer,
+            id: "simple-editable-layer",
+            title: "Simple Editable Layer",
+            olLayer: new VectorLayer({
+                source: new VectorSource({
+                    features: options.featureCollection
+                }),
+                updateWhileAnimating: true,
+                updateWhileInteracting: true
+            })
+        });
+        map.layers.addLayer(layer);
+        return () => {
+            map.layers.removeLayer(layer);
+            layer.destroy();
+        };
+    }, [map, layerFactory, options.featureCollection]);
+    return options;
+}
+```
 
 ### FeatureWriter
 
