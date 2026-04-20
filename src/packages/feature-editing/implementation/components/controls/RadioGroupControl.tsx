@@ -4,7 +4,7 @@ import { VStack } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
 import type { ReactElement } from "react";
 import type { RadioGroupConfig } from "../../../api/fields/optionFieldConfigs";
-import { useOnValueChange, type OptionControlProps } from "./useOptionProps";
+import { useOnValueChange, type OptionControlProps } from "./option-hooks";
 
 export function RadioGroupControl({
     value,
