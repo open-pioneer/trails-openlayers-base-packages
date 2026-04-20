@@ -14,6 +14,9 @@ It supports creating, modifying, and deleting features with declarative form con
 - **Snapping**: Snap to existing features during drawing and modification
 - **Undo/redo**: Built-in support for geometry editing history
 
+The Editing works with all vector layer sources and can therefore be used with any layer type that supports feature selection, such as `GeoJSON`, `WFS`, or `OGC API Features`.
+As the package does not manage feature storage or how changes are applied to the map, it fits a wide range of data management strategies and provides full flexibility to the using app.
+
 ## Getting Started
 
 ### Minimum Working Example
@@ -140,7 +143,7 @@ The editor supports editing _existing_ features or creating _new_ features:
 - New features are created based on the configured feature template (i.e. `defaultProperties`, `geometryType`, etc.).
   The user can draw the feature's geometry on a temporary layer.
 
-In both cases, feature attributes can be editing using the editor's form controls.
+In both cases, feature attributes can be edited using the editor's form controls.
 Note however, that the (preexisting) features on the map are **never** modified directly.
 Instead, the editor calls the `FeatureWriter`'s methods to apply any changes made by the user (see [FeatureWriter](#featurewriter) below).
 
