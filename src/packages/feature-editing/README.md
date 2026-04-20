@@ -214,7 +214,7 @@ function useEditingSetup(map: MapModel) {
             }
         };
 
-        // The template defines the orm content when a feature is being edited / created.
+        // The template defines the form content when a feature is being edited / created.
         // It also contains the defaultAttributes and the geometryType for _new_ features.
         const template: FeatureTemplate = {
             name: "Simple Point Feature",
