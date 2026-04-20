@@ -46,7 +46,13 @@ export function ButtonRow({
     );
 
     return (
-        <Flex className="editor__property-editor-buttons" flexDirection="row" columnGap={2}>
+        <Flex
+            className="editor__property-editor-buttons"
+            flexDirection="row"
+            columnGap={2}
+            marginX={"4px"}
+            mb={"4px"}
+        >
             {showDeleteButton && (
                 <Tooltip content={deleteButtonTooltip}>
                     <Button

@@ -46,7 +46,7 @@ export function DrawingControls({ drawingState }: DrawingControlsProps): ReactEl
     );
 
     return (
-        <HStack className="editor__drawing-controls" justify="right" gap={3}>
+        <HStack className="editor__drawing-controls" justify="right" gap={3} mb={"4px"}>
             <Tooltip content={tooltips.finishButton}>
                 <IconButton
                     aria-label={tooltips.finishButton}

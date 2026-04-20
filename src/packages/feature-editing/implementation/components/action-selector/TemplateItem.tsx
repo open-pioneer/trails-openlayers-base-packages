@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HStack, Span, Table, Text } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
-import type { ReactElement, ReactNode } from "react";
+import { useId, type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { PiCircleBold, PiDotOutlineBold, PiLineSegmentsFill, PiPolygonFill } from "react-icons/pi";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 
@@ -17,23 +17,40 @@ interface TemplateIconProps {
 }
 
 export function TemplateItem({ template, isSelected, onClick }: TemplateItemProps): ReactElement {
+    const templateNameId = useId();
     const onRowClick = useEvent(() => onClick(template));
+    const onRowKeyDown = useEvent((event: KeyboardEvent<HTMLTableRowElement>) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onClick(template);
+        }
+    });
 
     return (
         <Table.Row
             height="45px"
             cursor="pointer"
+            tabIndex={0}
+            aria-selected={isSelected}
+            aria-labelledby={templateNameId}
+            role={"option"}
             bg={isSelected ? "trails.400" : "white"}
             _hover={{ bg: isSelected ? "trails.300" : "trails.100" }}
             _active={{ bg: "trails.500" }}
+            _focusVisible={{
+                outline: "2px solid",
+                outlineColor: "trails.500",
+                outlineOffset: "-2px"
+            }}
             onClick={onRowClick}
+            onKeyDown={onRowKeyDown}
         >
             <Table.Cell>
                 <HStack className="editor__template-selector-item" gap="4">
                     <Span aria-hidden="true">
                         <TemplateIcon template={template} />
                     </Span>
-                    <Text>{template.name}</Text>
+                    <Text id={templateNameId}>{template.name}</Text>
                 </HStack>
             </Table.Cell>
         </Table.Row>

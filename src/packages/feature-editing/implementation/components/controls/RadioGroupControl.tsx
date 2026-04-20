@@ -15,7 +15,12 @@ export function RadioGroupControl({
     const onValueChange = useOnValueChange(field.valueType, onChange);
 
     return (
-        <RadioGroup value={selectedValue} orientation="vertical" onValueChange={onValueChange}>
+        <RadioGroup
+            value={selectedValue}
+            orientation="vertical"
+            onValueChange={onValueChange}
+            ml={"3px"}
+        >
             <VStack align="start" gap={2}>
                 {field.options.map((option) => (
                     <Radio key={option.value} value={option.value.toString()}>
