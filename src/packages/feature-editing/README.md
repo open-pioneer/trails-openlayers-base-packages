@@ -157,7 +157,7 @@ In summary, the sequence of steps when creating or editing a feature is as follo
 
 #### Example
 
-The following self contained example demonstrates of all the relevant bits and pieces.
+The following self-contained example demonstrates of all the relevant bits and pieces.
 
 ```tsx
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
@@ -568,6 +568,17 @@ The editing workflow progresses through these steps:
 | `create-modify` | Modifying a newly drawn feature       | Modify + property form |
 | `update-select` | Selecting an existing feature to edit | Select                 |
 | `update-modify` | Modifying an existing feature         | Modify + property form |
+
+## Supported keyboard shortcuts (create feature)
+
+The following keyboard shortcuts are supported while drawing the initial feature geometry (not during editing of existing features):
+
+| Shortcut           | Description                      |
+| ------------------ | -------------------------------- |
+| `Ctrl/Command + Z` | Undo last geometry change        |
+| `Ctrl/Command + Y` | Redo last undone geometry change |
+| `Enter`            | Finish drawing or modification   |
+| `Escape`           | Cancel drawing or modification   |
 
 ## License
 
