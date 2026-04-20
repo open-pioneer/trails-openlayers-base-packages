@@ -1,0 +1,44 @@
+{
+    "name": "@open-pioneer/feature-editing",
+    "version": "1.2.0",
+    "description": "Provides a component to create and edit feature geometries and properties.",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/packages/feature-editing"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "dependencies": {
+        "@chakra-ui/react": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
+        "@open-pioneer/core": "catalog:",
+        "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/notifier": "catalog:",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "classnames": "catalog:",
+        "react": "catalog:",
+        "ol": "catalog:",
+        "react-icons": "catalog:"
+    },
+    "devDependencies": {
+        "@open-pioneer/test-utils": "catalog:",
+        "@open-pioneer/map-test-utils": "workspace:*",
+        "test-utils": "workspace:*",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}
