@@ -471,5 +471,5 @@ async function loadFeaturesAndWait(
     const extent = opts?.extent ?? DEFAULT_EXTENT;
     const projection = opts?.projection ?? new Projection({ code: "EPSG:3857" });
     source.loadFeatures(extent, 1, projection);
-    await vi.waitUntil(() => (source as any).loadingExtentsCount_ === 0);
+    await vi.waitUntil(() => source.loading === 0);
 }
