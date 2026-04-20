@@ -2,7 +2,7 @@
 
 exports[`should successfully create a scale bar component 1`] = `
 <div
-  class="scale-bar css-1aqd383"
+  class="scale-bar css-7phg9q"
   data-testid="scale-bar"
 >
   <div
