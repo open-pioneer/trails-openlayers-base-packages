@@ -7,9 +7,9 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import type { FeatureWriter } from "../api/model/FeatureWriter";
 import type { FeatureTemplate } from "../api/model/FeatureTemplate";
-import { FeatureEditor } from "../implementation/FeatureEditor";
+import type { FeatureWriter } from "../api/model/FeatureWriter";
+import { FeatureEditor } from "./FeatureEditor";
 
 const mockWriter: FeatureWriter = {
     addFeature: vi.fn().mockResolvedValue(undefined),
@@ -51,20 +51,6 @@ const allTemplates: FeatureTemplate[] = [
     polygonTemplate,
     circleTemplate
 ];
-
-const createInjectedServices = function (layerFactory: LayerFactory) {
-    return {
-        "notifier.NotificationService": {
-            notify() {},
-            success() {},
-            error() {},
-            info() {},
-            warning() {},
-            closeAll() {}
-        } satisfies NotificationService,
-        "map.LayerFactory": layerFactory
-    };
-};
 
 describe("Editor rendering", () => {
     it("renders all geometry type templates with correct names", async () => {
@@ -158,11 +144,9 @@ describe("Editor interaction", () => {
 
         // Find and click the select button
         const selectButton = await screen.findByRole("button", {
-            name: /actionSelector.selectButtonTitle/i
+            name: /actionSelector\.selectButtonTitle/i
         });
         await user.click(selectButton);
-
-        // Should change to update-select step
         await waitFor(() => {
             expect(onEditingStepChange).toHaveBeenCalledWith(
                 expect.objectContaining({ id: "selection" })
@@ -187,7 +171,7 @@ describe("Editor interaction", () => {
         );
 
         const selectButton = await screen.findByRole("button", {
-            name: /actionSelector.selectButtonTitle/i
+            name: /actionSelector\.selectButtonTitle/i
         });
 
         // Click to activate
@@ -204,7 +188,7 @@ describe("Editor interaction", () => {
         await user.click(selectButton);
 
         await waitFor(() => {
-            // Should go back to none step
+            // Should go back to initial step
             const calls = onEditingStepChange.mock.calls;
             const lastCall = calls[calls.length - 1]?.[0];
             expect(lastCall).toEqual({ id: "initial" });
@@ -213,7 +197,7 @@ describe("Editor interaction", () => {
 });
 
 describe("Editor action bar buttons", () => {
-    const queryActionButtons = (action: (button: HTMLElement | null) => void) => {
+    const forEachActionButton = (action: (button: HTMLElement | null) => void) => {
         const ariaLabels = [
             "actionSelector.finishButtonTooltip",
             "actionSelector.resetButtonTooltip",
@@ -245,7 +229,7 @@ describe("Editor action bar buttons", () => {
         await userEvent.click(polygonButton);
 
         await waitFor(() => {
-            queryActionButtons((button) => {
+            forEachActionButton((button) => {
                 expect(button).toBeInTheDocument();
             });
         });
@@ -270,7 +254,7 @@ describe("Editor action bar buttons", () => {
         await userEvent.click(lineButton);
 
         await waitFor(() => {
-            queryActionButtons((button) => {
+            forEachActionButton((button) => {
                 expect(button).toBeInTheDocument();
             });
         });
@@ -296,7 +280,7 @@ describe("Editor action bar buttons", () => {
 
         // Action bar should not be present for Point geometry
         await waitFor(() => {
-            queryActionButtons((button) => {
+            forEachActionButton((button) => {
                 expect(button).not.toBeInTheDocument();
             });
         });
@@ -322,7 +306,7 @@ describe("Editor action bar buttons", () => {
 
         // Action bar should not be present
         await waitFor(() => {
-            queryActionButtons((button) => {
+            forEachActionButton((button) => {
                 expect(button).not.toBeInTheDocument();
             });
         });
@@ -348,9 +332,23 @@ describe("Editor action bar buttons", () => {
 
         // Initially, all buttons should be disabled (no geometry drawn yet)
         await waitFor(() => {
-            queryActionButtons((button) => {
+            forEachActionButton((button) => {
                 expect(button).toBeDisabled();
             });
         });
     });
 });
+
+function createInjectedServices(layerFactory: LayerFactory) {
+    return {
+        "notifier.NotificationService": {
+            notify() {},
+            success() {},
+            error() {},
+            info() {},
+            warning() {},
+            closeAll() {}
+        } satisfies NotificationService,
+        "map.LayerFactory": layerFactory
+    };
+}
