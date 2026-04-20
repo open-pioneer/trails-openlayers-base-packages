@@ -56,7 +56,11 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
     switch (field.type) {
         case "check-box":
             return (
-                <Checkbox.Root checked={!!value} onCheckedChange={onCheckBoxChange} ml={"3px"}>
+                <Checkbox.Root
+                    checked={!!value}
+                    onCheckedChange={onCheckBoxChange}
+                    ml={"3px"} // for focus ring
+                >
                     <Checkbox.HiddenInput />
                     <Checkbox.Control />
                     <Checkbox.Label>{field.checkBoxLabel ?? field.label}</Checkbox.Label>
@@ -122,7 +126,11 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
 
         case "switch":
             return (
-                <Switch.Root checked={!!value} onCheckedChange={onCheckBoxChange} ml={"3px"}>
+                <Switch.Root
+                    checked={!!value}
+                    onCheckedChange={onCheckBoxChange}
+                    ml={"3px"} // for focus ring
+                >
                     <Switch.HiddenInput />
                     <Switch.Control>
                         <Switch.Thumb />

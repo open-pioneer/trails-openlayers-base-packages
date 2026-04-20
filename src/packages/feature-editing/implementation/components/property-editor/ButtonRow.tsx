@@ -50,8 +50,9 @@ export function ButtonRow({
             className="editor__property-editor-buttons"
             flexDirection="row"
             columnGap={2}
+            // Margins for focus ring:
             marginX={"4px"}
-            mb={"4px"}
+            marginBottom={"4px"}
         >
             {showDeleteButton && (
                 <Tooltip content={deleteButtonTooltip}>

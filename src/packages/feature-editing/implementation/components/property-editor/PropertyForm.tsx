@@ -29,7 +29,13 @@ export function PropertyForm({ templates, resolveFormTemplate }: PropertyForm): 
                     {heading}
                 </SectionHeading>
                 <Box flex={1} overflowY="auto">
-                    <VStack gap={4} align="stretch" px="1px" pb={"4px"}>
+                    <VStack
+                        gap={4}
+                        align="stretch"
+                        // for focus ring
+                        px="1px"
+                        pb="4px"
+                    >
                         {template?.kind === "dynamic"
                             ? template.renderForm()
                             : template?.fields.map((field, index) => (

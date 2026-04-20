@@ -17,7 +17,12 @@ export function TemplateSelector({
     onClick
 }: TemplateSelectorProps): ReactElement {
     return (
-        <Table.Root className="editor__template-selector" variant="line" size="sm">
+        <Table.Root
+            role="presentation" // Note: the body/rows implement a listbox pattern
+            className="editor__template-selector"
+            variant="line"
+            size="sm"
+        >
             <Table.Body role={"listbox"}>
                 {templates.map((template, index) => (
                     <TemplateItem

@@ -20,8 +20,8 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
                 variant="outline"
                 _hover={{ bg: isActive ? "colorPalette.700" : "colorPalette.subtle" }}
                 _pressed={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
-                width="calc(100% - 8px)"
-                marginX={"4px"}
+                // Margin for focus outline
+                marginX="4px"
                 onClick={onClick}
             >
                 <LuMousePointerClick aria-hidden="true" />

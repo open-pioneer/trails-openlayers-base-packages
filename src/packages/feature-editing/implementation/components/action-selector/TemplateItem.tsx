@@ -37,16 +37,16 @@ export function TemplateItem({ template, isSelected, onClick }: TemplateItemProp
             bg={isSelected ? "colorPalette.800" : "bg"}
             color={isSelected ? "colorPalette.contrast" : "fg"}
             _hover={{ bg: isSelected ? "colorPalette.700" : "colorPalette.subtle" }}
-            _active={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
             _focusVisible={{
                 outline: "2px solid",
-                outlineColor: "colorPalette.800",
+                outlineColor: "colorPalette.focusRing",
                 outlineOffset: "-2px"
             }}
+            userSelect="none"
             onClick={onRowClick}
             onKeyDown={onRowKeyDown}
         >
-            <Table.Cell>
+            <Table.Cell role="presentation">
                 <HStack className="editor__template-selector-item" gap="4">
                     <Span aria-hidden="true">
                         <TemplateIcon template={template} />

@@ -19,7 +19,7 @@ export function RadioGroupControl({
             value={selectedValue}
             orientation="vertical"
             onValueChange={onValueChange}
-            ml={"3px"}
+            ml={"3px"} // for focus ring
         >
             <VStack align="start" gap={2}>
                 {field.options.map((option) => (
