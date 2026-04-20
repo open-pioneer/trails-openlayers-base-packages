@@ -564,26 +564,26 @@ importers:
         specifier: 'catalog:'
         version: 0.8.2
       '@open-pioneer/chakra-snippets':
-        specifier: 'catalog:'
-        version: 4.5.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
       '@open-pioneer/core':
-        specifier: 'catalog:'
-        version: 4.5.0
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
-        version: 4.5.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
-        version: 4.5.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(react-dom@19.2.5(react@19.2.5))
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(react-dom@19.2.5(react@19.2.5))
       '@open-pioneer/reactivity':
-        specifier: 'catalog:'
-        version: 4.5.0
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935
       '@open-pioneer/runtime':
-        specifier: 'catalog:'
-        version: 4.5.0(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@types/react@19.2.14)
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
@@ -601,8 +601,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 'catalog:'
-        version: 4.5.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1418,11 +1418,11 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map-ui-components
       '@open-pioneer/notifier':
-        specifier: 'catalog:'
-        version: 4.5.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))
       '@open-pioneer/react-utils':
-        specifier: 'catalog:'
-        version: 4.5.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(react-dom@19.2.5(react@19.2.5))
+        specifier: 4.6.0-dev.20260420101935
+        version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(react-dom@19.2.5(react@19.2.5))
       '@open-pioneer/scale-bar':
         specifier: workspace:^
         version: link:../../../packages/scale-bar
