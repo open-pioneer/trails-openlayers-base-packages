@@ -79,8 +79,10 @@ function AppContent(props: { state: AppStateReady }) {
                                     <Box
                                         role="region"
                                         aria-labelledby={headingId}
-                                        bgColor="white"
+                                        bgColor="bg"
+                                        borderColor="border"
                                         borderRadius={10}
+                                        borderWidth="2px"
                                         p={2}
                                         maxW="500px"
                                     >
@@ -105,12 +107,12 @@ function AppContent(props: { state: AppStateReady }) {
                                     aria-label={intl.formatMessage({ id: "ariaLabels.results" })}
                                     position="absolute"
                                     bottom="0"
-                                    backgroundColor="white"
+                                    backgroundColor="bg"
                                     width="100%"
                                     height="400px"
                                     zIndex={1 /* above map */}
-                                    borderTop="2px solid"
-                                    borderColor="trails.100"
+                                    borderTopWidth="2px"
+                                    borderColor="border"
                                 >
                                     {currentListContainer}
                                 </Box>
