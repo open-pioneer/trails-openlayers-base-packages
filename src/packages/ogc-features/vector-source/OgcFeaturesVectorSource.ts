@@ -19,9 +19,6 @@ const LOG = createLogger(sourceId);
 
 const CRS_OGC_CRS84 = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 
-type SuccessCallback = (features: Feature[]) => void;
-type FailureCallback = () => void;
-
 export class OgcFeaturesVectorSource extends VectorSource {
     #featureFormat: GeoJSON;
     #httpService: HttpService;
@@ -53,13 +50,8 @@ export class OgcFeaturesVectorSource extends VectorSource {
             format,
             strategy: bbox,
             attributions: options.attributions,
-
-            // NOTE: it is IMPORTANT that every individual parameter is named here.
-            // OpenLayers tests the length of the signature, `...args` to forward these parameters
-            // will _not_ work!
-            // See also https://github.com/openlayers/openlayers/blob/da23cb2025bec601439fdc69076cf34af7582cb9/src/ol/source/Vector.js#L1041-L1042
-            loader: (e, r, p, s, f) => {
-                this.#load(e, r, p, s, f);
+            loader: (e, r, p) => {
+                return this.#load(e, r, p);
             },
             ...options.additionalOptions
         });
@@ -70,26 +62,15 @@ export class OgcFeaturesVectorSource extends VectorSource {
         this.#itemsUrl = `${this.#collectionUrl}/items`;
     }
 
-    async #load(
-        extent: Extent,
-        _resolution: number,
-        projection: Projection,
-        success: SuccessCallback | undefined,
-        failure: FailureCallback | undefined
-    ) {
+    async #load(extent: Extent, _resolution: number, projection: Projection) {
         try {
             const features = await this.#loadImpl(extent, projection);
-            success?.(features);
-            this.changed(); // Always trigger changed event to unstuck loading state
+            return features;
         } catch (e) {
             if (!isAbortError(e)) {
                 LOG.error("Failed to load features from ogc service", e);
             }
-            failure?.();
-
-            // Always trigger changed event to unstuck loading state
-            // See https://github.com/openlayers/openlayers/issues/17335
-            this.changed();
+            throw e;
         }
     }
 
