@@ -160,8 +160,6 @@ In summary, the sequence of steps when creating or editing a feature is as follo
 The following self contained example demonstrates of all the relevant bits and pieces.
 
 ```tsx
-// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
-// SPDX-License-Identifier: Apache-2.0
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import { LayerFactory, MapModel, SimpleLayer, useMapModelValue } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
