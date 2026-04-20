@@ -1083,17 +1083,16 @@ const map: MapModel = ... // the map model
 const myOverlay = map.overlays.add({
     content: <MyOverlayContent innerText="Initial Content!"></MyOverlayContent>, // initially rendered content
     tag: "my-overlay", // custom identifier
-    position: [7.6, 52.0], // coordinates in map projection
+    position: [7.6, 52.0], // coordinates in map projection, or `follow-pointer` to make overlay automatically follow cursor position
     className: "overlay-css-class",
     positioning: "bottom-center"
-    // mode: "follow-pointer" // overlay would automatically follow pointer movement (default "set-position")
 });
 
 // Get all current overlays
 let currentOverlaysList = map.overlays.getAll();
 console.log(currentOverlaysList.length) // prints 1
 
-myOverlay.setPosition([7.75, 52.25]); // manually change position in mode "set-position"
+myOverlay.setPosition([7.75, 52.25]); // manually change position
 myOverlay.setContent(<MyOverlayContent innerText="New Content!"></MyOverlayContent>); // render new content
 
 // Remove and destroy overlay.

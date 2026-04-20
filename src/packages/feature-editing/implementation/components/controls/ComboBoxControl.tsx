@@ -3,7 +3,7 @@
 import { Combobox, Portal } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import type { ComboBoxConfig } from "../../../api/fields/optionFieldConfigs";
-import { useOptionProps, type OptionControlProps } from "./useOptionProps";
+import { useOptionProps, type OptionControlProps } from "./option-hooks";
 
 export function ComboBoxControl(props: OptionControlProps<ComboBoxConfig>): ReactElement {
     const {

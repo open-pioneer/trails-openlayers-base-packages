@@ -3,7 +3,7 @@
 import { Select, Portal } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import type { SelectConfig } from "../../../api/fields/optionFieldConfigs";
-import { useOptionProps, type OptionControlProps } from "./useOptionProps";
+import { useOptionProps, type OptionControlProps } from "./option-hooks";
 
 export function SelectControl(props: OptionControlProps<SelectConfig>): ReactElement {
     const { selectedValue, collection, placeholder, showClearTrigger, onValueChange } =
