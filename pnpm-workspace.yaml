@@ -7,17 +7,17 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^4.5.0
-  "@open-pioneer/core": ^4.5.0
-  "@open-pioneer/http": ^4.5.0
-  "@open-pioneer/integration": ^4.5.0
-  "@open-pioneer/local-storage": ^4.5.0
-  "@open-pioneer/notifier": ^4.5.0
-  "@open-pioneer/react-utils": ^4.5.0
-  "@open-pioneer/reactivity": ^4.5.0
-  "@open-pioneer/runtime": ^4.5.0
-  "@open-pioneer/test-utils": ^4.5.0
-  "@open-pioneer/chakra-snippets": ^4.5.0
+  "@open-pioneer/base-theme": 4.6.0-dev.20260420101935
+  "@open-pioneer/core": 4.6.0-dev.20260420101935
+  "@open-pioneer/http": 4.6.0-dev.20260420101935
+  "@open-pioneer/integration": 4.6.0-dev.20260420101935
+  "@open-pioneer/local-storage": 4.6.0-dev.20260420101935
+  "@open-pioneer/notifier": 4.6.0-dev.20260420101935
+  "@open-pioneer/react-utils": 4.6.0-dev.20260420101935
+  "@open-pioneer/reactivity": 4.6.0-dev.20260420101935
+  "@open-pioneer/runtime": 4.6.0-dev.20260420101935
+  "@open-pioneer/test-utils": 4.6.0-dev.20260420101935
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260420101935
 
   "@chakra-ui/cli": ^3.34.0
   "@chakra-ui/react": ^3.34.0
@@ -152,6 +152,19 @@ overrides:
   # Ensure patched packages have the expected version (patch was tested with this version):
   "@ark-ui/react": "5.34.1"
   "@zag-js/splitter": "1.35.3"
+
+  # Remove before release
+  "@open-pioneer/base-theme": 4.6.0-dev.20260420101935
+  "@open-pioneer/core": 4.6.0-dev.20260420101935
+  "@open-pioneer/http": 4.6.0-dev.20260420101935
+  "@open-pioneer/integration": 4.6.0-dev.20260420101935
+  "@open-pioneer/local-storage": 4.6.0-dev.20260420101935
+  "@open-pioneer/notifier": 4.6.0-dev.20260420101935
+  "@open-pioneer/react-utils": 4.6.0-dev.20260420101935
+  "@open-pioneer/reactivity": 4.6.0-dev.20260420101935
+  "@open-pioneer/runtime": 4.6.0-dev.20260420101935
+  "@open-pioneer/test-utils": 4.6.0-dev.20260420101935
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260420101935
 
 allowUnusedPatches: true
 ignorePatchFailures: false
