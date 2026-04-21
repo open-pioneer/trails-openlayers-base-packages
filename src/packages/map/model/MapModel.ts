@@ -53,8 +53,6 @@ const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export const DISPLAY_STATUS = Symbol("DISPLAY_STATUS");
 
-export const UPDATE_ATTRIBUTIONS = Symbol("UPDATE_ATTRIBUTIONS");
-
 const deprecatedHighlights = deprecated({
     name: "MapModel highlight function called",
     packageName: "@open-pioneer/map",
