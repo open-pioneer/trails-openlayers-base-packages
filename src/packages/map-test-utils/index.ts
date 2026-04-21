@@ -54,6 +54,9 @@ export interface SimpleMapOptions {
      */
     layers?: LayerConfig[];
 
+    /** See {@link MapConfig.showAttributions} */
+    showAttributions?: boolean;
+
     /**
      * Overrides fetching of network resources (such as service capabilities).
      */
@@ -160,6 +163,7 @@ export async function setupMap(
                     : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
             // using map as discriminator (no prototype for Layer)
         ) ?? [createTestLayer()],
+        showAttributions: options?.showAttributions,
         advanced: options?.advanced
     };
 

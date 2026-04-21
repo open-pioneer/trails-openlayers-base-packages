@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BoxProps } from "@chakra-ui/react";
+import { effect } from "@conterra/reactivity-core";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { MapContainer, MapContainerProps } from "./MapContainer";
-import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { AttributionItem } from "../model/MapModel";
+import { MapContainer, MapContainerProps } from "./MapContainer";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -217,18 +219,22 @@ describe("attributions", () => {
         });
 
         const { container } = await renderMap({ map });
-        const attributionsDiv = await waitFor(() => {
-            const div = container.querySelector(".ol-attribution");
-            if (!div) {
-                throw new Error("Attribution widget not found in dom");
-            }
-            return div as HTMLElement;
-        });
+        const attributionsDiv = await getAttributionsContainer(container);
         const items = getAttributionHtml(attributionsDiv);
         expect(items).toMatchInlineSnapshot(`
           [
             "attr 1",
             "attr 2",
+          ]
+        `);
+        expect(map.attributionItems).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "attr 1",
+            },
+            {
+              "text": "attr 2",
+            },
           ]
         `);
     });
@@ -245,17 +251,18 @@ describe("attributions", () => {
         });
 
         const { container } = await renderMap({ map });
-        const attributionsDiv = await waitFor(() => {
-            const div = container.querySelector(".ol-attribution");
-            if (!div) {
-                throw new Error("Attribution widget not found in dom");
-            }
-            return div as HTMLElement;
-        });
+        const attributionsDiv = await getAttributionsContainer(container);
         const items = getAttributionHtml(attributionsDiv);
         expect(items).toMatchInlineSnapshot(`
           [
             "<a href="https://example.com" target="_blank">© ExampleCompany</a>",
+          ]
+        `);
+        expect(map.attributionItems).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "<a href="https://example.com" target="_blank">&copy; ExampleCompany</a>",
+            },
           ]
         `);
     });
@@ -281,13 +288,7 @@ describe("attributions", () => {
         });
 
         const { container } = await renderMap({ map });
-        const attributionsDiv = await waitFor(() => {
-            const div = container.querySelector(".ol-attribution");
-            if (!div) {
-                throw new Error("Attribution widget not found in dom");
-            }
-            return div as HTMLElement;
-        });
+        const attributionsDiv = await getAttributionsContainer(container);
         const items = getAttributionHtml(attributionsDiv);
         expect(items).toMatchInlineSnapshot(`
           [
@@ -295,7 +296,70 @@ describe("attributions", () => {
             "<a href="https://example.com">Link</a>",
           ]
         `);
+        expect(map.attributionItems).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "&lt;iframe&gt;Foo",
+            },
+            {
+              "text": "<a href="https://example.com">Link</a>",
+            },
+          ]
+        `);
     });
+
+    // NOTE: This test is here because the map most be rendered for attributions to work
+    it("provides reactive attribution items via mapModel.attributionItems", async () => {
+        const { map } = await setupMap({
+            // Explicitly disable the default control to test that the items are still provided
+            showAttributions: false,
+            layers: [
+                {
+                    id: "test-layer",
+                    title: "Layer1",
+                    olLayer: createAttributionLayer("test")
+                }
+            ]
+        });
+        const { container } = await renderMap({ map });
+
+        // attributionItems are provided even if the default attributions widget is not present
+        await expect(() => getAttributionsContainer(container, 25)).rejects.toThrow(
+            /Attribution widget not found in dom/
+        );
+
+        let items: AttributionItem[] = [];
+        effect(() => {
+            items = map.attributionItems;
+        });
+
+        // Layer is visible -> attributions present
+        await vi.waitUntil(() => items.length > 0);
+        expect(items).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "test",
+            },
+          ]
+        `);
+
+        // Attributions gone when layer becomes invisible
+        map.layers.getLayerById("test-layer")!.setVisible(false);
+        await vi.waitUntil(() => items.length === 0);
+    });
+
+    async function getAttributionsContainer(container: HTMLElement, timeout?: number) {
+        return await waitFor(
+            () => {
+                const div = container.querySelector(".ol-attribution");
+                if (!div) {
+                    throw new Error("Attribution widget not found in dom");
+                }
+                return div as HTMLElement;
+            },
+            { timeout }
+        );
+    }
 
     function getAttributionHtml(attributionsDiv: HTMLElement) {
         const list = Array.from(attributionsDiv.querySelector("ul")!.querySelectorAll("li")!);
