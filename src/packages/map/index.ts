@@ -88,7 +88,8 @@ export {
     type MapModel,
     type DisplayTarget,
     type MapPadding,
-    type ZoomOptions
+    type ZoomOptions,
+    type AttributionItem
 } from "./model/MapModel";
 export {
     type Highlight,

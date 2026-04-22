@@ -4,6 +4,7 @@ import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
 import type { Layer } from "../layers/unions";
+import type { MapModel } from "./MapModel";
 
 /**
  * Configures an extent.
@@ -124,6 +125,18 @@ export interface MapConfig {
      * Note: base layers are always shown below all operational layers.
      */
     layers?: Layer[];
+
+    /**
+     * Whether to show the default attribution control.
+     *
+     * The default value is `true`, unless `advanced` options are defined.
+     * The default value changes to `false` if `advanced.controls` defined, mostly for backwards compatibility.
+     * If `showDefaultAttributions` is set explicitly to `true` _or_ `false`, that value always has precedence.
+     *
+     * > NOTE: Disabling the default attribution control typically means that you must render the attributions yourself (see {@link MapModel.attributionItems})
+     * > to comply with the terms of service of your map services.
+     */
+    showAttributions?: boolean;
 
     /**
      * Advanced OpenLayers configuration.

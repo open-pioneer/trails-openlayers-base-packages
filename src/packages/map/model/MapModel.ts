@@ -39,6 +39,8 @@ import { Overlays } from "./Overlays";
 import { getGeometries } from "./getGeometries";
 import { BaseFeature } from "../utils/BaseFeature";
 import { Geometry } from "ol/geom";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { MapAttributions } from "./MapAttributions";
 
 const LOG = createLogger(sourceId);
 
@@ -107,6 +109,21 @@ export interface MapPadding {
     bottom?: number;
 }
 
+/**
+ * An item that should be displayed as part of the attributions for the map.
+ *
+ * @group MapModel
+ */
+export interface AttributionItem {
+    /**
+     * The attribution's text.
+     *
+     * Note that this property contains raw HTML tags.
+     * The HTML content has been sanitized, so it is safe to display in the user interface.
+     */
+    text: string;
+}
+
 type DisplayStatus = "waiting" | "ready" | "error";
 
 /**
@@ -118,6 +135,7 @@ export class MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #olView: ReadonlyReactive<OlView>;
+    readonly #attributions: MapAttributions;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
     readonly #tooltips: Overlays;
@@ -129,10 +147,10 @@ export class MapModel {
     readonly #olLoading = reactive(false);
 
     #isDestroyed = false;
-    #container: ReadonlyReactive<HTMLElement | undefined>;
-    #initialExtent = reactive<ExtentConfig>();
-    #viewBindings: ReadonlyReactive<ViewBindings>;
-    #scale: ReadonlyReactive<number | undefined>;
+    readonly #container: ReadonlyReactive<HTMLElement | undefined>;
+    readonly #initialExtent = reactive<ExtentConfig>();
+    readonly #viewBindings: ReadonlyReactive<ViewBindings>;
+    readonly #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
     #displayStatus: DisplayStatus;
@@ -142,18 +160,26 @@ export class MapModel {
      * @internal
      */
     constructor(
-        properties: {
+        options: {
             id: string;
             olMap: OlMap;
             initialExtent: ExtentConfig | undefined;
+            showDefaultAttributions: boolean;
+            intl: PackageIntl;
             httpService: HttpService;
         },
         tag: InternalConstructorTag
     ) {
         assertInternalConstructor(tag);
 
-        this.#id = properties.id;
-        this.#olMap = properties.olMap;
+        this.#id = options.id;
+        this.#olMap = options.olMap;
+        this.#attributions = new MapAttributions({
+            intl: options.intl,
+            olMap: this.#olMap,
+            showControl: options.showDefaultAttributions
+        });
+
         this.#olView = synchronized(
             () => this.#olMap.getView(),
             (cb) => {
@@ -165,9 +191,9 @@ export class MapModel {
         // NOTE: As early as possible (before any async actions) so we don't miss any events.
         this.#watchLoadingState();
 
-        this.#initialExtent.value = properties.initialExtent;
+        this.#initialExtent.value = options.initialExtent;
         this.#layerDeps = {
-            httpService: properties.httpService
+            httpService: options.httpService
         };
 
         this.#displayStatus = "waiting";
@@ -241,6 +267,7 @@ export class MapModel {
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
         this.#highlights[DESTROY_HIGHLIGHTS]();
+        this.#attributions.destroy();
         this.#olMap.dispose();
     }
 
@@ -352,6 +379,13 @@ export class MapModel {
      */
     get container(): HTMLElement | undefined {
         return this.#container.value;
+    }
+
+    /**
+     * Returns attributions for the current content of the map.
+     */
+    get attributionItems(): AttributionItem[] {
+        return this.#attributions.attributionItems;
     }
 
     /**

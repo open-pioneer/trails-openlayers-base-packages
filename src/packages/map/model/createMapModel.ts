@@ -5,9 +5,8 @@ import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
-import OlMap, { FrameState, MapOptions } from "ol/Map";
+import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
-import Attribution from "ol/control/Attribution";
 import { getCenter } from "ol/extent";
 import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
@@ -19,7 +18,6 @@ import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
-import { sanitizeHtml } from "../utils/sanitize";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -59,14 +57,15 @@ class MapModelFactory {
         const mapId = this.mapId;
         const mapConfig = this.mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
+        const showDefaultAttributions =
+            mapConfig.showAttributions ?? (rawOlOptions.controls ? false : true);
+
         const mapOptions: MapOptions = {
             ...rawOlOptions
         };
-
         if (!mapOptions.controls) {
-            mapOptions.controls = [createDefaultAttribution(this.intl)];
+            mapOptions.controls = [];
         }
-
         if (!mapOptions.interactions) {
             const shiftCtrlKeysOnly = (
                 mapBrowserEvent: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>
@@ -111,6 +110,8 @@ class MapModelFactory {
                 id: mapId,
                 olMap,
                 initialExtent,
+                showDefaultAttributions,
+                intl: this.intl,
                 httpService: this.httpService
             },
             INTERNAL_CONSTRUCTOR_TAG
@@ -211,35 +212,4 @@ class MapModelFactory {
         }
         return projection;
     }
-}
-
-function createDefaultAttribution(intl: PackageIntl): Attribution {
-    const attr = new Attribution({ collapsible: false });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const element = (attr as any).element as HTMLElement | undefined;
-    if (element) {
-        element.role = "region";
-        element.ariaLabel = intl.formatMessage({ id: "attribution.label" });
-    }
-    sanitizeAttributionsHtml(attr);
-    return attr;
-}
-
-// Overrides the OpenLayers widget to sanitize HTML attributions.
-// Note that this depends on OpenLayers internals that may change between versions.
-function sanitizeAttributionsHtml(attr: Attribution) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type
-    const originalCollectSourceAttributions = (attr as any).collectSourceAttributions_ as Function;
-    if (!originalCollectSourceAttributions) {
-        throw new Error("Internal error: failed to override attributions widget");
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (attr as any).collectSourceAttributions_ = (frameState: FrameState) => {
-        const attributions = originalCollectSourceAttributions.call(attr, frameState) as string[];
-        if (!Array.isArray(attributions)) {
-            throw new Error("Internal error: unexpected attributions result (should be an array)");
-        }
-        return attributions.map((a) => sanitizeHtml(a));
-    };
 }
