@@ -15,6 +15,7 @@ It supports creating, modifying, and deleting features with declarative form con
 - **Undo/redo**: Built-in support for geometry editing history
 
 The Editing works with all vector layer sources and can therefore be used with any layer type that supports feature selection, such as `GeoJSON`, `WFS`, or `OGC API Features`.
+To save feature edits, a `FeatureWriter` ([see below](#FeatureWriter)) has to be implemented.
 As the package does not manage feature storage or how changes are applied to the map, it fits a wide range of data management strategies and provides full flexibility to the using app.
 
 ## Usage
@@ -260,6 +261,8 @@ function useEditingSetup(map: MapModel) {
 
 The editor does not manage the lifetime of any features in the map, except for the feature currently being edited.
 To persist changes made by the editor, you must implement the `FeatureWriter` interface.
+
+Note: there is currently no prepared FeatureWriter implementation for `WFS` or `OGC API Features` services available.
 
 The interface is flexible enough to work in many scenarios:
 
