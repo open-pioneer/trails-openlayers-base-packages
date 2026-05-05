@@ -9,6 +9,8 @@ const DEFAULT_QUALITY = 0.8;
 export type PageSizeType = "a3" | "a4" | "a5";
 export type PageOrientationType = "landscape" | "portrait";
 
+// long: longer side of the page
+// lengths in millimeters
 const PAGE_SIZE: { [format: string]: { short: number; long: number } } = {
     a3: { short: 297, long: 420 },
     a4: { short: 210, long: 297 },
