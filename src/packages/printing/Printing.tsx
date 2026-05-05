@@ -369,6 +369,8 @@ function getFittingScale(olMap: OlMap, scales: number[]): number {
 
     const maxFittingScale = Math.min(scaleHeight, scaleWidth);
 
-    scales.sort((a, b) => b - a); // sort descending
-    return scales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
+    // TODO use toSorted() with es2023+
+    const sortedScales = [...scales];
+    sortedScales.sort((a, b) => b - a); // sort descending
+    return sortedScales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
 }
