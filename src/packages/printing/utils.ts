@@ -101,7 +101,5 @@ export function getResolution(olMap: OlMap): number | undefined {
     const proj = olMap.getView().getProjection();
     const mpu = proj.getMetersPerUnit() ?? 1;
 
-    const pointRes = getPointResolution(proj, mpu, centerCoordinate);
-
-    return pointRes * resolution;
+    return getPointResolution(proj, resolution * mpu, centerCoordinate);
 }
