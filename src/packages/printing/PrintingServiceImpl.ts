@@ -13,12 +13,12 @@ import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior
 import {
     canvasToPng,
     createBlockUserOverlay,
+    getResolution,
     getViewPadding,
     PRINTING_HIDE_CLASS,
     scalePadding,
     ViewPadding
 } from "./utils";
-import { getPointResolution } from "ol/proj";
 
 const MM_PER_INCH = 25.4;
 const INCHES_PER_METER = 39.37;
@@ -102,14 +102,11 @@ export class PrintJob {
                 padding.top +
                 padding.bottom;
 
-            const center = this.olMap.getView().getCenter();
-            if (!center) {
-                throw Error("Cannot get current map center");
-            }
-            const projection = this.olMap.getView().getProjection();
-            const mpu = projection.getMetersPerUnit() ?? 1;
-            const resolution = this.resolution * INCHES_PER_METER * mpu; // pixels per meter
-            this.scaleResolution = this.scale / getPointResolution(projection, resolution, center);
+            const pixelsPerMeter = this.resolution * INCHES_PER_METER; // pixels per meter
+            const pointResolution = getResolution(this.olMap, pixelsPerMeter); // meters per pixel
+            if (!pointResolution) return;
+
+            this.scaleResolution = this.scale / pointResolution;
         }
     }
 

@@ -92,8 +92,8 @@ export function getViewPadding(map: OlMap): ViewPadding {
     };
 }
 
-export function getResolution(olMap: OlMap): number | undefined {
-    const resolution = olMap.getView().getResolution();
+export function getResolution(olMap: OlMap, res?: number): number | undefined {
+    const resolution = res ?? olMap.getView().getResolution();
     const centerCoordinate = olMap.getView().getCenter();
 
     if (!centerCoordinate || !resolution) return undefined;
