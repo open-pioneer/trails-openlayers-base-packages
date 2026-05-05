@@ -13,7 +13,7 @@ import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior
 import {
     canvasToPng,
     createBlockUserOverlay,
-    getResolution,
+    getCenterResolution,
     getViewPadding,
     PRINTING_HIDE_CLASS,
     scalePadding,
@@ -103,7 +103,7 @@ export class PrintJob {
                 padding.bottom;
 
             const pixelsPerMeter = this.resolution * INCHES_PER_METER; // pixels per meter
-            const pointResolution = getResolution(this.olMap, pixelsPerMeter); // meters per pixel
+            const pointResolution = getCenterResolution(this.olMap, pixelsPerMeter); // meters per pixel
             if (!pointResolution) return;
 
             this.scaleResolution = this.scale / pointResolution;

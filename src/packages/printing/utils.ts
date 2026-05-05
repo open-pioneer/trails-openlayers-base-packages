@@ -92,7 +92,18 @@ export function getViewPadding(map: OlMap): ViewPadding {
     };
 }
 
-export function getResolution(olMap: OlMap, res?: number): number | undefined {
+/**
+ * Returns the resolution at the current map center in meters per pixel.
+ *
+ * By default, the calculated point resolution uses the current view resolution.
+ * It is also possible to calculate the resolution for a defined target resolution specified in the
+ * optional parameter.
+ *
+ * @param olMap OpenLayers map
+ * @param res   Optional resolution to be used for calculation instead of current map resolution
+ * @returns resolution in meters per pixel
+ */
+export function getCenterResolution(olMap: OlMap, res?: number): number | undefined {
     const resolution = res ?? olMap.getView().getResolution();
     const centerCoordinate = olMap.getView().getCenter();
 

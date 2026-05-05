@@ -6,7 +6,7 @@ import {
     canvasToPng,
     createBlockUserOverlay,
     getPageDimensions,
-    getResolution,
+    getCenterResolution,
     getViewPadding,
     PageOrientationType,
     PageSizeType
@@ -151,7 +151,7 @@ export class PrintingController {
         const widthInMeters = (printDimension.width * this.scale) / 1000.0;
         const heightInMeters = (printDimension.height * this.scale) / 1000.0;
 
-        const resolution = getResolution(this.olMap); // meters per pixel
+        const resolution = getCenterResolution(this.olMap); // meters per pixel
         if (!resolution) return;
 
         const pixelWidth = widthInMeters / resolution;
