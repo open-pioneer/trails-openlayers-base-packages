@@ -59,7 +59,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const { viewPadding = "auto", scales = DEFAULT_SCALES } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
 
-    const initialScale = getFittingScale(map.olMap, scales);
+    const initialScale = useMemo(() => getFittingScale(map.olMap, scales), [map.olMap, scales]);
 
     const [size, setSize] = useState<PageSizeType>(INITIAL_PAGE_SIZE);
     const [orientation, setOrientation] = useState<PageOrientationType>(INITIAL_ORIENTATION);
