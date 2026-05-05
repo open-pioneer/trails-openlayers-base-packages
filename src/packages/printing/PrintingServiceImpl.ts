@@ -68,6 +68,8 @@ export class PrintJob {
     private scaleLine: ScaleLine | undefined = undefined;
     private overlay: Resource | undefined = undefined;
     private viewResolution: number;
+    private viewHeight: string;
+    private viewWidth: string;
     private scaleResolution: number | undefined = undefined;
 
     constructor(olMap: OlMap, options: Required<PrintingOptions>) {
@@ -82,6 +84,8 @@ export class PrintJob {
             throw new Error("Cannot get current map resolution");
         }
         this.viewResolution = viewResolution;
+        this.viewHeight = this.olMap.getTargetElement().style.height;
+        this.viewWidth = this.olMap.getTargetElement().style.width;
 
         // if no params for target image specified, export current map canvas
         if (options.scale && options.resolution && options.width && options.height) {
@@ -257,8 +261,8 @@ export class PrintJob {
 
     private reset() {
         // reset original map size
-        this.olMap.getTargetElement().style.width = "";
-        this.olMap.getTargetElement().style.height = "";
+        this.olMap.getTargetElement().style.width = this.viewWidth;
+        this.olMap.getTargetElement().style.height = this.viewHeight;
         this.olMap.updateSize();
         this.olMap.getView().setResolution(this.viewResolution);
 
