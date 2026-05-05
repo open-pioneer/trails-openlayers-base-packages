@@ -356,7 +356,7 @@ function getFittingScale(olMap: OlMap, scales: number[]): number {
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
 
-    const resolution = getResolution(olMap); // pixels per meter
+    const resolution = getResolution(olMap); // meters per pixel
     if (!resolution) return fallbackScale;
 
     const width = resolution * maxPrintWidth; // meters
