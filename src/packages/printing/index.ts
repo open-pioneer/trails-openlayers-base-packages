@@ -25,6 +25,26 @@ export interface PrintingOptions {
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
+
+    /**
+     * The print resolution to be generated in dots per inch (DPI) (default: current display resolution).
+     */
+    resolution: number | undefined;
+
+    /**
+     * The scale of the generated map (default: current map scale).
+     */
+    scale: number | undefined;
+
+    /**
+     * The vertical size of the generated map in millimeters (default: current map size).
+     */
+    height: number | undefined;
+
+    /**
+     * The horizontal size of the generated map in millimeters (default: current map size).
+     */
+    width: number | undefined;
 }
 
 /**

@@ -1,9 +1,21 @@
 messages:
   formLabel: "Kartendruck konfigurieren"
   title: "Titel"
-  fileFormat: "Datei Format"
+  pageSize:
+    label: "Seitengröße"
+    a3: "DIN A3"
+    a4: "DIN A4"
+    a5: "DIN A5"
+  pageOrientation:
+    label: "Ausrichtung"
+    landscape: "Querformat"
+    portrait: "Hochformat"
+  fileFormat: "Dateiformat"
+  resolution: "Auflösung (DPI)"
   export: "Karte exportieren"
   input:
     placeholder: "Titel eingeben"
+  scale:
+    label: "Maßstab"
   printingMap: "Karte wird gedruckt ..."
   printingFailed: "Die Karte konnte nicht gedruckt werden."
