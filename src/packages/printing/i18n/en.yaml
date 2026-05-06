@@ -10,7 +10,10 @@ messages:
     label: "Orientation"
     landscape: "Landscape"
     portrait: "Portrait"
-  fileFormat: "File format"
+  fileFormat:
+    label: "File format"
+    png: "PNG"
+    pdf: "PDF"
   resolution: "Resolution (DPI)"
   export: "Export map"
   input:

@@ -28,9 +28,16 @@ const DEFAULT_SCALES = [
     2500000, 2000000, 1500000, 1000000, 750000, 500000, 300000, 250000, 200000, 150000, 100000,
     75000, 50000, 25000, 20000, 15000, 10000, 7500, 5000, 2500, 2000, 1500, 1000, 500, 250, 100
 ];
+const DEFAULT_RESOLUTIONS = [96, 150, 300];
+const DEFAULT_PAGE_SIZES: PageSizeType[] = ["a3", "a4", "a5"];
+const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
+const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
+// TODO make configurable with props in future
+const INITIAL_RESOLUTION = 96;
 const INITIAL_PAGE_SIZE = "a4";
-const INITIAL_ORIENTATION = "landscape";
+const INITIAL_PAGE_ORIENTATION = "landscape";
+const INITIAL_FILE_FORMAT = "pdf";
 
 /**
  * This is special property for the Printing.
@@ -47,6 +54,26 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
      * The set of scales that can be selected by the user (default: selection of pre-configured values).
      */
     scales?: number[];
+
+    /**
+     * The set of print resolutions in DPI that can be selected by the user (default: selection of pre-configured values).
+     */
+    resolutions?: number[];
+
+    /**
+     * The set of page sizes that can be selected by the user (default: selection of pre-configured values).
+     */
+    pageSizes?: PageSizeType[];
+
+    /**
+     * The set of page orientations that can be selected by the user (default: selection of pre-configured values).
+     */
+    pageOrientations?: PageOrientationType[];
+
+    /**
+     * The set of file formats that can be selected by the user (default: selection of pre-configured values).
+     */
+    fileFormats?: FileFormatType[];
 }
 
 /**
@@ -56,16 +83,87 @@ export const Printing: FC<PrintingProps> = (props) => {
     const intl = useIntl();
     const map = useMapModelValue(props);
 
-    const { viewPadding = "auto", scales = DEFAULT_SCALES } = props;
+    const {
+        viewPadding = "auto",
+        scales = DEFAULT_SCALES,
+        resolutions = DEFAULT_RESOLUTIONS,
+        pageSizes = DEFAULT_PAGE_SIZES,
+        pageOrientations = DEFAULT_PAGE_ORIENTATIONS,
+        fileFormats = DEFAULT_FILE_FORMATS
+    } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
 
     const initialScale = useMemo(() => getFittingScale(map.olMap, scales), [map.olMap, scales]);
+    const initialResolution = useMemo(() => {
+        if (resolutions.includes(INITIAL_RESOLUTION)) {
+            return INITIAL_RESOLUTION;
+        } else {
+            LOG.warn(
+                `Configured initial resolution '${INITIAL_RESOLUTION}' not included in list of options. Use first value as fallback.`
+            );
+            if (resolutions[0]) {
+                return resolutions[0];
+            } else {
+                throw new Error(
+                    "No fallback value found in 'resolutions' for initial value. Is the list empty?"
+                );
+            }
+        }
+    }, [resolutions]);
+    const initialPageSize = useMemo(() => {
+        if (pageSizes.includes(INITIAL_PAGE_SIZE)) {
+            return INITIAL_PAGE_SIZE;
+        } else {
+            LOG.warn(
+                `Configured initial page size '${INITIAL_PAGE_SIZE}' not included in list of options. Use first value as fallback.`
+            );
+            if (pageSizes[0]) {
+                return pageSizes[0];
+            } else {
+                throw new Error(
+                    "No fallback value found in 'pageSizes' for initial value. Is the list empty?"
+                );
+            }
+        }
+    }, [pageSizes]);
+    const initialPageOrientation = useMemo(() => {
+        if (pageOrientations.includes(INITIAL_PAGE_ORIENTATION)) {
+            return INITIAL_PAGE_ORIENTATION;
+        } else {
+            LOG.warn(
+                `Configured initial page orientation '${INITIAL_PAGE_ORIENTATION}' not included in list of options. Use first value as fallback.`
+            );
+            if (pageOrientations[0]) {
+                return pageOrientations[0];
+            } else {
+                throw new Error(
+                    "No fallback value found in 'pageOrientations' for initial value. Is the list empty?"
+                );
+            }
+        }
+    }, [pageOrientations]);
+    const initialFileFormat = useMemo(() => {
+        if (fileFormats.includes(INITIAL_FILE_FORMAT)) {
+            return INITIAL_FILE_FORMAT;
+        } else {
+            LOG.warn(
+                `Configured initial file format '${INITIAL_FILE_FORMAT}' not included in list of options. Use first value as fallback.`
+            );
+            if (fileFormats[0]) {
+                return fileFormats[0];
+            } else {
+                throw new Error(
+                    "No fallback value found in 'fileFormats' for initial value. Is the list empty?"
+                );
+            }
+        }
+    }, [fileFormats]);
 
-    const [size, setSize] = useState<PageSizeType>(INITIAL_PAGE_SIZE);
-    const [orientation, setOrientation] = useState<PageOrientationType>(INITIAL_ORIENTATION);
-    const [fileFormat, setFileFormat] = useState<FileFormatType>("pdf");
-    const [resolution, setResolution] = useState<number>(96);
     const [scale, setScale] = useState<number>(initialScale);
+    const [resolution, setResolution] = useState<number>(initialResolution);
+    const [size, setSize] = useState<PageSizeType>(initialPageSize);
+    const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
+    const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
@@ -140,6 +238,46 @@ export const Printing: FC<PrintingProps> = (props) => {
         [intl, scales]
     );
 
+    const resolutionOptions = useMemo(
+        () =>
+            resolutions.map((resolution) => (
+                <option key={resolution} value={resolution}>
+                    {resolution}
+                </option>
+            )),
+        [resolutions]
+    );
+
+    const pageSizeOptions = useMemo(
+        () =>
+            pageSizes.map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                    {intl.formatMessage({ id: "pageSize." + pageSize })}
+                </option>
+            )),
+        [intl, pageSizes]
+    );
+
+    const pageOrientationOptions = useMemo(
+        () =>
+            pageOrientations.map((pageOrientation) => (
+                <option key={pageOrientation} value={pageOrientation}>
+                    {intl.formatMessage({ id: "pageOrientation." + pageOrientation })}
+                </option>
+            )),
+        [intl, pageOrientations]
+    );
+
+    const fileFormatOptions = useMemo(
+        () =>
+            fileFormats.map((fileFormat) => (
+                <option key={fileFormat} value={fileFormat}>
+                    {intl.formatMessage({ id: "fileFormat." + fileFormat })}
+                </option>
+            )),
+        [intl, fileFormats]
+    );
+
     return (
         <Box {...containerProps}>
             <Box
@@ -179,15 +317,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                                     changeSize(event.target.value);
                                 }}
                             >
-                                <option value={"a3"}>
-                                    {intl.formatMessage({ id: "pageSize.a3" })}
-                                </option>
-                                <option value={"a4"}>
-                                    {intl.formatMessage({ id: "pageSize.a4" })}
-                                </option>
-                                <option value={"a5"}>
-                                    {intl.formatMessage({ id: "pageSize.a5" })}
-                                </option>
+                                {pageSizeOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -205,12 +335,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                                     changeOrientation(event.target.value);
                                 }}
                             >
-                                <option value={"landscape"}>
-                                    {intl.formatMessage({ id: "pageOrientation.landscape" })}
-                                </option>
-                                <option value={"portrait"}>
-                                    {intl.formatMessage({ id: "pageOrientation.portrait" })}
-                                </option>
+                                {pageOrientationOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -218,7 +343,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                 <Field.Root asChild>
                     <HStack mb={2}>
                         <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "fileFormat" })}
+                            {intl.formatMessage({ id: "fileFormat.label" })}
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
@@ -228,8 +353,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                                     changeFileFormat(event.target.value);
                                 }}
                             >
-                                <option value={"png"}>PNG</option>
-                                <option value={"pdf"}>PDF</option>
+                                {fileFormatOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -247,9 +371,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                                     changeResolution(event.target.value);
                                 }}
                             >
-                                <option value={96}>96</option>
-                                <option value={150}>150</option>
-                                <option value={300}>300</option>
+                                {resolutionOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -362,7 +484,7 @@ function getFittingScale(olMap: OlMap, scales: number[]): number {
     const width = resolution * maxPrintWidth; // meters
     const height = resolution * maxPrintHeight;
 
-    const printDimension = getPageDimensions(INITIAL_PAGE_SIZE, INITIAL_ORIENTATION);
+    const printDimension = getPageDimensions(INITIAL_PAGE_SIZE, INITIAL_PAGE_ORIENTATION);
 
     const scaleWidth = width / (printDimension.width / 1000.0);
     const scaleHeight = height / (printDimension.height / 1000.0);

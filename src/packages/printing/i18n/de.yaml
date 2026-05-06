@@ -10,7 +10,10 @@ messages:
     label: "Ausrichtung"
     landscape: "Querformat"
     portrait: "Hochformat"
-  fileFormat: "Dateiformat"
+  fileFormat:
+    label: "Dateiformat"
+    png: "PNG"
+    pdf: "PDF"
   resolution: "Auflösung (DPI)"
   export: "Karte exportieren"
   input:
