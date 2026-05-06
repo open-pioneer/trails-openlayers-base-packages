@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core";
-import OlMap from "ol/Map";
-import { getPointResolution } from "ol/proj";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
 
 const DEFAULT_QUALITY = 0.8;
 
@@ -83,36 +82,13 @@ export function scalePadding(rawPadding: ViewPadding): ViewPadding {
     };
 }
 
-export function getViewPadding(map: OlMap): ViewPadding {
+export function getViewPadding(map: MapModel): ViewPadding {
     // top, right, bottom, left
-    const rawPadding = (map.getView().padding ?? [0, 0, 0, 0]) as [number, number, number, number];
+    const rawPadding = (map.olView.padding ?? [0, 0, 0, 0]) as [number, number, number, number];
     return {
         top: rawPadding[0] ?? 0,
         right: rawPadding[1] ?? 0,
         bottom: rawPadding[2] ?? 0,
         left: rawPadding[3] ?? 0
     };
-}
-
-/**
- * Returns the resolution at the current map center in meters per pixel.
- *
- * By default, the calculated point resolution uses the current view resolution.
- * It is also possible to calculate the resolution for a defined target resolution specified in the
- * optional parameter.
- *
- * @param olMap OpenLayers map
- * @param res   Optional resolution to be used for calculation instead of current map resolution
- * @returns resolution in meters per pixel
- */
-export function getCenterResolution(olMap: OlMap, res?: number): number | undefined {
-    const resolution = res ?? olMap.getView().getResolution();
-    const centerCoordinate = olMap.getView().getCenter();
-
-    if (!centerCoordinate || !resolution) return undefined;
-
-    const proj = olMap.getView().getProjection();
-    const mpu = proj.getMetersPerUnit() ?? 1;
-
-    return getPointResolution(proj, resolution * mpu, centerCoordinate);
 }

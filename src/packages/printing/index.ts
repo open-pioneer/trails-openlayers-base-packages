@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { DeclaredService } from "@open-pioneer/runtime";
-import OlMap from "ol/Map";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
 
 /**
  * Options supported when printing the map.
@@ -68,7 +68,7 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      */
-    printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResult>;
+    printMap(map: MapModel, options?: PrintingOptions): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */

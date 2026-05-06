@@ -198,18 +198,8 @@ export class MapModel {
 
         this.#viewBindings = computed(() => createViewBindings(this.#olView.value));
         this.#scale = computed(() => {
-            const { projection, resolution, center } = this;
-            if (projection == null || resolution == null || center == null) {
-                return undefined;
-            }
-
-            /**
-             * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
-             * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
-             */
-            const pointResolution = getPointResolution(projection, resolution, center, "m"); //point resolution in meter per pixel
-            const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-            return scale;
+            const { resolution, projection, center } = this;
+            return this.centerResolutionToScale(resolution, projection, center);
         });
 
         // expects fully constructed mapModel
@@ -401,17 +391,73 @@ export class MapModel {
      * See also {@link scale}.
      */
     setScale(newScale: number): void {
-        const view = this.olView;
-        const projection = this.projection;
-        const center = this.center;
-        if (!center) {
+        const centerResolution = this.scaleToCenterResolution(newScale);
+        this.olView.setResolution(centerResolution);
+    }
+
+    // TODO projection/center are not necessary and just parameters to be used inside the computed property #scale above; find better solution
+    /**
+     * Returns the resolution at the current map center in meters per pixel.
+     *
+     * By default, the calculated point resolution uses the current view map view state (resolution, projection, center).
+     * It is also possible to calculate the resolution for a defined target resolution specified in the
+     * optional parameter.
+     *
+     * @param resolution Optional resolution to be used for calculation instead of current map resolution
+     * @returns Resolution in meters per pixel
+     */
+    getCenterResolution(
+        resolution?: number,
+        projection?: Projection,
+        center?: Coordinate
+    ): number | undefined {
+        const res = resolution ?? this.resolution;
+        if (!res) return undefined;
+
+        const cen = center ?? this.center;
+        if (!cen) {
             return;
         }
 
-        const mpu = projection.getMetersPerUnit() ?? 1;
-        const resolution = INCHES_PER_METRE * DEFAULT_DPI * mpu;
-        const pointResolution = newScale / getPointResolution(projection, resolution, center);
-        view.setResolution(pointResolution);
+        const proj = projection ?? this.projection;
+        const mpu = proj.getMetersPerUnit() ?? 1;
+
+        return getPointResolution(proj, res * mpu, cen, "m");
+    }
+
+    /**
+     * Computes the resolution based on a given scale and the current map center
+     *
+     * @param scale Scale
+     * @param targetDpi Optional pixel density for calculating resolution for different output than screen (default: OpenLayers default of 90.71)
+     * @returns Resolution
+     */
+    scaleToCenterResolution(scale: number, targetDpi?: number): number | undefined {
+        const dpi = targetDpi ?? DEFAULT_DPI; // pixels per inch
+        const res = INCHES_PER_METRE * dpi; // pixels per meter
+        const centerResolution = this.getCenterResolution(res); // meters per pixel
+        if (!centerResolution) return undefined;
+        return scale / centerResolution;
+    }
+
+    /**
+     * Computes the scale based on the current center of the map
+     *
+     * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
+     * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
+     *
+     * @returns Scale of the map
+     */
+    // TODO resolution/projection/center are not necessary and just parameters to be used inside the computed property #scale above; find better solution
+    centerResolutionToScale(
+        resolution?: number,
+        projection?: Projection,
+        center?: Coordinate
+    ): number | undefined {
+        const res = INCHES_PER_METRE * DEFAULT_DPI;
+        const centerResolution = this.getCenterResolution(resolution, projection, center);
+        if (!centerResolution) return undefined;
+        return Math.round(centerResolution * res);
     }
 
     /**

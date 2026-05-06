@@ -13,15 +13,14 @@ import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior
 import {
     canvasToPng,
     createBlockUserOverlay,
-    getCenterResolution,
     getViewPadding,
     PRINTING_HIDE_CLASS,
     scalePadding,
     ViewPadding
 } from "./utils";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
 
 const MM_PER_INCH = 25.4;
-const INCHES_PER_METER = 39.37;
 
 export class PrintingServiceImpl implements PrintingService {
     private defaultOverlayText: string;
@@ -32,8 +31,8 @@ export class PrintingServiceImpl implements PrintingService {
         });
     }
 
-    async printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResultImpl> {
-        const job = new PrintJob(olMap, {
+    async printMap(map: MapModel, options?: PrintingOptions): Promise<PrintResultImpl> {
+        const job = new PrintJob(map, {
             blockUserInteraction: true,
             overlayText: this.defaultOverlayText,
             viewPadding: "auto",
@@ -54,6 +53,7 @@ interface DrawInfo {
 
 // Exported just for test (mocking)
 export class PrintJob {
+    private map: MapModel;
     private olMap: OlMap;
     private blockUserInteraction: boolean = false;
     private overlayText: string;
@@ -72,14 +72,15 @@ export class PrintJob {
     private viewWidth: string;
     private scaleResolution: number | undefined = undefined;
 
-    constructor(olMap: OlMap, options: Required<PrintingOptions>) {
-        this.olMap = olMap;
+    constructor(map: MapModel, options: Required<PrintingOptions>) {
+        this.map = map;
+        this.olMap = map.olMap;
         this.blockUserInteraction = options.blockUserInteraction;
         this.overlayText = options.overlayText;
         this.viewPadding = options.viewPadding;
 
         // save current state of map
-        const viewResolution = this.olMap.getView().getResolution();
+        const viewResolution = map.resolution;
         if (!viewResolution) {
             throw new Error("Cannot get current map resolution");
         }
@@ -92,7 +93,7 @@ export class PrintJob {
             this.scale = options.scale;
             this.resolution = options.resolution;
 
-            const padding = getViewPadding(this.olMap);
+            const padding = getViewPadding(this.map);
             this.width =
                 Math.round((options.width * this.resolution) / MM_PER_INCH) +
                 padding.left +
@@ -102,11 +103,7 @@ export class PrintJob {
                 padding.top +
                 padding.bottom;
 
-            const pixelsPerMeter = this.resolution * INCHES_PER_METER; // pixels per meter
-            const pointResolution = getCenterResolution(this.olMap, pixelsPerMeter); // meters per pixel
-            if (!pointResolution) return;
-
-            this.scaleResolution = this.scale / pointResolution;
+            this.scaleResolution = this.map.scaleToCenterResolution(this.scale, this.resolution);
         }
     }
 
@@ -124,7 +121,7 @@ export class PrintJob {
             }
 
             if (this.viewPadding === "auto") {
-                canvas = this.removePadding(canvas, getViewPadding(this.olMap));
+                canvas = this.removePadding(canvas, getViewPadding(this.map));
             }
             return new PrintResultImpl(canvas);
         } finally {
@@ -195,7 +192,7 @@ export class PrintJob {
         let bottom = 50;
         let left = 8;
         if (this.viewPadding === "auto") {
-            const { bottom: paddingBottom, left: paddingLeft } = getViewPadding(this.olMap);
+            const { bottom: paddingBottom, left: paddingLeft } = getViewPadding(this.map);
             bottom = Math.max(paddingBottom + 8, bottom);
             left += paddingLeft;
         }

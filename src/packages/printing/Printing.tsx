@@ -11,10 +11,8 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
-import OlMap from "ol/Map";
 import {
     getPageDimensions,
-    getCenterResolution,
     getViewPadding,
     PageOrientationType,
     PageSizeType
@@ -93,7 +91,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
 
-    const initialScale = useMemo(() => getFittingScale(map.olMap, scales), [map.olMap, scales]);
+    const initialScale = useMemo(() => getFittingScale(map, scales), [map, scales]);
     const initialResolution = useMemo(
         () => getInitialOption(resolutions, INITIAL_RESOLUTION),
         [resolutions]
@@ -378,7 +376,7 @@ function useController(
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
-        const controller = new PrintingController(map.olMap, printingService, {
+        const controller = new PrintingController(map, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -413,24 +411,24 @@ function renderScaleText(intl: PackageIntl, rawScale: number): string {
 }
 
 // find the largest scale that fits completely inside the map view, considering some padding
-function getFittingScale(olMap: OlMap, scales: number[]): number {
+function getFittingScale(map: MapModel, scales: number[]): number {
     const fallbackScale = scales[0];
     if (!fallbackScale) {
         throw new Error("No scales defined");
     }
 
-    const mapSize = olMap.getSize();
+    const mapSize = map.olMap.getSize();
     if (!mapSize || mapSize.length < 2) {
         return fallbackScale;
     }
     const [mapWidth, mapHeight] = mapSize as [number, number];
 
-    const viewPadding = getViewPadding(olMap);
+    const viewPadding = getViewPadding(map);
 
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
 
-    const resolution = getCenterResolution(olMap); // meters per pixel
+    const resolution = map.getCenterResolution(); // meters per pixel
     if (!resolution) return fallbackScale;
 
     const width = resolution * maxPrintWidth; // meters

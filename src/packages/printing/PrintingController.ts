@@ -6,7 +6,6 @@ import {
     canvasToPng,
     createBlockUserOverlay,
     getPageDimensions,
-    getCenterResolution,
     getViewPadding,
     PageOrientationType,
     PageSizeType
@@ -18,6 +17,7 @@ import { getRenderPixel } from "ol/render";
 import RenderEvent from "ol/render/Event";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -30,6 +30,7 @@ export interface ExportOptions {
 }
 
 export class PrintingController {
+    private map: MapModel;
     private olMap: OlMap;
     private i18n: I18n;
 
@@ -45,8 +46,9 @@ export class PrintingController {
     private postrenderListener: EventsKey;
     private renderEvent: RenderEvent | undefined;
 
-    constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
-        this.olMap = olMap;
+    constructor(map: MapModel, printingService: PrintingService, i18n: I18n) {
+        this.map = map;
+        this.olMap = map.olMap;
         this.printingService = printingService;
         this.i18n = i18n;
 
@@ -146,12 +148,12 @@ export class PrintingController {
         if (!mapSize || !mapSize[0] || !mapSize[1]) return;
 
         const printDimension = getPageDimensions(this.size, this.orientation);
-        const padding = getViewPadding(this.olMap);
+        const padding = getViewPadding(this.map);
 
         const widthInMeters = (printDimension.width * this.scale) / 1000.0;
         const heightInMeters = (printDimension.height * this.scale) / 1000.0;
 
-        const resolution = getCenterResolution(this.olMap); // meters per pixel
+        const resolution = this.map.getCenterResolution(); // meters per pixel
         if (!resolution) return;
 
         const pixelWidth = widthInMeters / resolution;
@@ -172,7 +174,7 @@ export class PrintingController {
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.olMap || !this.size || !this.orientation || !this.scale) {
+        if (!this.size || !this.orientation || !this.scale) {
             return;
         }
 
@@ -181,7 +183,7 @@ export class PrintingController {
 
             const { height, width } = getPageDimensions(this.size, this.orientation);
 
-            this.printMap = await this.printingService.printMap(this.olMap, {
+            this.printMap = await this.printingService.printMap(this.map, {
                 blockUserInteraction: false,
                 viewPadding: this.viewPadding,
                 resolution: options.resolution,
