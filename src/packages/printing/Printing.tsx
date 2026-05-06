@@ -94,70 +94,22 @@ export const Printing: FC<PrintingProps> = (props) => {
     const { containerProps } = useCommonComponentProps("printing", props);
 
     const initialScale = useMemo(() => getFittingScale(map.olMap, scales), [map.olMap, scales]);
-    const initialResolution = useMemo(() => {
-        if (resolutions.includes(INITIAL_RESOLUTION)) {
-            return INITIAL_RESOLUTION;
-        } else {
-            LOG.warn(
-                `Configured initial resolution '${INITIAL_RESOLUTION}' not included in list of options. Use first value as fallback.`
-            );
-            if (resolutions[0]) {
-                return resolutions[0];
-            } else {
-                throw new Error(
-                    "No fallback value found in 'resolutions' for initial value. Is the list empty?"
-                );
-            }
-        }
-    }, [resolutions]);
-    const initialPageSize = useMemo(() => {
-        if (pageSizes.includes(INITIAL_PAGE_SIZE)) {
-            return INITIAL_PAGE_SIZE;
-        } else {
-            LOG.warn(
-                `Configured initial page size '${INITIAL_PAGE_SIZE}' not included in list of options. Use first value as fallback.`
-            );
-            if (pageSizes[0]) {
-                return pageSizes[0];
-            } else {
-                throw new Error(
-                    "No fallback value found in 'pageSizes' for initial value. Is the list empty?"
-                );
-            }
-        }
-    }, [pageSizes]);
-    const initialPageOrientation = useMemo(() => {
-        if (pageOrientations.includes(INITIAL_PAGE_ORIENTATION)) {
-            return INITIAL_PAGE_ORIENTATION;
-        } else {
-            LOG.warn(
-                `Configured initial page orientation '${INITIAL_PAGE_ORIENTATION}' not included in list of options. Use first value as fallback.`
-            );
-            if (pageOrientations[0]) {
-                return pageOrientations[0];
-            } else {
-                throw new Error(
-                    "No fallback value found in 'pageOrientations' for initial value. Is the list empty?"
-                );
-            }
-        }
-    }, [pageOrientations]);
-    const initialFileFormat = useMemo(() => {
-        if (fileFormats.includes(INITIAL_FILE_FORMAT)) {
-            return INITIAL_FILE_FORMAT;
-        } else {
-            LOG.warn(
-                `Configured initial file format '${INITIAL_FILE_FORMAT}' not included in list of options. Use first value as fallback.`
-            );
-            if (fileFormats[0]) {
-                return fileFormats[0];
-            } else {
-                throw new Error(
-                    "No fallback value found in 'fileFormats' for initial value. Is the list empty?"
-                );
-            }
-        }
-    }, [fileFormats]);
+    const initialResolution = useMemo(
+        () => getInitialOption(resolutions, INITIAL_RESOLUTION),
+        [resolutions]
+    );
+    const initialPageSize = useMemo(
+        () => getInitialOption(pageSizes, INITIAL_PAGE_SIZE),
+        [pageSizes]
+    );
+    const initialPageOrientation = useMemo(
+        () => getInitialOption(pageOrientations, INITIAL_PAGE_ORIENTATION),
+        [pageOrientations]
+    );
+    const initialFileFormat = useMemo(
+        () => getInitialOption(fileFormats, INITIAL_FILE_FORMAT),
+        [fileFormats]
+    );
 
     const [scale, setScale] = useState<number>(initialScale);
     const [resolution, setResolution] = useState<number>(initialResolution);
@@ -496,3 +448,20 @@ function getFittingScale(olMap: OlMap, scales: number[]): number {
     sortedScales.sort((a, b) => b - a); // sort descending
     return sortedScales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function getInitialOption(options: any[], initialOption: any) {
+    if (options.includes(initialOption)) {
+        return initialOption;
+    } else {
+        LOG.warn(
+            `Configured initial option '${initialOption}' not included in list. Use first option as fallback.`
+        );
+        if (options[0]) {
+            return options[0];
+        } else {
+            throw new Error("No fallback option found in options. Is the list empty?");
+        }
+    }
+}
+/* eslint-ensable @typescript-eslint/no-explicit-any */
