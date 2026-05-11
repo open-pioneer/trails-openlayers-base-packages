@@ -100,16 +100,6 @@ If no `verticalGap` is configured, a default vertical gap of `30px` is used.
 
 > NOTE: To get the correct tab order, add the container anchor-points before other components.
 
-By default, certain pointer events from map anchor children (such as `pointer-down`) are stopped from bubbling up towards the map.
-This is done to "hide" those events from map interactions (such as drawing): this makes it possible to click into text or controls within a map anchor without interacting with the map.
-This behavior can be disabled by setting the `stopEvents` property to `false`:
-
-```jsx
-<MapAnchor position="top-right" stopEvents={false}>
-    {/* Click events etc. will be seen by the map. This could be appropriate for non-interactive text-only overlays, for example. */}
-</MapAnchor>
-```
-
 ### Using the DefaultMapProvider
 
 You can use the `DefaultMapProvider` to globally specify the `map` in your application's UI.
