@@ -1,5 +1,46 @@
 # @open-pioneer/map
 
+## 1.3.0
+
+### Minor Changes
+
+- c62698d: Add reactive property `mapModel.attributionItems`. This is useful for applications that don't want to rely on OpenLayers' attribution widget.
+- 9b5d5f3: Support for new common container props (role, aria-\*, data-\* and css)
+- c62698d: Add `MapConfig.showAttributions` property to explicitly show or hide the default attributions widget.
+  `showAttributions: false` is intended for situations where the map's attributions are displayed in a custom widget.
+- 194f2ab: Add `olSource` property to layer classes that manage their own sources (WMS, WMTS).
+- fcbd505: WMSLayer, WMTSLayer: Derive `attributions` from service capabilities if no explicit attributions have been configured.
+- 2ceb1ca: MapModel: implement new `loading` property.
+  This property is `true` if the map is currently loading any resources, `false` otherwise.
+  The property is based on OpenLayers `loadstart` and `loadend` events (see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart)).
+- 73453af: Update OpenLayers to 10.9.0
+- fcbd505: Sanitize HTML used for layer attributions.
+- 33ab02f: Move highlight methods to `mapModel.highlights`.
+    - `mapModel.highlight()` -> `mapModel.highlights.add()`
+    - `mapModel.highlightAndZoom()` -> `mapModel.highlights.addAndZoom()`
+    - `mapModel.removeHighlights()` -> `mapModel.highlights.clear()`
+
+    The old methods on the Map Model have been deprecated and will be removed in a future major release.
+
+- d54ccfd: Update to Chakra UI 3.34.0
+- 33ab02f: Add new `mapModel.overlays` API to render arbitrary React content on the map at certain coordinates.
+  This can be helpful for feature info, popups and for tooltips during map interactions.
+
+    Use `mapModel.overlay.add({ content: <SomeReactContent />, ...})` to create a new overlay.
+
+- 206b397: Update to trails core packages 4.5.0
+- 2ceb1ca: MapContainer: allow configuration of `rootProps` and `containerProps`.
+  This can be used to set custom attributes on the respective DOM elements.
+
+### Patch Changes
+
+- 36da1be: Do not animate the view when changing the map padding during initialization.
+- 30f75bf: Fix map center / map extent not being animated correctly if view padding changes multiple times in short succession (see [#587](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/587)).
+- 28cf317: Fix baselayer documentation of the map package: use `olLayer` instead of `layer`.
+- 8e526b1: Removed `stopEvents` documentation from the map package README
+- 4bcc8ce: Prevent update of `olMap.padding` by MapContainer if viewPadding did not change.
+  This caused running map animation to be cancelled.
+
 ## 1.2.0
 
 ### Patch Changes
