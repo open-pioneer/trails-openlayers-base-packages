@@ -617,7 +617,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: createWMTSSource("web")
                     })
                 })
@@ -718,7 +718,7 @@ if (wmtsOptions) {
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
-        layer: new TileLayer({
+        olLayer: new TileLayer({
             source: new WMTS(wmtsOptions)
         })
     }));
