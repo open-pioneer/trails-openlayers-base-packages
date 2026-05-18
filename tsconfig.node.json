@@ -2,10 +2,12 @@
     "compilerOptions": {
         "composite": true,
         "incremental": true,
+        "tsBuildInfoFile": "./node_modules/.cache/tsconfig-node.tsbuildinfo",
 
         "target": "ESNext",
-        "lib": ["ES2022"],
-        "module": "ES2022",
+        "lib": ["ES2024"],
+        "module": "esnext",
+        "types": ["node"],
         "moduleResolution": "Node",
         "allowJs": false,
 
