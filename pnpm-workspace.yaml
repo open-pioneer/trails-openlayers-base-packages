@@ -7,19 +7,19 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/core": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/http": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/integration": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/local-storage": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/notifier": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/react-utils": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/reactivity": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/runtime": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/test-utils": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/chakra-snippets": 4.6.0-dev-i18n.20260518080633
+  "@open-pioneer/base-theme": 4.6.0-dev.20260518102806
+  "@open-pioneer/core": 4.6.0-dev.20260518102806
+  "@open-pioneer/http": 4.6.0-dev.20260518102806
+  "@open-pioneer/integration": 4.6.0-dev.20260518102806
+  "@open-pioneer/local-storage": 4.6.0-dev.20260518102806
+  "@open-pioneer/notifier": 4.6.0-dev.20260518102806
+  "@open-pioneer/react-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/reactivity": 4.6.0-dev.20260518102806
+  "@open-pioneer/runtime": 4.6.0-dev.20260518102806
+  "@open-pioneer/test-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518102806
 
-  "@chakra-ui/cli": ^3.34.0
+  # Frontend dependencies
   "@chakra-ui/react": ^3.34.0
   "@conterra/reactivity-core": ^0.8.5
   "@conterra/reactivity-events": ^0.8.5
@@ -43,11 +43,11 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.31.0
-  "@open-pioneer/build-package-cli": ^3.0.9
-  "@open-pioneer/build-support": ^3.0.6
-  "@open-pioneer/check-pnpm-duplicates": ^0.3.1
-  "@open-pioneer/vite-plugin-pioneer": ^5.1.2
+  "@open-pioneer/build-package-cli": ^3.1.0
+  "@open-pioneer/build-support": ^3.1.0
   "@open-pioneer/changesets-release-line": ^0.1.0
+  "@open-pioneer/check-pnpm-duplicates": ^0.3.2
+  "@open-pioneer/vite-plugin-pioneer": ^6.0.0
   "@testing-library/dom": ^10.4.1
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/react": ^16.3.2
@@ -58,7 +58,7 @@ catalog:
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
   "@typescript-eslint/parser": ^8.59.3
-  "@vitejs/plugin-react-swc": ^4.3.1
+  "@vitejs/plugin-react": "^6.0.2"
   eslint: ^9.39.4
   "@eslint/js": ^9.39.4
   "typescript-eslint": ^8.59.3
@@ -84,7 +84,7 @@ catalog:
   tsx: ^4.22.0
   typedoc: ^0.28.19
   typescript: ^6.0.3
-  vite: ^7.3.3
+  vite: ^8.0.13
   vite-plugin-eslint: ^1.8.1
   vitest: ^4.1.6
   zx: ^8.8.5
@@ -157,24 +157,19 @@ overrides:
   "@zag-js/splitter": "1.35.3"
 
   # Remove before release
-  "@open-pioneer/base-theme": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/core": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/http": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/integration": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/local-storage": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/notifier": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/react-utils": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/reactivity": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/runtime": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/test-utils": 4.6.0-dev-i18n.20260518080633
-  "@open-pioneer/chakra-snippets": 4.6.0-dev-i18n.20260518080633
-  
-  "@open-pioneer/vite-plugin-pioneer": 5.2.0-dev-i18n.20260416113643
-  "@open-pioneer/build-support": 3.1.0-dev-i18n.20260416113643
-  "@open-pioneer/build-common": 4.0.0-dev-i18n.20260416113643
+  "@open-pioneer/base-theme": 4.6.0-dev.20260518102806
+  "@open-pioneer/core": 4.6.0-dev.20260518102806
+  "@open-pioneer/http": 4.6.0-dev.20260518102806
+  "@open-pioneer/integration": 4.6.0-dev.20260518102806
+  "@open-pioneer/local-storage": 4.6.0-dev.20260518102806
+  "@open-pioneer/notifier": 4.6.0-dev.20260518102806
+  "@open-pioneer/react-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/reactivity": 4.6.0-dev.20260518102806
+  "@open-pioneer/runtime": 4.6.0-dev.20260518102806
+  "@open-pioneer/test-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518102806
 
 allowUnusedPatches: true
-ignorePatchFailures: false
 patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
@@ -193,28 +188,29 @@ peerDependencyRules:
     "rollup": "*"
 
 auditConfig:
-  ignoreCves:
-    # This affects ajv, which is a transitive dependency of eslint.
-    # Eslint depends on ajv@v6, and an update to v8 might not be trivial.
-    # Only dev dependencies are (potentially) affected.
-    # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
-    - CVE-2025-69873
+  ignoreGhsas:
+    # https://github.com/advisories/GHSA-f886-m6hf-6m8v CVE-2026-33750
+    - GHSA-f886-m6hf-6m8v
 
-    # See CVE CVE-2025-69873
-    - CVE-2026-26996
-
-    # https://github.com/advisories/GHSA-f886-m6hf-6m8v
-    - CVE-2026-33750
-
-onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - "@swc/core"
-  - esbuild
-
-ignoredBuiltDependencies:
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  esbuild: true
   # Seems to work without build scripts; may revisit later if actually needed.
-  - core-js
-  - unrs-resolver
+  core-js: false
+  unrs-resolver: false
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - "@pnpm/lockfile.utils@1004.0.4"
+  - "@pnpm/lockfile.fs@1001.1.33"
+  - "@pnpm/lockfile.walker@1001.0.27"
+  - "@pnpm/lockfile.types@1002.1.1"
+  - "@pnpm/lockfile.merger@1001.0.21"
+  - "undici-types@6.21.0"
+  - "semver@6.3.1"
+  - "chokidar@4.0.3"
+  - "rollup@2.80.0"
 
 # Install older versions by default
 resolutionMode: "lowest-direct"
@@ -224,7 +220,6 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "dompurify@3.4.0"
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true

@@ -3,10 +3,12 @@
 
 /// <reference types="vitest" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
 import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
+
+// @ts-expect-error "invalid typings"
 import eslint from "vite-plugin-eslint";
 
 // Find sites under src/samples with an index.html and build them all.
@@ -58,12 +60,8 @@ export default defineConfig(({ mode }) => {
                 // Apps to distribute as .js files for embedded use cases
                 apps: []
             }),
-            react({
-                // react swc plugin transpiles during development.
-                // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
-                devTarget: "es2024"
-            }),
-            eslint()
+            react(),
+            !testMode && eslint()
         ],
 
         // Ignore irrelevant deprecations
