@@ -34,8 +34,8 @@ catalogs:
       specifier: ^4.1.11
       version: 4.1.11
     '@open-pioneer/build-package-cli':
-      specifier: ^3.1.0-
-      version: 3.1.0-dev-vite8.20260518112306
+      specifier: ^3.1.0
+      version: 3.1.0
     '@open-pioneer/build-support':
       specifier: ^3.1.0
       version: 3.1.0
@@ -245,15 +245,9 @@ overrides:
   '@open-pioneer/chakra-snippets': 4.6.0-dev.20260518102806
 
 patchedDependencies:
-  '@ark-ui/react@*':
-    hash: 6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb
-    path: patches/@ark-ui__react.patch
-  '@zag-js/interact-outside':
-    hash: 7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d
-    path: patches/@zag-js__interact-outside.patch
-  '@zag-js/splitter':
-    hash: 075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb
-    path: patches/@zag-js__splitter.patch
+  '@ark-ui/react@*': 6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb
+  '@zag-js/interact-outside': 7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d
+  '@zag-js/splitter': 075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb
 
 importers:
 
@@ -267,7 +261,7 @@ importers:
         version: 9.39.4
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
-        version: 3.1.0-dev-vite8.20260518112306(sass@1.99.0)(typescript@6.0.3)
+        version: 3.1.0(sass@1.99.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
         version: 3.1.0
@@ -2514,13 +2508,13 @@ packages:
     resolution: {integrity: sha512-RXUaNM0Qo1XAx21TGJI/KpiN1ZsLgRtUAGYSnfiaWpqL/drDEtMB0fE3y+CbfMp21syCK+B9k548zBdLIXyOfA==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/build-package-cli@3.1.0-dev-vite8.20260518112306':
-    resolution: {integrity: sha512-xygoXX87Ad2AXjZbvb75UWdFJ9V58+e0He9v87pl4bXqOGD89k2z4qksmgZIaYLlWc0lK9JaS4dc9wFAetTc4w==}
+  '@open-pioneer/build-package-cli@3.1.0':
+    resolution: {integrity: sha512-nijvA259MBIObnPlUPGiHPGLPJosLrgiY4IlD/II7qsKFO4Pnv4aYfI3n+5NXGxDzJtbMM5bArBpRXTugIkCdg==}
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/build-package@4.2.0-dev-vite8.20260518112306':
-    resolution: {integrity: sha512-h48DnJorCUTu3hbakg5zCu3pmjbTPs7lbnq6TGYXkp1UuR7gPg8wF89pzIyYT9DkPSECmbsjx6yW3nt4j+yMMA==}
+  '@open-pioneer/build-package@4.2.0':
+    resolution: {integrity: sha512-sOW0TaK3eSPpQOyIbSzySJPMLcVtxUjMQpJV50bBqlPdL4UqwzjPF/V+qvwpHFnbhEeTt9Sd5MycqSe6/4BvJw==}
     engines: {node: '>= 20'}
     peerDependencies:
       sass: '*'
@@ -6839,9 +6833,9 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@open-pioneer/build-package-cli@3.1.0-dev-vite8.20260518112306(sass@1.99.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package-cli@3.1.0(sass@1.99.0)(typescript@6.0.3)':
     dependencies:
-      '@open-pioneer/build-package': 4.2.0-dev-vite8.20260518112306(sass@1.99.0)(typescript@6.0.3)
+      '@open-pioneer/build-package': 4.2.0(sass@1.99.0)(typescript@6.0.3)
       chalk: 5.6.2
       commander: 14.0.3
     transitivePeerDependencies:
@@ -6849,7 +6843,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@open-pioneer/build-package@4.2.0-dev-vite8.20260518112306(sass@1.99.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package@4.2.0(sass@1.99.0)(typescript@6.0.3)':
     dependencies:
       '@open-pioneer/build-common': 4.0.0(rollup@4.60.4)
       '@open-pioneer/build-support': 3.1.0
