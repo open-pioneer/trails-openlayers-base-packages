@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { effect, reactive, watch } from "@conterra/reactivity-core";
+import { constant, effect, watch } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
@@ -1266,7 +1266,12 @@ function expectLayerOrder(layers: Layer[]) {
 }
 
 function create(mapId: string, mapConfig: MapConfig) {
-    return createMapModel(mapId, mapConfig, reactive(createIntl()), MOCKED_HTTP_SERVICE as HttpService);
+    return createMapModel(
+        mapId,
+        mapConfig,
+        constant(createIntl()),
+        MOCKED_HTTP_SERVICE as HttpService
+    );
 }
 
 function dummyLayer() {
