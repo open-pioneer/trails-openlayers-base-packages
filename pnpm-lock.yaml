@@ -564,6 +564,9 @@ importers:
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
+      '@formatjs/intl':
+        specifier: 'catalog:'
+        version: 4.1.11
       '@open-pioneer/chakra-snippets':
         specifier: 4.6.0-dev.20260420101935
         version: 4.6.0-dev.20260420101935(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))

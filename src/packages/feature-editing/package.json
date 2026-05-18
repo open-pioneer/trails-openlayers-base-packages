@@ -19,6 +19,7 @@
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@conterra/reactivity-core": "catalog:",
+        "@formatjs/intl": "catalog:",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
