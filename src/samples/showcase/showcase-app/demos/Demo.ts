@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
 import { createSelectionDemo } from "./SelectionDemo";
 import { createEditingDemo } from "./EditingDemo";
+import { createFeatureEditingDemo } from "./FeatureEditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
 import {
@@ -77,6 +78,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createScaleBarDemo(options),
         createMeasurementDemo(options),
         createEditingDemo(options),
+        createFeatureEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),
