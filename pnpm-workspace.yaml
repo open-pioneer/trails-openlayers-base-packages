@@ -43,11 +43,11 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.31.0
-  "@open-pioneer/build-package-cli": 3.1.0-dev.20260518093119
-  "@open-pioneer/build-support": 3.1.0-dev.20260518093119
+  "@open-pioneer/build-package-cli": ^3.1.0-
+  "@open-pioneer/build-support": ^3.1.0
   "@open-pioneer/changesets-release-line": ^0.1.0
-  "@open-pioneer/check-pnpm-duplicates": 0.3.2-dev.20260518093119
-  "@open-pioneer/vite-plugin-pioneer": 5.2.0-dev.20260518093119
+  "@open-pioneer/check-pnpm-duplicates": ^0.3.2
+  "@open-pioneer/vite-plugin-pioneer": ^6.0.0
   "@testing-library/dom": ^10.4.1
   "@testing-library/jest-dom": ^6.9.1
   "@testing-library/react": ^16.3.2
@@ -58,7 +58,7 @@ catalog:
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
   "@typescript-eslint/parser": ^8.59.3
-  "@vitejs/plugin-react-swc": ^4.3.1
+  "@vitejs/plugin-react": "^6.0.2"
   eslint: ^9.39.4
   "@eslint/js": ^9.39.4
   "typescript-eslint": ^8.59.3
@@ -84,7 +84,7 @@ catalog:
   tsx: ^4.22.0
   typedoc: ^0.28.19
   typescript: ^6.0.3
-  vite: ^7.3.3
+  vite: ^8.0.13
   vite-plugin-eslint: ^1.8.1
   vitest: ^4.1.6
   zx: ^8.8.5
@@ -168,13 +168,6 @@ overrides:
   "@open-pioneer/runtime": 4.6.0-dev.20260518102806
   "@open-pioneer/test-utils": 4.6.0-dev.20260518102806
   "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518102806
-
-  "@open-pioneer/build-package-cli": 3.1.0-dev.20260518093119
-  "@open-pioneer/build-package": 4.2.0-dev.20260518093119
-  "@open-pioneer/build-common": 4.0.0-dev.20260518093119
-  "@open-pioneer/build-support": 3.1.0-dev.20260518093119
-  "@open-pioneer/check-pnpm-duplicates": 0.3.2-dev.20260518093119
-  "@open-pioneer/vite-plugin-pioneer": 5.2.0-dev.20260518093119
 
 allowUnusedPatches: true
 patchedDependencies:
