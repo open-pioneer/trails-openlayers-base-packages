@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { type FormatNumberOptions } from "@formatjs/intl";
 import type { BaseFieldConfig } from "./BaseFieldConfig";
 
 /**
@@ -100,7 +101,7 @@ export interface NumberFieldConfig extends BaseFieldConfig {
      * `maximumFractionDigits`, `style`, `currency`, etc. Use this to control how the number
      * is displayed to the user (e.g., as currency, percentage, or with specific decimal places).
      */
-    readonly formatOptions?: Intl.NumberFormatOptions;
+    readonly formatOptions?: FormatNumberOptions;
 
     /**
      * Increment/decrement step size when using stepper buttons.

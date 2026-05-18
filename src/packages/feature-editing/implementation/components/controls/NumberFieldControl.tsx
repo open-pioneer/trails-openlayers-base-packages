@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { NumberInput, type NumberInputValueChangeDetails } from "@chakra-ui/react";
+import { type FormatNumberOptions } from "@formatjs/intl";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
@@ -54,7 +55,7 @@ export function NumberFieldControl({
 // Additionally store the state as a number to be able to react to outside changes of 'value'.
 function useNumericState(
     value: number | undefined,
-    formatOptions: Intl.NumberFormatOptions | undefined,
+    formatOptions: FormatNumberOptions | undefined,
     setStringValue: (newValue: string | undefined) => void
 ) {
     const [numericValue, setNumericValue] = useState(value);
@@ -71,7 +72,7 @@ function useNumericState(
     return setNumericValue;
 }
 
-function useFormatNumber(formatOptions: Intl.NumberFormatOptions | undefined) {
+function useFormatNumber(formatOptions: FormatNumberOptions | undefined) {
     const { formatNumber } = useIntl();
 
     return useCallback(
