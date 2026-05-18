@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, effect, reactive } from "@conterra/reactivity-core";
-import { ManualPromise, Resource, createLogger, createManualPromise } from "@open-pioneer/core";
+import { effect, Reactive, reactive } from "@conterra/reactivity-core";
+import { createLogger, createManualPromise, ManualPromise, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -20,7 +20,7 @@ import VectorSource from "ol/source/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { sourceId } from "open-pioneer:source-info";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
-import { Tooltip, createTooltip } from "./Tooltip";
+import { createTooltip, Tooltip } from "./Tooltip";
 import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { createStyles } from "./style-utils";
 
@@ -271,5 +271,9 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
 
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
+    }
+    
+    setIntl(intl: PackageIntl) {
+        this._intl = intl;
     }
 }

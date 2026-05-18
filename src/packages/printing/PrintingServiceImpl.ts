@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createManualPromise, Resource } from "@open-pioneer/core";
-import { ServiceOptions } from "@open-pioneer/runtime";
+import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
 import { ScaleLine } from "ol/control";
 import { Interaction } from "ol/interaction";
@@ -11,24 +11,39 @@ import { FlatStyleLike } from "ol/style/flat";
 import { StyleLike } from "ol/style/Style";
 import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay, PRINTING_HIDE_CLASS } from "./utils";
+import { CleanupHandle, ReadonlyReactive, watchValue } from "@conterra/reactivity-core";
 
 export class PrintingServiceImpl implements PrintingService {
-    private defaultOverlayText: string;
+    #intl: ReadonlyReactive<PackageIntl>;
+    #watchHandler: CleanupHandle;
+    #defaultOverlayText: string;
 
     constructor(options: ServiceOptions) {
-        this.defaultOverlayText = options.intl.formatMessage({
+        this.#intl = options.currentIntl;
+        this.#defaultOverlayText = this.#intl.value.formatMessage({
             id: "printingMap"
         });
+        this.#watchHandler = watchValue(
+            () => options.currentIntl.value,
+            (intl) => {
+                this.#defaultOverlayText = intl.formatMessage({
+                    id: "printingMap"
+                });
+            }
+        );
     }
 
     async printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResultImpl> {
         const job = new PrintJob(olMap, {
             blockUserInteraction: true,
-            overlayText: this.defaultOverlayText,
+            overlayText: this.#defaultOverlayText,
             viewPadding: "auto",
             ...options
         });
         return await job.printMap();
+    }
+    destroy(): void {
+        this.#watchHandler?.destroy();
     }
 }
 

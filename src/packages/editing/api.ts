@@ -73,6 +73,8 @@ export interface EditingWorkflow {
      * failed. It resolves with undefined when the editing was stopped.
      */
     whenComplete(): Promise<Record<string, string> | undefined>;
+
+    setIntl(intl: PackageIntl): void;
 }
 
 /**

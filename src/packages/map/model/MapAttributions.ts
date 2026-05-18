@@ -27,6 +27,7 @@ export class MapAttributions {
             text: attribution
         }))
     );
+    #intl: PackageIntl;
 
     constructor(options: {
         olMap: OlMap;
@@ -35,7 +36,8 @@ export class MapAttributions {
         intl: PackageIntl;
     }) {
         this.#olMap = options.olMap;
-
+        this.#intl = options.intl;
+        
         const control = (this.#control = new Attribution({
             collapsible: false,
             target: options.showControl ? undefined : createDummyTargetNode()
@@ -53,7 +55,7 @@ export class MapAttributions {
         const element = (control as any).element as HTMLElement | undefined;
         if (element) {
             element.role = "region";
-            element.ariaLabel = options.intl.formatMessage({ id: "attribution.label" });
+            element.ariaLabel = this.#intl.formatMessage({ id: "attribution.label" });
         }
 
         this.#olMap.addControl(control);
@@ -66,6 +68,9 @@ export class MapAttributions {
 
     get attributionItems(): AttributionItem[] {
         return this.#attributionItems.value;
+    }
+    set intl(intl: PackageIntl) {
+        this.#intl = intl;
     }
 }
 

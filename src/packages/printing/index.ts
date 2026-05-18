@@ -49,6 +49,11 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * while printing the map.
      */
     printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResult>;
+
+    /**
+     * Destroys service resources
+     */
+    destroy(): void;
 }
 
 /** The result of a print operation. */

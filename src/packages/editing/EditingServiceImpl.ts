@@ -8,7 +8,7 @@ import { FlatStyle } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 import { Feature } from "ol";
-import { watch } from "@conterra/reactivity-core";
+import { CleanupHandle, watch, watchValue } from "@conterra/reactivity-core";
 
 export interface References {
     mapRegistry: MapRegistry;
@@ -39,6 +39,13 @@ export class EditingServiceImpl implements EditingService {
             );
         }
 
+        const handler = watchValue(
+            () => this._serviceOptions.currentIntl.value,
+            (intl) => {
+                this._workflows.get(mapId)?.setIntl(intl);
+            }
+        );
+
         workflow = new EditingCreateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
@@ -46,10 +53,10 @@ export class EditingServiceImpl implements EditingService {
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.currentIntl.value
         });
         this._workflows.set(mapId, workflow);
-        this._connectToWorkflowDestroyEvent(workflow, mapId);
+        this._connectToWorkflowDestroyEvent(workflow, mapId, handler);
 
         return workflow;
     }
@@ -72,6 +79,13 @@ export class EditingServiceImpl implements EditingService {
             );
         }
 
+        const handler = watchValue(
+            () => this._serviceOptions.currentIntl.value,
+            (intl) => {
+                this._workflows.get(mapId)?.setIntl(intl);
+            }
+        );
+
         workflow = new EditingUpdateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
@@ -80,10 +94,10 @@ export class EditingServiceImpl implements EditingService {
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.currentIntl.value
         });
         this._workflows.set(mapId, workflow);
-        this._connectToWorkflowDestroyEvent(workflow, mapId);
+        this._connectToWorkflowDestroyEvent(workflow, mapId, handler);
 
         return workflow;
     }
@@ -109,7 +123,8 @@ export class EditingServiceImpl implements EditingService {
 
     _connectToWorkflowDestroyEvent(
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
-        mapId: string
+        mapId: string,
+        i18nHandler: CleanupHandle
     ) {
         const watchStateHandle = watch(
             () => [workflow.getState()],
@@ -119,6 +134,7 @@ export class EditingServiceImpl implements EditingService {
                         this._workflows.delete(mapId);
                     }
                     watchStateHandle.destroy();
+                    i18nHandler.destroy();
                 }
             },
             { dispatch: "sync" }

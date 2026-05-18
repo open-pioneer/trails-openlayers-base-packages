@@ -1,13 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
-import { Demo, createDemos } from "../demos/Demo";
-import type {
-    DECLARE_SERVICE_INTERFACE,
-    PackageIntl,
-    Service,
-    ServiceOptions
-} from "@open-pioneer/runtime";
+import { reactive, ReadonlyReactive, watchValue } from "@conterra/reactivity-core";
+import { createDemos, Demo } from "../demos/Demo";
+import { DECLARE_SERVICE_INTERFACE, PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { Resource } from "@open-pioneer/core";
@@ -61,7 +56,7 @@ export class AppInitModel implements Service {
             editingService,
             notificationService
         } = serviceOptions.references;
-        const intl = serviceOptions.intl;
+        const currentIntl = serviceOptions.currentIntl;
 
         this.#init({
             mapRegistry,
@@ -69,7 +64,7 @@ export class AppInitModel implements Service {
             notifier,
             vectorSelectionSourceFactory,
             editingService,
-            intl,
+            currentIntl,
             notificationService
         }).catch((err) => {
             this.#appState.value = {
@@ -96,7 +91,7 @@ export class AppInitModel implements Service {
         notifier: NotificationService;
         vectorSelectionSourceFactory: VectorSelectionSourceFactory;
         editingService: EditingService;
-        intl: PackageIntl;
+        currentIntl: ReadonlyReactive<PackageIntl>;
         notificationService: NotificationService;
     }) {
         const {
@@ -105,7 +100,7 @@ export class AppInitModel implements Service {
             notifier,
             vectorSelectionSourceFactory,
             editingService,
-            intl,
+            currentIntl,
             notificationService
         } = options;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
@@ -115,17 +110,44 @@ export class AppInitModel implements Service {
         }
 
         const demos = createDemos({
-            intl,
+            intl: currentIntl.value,
             httpService,
             mapModel,
             vectorSelectionSourceFactory,
             editingService,
             notificationService
         });
+        const appModel = new AppModel(mapModel, notifier, currentIntl.value, demos);
+
+        const appModelI18nHandler = watchValue(
+            () => currentIntl.value,
+            (intl) => {
+                appModel.intl = intl;
+                const newDemos = createDemos({
+                    intl,
+                    httpService,
+                    mapModel,
+                    vectorSelectionSourceFactory,
+                    editingService,
+                    notificationService
+                });
+                const newAppmodel = new AppModel(mapModel, notifier, intl, newDemos);
+                this.#appState.value = {
+                    kind: "ready",
+                    appModel: newAppmodel,
+                    destroy() {
+                        appModelI18nHandler.destroy();
+                        this.appModel.destroy();
+                    }
+                };
+            }
+        );
+        
         const state: AppStateReady = {
             kind: "ready",
-            appModel: new AppModel(mapModel, notifier, intl, demos),
+            appModel: appModel,
             destroy() {
+                appModelI18nHandler.destroy();
                 this.appModel.destroy();
             }
         };
@@ -138,4 +160,5 @@ export class AppInitModel implements Service {
         this.#appState.value = state;
         this.#resources.push(state);
     }
+    
 }

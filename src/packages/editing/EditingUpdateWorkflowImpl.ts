@@ -303,4 +303,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }
+    setIntl(intl: PackageIntl) {
+        this._intl = intl;
+    }
 }

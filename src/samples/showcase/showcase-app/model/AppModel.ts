@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, batch, computed, reactive, watch } from "@conterra/reactivity-core";
-import { Resource, createLogger } from "@open-pioneer/core";
+import { batch, computed, Reactive, reactive, watch } from "@conterra/reactivity-core";
+import { createLogger, Resource } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -47,7 +47,7 @@ export class AppModel {
         this.#applyStateFromUrl();
         this.#resources.push(this.#syncStateToUrl());
     }
-
+    
     destroy(): void {
         this.#currentDemo.value[1].destroy?.();
     }
@@ -67,6 +67,10 @@ export class AppModel {
     get allDemoInfos(): DemoInfo[] {
         return this.#allDemoInfos.value;
     }
+    set intl(intl: PackageIntl) {
+        this.#intl = intl;
+    }
+
 
     selectDemo(demoId: string) {
         const newDemo = this.#demosById.get(demoId);
