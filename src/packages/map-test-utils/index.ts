@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { watch } from "@conterra/reactivity-core";
+import { constant, watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
     ExtentConfig,
@@ -274,8 +274,10 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
 }
 
 function createLayerFactory(httpService?: HttpService): LayerFactory {
+    const intl = {} satisfies Partial<PackageIntl> as PackageIntl;
     return new LayerFactoryImpl({
-        intl: {} satisfies Partial<PackageIntl> as PackageIntl,
+        intl,
+        currentIntl: constant(intl),
         references: { httpService: httpService ?? DUMMY_HTTP_SERVICE },
         properties: {},
         referencesMeta: { httpService: { serviceId: "http.HttpService" } }
