@@ -7,17 +7,17 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.6.0-dev.20260518093554
-  "@open-pioneer/core": 4.6.0-dev.20260518093554
-  "@open-pioneer/http": 4.6.0-dev.20260518093554
-  "@open-pioneer/integration": 4.6.0-dev.20260518093554
-  "@open-pioneer/local-storage": 4.6.0-dev.20260518093554
-  "@open-pioneer/notifier": 4.6.0-dev.20260518093554
-  "@open-pioneer/react-utils": 4.6.0-dev.20260518093554
-  "@open-pioneer/reactivity": 4.6.0-dev.20260518093554
-  "@open-pioneer/runtime": 4.6.0-dev.20260518093554
-  "@open-pioneer/test-utils": 4.6.0-dev.20260518093554
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518093554
+  "@open-pioneer/base-theme": 4.6.0-dev.20260518102806
+  "@open-pioneer/core": 4.6.0-dev.20260518102806
+  "@open-pioneer/http": 4.6.0-dev.20260518102806
+  "@open-pioneer/integration": 4.6.0-dev.20260518102806
+  "@open-pioneer/local-storage": 4.6.0-dev.20260518102806
+  "@open-pioneer/notifier": 4.6.0-dev.20260518102806
+  "@open-pioneer/react-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/reactivity": 4.6.0-dev.20260518102806
+  "@open-pioneer/runtime": 4.6.0-dev.20260518102806
+  "@open-pioneer/test-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518102806
 
   # Frontend dependencies
   "@chakra-ui/react": ^3.34.0
@@ -157,17 +157,17 @@ overrides:
   "@zag-js/splitter": "1.35.3"
 
   # Remove before release
-  "@open-pioneer/base-theme": 4.6.0-dev.20260518093554
-  "@open-pioneer/core": 4.6.0-dev.20260518093554
-  "@open-pioneer/http": 4.6.0-dev.20260518093554
-  "@open-pioneer/integration": 4.6.0-dev.20260518093554
-  "@open-pioneer/local-storage": 4.6.0-dev.20260518093554
-  "@open-pioneer/notifier": 4.6.0-dev.20260518093554
-  "@open-pioneer/react-utils": 4.6.0-dev.20260518093554
-  "@open-pioneer/reactivity": 4.6.0-dev.20260518093554
-  "@open-pioneer/runtime": 4.6.0-dev.20260518093554
-  "@open-pioneer/test-utils": 4.6.0-dev.20260518093554
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518093554
+  "@open-pioneer/base-theme": 4.6.0-dev.20260518102806
+  "@open-pioneer/core": 4.6.0-dev.20260518102806
+  "@open-pioneer/http": 4.6.0-dev.20260518102806
+  "@open-pioneer/integration": 4.6.0-dev.20260518102806
+  "@open-pioneer/local-storage": 4.6.0-dev.20260518102806
+  "@open-pioneer/notifier": 4.6.0-dev.20260518102806
+  "@open-pioneer/react-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/reactivity": 4.6.0-dev.20260518102806
+  "@open-pioneer/runtime": 4.6.0-dev.20260518102806
+  "@open-pioneer/test-utils": 4.6.0-dev.20260518102806
+  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260518102806
 
   "@open-pioneer/build-package-cli": 3.1.0-dev.20260518093119
   "@open-pioneer/build-package": 4.2.0-dev.20260518093119
