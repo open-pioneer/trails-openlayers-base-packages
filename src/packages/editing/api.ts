@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
@@ -39,7 +40,7 @@ export interface EditingWorkflowProps {
     vertexStyle: FlatStyle;
     httpService: HttpService;
     layerFactory: LayerFactory;
-    intl: PackageIntl;
+    intl: ReadonlyReactive<PackageIntl>;
 }
 
 /**
@@ -73,8 +74,6 @@ export interface EditingWorkflow {
      * failed. It resolves with undefined when the editing was stopped.
      */
     whenComplete(): Promise<Record<string, string> | undefined>;
-
-    setIntl(intl: PackageIntl): void;
 }
 
 /**

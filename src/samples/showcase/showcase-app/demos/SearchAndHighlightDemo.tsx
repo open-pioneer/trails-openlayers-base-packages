@@ -1,24 +1,27 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { computed } from "@conterra/reactivity-core";
 import { Highlight, MapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent, SearchSource } from "@open-pioneer/search";
 import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
+import { DemoDescription } from "./DemoDescription";
 import { Geometry } from "ol/geom";
 import { ReactNode } from "react";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 
 export function createSearchAndHighlightDemo({
-    intl,
+    currentIntl,
     httpService,
     mapModel
 }: SharedDemoOptions): Demo {
     return {
         id: "searchAndHighlight",
-        title: intl.formatMessage({ id: "demos.searchAndHighlight.title" }),
+        title: computed(() =>
+            currentIntl.value.formatMessage({ id: "demos.searchAndHighlight.title" })
+        ),
         createModel() {
-            return new DemoModelImpl(intl, mapModel, httpService);
+            return new DemoModelImpl(mapModel, httpService);
         }
     };
 }
@@ -31,11 +34,11 @@ class DemoModelImpl implements DemoModel {
     description: ReactNode;
     mainWidget: ReactNode;
 
-    constructor(intl: PackageIntl, mapModel: MapModel, httpService: HttpService) {
+    constructor(mapModel: MapModel, httpService: HttpService) {
         this.#searchSource = new PhotonGeocoder("Photon Geocoder", ["city", "street"], httpService);
         this.#mapModel = mapModel;
 
-        this.description = intl.formatRichMessage({ id: "demos.searchAndHighlight.description" });
+        this.description = <DemoDescription messageId="demos.searchAndHighlight.description" />;
         this.mainWidget = (
             <Search
                 sources={[this.#searchSource]}

@@ -15,6 +15,7 @@ import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
+import { constant } from "@conterra/reactivity-core";
 
 // Flat style parsing doesn't work in tests (node, happy-dom, etc.)
 vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
@@ -408,7 +409,7 @@ async function setupCreateWorkflow(
         polygonStyle,
         vertexStyle,
         httpService,
-        intl,
+        intl: constant(intl),
         layerFactory
     });
 

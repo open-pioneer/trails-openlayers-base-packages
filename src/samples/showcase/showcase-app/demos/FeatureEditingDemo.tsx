@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { computed } from "@conterra/reactivity-core";
 import { Box } from "@chakra-ui/react";
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import {
@@ -16,14 +17,17 @@ import { Collection, Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
+import { DemoDescription } from "./DemoDescription";
 import { LAYER_CONFIG } from "./feature-editing/layerConfig";
 
 export function createFeatureEditingDemo(options: SharedDemoOptions): Demo {
     return {
         id: "featureEditing",
-        title: options.intl.formatMessage({ id: "demos.featureEditing.title" }),
+        title: computed(() =>
+            options.currentIntl.value.formatMessage({ id: "demos.featureEditing.title" })
+        ),
         createModel() {
-            return new DemoModelImpl(options);
+            return new DemoModelImpl();
         }
     };
 }
@@ -32,9 +36,8 @@ class DemoModelImpl implements DemoModel {
     description: ReactNode;
     mainWidget: ReactNode;
 
-    constructor(options: SharedDemoOptions) {
-        const { intl } = options;
-        this.description = intl.formatRichMessage({ id: "demos.featureEditing.description" });
+    constructor() {
+        this.description = <DemoDescription messageId="demos.featureEditing.description" />;
         this.mainWidget = <EditorComponent />;
     }
 }

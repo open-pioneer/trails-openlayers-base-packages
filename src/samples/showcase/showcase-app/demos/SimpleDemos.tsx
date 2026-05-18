@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { computed } from "@conterra/reactivity-core";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
 import {
@@ -16,43 +17,46 @@ import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Demo, SharedDemoOptions } from "./Demo";
+import { DemoDescription } from "./DemoDescription";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 
-export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
+export function createCoordinateViewerDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "coordinateViewer",
-        title: intl.formatMessage({ id: "demos.coordinateViewer.title" }),
+        title: computed(() =>
+            currentIntl.value.formatMessage({ id: "demos.coordinateViewer.title" })
+        ),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.coordinateViewer.description" }),
+                description: <DemoDescription messageId="demos.coordinateViewer.description" />,
                 mainWidget: <CoordinateViewer />
             };
         }
     };
 }
 
-export function createGeolocationDemo({ intl }: SharedDemoOptions): Demo {
+export function createGeolocationDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "geolocation",
-        title: intl.formatMessage({ id: "demos.geolocation.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.geolocation.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.geolocation.description" }),
+                description: <DemoDescription messageId="demos.geolocation.description" />,
                 tools: <Geolocation />
             };
         }
     };
 }
 
-export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
+export function createMapNavigationDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "mapNavigation",
-        title: intl.formatMessage({ id: "demos.mapNavigation.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.mapNavigation.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.mapNavigation.description" }),
+                description: <DemoDescription messageId="demos.mapNavigation.description" />,
                 tools: (
                     <>
                         <ZoomIn />
@@ -67,30 +71,30 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
     };
 }
 
-export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
+export function createMeasurementDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "measurement",
-        title: intl.formatMessage({ id: "demos.measurement.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.measurement.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.measurement.description" }),
+                description: <DemoDescription messageId="demos.measurement.description" />,
                 mainWidget: <Measurement />
             };
         }
     };
 }
 
-export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
+export function createOverviewMapDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "overviewMap",
-        title: intl.formatMessage({ id: "demos.overviewMap.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.overviewMap.title" })),
         createModel() {
             const overviewMapLayer = new TileLayer({
                 source: new OSM()
             });
 
             return {
-                description: intl.formatRichMessage({ id: "demos.overviewMap.description" }),
+                description: <DemoDescription messageId="demos.overviewMap.description" />,
                 mainWidget: <OverviewMap olLayer={overviewMapLayer} />,
                 destroy() {
                     overviewMapLayer.dispose();
@@ -100,65 +104,67 @@ export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
     };
 }
 
-export function createPrintingDemo({ intl }: SharedDemoOptions): Demo {
+export function createPrintingDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "printing",
-        title: intl.formatMessage({ id: "demos.printing.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.printing.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.printing.description" }),
+                description: <DemoDescription messageId="demos.printing.description" />,
                 mainWidget: <Printing />
             };
         }
     };
 }
 
-export function createScaleBarDemo({ intl }: SharedDemoOptions): Demo {
+export function createScaleBarDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "scaleBar",
-        title: intl.formatMessage({ id: "demos.scaleBar.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleBar.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.scaleBar.description" }),
+                description: <DemoDescription messageId="demos.scaleBar.description" />,
                 tools: <ScaleBar />
             };
         }
     };
 }
 
-export function createScaleViewerDemo({ intl }: SharedDemoOptions): Demo {
+export function createScaleViewerDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "scaleViewer",
-        title: intl.formatMessage({ id: "demos.scaleViewer.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleViewer.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.scaleViewer.description" }),
+                description: <DemoDescription messageId="demos.scaleViewer.description" />,
                 mainWidget: <ScaleViewer />
             };
         }
     };
 }
 
-export function createScaleSetterDemo({ intl }: SharedDemoOptions): Demo {
+export function createScaleSetterDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "scaleSetter",
-        title: intl.formatMessage({ id: "demos.scaleSetter.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleSetter.title" })),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.scaleSetter.description" }),
+                description: <DemoDescription messageId="demos.scaleSetter.description" />,
                 mainWidget: <ScaleSetter />
             };
         }
     };
 }
 
-export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
+export function createSpatialBookmarksDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
         id: "spatialBookmarks",
-        title: intl.formatMessage({ id: "demos.spatialBookmarks.title" }),
+        title: computed(() =>
+            currentIntl.value.formatMessage({ id: "demos.spatialBookmarks.title" })
+        ),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.spatialBookmarks.description" }),
+                description: <DemoDescription messageId="demos.spatialBookmarks.description" />,
                 mainWidget: <SpatialBookmarks />
             };
         }

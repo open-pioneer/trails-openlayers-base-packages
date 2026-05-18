@@ -52,17 +52,17 @@ messages:
       title: Measurement
       description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas. <code>Measurement</code> component for measuring distances and areas.
     tocLegend:
-      title: Toc, BasemapSwitcher and Legend :)
+      title: Toc, BasemapSwitcher and Legend
       description: This demo shows how to use the <code>Toc</code>, <code>BasemapSwitcher</code> and <code>Legend</code> components to control the map content and to show the legend for the contents.
       tocTitle: TOC
       legendTitle: Legend
     selectionResultList:
-      title: Selection and Result List! :)
+      title: Selection and Result List
       description: This demo shows how to use the <code>Selection</code> component to select feature in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
     editing:
-      title: Editing !?
+      title: Editing
       description: This demo shows how the API of the <code>editing</code> package can be used to provide editing functionality.
-      startCreateButton: create feature :)
+      startCreateButton: create feature
       startUpdateButton: update feature
       stopButton: stop editing
       create:

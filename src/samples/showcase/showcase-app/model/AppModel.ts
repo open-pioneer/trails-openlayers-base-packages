@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, computed, Reactive, reactive, watch } from "@conterra/reactivity-core";
+import {
+    batch,
+    computed,
+    Reactive,
+    reactive,
+    ReadonlyReactive,
+    watch
+} from "@conterra/reactivity-core";
 import { createLogger, Resource } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
@@ -14,24 +21,27 @@ const LOG = createLogger(sourceId);
 export class AppModel {
     #mapModel: MapModel;
     #notifier: NotificationService;
-    #intl: PackageIntl;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
 
     #demosById: Map<string, Demo>;
     #currentDemo: Reactive<[Demo, DemoModel]>;
     #allDemoInfos = computed<DemoInfo[]>(() => {
-        return Array.from(this.#demosById.values());
+        return Array.from(this.#demosById.values(), (demo) => ({
+            id: demo.id,
+            title: demo.title.value
+        }));
     });
     #resources: Resource[] = [];
 
     constructor(
         mapModel: MapModel,
         notifier: NotificationService,
-        intl: PackageIntl,
+        currentIntl: ReadonlyReactive<PackageIntl>,
         demos: Demo[]
     ) {
         this.#mapModel = mapModel;
         this.#notifier = notifier;
-        this.#intl = intl;
+        this.#currentIntl = currentIntl;
 
         this.#demosById = new Map(demos.map((demo) => [demo.id, demo]));
         if (this.#demosById.size === 0) {
@@ -47,7 +57,7 @@ export class AppModel {
         this.#applyStateFromUrl();
         this.#resources.push(this.#syncStateToUrl());
     }
-    
+
     destroy(): void {
         this.#currentDemo.value[1].destroy?.();
     }
@@ -67,10 +77,6 @@ export class AppModel {
     get allDemoInfos(): DemoInfo[] {
         return this.#allDemoInfos.value;
     }
-    set intl(intl: PackageIntl) {
-        this.#intl = intl;
-    }
-
 
     selectDemo(demoId: string) {
         const newDemo = this.#demosById.get(demoId);
@@ -95,7 +101,10 @@ export class AppModel {
 
         if (!this.#demosById.has(demoId)) {
             this.#notifier.notify({
-                title: this.#intl.formatMessage({ id: "demoSelection.notFound" }, { demoId })
+                title: this.#currentIntl.value.formatMessage(
+                    { id: "demoSelection.notFound" },
+                    { demoId }
+                )
             });
             return;
         }

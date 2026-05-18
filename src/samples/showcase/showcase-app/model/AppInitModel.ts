@@ -1,8 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, ReadonlyReactive, watchValue } from "@conterra/reactivity-core";
-import { createDemos, Demo } from "../demos/Demo";
-import { DECLARE_SERVICE_INTERFACE, PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
+import { reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { createDemos } from "../demos/Demo";
+import {
+    DECLARE_SERVICE_INTERFACE,
+    PackageIntl,
+    Service,
+    ServiceOptions
+} from "@open-pioneer/runtime";
 import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { Resource } from "@open-pioneer/core";
@@ -12,7 +17,10 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { EditingService } from "@open-pioneer/editing";
 
-export type DemoInfo = Pick<Demo, "id" | "title">;
+export interface DemoInfo {
+    id: string;
+    title: string;
+}
 
 export interface References {
     httpService: HttpService;
@@ -110,44 +118,19 @@ export class AppInitModel implements Service {
         }
 
         const demos = createDemos({
-            intl: currentIntl.value,
+            currentIntl,
             httpService,
             mapModel,
             vectorSelectionSourceFactory,
             editingService,
             notificationService
         });
-        const appModel = new AppModel(mapModel, notifier, currentIntl.value, demos);
+        const appModel = new AppModel(mapModel, notifier, currentIntl, demos);
 
-        const appModelI18nHandler = watchValue(
-            () => currentIntl.value,
-            (intl) => {
-                appModel.intl = intl;
-                const newDemos = createDemos({
-                    intl,
-                    httpService,
-                    mapModel,
-                    vectorSelectionSourceFactory,
-                    editingService,
-                    notificationService
-                });
-                const newAppmodel = new AppModel(mapModel, notifier, intl, newDemos);
-                this.#appState.value = {
-                    kind: "ready",
-                    appModel: newAppmodel,
-                    destroy() {
-                        appModelI18nHandler.destroy();
-                        this.appModel.destroy();
-                    }
-                };
-            }
-        );
-        
         const state: AppStateReady = {
             kind: "ready",
-            appModel: appModel,
+            appModel,
             destroy() {
-                appModelI18nHandler.destroy();
                 this.appModel.destroy();
             }
         };
@@ -160,5 +143,4 @@ export class AppInitModel implements Service {
         this.#appState.value = state;
         this.#resources.push(state);
     }
-    
 }
