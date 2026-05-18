@@ -76,7 +76,7 @@ catalog:
   husky: ^9.1.7
   js-yaml: ^4.1.1
   jsdom: ^29.1.1
-  lint-staged: ^16.4.0
+  lint-staged: ^17.0.4
   prettier: ^3.8.3
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.1.3
