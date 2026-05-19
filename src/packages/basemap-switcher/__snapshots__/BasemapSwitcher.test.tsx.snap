@@ -46,6 +46,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
         >
           <span
             class="chakra-tooltip__trigger"
+            data-ownedby="_r_d_"
             data-part="trigger"
             data-scope="tooltip"
             data-state="closed"

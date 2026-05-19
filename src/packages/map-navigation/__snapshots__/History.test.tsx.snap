@@ -4,6 +4,7 @@ exports[`should successfully create an view history navigation component 1`] = `
 <button
   aria-label="view-forward.title"
   class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-19u3ixl"
+  data-ownedby="_r_1_"
   data-part="trigger"
   data-scope="tooltip"
   data-state="closed"
@@ -41,6 +42,7 @@ exports[`should successfully create an view history navigation component 2`] = `
 <button
   aria-label="view-backward.title"
   class="chakra-button chakra-tooltip__trigger tool-button view view-backward tool-button--disabled css-19u3ixl"
+  data-ownedby="_r_0_"
   data-part="trigger"
   data-scope="tooltip"
   data-state="closed"

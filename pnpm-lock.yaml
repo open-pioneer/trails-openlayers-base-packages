@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@chakra-ui/react':
-      specifier: ^3.34.0
-      version: 3.34.0
     '@changesets/cli':
       specifier: ^2.31.0
       version: 2.31.0
@@ -229,24 +226,36 @@ overrides:
   stylis@<4.3.5: '>= 4.3.5'
   regenerator-runtime@<=0.13.11: ^0.14.0
   csstype@<3.2.3: '>=3.2.3'
-  '@ark-ui/react': 5.34.1
-  '@zag-js/splitter': 1.35.3
-  '@open-pioneer/base-theme': 4.6.0-dev.20260519113011
-  '@open-pioneer/core': 4.6.0-dev.20260519113011
-  '@open-pioneer/http': 4.6.0-dev.20260519113011
-  '@open-pioneer/integration': 4.6.0-dev.20260519113011
-  '@open-pioneer/local-storage': 4.6.0-dev.20260519113011
-  '@open-pioneer/notifier': 4.6.0-dev.20260519113011
-  '@open-pioneer/reactivity': 4.6.0-dev.20260519113011
-  '@open-pioneer/react-utils': 4.6.0-dev.20260519113011
-  '@open-pioneer/runtime': 4.6.0-dev.20260519113011
-  '@open-pioneer/test-utils': 4.6.0-dev.20260519113011
-  '@open-pioneer/chakra-snippets': 4.6.0-dev.20260519113011
+  '@chakra-ui/react': 3.35.0
+  '@ark-ui/react': 5.36.2
+  '@zag-js/dialog': 1.40.0
+  '@zag-js/drawer': 1.40.0
+  '@zag-js/hover-card': 1.40.0
+  '@zag-js/menu': 1.40.0
+  '@zag-js/popover': 1.40.0
+  '@zag-js/tooltip': 1.40.0
+  '@zag-js/interact-outside': 1.40.0
+  '@open-pioneer/base-theme': 4.6.0-dev.20260519125519
+  '@open-pioneer/core': 4.6.0-dev.20260519125519
+  '@open-pioneer/http': 4.6.0-dev.20260519125519
+  '@open-pioneer/integration': 4.6.0-dev.20260519125519
+  '@open-pioneer/local-storage': 4.6.0-dev.20260519125519
+  '@open-pioneer/notifier': 4.6.0-dev.20260519125519
+  '@open-pioneer/reactivity': 4.6.0-dev.20260519125519
+  '@open-pioneer/react-utils': 4.6.0-dev.20260519125519
+  '@open-pioneer/runtime': 4.6.0-dev.20260519125519
+  '@open-pioneer/test-utils': 4.6.0-dev.20260519125519
+  '@open-pioneer/chakra-snippets': 4.6.0-dev.20260519125519
 
 patchedDependencies:
-  '@ark-ui/react@*': 6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb
-  '@zag-js/interact-outside': 7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d
-  '@zag-js/splitter': 075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb
+  '@ark-ui/react@*': 767aaf2c2661cde67481abcb34f0720395e9f3f4e467e888edda574784cdc73a
+  '@zag-js/dialog': c7620689b03416985613dfd5126a308b887f7577b377d686da1dce19f4385525
+  '@zag-js/drawer': 004eff6f10fcc2c83fdf9c83e34d6b2728c274e1c22ae6ce4116373336abcf5d
+  '@zag-js/hover-card': 7c3393b15aff61dadd3f7351d1d10a1451867829d8ee2bfcdb46bf572867ff3e
+  '@zag-js/interact-outside': 53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6
+  '@zag-js/menu': e48af45dcee69745ca6cd7e12a21283d987b71f80e0df1203a90ad81785e57c1
+  '@zag-js/popover': 7eae3b904fed032547f7236426f90393b3f33cb5f2bf72dd7cbc9f0fadd1f518
+  '@zag-js/tooltip': fe503ab94d51d94738b31849a8626cd0196ff0072c8f8d25be204c5fee8e8bcc
 
 importers:
 
@@ -272,7 +281,7 @@ importers:
         version: 0.3.2
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
-        version: 6.0.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@open-pioneer/runtime@4.6.0-dev.20260519113011(@types/react@19.2.14))(rollup@4.60.4)(sass@1.99.0)(vite@8.0.13(@types/node@20.19.41)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.0)(yaml@2.9.0))
+        version: 6.0.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@open-pioneer/runtime@4.6.0-dev.20260519125519(@types/react@19.2.14))(rollup@4.60.4)(sass@1.99.0)(vite@8.0.13(@types/node@20.19.41)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.0)(yaml@2.9.0))
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.1
@@ -394,26 +403,26 @@ importers:
   src/packages/basemap-switcher:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -428,8 +437,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -438,29 +447,29 @@ importers:
   src/packages/coordinate-search:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -475,8 +484,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -488,20 +497,20 @@ importers:
   src/packages/coordinate-viewer:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -513,8 +522,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -526,17 +535,17 @@ importers:
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -552,8 +561,8 @@ importers:
   src/packages/feature-editing:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -561,26 +570,26 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -595,8 +604,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -608,14 +617,14 @@ importers:
   src/packages/geolocation:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
@@ -623,17 +632,17 @@ importers:
         specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -648,8 +657,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -658,20 +667,20 @@ importers:
   src/packages/legend:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -686,8 +695,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -696,8 +705,8 @@ importers:
   src/packages/map:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -708,20 +717,20 @@ importers:
         specifier: 'catalog:'
         version: 4.1.0
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -745,8 +754,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       '@types/jsdom':
         specifier: 'catalog:'
         version: 28.0.3
@@ -758,8 +767,8 @@ importers:
   src/packages/map-navigation:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -770,14 +779,14 @@ importers:
         specifier: workspace:*
         version: link:../map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -792,8 +801,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -808,8 +817,8 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -825,21 +834,21 @@ importers:
   src/packages/map-ui-components:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       react:
         specifier: 'catalog:'
         version: 19.2.6
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -851,23 +860,23 @@ importers:
   src/packages/measurement:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -879,8 +888,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -889,11 +898,11 @@ importers:
   src/packages/ogc-features:
     dependencies:
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -908,8 +917,8 @@ importers:
         specifier: workspace:*
         version: link:../search
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -918,17 +927,17 @@ importers:
   src/packages/overview-map:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -940,8 +949,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -950,26 +959,26 @@ importers:
   src/packages/printing:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       html2canvas:
         specifier: 'catalog:'
         version: 1.4.1
@@ -987,8 +996,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1000,29 +1009,29 @@ importers:
   src/packages/result-list:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@tanstack/react-table':
         specifier: 'catalog:'
         version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1046,8 +1055,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1059,17 +1068,17 @@ importers:
   src/packages/scale-bar:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1081,8 +1090,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1091,8 +1100,8 @@ importers:
   src/packages/scale-setter:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -1100,14 +1109,14 @@ importers:
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1122,8 +1131,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1132,20 +1141,20 @@ importers:
   src/packages/scale-viewer:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react:
         specifier: 'catalog:'
         version: 19.2.6
@@ -1154,8 +1163,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1164,23 +1173,23 @@ importers:
   src/packages/search:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1195,8 +1204,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1208,32 +1217,32 @@ importers:
   src/packages/selection:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1251,8 +1260,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1264,32 +1273,32 @@ importers:
   src/packages/spatial-bookmarks:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/core':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/local-storage':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1307,8 +1316,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1317,8 +1326,8 @@ importers:
   src/packages/toc:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -1326,20 +1335,20 @@ importers:
         specifier: workspace:*
         version: link:../basemap-switcher
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1354,8 +1363,8 @@ importers:
         specifier: workspace:*
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1367,8 +1376,8 @@ importers:
   src/samples/feature-editing-sample/editing-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
@@ -1382,11 +1391,11 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map-ui-components
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/scale-bar':
         specifier: workspace:^
         version: link:../../../packages/scale-bar
@@ -1409,20 +1418,20 @@ importers:
   src/samples/map-anchors/map-anchors-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1433,8 +1442,8 @@ importers:
   src/samples/map-sample/ol-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -1451,8 +1460,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/editing
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1469,8 +1478,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1478,17 +1487,17 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1523,14 +1532,14 @@ importers:
   src/samples/ogc-api-sample/ogc-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/basemap-switcher':
         specifier: workspace:*
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1541,11 +1550,11 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/ogc-features
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1562,8 +1571,8 @@ importers:
   src/samples/showcase/showcase-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -1574,8 +1583,8 @@ importers:
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/coordinate-search':
         specifier: workspace:*
         version: link:../../../packages/coordinate-search
@@ -1592,8 +1601,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1607,8 +1616,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1619,17 +1628,17 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1667,8 +1676,8 @@ importers:
   src/samples/test-dynamic-map/dynamic-map-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1676,14 +1685,14 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1703,20 +1712,20 @@ importers:
   src/samples/test-highlight-and-zoom/highlight-and-zoom-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react:
         specifier: 'catalog:'
         version: 19.2.6
@@ -1724,8 +1733,8 @@ importers:
   src/samples/test-overlay/overlay-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.5
@@ -1736,14 +1745,14 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1757,8 +1766,8 @@ importers:
   src/samples/test-printing-api/printing-api-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1766,11 +1775,11 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react:
         specifier: 'catalog:'
         version: 19.2.6
@@ -1778,23 +1787,23 @@ importers:
   src/samples/test-result-list/result-list-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@open-pioneer/chakra-snippets':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react:
         specifier: 'catalog:'
         version: 19.2.6
@@ -1802,8 +1811,8 @@ importers:
   src/samples/test-search/search-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.14)(react@19.2.6)
@@ -1814,14 +1823,14 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/notifier':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/search':
         specifier: workspace:*
         version: link:../../../packages/search
@@ -1841,8 +1850,8 @@ importers:
   src/samples/test-toc/toc-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+        specifier: 3.35.0
+        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.14)(react@19.2.6)
@@ -1856,14 +1865,14 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
       '@open-pioneer/reactivity':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519
       '@open-pioneer/runtime':
-        specifier: 4.6.0-dev.20260519113011
-        version: 4.6.0-dev.20260519113011(@types/react@19.2.14)
+        specifier: 4.6.0-dev.20260519125519
+        version: 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1887,8 +1896,8 @@ packages:
   '@adobe/css-tools@4.4.2':
     resolution: {integrity: sha512-baYZExFpsdkBNuvGKTKWCwKH57HRZLVtycZS05WTQNVOiXVSeAki3nU35zlRbToeMW8aHlJfyS+1C4BOv27q0A==}
 
-  '@ark-ui/react@5.34.1':
-    resolution: {integrity: sha512-RJlXCvsHzbK9LVxUVtaSD5pyF1PL8IUR1rHHkf0H0Sa397l6kOFE4EH7MCSj3pDumj2NsmKDVeVgfkfG0KCuEw==}
+  '@ark-ui/react@5.36.2':
+    resolution: {integrity: sha512-2lrZ7+Qtlj7hGx4qU2jZkE892JNrkULg/fUxqUuqmQfv9UGAXhdcw1Hr3N+zBgMDVz3aqip0Qa4v0Mox09MMvg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1983,8 +1992,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@chakra-ui/react@3.34.0':
-    resolution: {integrity: sha512-VLhpVwv5IVxhwajO10KnS1VQT4hDqQMQP/A796Ya+uVu8AdoSX+5HHyTLTkYIeXIDMe0xLqJfov04OBKbBchJA==}
+  '@chakra-ui/react@3.35.0':
+    resolution: {integrity: sha512-qzfRNLwxKjxx2IXjBj6uz1nYI+pKsq6uwHxO619+hx1OzNNuwLIjEHJxnDfBzoynO7sPCBlubMwFWb1e1PrXzw==}
     peerDependencies:
       '@emotion/react': '>=11'
       react: '>=18'
@@ -2354,14 +2363,14 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@floating-ui/core@1.7.4':
-    resolution: {integrity: sha512-C3HlIdsBxszvm5McXlB8PeOEWfBhcGBTZGkGlWc2U0KFY5IwG5OQEuQ8rq52DZmcHDlPLd+YFBK+cZcytwIFWg==}
+  '@floating-ui/core@1.7.5':
+    resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
 
-  '@floating-ui/dom@1.7.5':
-    resolution: {integrity: sha512-N0bD2kIPInNHUHehXhMke1rBGs1dwqvC9O9KYMyyjK7iXt7GAhnro7UlcuYcGdS/yYOlq0MAVgrow8IbWJwyqg==}
+  '@floating-ui/dom@1.7.6':
+    resolution: {integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==}
 
-  '@floating-ui/utils@0.2.10':
-    resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+  '@floating-ui/utils@0.2.11':
+    resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
   '@formatjs/fast-memoize@3.1.5':
     resolution: {integrity: sha512-KLi3fan6WnCHmigd9pmEEN8Hid0v4wiFBW576M/d07KMWYecf1CvyMI3n34vCmHT4AoVqG2n702kiHbXjzZX2A==}
@@ -2407,8 +2416,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@internationalized/date@3.11.0':
-    resolution: {integrity: sha512-BOx5huLAWhicM9/ZFs84CzP+V3gBW6vlpM02yzsdYC7TGlZJX1OJiEEHcSayF00Z+3jLlm4w79amvSt6RqKN3Q==}
+  '@internationalized/date@3.12.0':
+    resolution: {integrity: sha512-/PyIMzK29jtXaGU23qTvNZxvBXRtKbNnGDFD+PY6CZw/Y8Ex8pFUzkuCJCG9aOqmShjqhS9mPqP6Dk5onQY8rQ==}
 
   '@internationalized/number@3.6.5':
     resolution: {integrity: sha512-6hY4Kl4HPBvtfS62asS/R22JzNNy8vi/Ssev7x6EobfCp+9QIB2hKvI2EtbdJ0VSQacxVNtqhE/NmF/NZ0gm6g==}
@@ -2467,8 +2476,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@open-pioneer/base-theme@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-bwK0OMcM6les8t2/Tw0IbwTItljEmse9lpQZapwtUhvz4vxPUlPncdz3zfG89AHPYnPeOBATPlBfJAoGWAh98w==}
+  '@open-pioneer/base-theme@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-xpKlDgnRxsV09aePx+2N0IJFX5iijiHggdJUd6i7ETlm6DeEMqxwutJyYr8TAkGY71tlTitkb33rxup5o8q6QA==}
 
   '@open-pioneer/build-common@4.0.0':
     resolution: {integrity: sha512-RXUaNM0Qo1XAx21TGJI/KpiN1ZsLgRtUAGYSnfiaWpqL/drDEtMB0fE3y+CbfMp21syCK+B9k548zBdLIXyOfA==}
@@ -2495,8 +2504,8 @@ packages:
     resolution: {integrity: sha512-nrEreM98d0HasYWobTKnrFC2CV0FeJLmH0Pvma5W4Ne0zzuXM889tPF/U6qspyItV6vPtXrzd2ZOBWrgmzORSQ==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/chakra-snippets@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-r4Z3wQTGNFMRDsnY7pjMREPtfnu209W8woqvxQD4HgKC6zOmMCpGdr7rnqPnE6RNFabBknjnnDrSkzF/pkSMAA==}
+  '@open-pioneer/chakra-snippets@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-ImGKCGama1jmBIJhE2EDxM9YNcrcJx95VK7CdGxrAKg0s+X60IDwQUo52H3ekNf0SWScp/hY0Vdtaoi1J/ZbPw==}
 
   '@open-pioneer/changesets-release-line@0.1.0':
     resolution: {integrity: sha512-1Ipnbesv1lHQIODR01ltgB3lPC9MEN24j4QjeQU2atnZujGMPgNvVimL4/lZ0ZI6kZkeWQZIRE3derAPU1M+QQ==}
@@ -2507,35 +2516,35 @@ packages:
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/core@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-cO2rkSLjuZaFXdE5Sh/Ztc3ErpQlddb9VcHv6nphopStNb4JBkq9UpoPYTbOexKRpG+aIVZafr8TRamKuTHRzw==}
+  '@open-pioneer/core@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-w0trhOtRVR0ov97t8CCdm9U9g1FRBwluMoNu4pCXeutR0NzCkrIFwxIgFASpa0SrKI9n3Fk8oG43WU9zwURy0g==}
 
-  '@open-pioneer/http@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-fCCSNreL4if1gIvAdVv7qEBGce3WzM6xLiZPBpqwZWbAecx0zsFIC/zPOf3OxaO0VNsKJZt1Xo4UfziP4nyhwQ==}
+  '@open-pioneer/http@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-Stu8KaxhHqoAg45yrEKPW95HyZY5ALNsas86u4iEF4M05PY1x/dd2yw4GGJlrIzmIk98MLTlxio9DXI3PEc/gA==}
 
-  '@open-pioneer/local-storage@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-890tS/scS43A/9JOkW3ztG2IsDQRx6+LuV6SYSmK1IfQ4CtiKHmbfbH6UPD1TQBT4jQY5+NTZ2708n+ktfjTDA==}
+  '@open-pioneer/local-storage@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-GBXCX16BUK/P9eT2tTjn0+lNSeZLtQbPYqCpHKYOtvEy6W8yHFhjm/yQ/DipfkPEGQXc33oOcS/KV2niWnBquA==}
 
-  '@open-pioneer/notifier@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-+PTDnny+vImAc2HZkvPOfRt2Ul/PlVIFuDE6idjJOWuexDtuXWVqYRD9m63VPTtQG0lUxr3K4d/7UDnll/LdXg==}
+  '@open-pioneer/notifier@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-03muEURGerrmSzl1Mv4E5sCvg2L94Xnn2yUigFPWNDERc8B46qLTGuA+64Ya3dJSY7xdN3mmKJ8sVrckx9qVWw==}
 
-  '@open-pioneer/react-utils@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-cUyI9QtQUrV9iJYmh7y34+oYke8oZ54pbKrwRr8QMI4n/wcAkyngkHR9wPzdItMjbxvSyDvxw54eIyfHNHdhIw==}
+  '@open-pioneer/react-utils@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-HK2X4LzGNt+EtGu7pWeZ2OQjZ2F5ETFp3Or0kjprAormakscwY4R30zfssfCAnAYJj9gVSsi9B4kJiqcmrb+XQ==}
 
-  '@open-pioneer/reactivity@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-BEPYhYRo4sN7iZvfBnzU3Js28BU18h+MFRpGnFLdxR+Nbvkp7UAvxePpaYt8c6q1Wr5YyFkZTvIZqcPJWf5a4Q==}
+  '@open-pioneer/reactivity@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-VUvaQLu10sEdKZ523GprYmyy2KBnKXO+F/nS1vdrqK1xki//4iH37W+9iAnpAk1EXJcxMmCsV187eYkwkTB49g==}
 
-  '@open-pioneer/runtime@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-zUEo+5avkPzNx7nnE+gBOoJ4XkqI2v1RDmSLD/QLkTj6q8UTq8eSUlJORZldDILRRPoMkBts7o4Evo1phXl5dQ==}
+  '@open-pioneer/runtime@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-yuqzmfupEUqmorqldh6brpRArwgOjKHyT1TEIsIhDGRdFBUR3K/xvAufTR5OmGXrQZ6p05OF871BySPwPFH67Q==}
 
-  '@open-pioneer/test-utils@4.6.0-dev.20260519113011':
-    resolution: {integrity: sha512-nW1r1KeRb+aTVUUtvWaXu1MZkaKA4asatC9LOhru8HUqffwPBh50pZIf/J/vzspRInNUS1VWrS3ULy4V98x1kQ==}
+  '@open-pioneer/test-utils@4.6.0-dev.20260519125519':
+    resolution: {integrity: sha512-rCgTMW/WXzBxVLneCFXukiPIHD6a/T0bgcyTJP/yb05LN+4uvMBw9Hmbxepnn8W3MvpO9ops76wsPuPeL0uBNg==}
 
   '@open-pioneer/vite-plugin-pioneer@6.0.0':
     resolution: {integrity: sha512-ts6hLWoDYJFDnm4jrTrCgS9zyDN88jgFonXEWP3sQwOZbhS/k6paXoACk+ZBR3h7uwbBeHnkGcxwTV3xqiuWNg==}
     engines: {node: '>= 20'}
     peerDependencies:
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519
       sass: ^1.77.6
       vite: ^8.0.0
 
@@ -3426,234 +3435,239 @@ packages:
   '@xobotyi/scrollbar-width@1.9.5':
     resolution: {integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==}
 
-  '@zag-js/accordion@1.35.3':
-    resolution: {integrity: sha512-wmw6yo5Zr6ShiKGTc5ICEOJCurWAOSGubIpGISiHi3cZ4tlxKF/vpATIUT3eq8xzdB56YK57yKCujs/WmwqqoA==}
+  '@zag-js/accordion@1.40.0':
+    resolution: {integrity: sha512-YDdyvZJ6fr92RZazyXQq+juT3ZA0ubjDISptb5YPgMoTPdnjKNiICPpMeCeVj1ncYRDkHXrOdChS/5CtuX/K6g==}
 
-  '@zag-js/anatomy@1.35.3':
-    resolution: {integrity: sha512-oqU9iLNNylrtJMBX5Xu4DsxnPNvtZLiobryv2oNtsDI1mi1Fca/XHghQC9K5aYT0qNsmHj1M3W5WAWTaOtPLkQ==}
+  '@zag-js/anatomy@1.40.0':
+    resolution: {integrity: sha512-oiB4uAaV//L38JluLVPtOHO3xvqambrfrXVOoq4kmNrBv1LLlCmFvrXA2HOR9lakn4ExK27XSUrKhUN7YlKjfQ==}
 
-  '@zag-js/angle-slider@1.35.3':
-    resolution: {integrity: sha512-HXRlmsbNEJSBT53fq9XQKL/vwZWwJC3nprskI7s4f/jy8a4uXPTlv7N7zuBYjew+ScTMzZah6fLWzUztBehmSg==}
+  '@zag-js/angle-slider@1.40.0':
+    resolution: {integrity: sha512-6X6bOBoCyYG0/lFY0Y+AXJZZG6CeYQiWkcMXvegxCC2zxthodqOVzkVOASW+6rzLjn2bru+V5O9RMjNgmCumKg==}
 
-  '@zag-js/aria-hidden@1.35.3':
-    resolution: {integrity: sha512-dk5POebn10WneQfLrEgbTzwolaXWpCSHL6F3jCTinW9IbOx7BXghzJD21iU5Iun+y9CorqJPW3p7LplYNUMO5Q==}
+  '@zag-js/aria-hidden@1.40.0':
+    resolution: {integrity: sha512-lNWujEIlfGKwMQIcgfXuOZSsJD2avrgPsQHrXNVF9mkXygjLFcIRKz2pEexTSCqFh/HuUZJ6rG4pM/hJ/BiVCw==}
 
-  '@zag-js/async-list@1.35.3':
-    resolution: {integrity: sha512-SXX3wGzLK/maKS1PJ3XfLIGWbu0022f/OhcFsT1PbiHnoFZTH7h2fBhirrCBfy2TYFQ6r5uxgjkhPUNkuaeYnA==}
+  '@zag-js/async-list@1.40.0':
+    resolution: {integrity: sha512-hLGUTtwRFl6FIdYxSIYSeLQjJeG4isKpdmGCUvtWNnKr7ayf1yAkkSwX10SdBMWOCldbtvKCZXumKvP6dDwNvw==}
 
-  '@zag-js/auto-resize@1.35.3':
-    resolution: {integrity: sha512-ufG8HSqzLd9h5rnos8aumj8iORlRskeR/gbpJu1NHrnHBWIrpuXm6KJJR2oZhTFY1BUMMk8eYIBA2QkVuiJzWA==}
+  '@zag-js/auto-resize@1.40.0':
+    resolution: {integrity: sha512-eZC+AGKUip7UMu41/ApeT1wCIgn2fmo63FJeGAdMMD8E9M8M7QLsfISMIoieNNGBAYWhSyqELQ3jPgkUf6xReA==}
 
-  '@zag-js/avatar@1.35.3':
-    resolution: {integrity: sha512-lbQ2Q4Va8AAScKULOHw2tCQez+0JRYGHSMFq6i+dJmeT3dlSgRanm69ra6K2po6hM9E4v6pRe+xOVE+9QMDnuA==}
+  '@zag-js/avatar@1.40.0':
+    resolution: {integrity: sha512-DayZDsNXbipT+1GUkX29tVhO4hZonDnidwE3SjEQv9Ic9vCdnwP95+B0FPEuaca03F5ZXFqVXjnPmRVbRMyDYQ==}
 
-  '@zag-js/carousel@1.35.3':
-    resolution: {integrity: sha512-F+b8HzUeZfB+xUkAkLG4r0Ubui8pj7pSgZhi26ZiWgsM7tsd7cD+xRMXkvPEITN5Fd5QCe3KlVBuE00w5byjmg==}
+  '@zag-js/carousel@1.40.0':
+    resolution: {integrity: sha512-9svWc2jjvUP8iQ0afuu/ZAI75PuPLm4qB7h+10rmDrAgUPn7fwUBVzyATKubJPdtmaYQQvTTIiZU2B8mV88oGg==}
 
-  '@zag-js/cascade-select@1.35.3':
-    resolution: {integrity: sha512-Nifdx77hEuAdXqr1wpZSPjLXqygRhq/WvnPjGhCeSqFPpy62uT4JZ3avyjUZ4I0UhvIpkleUcXtFwQ3cSMh4ww==}
+  '@zag-js/cascade-select@1.40.0':
+    resolution: {integrity: sha512-0fkE0Fd2VQ4QsaWXHdgQxHWiaef3UWW0l6Jd47frtMNnrvg5t5Xfqowa7c2S23hcduOUfz2WC0xEuGXnO4UVDQ==}
 
-  '@zag-js/checkbox@1.35.3':
-    resolution: {integrity: sha512-8XBt/Wg2zSQWqV2ZFqZBQUjYRkOYHA2O3IEi0VVYtds3S1n7Pu/HqkZT5qDw+E/SY2+X9Uyx4hO7h2XrlsiZQQ==}
+  '@zag-js/checkbox@1.40.0':
+    resolution: {integrity: sha512-oFCgnkOjrUDejB1wEp5s3cyJ+uFe/GoI3+wqNyckqOtcdKL1MBxy193GYVdj0LDfuCNrk8V0aIJGTdusCD2b4A==}
 
-  '@zag-js/clipboard@1.35.3':
-    resolution: {integrity: sha512-obTwynBpp6c17fLHe5tg//FQ497QsyCEry+K3bTdlrivWW200wvfHxZ6RKVbKwDAwhH+ye0bI1xkYAId8j7sdA==}
+  '@zag-js/clipboard@1.40.0':
+    resolution: {integrity: sha512-QbFhJMwwUxTKcbWyb9ZrKgAp13U4+IzfHSLhPxbDVSQ15mIrjIkjW68gS6ElzhRDwGr1qawkZVApsqcToUqSaQ==}
 
-  '@zag-js/collapsible@1.35.3':
-    resolution: {integrity: sha512-IweG8JOBCerJwLO6QzTZGEMlsYUmQfQSeD0jniFguMM8vcunvGVSrM+AaL8pDbmXd+snXokaGyJpGO3vzMW6Fw==}
+  '@zag-js/collapsible@1.40.0':
+    resolution: {integrity: sha512-xDLY4j9D3gdoTirkwzMaCtelfCjnMhBzPyY6c/mh4oPvD3RB6dr3V3kI80i3yxHaUUeDCIUm/XAxK0InPsRBug==}
 
-  '@zag-js/collection@1.35.3':
-    resolution: {integrity: sha512-BYoWJ4b7ma2PgiuQbRSnP603f2DlK6se5JtViUHTamZScLLLWnWHuQ6zFa1KS5kiIkbb7CFM6/bJ3WNYLch8Ig==}
+  '@zag-js/collection@1.40.0':
+    resolution: {integrity: sha512-+3o1nvbcA9Kz2hDDFf8Kngpd+of33S4TS5Tb9KvrHlU5ieQdvEUtc7/pWG2aCTkGpmgda+j91akB6ZB8+oVkvA==}
 
-  '@zag-js/color-picker@1.35.3':
-    resolution: {integrity: sha512-i9roSgtqeA1b4Q+jWqnxjXB//BQXMP5m1FQ4YcZVq/0yT14A53JIknchuqrh3wC3yPsJMXFqCoKg+NET2+OVig==}
+  '@zag-js/color-picker@1.40.0':
+    resolution: {integrity: sha512-lT93xd1BlNBbitl2RxST8ARYE6q/HZD5a0QhMIT1RbndB8F4e9j/NxkStgE9f0QqgpC/rO+nKHLoR+H1xs/EkA==}
 
-  '@zag-js/color-utils@1.35.3':
-    resolution: {integrity: sha512-vxkEVgz4YdSbdaPvjiRI1VsJAdwzu/dUNvzqOaiVcPDrHr/FFgmUbv0SOFjnfSb2QWGI8EDEMn02RW9ym+BzGw==}
+  '@zag-js/color-utils@1.40.0':
+    resolution: {integrity: sha512-PZihcGheb5bn0/cEUwozjJjPoKkEwlJNpTA5mUxj/+sOElLaZM+zY2AnGYeMl6w5zIyZZUDoJMIT5rcb5sN87g==}
 
-  '@zag-js/combobox@1.35.3':
-    resolution: {integrity: sha512-s1qmttTGJTMjlDakL+uvWSEggpafKr1vhOeZCh8j+N4eFt9bLAwaffjuh/1JzWBvzovw7WoMVkizdTXPlN8oYg==}
+  '@zag-js/combobox@1.40.0':
+    resolution: {integrity: sha512-5IVCDrB8m7XrKBu28j7bIRE5KiyKJLPDZB3AJ+PLJyL69D+9z1anhLDmkUYcPseyCasszLKzIejby+kYQJgHlA==}
 
-  '@zag-js/core@1.35.3':
-    resolution: {integrity: sha512-fGAHyqOYSEFmo52t7wI4dvbFfLyJmUlyf7wknsiUlzUHlrn3yv5PAZYZ2TibpOD1hwXIp4AoCjbiIPPZBxirZw==}
+  '@zag-js/core@1.40.0':
+    resolution: {integrity: sha512-0YcqCh7TmhSonkbKM/7NWolxlaQgvvXgqedocW9oeRYiDJIpBZyRqnHPoGAS2XwbBPkCnrqSosxSF5yBjhZpgw==}
 
-  '@zag-js/date-picker@1.35.3':
-    resolution: {integrity: sha512-4G10h6pzzLbd84SE2CKtqi6Z9wEBhSyx4GRSxxy3tsf5wAxnz4anRFat9CGwn2YVUYcUJpD+umYgBMPt6zGDnA==}
+  '@zag-js/date-input@1.40.0':
+    resolution: {integrity: sha512-/VU8g3dugggC5xW2OJW1KONWzPkEbK/yLA0lPxymW/Uo0ixh2mKJUVTOTqDFWf1b0vzLX2XlYoLL+I2ryUyPvA==}
     peerDependencies:
       '@internationalized/date': '>=3.0.0'
 
-  '@zag-js/date-utils@1.35.3':
-    resolution: {integrity: sha512-1co0FPpZ6nO5dN8sZtECkMYaf+3E5zu0KSIJZpZiXb4TgsZMDyHu7K7IsiKFHk9qmhuF6AdPpNxBju91pSXMFg==}
+  '@zag-js/date-picker@1.40.0':
+    resolution: {integrity: sha512-Nm3aSKn/5tGOZk8rIddLyBk+oeE0zr/ZsJuuTc3rysd04owVy1UhmUh6X9CqfTJtwTDpUZe+orHaIvKlE3Rd0w==}
     peerDependencies:
       '@internationalized/date': '>=3.0.0'
 
-  '@zag-js/dialog@1.35.3':
-    resolution: {integrity: sha512-byosV+aBHH5LoFKnjEgC7WdqJid7bP9UhgWLSC7+IXbxrif9Czg1YVp6ZlQM6Nx6uD1vnty4touI3P7D7CTKcw==}
+  '@zag-js/date-utils@1.40.0':
+    resolution: {integrity: sha512-nuB1QM3X7yY0k2JiZbHHm6wigY+Cl1QK6sRlh+C7mOyzEKnNEqNSVIqgSionCtWO6zAZh1R8Znp5ZeCdbbc27w==}
+    peerDependencies:
+      '@internationalized/date': '>=3.0.0'
 
-  '@zag-js/dismissable@1.35.3':
-    resolution: {integrity: sha512-XPk+lqmsZp2Z1yMb5K1yj/e7Sobv4D7zK66B1GS97lk9Xzz8vuSgsimcLy0p7RXQl3KL6H5L69inSuQa2exybQ==}
+  '@zag-js/dialog@1.40.0':
+    resolution: {integrity: sha512-1FHxR7/Kuu+9K2dxH7dKlSckCZ26n5ec79qWr0aMSSs2DF+ypQf5GUlaS6z2UqroZvIoJCvABVMm9OMko/qxlA==}
 
-  '@zag-js/dom-query@1.35.3':
-    resolution: {integrity: sha512-1RbFZoT4CjlHN9TUNse1++ZVOyKo45ktucTIT349o6HMsoWWKmTJDPvFkMBbmu/qY6XXn4dT+LJEp4bL3DR+Qw==}
+  '@zag-js/dismissable@1.40.0':
+    resolution: {integrity: sha512-bBkFvPg/zbYn31ZgEfx8not6s2Ekx7zU2sO8tGXb8rYPnHBfGDYEzVQansUStJn0Atzw+y7XR7B3G3u5AFQJKw==}
 
-  '@zag-js/drawer@1.35.3':
-    resolution: {integrity: sha512-DN5bwa7bDCDaUSbNzFxMc2U/WmbLcXvPSQjyOpKI6CC3VbW2kKaOnjJ5qQG+W5YBO0FpmJBtaxRV7lke4sZH2w==}
+  '@zag-js/dom-query@1.40.0':
+    resolution: {integrity: sha512-4J3EO2gHpZ1VZiGLuMlH6G1Tsp4gKB8PPt2yKeNQWYGEXyrHUXrvMhRUzv7Z4/2I1s1tnxlFG4F8ovB3kTpz/Q==}
 
-  '@zag-js/editable@1.35.3':
-    resolution: {integrity: sha512-HcjeacS61vQXfNT9IalZj/+oS45yW5bIDO2NjJWV7zNe5AG29NCceUnvBhy+hrUKPnKcjfDocdW5rCL+Lvs/CQ==}
+  '@zag-js/drawer@1.40.0':
+    resolution: {integrity: sha512-N2OR5ZYuTsWkYYmwsNgmL+wfuM3qUxB8GAfo53AWvOh07QUVz1Dvh1WP4km5L6Tkz4UBQZACu8T/ZLyeZ+PdWg==}
 
-  '@zag-js/file-upload@1.35.3':
-    resolution: {integrity: sha512-oIYwnDct4ERo2mfmcxsBIJnlmpzjrzYx82SQsXWD3NGKx3cgdh2lwBX+ebItaLH1jkgzBa3z0TWxc6rfvcUXbw==}
+  '@zag-js/editable@1.40.0':
+    resolution: {integrity: sha512-X23wOg42BPvFWfJQi3yd8HiL8xtisrpL5ouFEzba56SQIxWZHDRpeWoqXqyLODq2/z2+SsZ0wV3laRD3ZH0C2g==}
 
-  '@zag-js/file-utils@1.35.3':
-    resolution: {integrity: sha512-Tb05RCzx4swc156hd4jLiO7z+Gxg/HQ+JCds03jgTbrFJAz2D56YaMeI7gSDc1m4Xre3nyqQpSo9AeX5nzbE/w==}
+  '@zag-js/file-upload@1.40.0':
+    resolution: {integrity: sha512-hUZlJYjSGk7SAflTmQIjZv6M+icujaHS6I+dik2LM48rLWwNa/GYTNx+uY4zJLd9oW1eEj+6NcCYZpPWzKku4Q==}
 
-  '@zag-js/floating-panel@1.35.3':
-    resolution: {integrity: sha512-nTZypcS0X46Oo1kpCQTnP5UlzjhypOAj3B4dq2z/3bAOC0TntYTnFkj8PbEJtExk7364xfMyxfgZOiv7Aqq01w==}
+  '@zag-js/file-utils@1.40.0':
+    resolution: {integrity: sha512-BGny4rafiBQ5TPCBXfzbH7lSyFdnoix7brq/+FllKpDqpWPQz0tIsgSZueF/Z8GPTrAkwMKOFI99P7OVhAhRig==}
 
-  '@zag-js/focus-trap@1.35.3':
-    resolution: {integrity: sha512-evErLlGFdDVCI8xipNS5k0rAvO+KFRA9g273bbfWAL1+mT54mcB/XHa85nC3QpPgMNrSh+6LUNq9fapyOGoyYg==}
+  '@zag-js/floating-panel@1.40.0':
+    resolution: {integrity: sha512-e2QXwapCbjLJnU+MAz06CoByj4XJ3sdSBgWF+PSe2X2T8dd/FkZUnaDPaX0yyfyTWKzBbyRRNyon2LMAs8ndHw==}
 
-  '@zag-js/focus-visible@1.35.3':
-    resolution: {integrity: sha512-g4F8PRGIoFoKBrHiQ1HQh5AjCS7brFRXHvpbDNb9+T11FGlF5Turb+6OVRoNV8MmiuqMltO2I28l36YsGc//uQ==}
+  '@zag-js/focus-trap@1.40.0':
+    resolution: {integrity: sha512-Q6W+DU7pix5rtRwoDnYzTYMkUV2kMWrFV0/EdNN3spFSvnUSkDWRmcNpzf+56AuCNeqsAZxaLJpsHLZkcT2xrw==}
 
-  '@zag-js/highlight-word@1.35.3':
-    resolution: {integrity: sha512-K+mvEBbf3SUFjQeMeJQYb3cjri3x6sPaPhcKWayalelSLB/StWEGqcpmz+a6uUYrCUAK5kEi3Hn0YLGfn0GOig==}
+  '@zag-js/focus-visible@1.40.0':
+    resolution: {integrity: sha512-63byl/kLVzDYlnHFma4HKEKrqB1Vx2zg0sBmUSENPyh+Ia1xhEVVC5vu6GX7nu4t/8QRy3Jn0q7T5og81FGb1A==}
 
-  '@zag-js/hover-card@1.35.3':
-    resolution: {integrity: sha512-xVoKOtvrnzhYzciZ1csgiV76IQ4DRtx1lsJeFSrfg5MH0kYWeC/pcmm3yCd2+Qh/45J7DbSXeZneqxpyiF5Vvw==}
+  '@zag-js/highlight-word@1.40.0':
+    resolution: {integrity: sha512-+aeVn3S5NPG6Tk4Sanl0VZk/0atjnF7Xy7POPs1HD5SBui29/6i3vn3bUBNXJXrnhUoNrUhuySVYVhgkffcQ7w==}
 
-  '@zag-js/i18n-utils@1.35.3':
-    resolution: {integrity: sha512-k7UcNxbnC2jvGwCoHYAkFD3ZaRSMQNVHfuy8TujZQ+ci3IJovwgWLveZoRfFbXHkTLfhmbpE2tFXBdpwOVZutg==}
+  '@zag-js/hover-card@1.40.0':
+    resolution: {integrity: sha512-lkuLaikPLBIOnR0X75kSXdDYgv3ritAsn4TF1eGs12iYnZVX4PTL3J39tVNm9QrEXZ+iKcA1D2cUXNhEteCTyA==}
 
-  '@zag-js/image-cropper@1.35.3':
-    resolution: {integrity: sha512-1PH6bg8JAQESHzNqjka2TJ0QGNBGBAO6rb7AZ+9CaCCLw0pIzbUJhqPMkwd9GhdWGKGP+e7wFitnjcT4W5Js8g==}
+  '@zag-js/i18n-utils@1.40.0':
+    resolution: {integrity: sha512-8D3ki9V81gMKZvtRfNVoHCBDVYjr+WJLBvdfSv3cdOsVM2/E8//xAfYbYzl5Fdmeny3H71fxBNqOX05GN4K6OA==}
 
-  '@zag-js/interact-outside@1.35.3':
-    resolution: {integrity: sha512-tOcuo/IztzpU7UKXtjVrLZtXzzcbhP4n2WynKwDRkTkq3mRCp61xXJp1csIBycI3JHm/CMeAEcPdRIioxIT/Zw==}
+  '@zag-js/image-cropper@1.40.0':
+    resolution: {integrity: sha512-bpTCaiUXM0Mh6ddoJ1fA1B/YXp5Fc8LA0hg8CuEByDwGRVKPJ0KotL6QXMF6cEJZ1fcHF3Lcmpbj5Xotfkr4mA==}
 
-  '@zag-js/json-tree-utils@1.35.3':
-    resolution: {integrity: sha512-nOv2dPJf+1mxsobYiSlYt96hR1MK7iHKG1iDLoO5wLggS6GQA3ix1BerHJK0zdehoEZ71R45el5ghCG1HB9VzQ==}
+  '@zag-js/interact-outside@1.40.0':
+    resolution: {integrity: sha512-Fws+O4uD9vS0I5KVcf3U2tNjLKvqlv+RExFbTywckDLOCJ145M/pMQWTr1FHil04jk5PFyM1iGfsbom8tozHpQ==}
 
-  '@zag-js/listbox@1.35.3':
-    resolution: {integrity: sha512-FE6FOuBr6aWtOb8U8oDvAvcUzD6JKLXAe8WngiLFG+b2yyW4nlaz2AcKRG1bjjB066UMxMo9/+2p4D0Kf5Id1Q==}
+  '@zag-js/json-tree-utils@1.40.0':
+    resolution: {integrity: sha512-7zEzU59Gz76nV7n3l70uMB5yAOOQMmt1PTAni6S97uw7/6KzPktsEWBcw7ocC4IIA42PKdT7akpq721H0vthbA==}
 
-  '@zag-js/live-region@1.35.3':
-    resolution: {integrity: sha512-64rWcfggYpyr2Fn4pdrB/lljMgm3quwn9is+vdDN85Vv3WShKWoz08T4njidm0hwcIbzas0bRqQYWDLLsAoSJQ==}
+  '@zag-js/listbox@1.40.0':
+    resolution: {integrity: sha512-zB33y+dk6/e0ZTs3wun2KsuPaH/wygOuD8scnH2a2Y/W9a2P1rq503Kgm5d5kVXBKQLxOBwievWJ8Blajv8LnA==}
 
-  '@zag-js/marquee@1.35.3':
-    resolution: {integrity: sha512-bKZVpmAJWPDORP7WOWnS+65W5ZQBQmRs8zvV33ZfCpFbkXjhRiqKSzIj223/VOc2NEDjyWagz2vioAxrFYVzww==}
+  '@zag-js/live-region@1.40.0':
+    resolution: {integrity: sha512-i1Dx02KGcQOAZGNhkFe8kz26gYJcn7KsT/M1UovjS9RTbl9diY8ShiyfIAhqruoaHQyqsHMRh/f7Idu45HdiDA==}
 
-  '@zag-js/menu@1.35.3':
-    resolution: {integrity: sha512-KyY0EZXkIU57Mjt+Lg+pupiePk3LcnQcB3Gl05Vva61bNjBjdKV71qwCQru/OxPZEwYgPo46L7TDIb56kfK/VQ==}
+  '@zag-js/marquee@1.40.0':
+    resolution: {integrity: sha512-XfvAwSNYXV3fEIRc44a9sAsoJoLKt+CWbpSPgQBpiFPpWh0rZ8frUZCslevTzBB3ifIWoSg+svDHQOGsDa8wGA==}
 
-  '@zag-js/navigation-menu@1.35.3':
-    resolution: {integrity: sha512-8cCHx0X/KjEpr2BaMOxJS5LiA6fs/CNqVTF/sTTgZAv7Dm+MH0yNuKm4kpPvcLaVeBpVE09bnyCHrNKzZes+Fw==}
+  '@zag-js/menu@1.40.0':
+    resolution: {integrity: sha512-FRBqwsOjxBi0eSwqwrOw2td1rd0Xxl0f41J2lGc8E7z+2PabbBcJ/poqSiEn8YoaCT4mAWNjt4QQU/Pe1bRJ/g==}
 
-  '@zag-js/number-input@1.35.3':
-    resolution: {integrity: sha512-uqawVybAcLcefVEHMVONuAA5kDSDPP5TsROr5PnAyFlhM1iD85+r3KAfCueoDX5w2X4ibbu9o2tdV6zTFKD/nQ==}
+  '@zag-js/navigation-menu@1.40.0':
+    resolution: {integrity: sha512-aJkEGYH8P9NfsQOjxMzxuF4YrrV2N1GQj6Y5Ow19MKuLh42o35bUhwoGsYjFbxgEcImabINtZJqtAPAkOdJXmQ==}
 
-  '@zag-js/pagination@1.35.3':
-    resolution: {integrity: sha512-fKm4s5KAd12RiCI/EDmmGKjPQ+i2qS/UsJPdMe65yb/4mY5OibwV2zyHcVeFsOD4gBZpnU6kYlDAGSttmLWLlQ==}
+  '@zag-js/number-input@1.40.0':
+    resolution: {integrity: sha512-WffdeqSOpsKmgPzBkNZl9nAolQPlyl9dIabaPguGgXdYtZW/OGCGj8jCYqyEu4VL3kDPPVVQRWEqC/XzwzVCRg==}
 
-  '@zag-js/password-input@1.35.3':
-    resolution: {integrity: sha512-etd0gm6ELAm3y+cFhPU+TYm8khm9cL5Mg5m2DcZxu1Mqpj7JY0LsXZ8SFOdCZgTIHuMEhKBiYfnuyMAd4CJztA==}
+  '@zag-js/pagination@1.40.0':
+    resolution: {integrity: sha512-Ykotky0A/7rswb6BfOD9aXL1EssKwUYfBRbdWGe52uhVc7dGagMSTUDRVeNhVsP/MEdtwqys7urvDbAlEqq+GA==}
 
-  '@zag-js/pin-input@1.35.3':
-    resolution: {integrity: sha512-ZFt+WIHMdVlSg29BrQLFq5ijabiUO3tXMhoKhjjzTSe/tLqfNeu3UxFB6y/FYpn8+Cvn6xwvhu3lgnORYmI0zQ==}
+  '@zag-js/password-input@1.40.0':
+    resolution: {integrity: sha512-mD4tbA4m82oV+0NbJ+P00Q4Gwz+zf1kZEZ3Z48ohICfK/WO1KhCgviY7vu/7bCMnRiD3dbi+nEeym8Kb29wRHw==}
 
-  '@zag-js/popover@1.35.3':
-    resolution: {integrity: sha512-+MIEENPsbKPxzoNuDI/C5d5ZN9uxnfZ+MBDc5C5XSgjjg9FcvMXClNq7IFM1aZi24peRXg9cMNf//lApVRT37w==}
+  '@zag-js/pin-input@1.40.0':
+    resolution: {integrity: sha512-iJIXDJC+9DUx+A3sRdTmHV7vPZXCw9O6le3R0lKf/8kQOgj7FKjbVw2SkUMAoOZ0u5J7Zwg2oZc7ddt1pwUk9w==}
 
-  '@zag-js/popper@1.35.3':
-    resolution: {integrity: sha512-gpB7Xn9WtlfrUsIVbSgNQGDwgNOL/cSGt0Id3wEQKArmqVC704EWtPvXzOMMybBEdm8YW2hQrXuo+o66abI1Sg==}
+  '@zag-js/popover@1.40.0':
+    resolution: {integrity: sha512-bjvOep1YNlsvIYGh/rPsFCHjH2cCt2aKsVLyRvzTT1jhGZJvBdQKQBJjSuG5Nh4y1PUqtrrz69ZMWRrJGQ3rNg==}
 
-  '@zag-js/presence@1.35.3':
-    resolution: {integrity: sha512-ev5E7+U9IZAGvEaflpdVLHaZl8ZaQMhGB3ypd0yKhPwXeM51obV8w3+5HjzTqHPl8TKuoHWL31YaiUBd5EuS6w==}
+  '@zag-js/popper@1.40.0':
+    resolution: {integrity: sha512-rCkgqgwlpgMwcnuSVrZK2xXl1Mvptpuw3cZy6rC2C5F3yE1GmWohdts5VkeQNro+sd/xHTdVovOqY6cU9Htj1w==}
 
-  '@zag-js/progress@1.35.3':
-    resolution: {integrity: sha512-u0GxQN1AfXMAgzYOUMxKQA12DyuAP0svh2S//KvOorTSv7d5hAa8nZXi2cEv5abYsyfKJ6/bc1Z56byzW1jVZw==}
+  '@zag-js/presence@1.40.0':
+    resolution: {integrity: sha512-P0bAuzEIDuMglE1xfmW5xTuSBlWjNZ8nOGXoIksKOKb+b+jy2Vys6WjZjKipV/jop4u85wfzKchcPc3C+cXuog==}
 
-  '@zag-js/qr-code@1.35.3':
-    resolution: {integrity: sha512-t0Ehwogr49vTNtWyNdQU2tYex7uJyfAn7N/5LgD7FXw8aa+RBMWZWlqjCUvHqJ929tVMrn+LIrQnZCcwNunalA==}
+  '@zag-js/progress@1.40.0':
+    resolution: {integrity: sha512-V61a5CHEs8suevQVS+/1ENj1RDVYNOUUTawK6uriCA6Ol59xe30DmF+eV6Y9miM7L/pN3YjZRq9uEDJMXXK32g==}
 
-  '@zag-js/radio-group@1.35.3':
-    resolution: {integrity: sha512-kOzocjqWk3dXuRfyfsHwfw63Z99NHbc7rvVUutSsfXANXi+DFYZHuqdPUwMt+29LfaL15XTOfuGV+yUXDCgQHQ==}
+  '@zag-js/qr-code@1.40.0':
+    resolution: {integrity: sha512-xD37tVrQ46CeqVLqkSm61kURoJ4Z/uOFcB8z7Hu3UX+1OFTfkhgrns6iLUneoRjO3hsqQaTaVkxVOQeLYWb+wA==}
 
-  '@zag-js/rating-group@1.35.3':
-    resolution: {integrity: sha512-BmhJZdbaTnd3nFWMY+nR+HF952UhWXfaXXxiBWptSLMBfAYImQTWBMrLgTHCSnVfmFATj4Gb7xQe79FQU8T5fA==}
+  '@zag-js/radio-group@1.40.0':
+    resolution: {integrity: sha512-sFJCdyOKzQC9hylSP19R71yv44by/C78D9EHfsxQJtvOgDv9E+h13NNX4n9wWyubC20xftlxkja8sNT5NfJKUw==}
 
-  '@zag-js/react@1.35.3':
-    resolution: {integrity: sha512-x2PxYUCQ6OgOpUdmSkG5tbL9JWVqYRh42r4V2UeAdMh0MRwjAJtxjvAy50DZ8Sfia5o4UGdZMXJyDY2O7Pdhyw==}
+  '@zag-js/rating-group@1.40.0':
+    resolution: {integrity: sha512-UMBI3xAMcm7otpAczMGPEA7jC1hvV8NhnZ4mN3oftJB0bc1winoXxJdCkrXN58TTNWrGNSRzjtm048G+HPCdpw==}
+
+  '@zag-js/react@1.40.0':
+    resolution: {integrity: sha512-2TFS1HYABYGc0lurC+4WEXvKkpxsVv6vKm+t8QAL7wfoeZnw6HDQWLc91kINp89vln+A2kwCfYqIq8HSm+9EeA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
 
-  '@zag-js/rect-utils@1.35.3':
-    resolution: {integrity: sha512-mt/oD3RXdyaX6ZPSd8BO13vvPBJ7QpVWieubE3O0WM3OPhU7ykDMRp/tR7cYMQrzUm04GlY9pbkmSSw2uABxlA==}
+  '@zag-js/rect-utils@1.40.0':
+    resolution: {integrity: sha512-ikgLuE4rLlACm4mGLp6Ga8sJA44uFwohA1nVmb95sQ+VIyx2naf91CEF7SMrZVEwFKHaHpxdKVQSZLRjJqO/dw==}
 
-  '@zag-js/remove-scroll@1.35.3':
-    resolution: {integrity: sha512-e59z9SbEpPiw0qwNQa2cB5/h30ZCLREaHsCw1TKTANFhwg7v85k9Lq1H/G/49li1CAjmiaOU9BNGlDvbzpNETQ==}
+  '@zag-js/remove-scroll@1.40.0':
+    resolution: {integrity: sha512-f6EgODnJMRtkbgdJCgyllND8jui+RtPrCZy6JYhhOg7KQ+bFfV36KzWQMty38ZdOyrh23UUO7MJ3WGcFXPvk3g==}
 
-  '@zag-js/scroll-area@1.35.3':
-    resolution: {integrity: sha512-IQwdUws/AckRIHK1z/wHdHurnOeGd8h8Dmspfh3VT7NkwTnxeJ4SW9di9smuD+d25eXkJRuX5zGEDHAyx2IaPQ==}
+  '@zag-js/scroll-area@1.40.0':
+    resolution: {integrity: sha512-7EtWETRIn8dY7xqAeMOlnEuzhOrtc65mN/0YvT3XYcBz/CzmHzyZTmos3UXBJGnKHSGj61aEpP9g3RK+x/w63A==}
 
-  '@zag-js/scroll-snap@1.35.3':
-    resolution: {integrity: sha512-NVa2yRm2DQnF6hTV9k7Xz7l8YCZBagZTiqSwNvWKUulKD1csjt2fpBxvUt2cK+1iQnLOey2ydhs7MMsAnXPbJA==}
+  '@zag-js/scroll-snap@1.40.0':
+    resolution: {integrity: sha512-XtjeOd+pwGX0+K7NvsQncrKwV8CTSzHfVVJrdQ+MweiWBpGNeAh43ySN4L+KSTgtnUiZbuwBIxlKK0tX+WupgQ==}
 
-  '@zag-js/select@1.35.3':
-    resolution: {integrity: sha512-ztszGHWvlbBDE0YT5LYPH+sMd6VH1ct5pH/M9VSzIUO6C5PARkW0NwSVQ1rCQJMj4sfvSE1gC1/r7urRzqEcUQ==}
+  '@zag-js/select@1.40.0':
+    resolution: {integrity: sha512-auMI9SvocVvKHNWF2DobyQN6+1k3OO6UsQTdkofvbHxX7maosy8ZXA6k1r9Ndt4qLUu7CbdAAQ+qJ4VkgJyvxA==}
 
-  '@zag-js/signature-pad@1.35.3':
-    resolution: {integrity: sha512-jvtxxzAQ8fre11zWUh6HflG4Ycr5z83Wba4pONRJbUE/vNgkJQ7yJgfyUl1QTlkn8Arfg2Zwoxu9GIq80HLZWg==}
+  '@zag-js/signature-pad@1.40.0':
+    resolution: {integrity: sha512-L0LTxcpdckaGdDDXcQCr4AG+J9xUHH+lsenH7NG4ZI7rSr4nRmHMdDH0GR7nBa6MMdPIIimjWIE/TwZ1OuHzCQ==}
 
-  '@zag-js/slider@1.35.3':
-    resolution: {integrity: sha512-Th142JO4Fqla5AWhGrTW6CQicwvTw87PdVpur/WotQ7brlZIww5HipzEMh5eQJSWfwpKD4PI2bYK9V/ZE/mpXA==}
+  '@zag-js/slider@1.40.0':
+    resolution: {integrity: sha512-xZGycm+ghGFG3kTYq8g0t1Av1moxg45WiFz5E3bRgP7YU9beSTaFZI8h6f65NiC5P3YuwA0RoYxA46GH22qoZg==}
 
-  '@zag-js/splitter@1.35.3':
-    resolution: {integrity: sha512-IsIbRwzjr5amGANEDsZDSToaSn8wHUWvS2l0XHmf3BiiguVApaZgQTlfqthVQC9hBHMOaGIXIW1CFUOrQYkvUQ==}
+  '@zag-js/splitter@1.40.0':
+    resolution: {integrity: sha512-64KNKwlIjyUIjp7i/whDCpREiSFrNI/cF7MpBJvBGRPUWq8NpNxMGKWD+vBCV+JC61QF9xg/NgNoigFycS9sYw==}
 
-  '@zag-js/steps@1.35.3':
-    resolution: {integrity: sha512-TYIrqV+v9/ULhvrTRBtQFFvJQPPTWOmjFXxlIxDwozek5R4dCIyeUYt1/ChJEc2mNETocbfDVSTxRO1dwCFpwQ==}
+  '@zag-js/steps@1.40.0':
+    resolution: {integrity: sha512-5sVFzcIYubCn1nJSQIx9WWNlJuFoOJMpkD/ZMwNp0LzpnmnspsCOmdnQUWEftMQ1KdwZ+qNgfo/+kHclb9cBjg==}
 
-  '@zag-js/store@1.35.3':
-    resolution: {integrity: sha512-7kEV4T/20DU36UIfVMzuDlLhWSSEy/vabmpiB700tcdD9BBBODTiSg3ZeljW17dQbvE545vZOFEjVf/cQ5LVGA==}
+  '@zag-js/store@1.40.0':
+    resolution: {integrity: sha512-EmgYIdbNZ4TN4Qht/jugY4UVkaWx69l8P1qiX23U4YwqNLq10tyOJmcXWbvsrprU1dGb24B+xq0WBm/RIjw4WA==}
 
-  '@zag-js/switch@1.35.3':
-    resolution: {integrity: sha512-EP/2cJ46sd+6C5x5+89jn/9NOpM05CRESYB4RMhOnTe/WFtcS4IpiYtVHFhikdXkvJoibm67O2EHep2Pm/Xj4w==}
+  '@zag-js/switch@1.40.0':
+    resolution: {integrity: sha512-hUH3AF79ndSFZxt7Plw7mVZV0QlM0kFqKwrAGBEOE77P3rKpOsMJ3wWgMb3w6nwlxGQsbwmMgAFvYUslLpM4Lg==}
 
-  '@zag-js/tabs@1.35.3':
-    resolution: {integrity: sha512-lZKlDmxE25miCikj9QZCCnL02SVV2K14KZy5bn7+XDgrWlfSNTpNTj8r5E3zGlSgio5pkTGou57ASqS7WaPDWg==}
+  '@zag-js/tabs@1.40.0':
+    resolution: {integrity: sha512-xqfPC2nQ6Bn4nqy1L+1CVcQcg/Z7K2q753OvsX2C8Wtu+7tF//HyMbOpF6fGikqlLkUzCkvjkqDjdOXcfWN9ZQ==}
 
-  '@zag-js/tags-input@1.35.3':
-    resolution: {integrity: sha512-HqyoQ3DZFhByOGnDShFfxi6u0bIf7aSVTlwmAvcL+b2ZhyU6/wIMGc4WJE7BMx1NYWM/jNLHedvGExAI8R0kXQ==}
+  '@zag-js/tags-input@1.40.0':
+    resolution: {integrity: sha512-3cB7nPlUvzZNZwQw5AaTuxwcRn1n2qkDCjLEb2NEwtmI+YxHbK3k1MtXjTccjcYjU8cAkv+jaeyZPs6KFKQcHA==}
 
-  '@zag-js/timer@1.35.3':
-    resolution: {integrity: sha512-edmgitbRgsq+msxvVB4wc17Q5d5k63zMWaLJnWjUdDGAgEtM6/HNxwGb3riv46S2U3RgYxaaHTNZ/M7EE5mvYw==}
+  '@zag-js/timer@1.40.0':
+    resolution: {integrity: sha512-Rvet226fhUtZnItjHpUYV7MH0uEFZfXT9PSRrX5jdiU4/P0eWKbirwi//AVeqcWFexXvw6ajYSfQN7EVyr2x4w==}
 
-  '@zag-js/toast@1.35.3':
-    resolution: {integrity: sha512-whlR791GHdnMD21nNPsl2Dbql8+qu1wBZl75QzwYrjR8FlKjp8bhr3gXKzQEddcBXe9GPEFGvUs4iCyXsuTbpg==}
+  '@zag-js/toast@1.40.0':
+    resolution: {integrity: sha512-EDH43zdiH4Bz30cE6YI9g//qXGOOfWObM3dFLG8I0q/cJRf7/6jO82rwZAHPwfOSfKhUDxStirD8F6eoY6BWXA==}
 
-  '@zag-js/toggle-group@1.35.3':
-    resolution: {integrity: sha512-Gn6JHzkQ4tlttjZcE0ZjIdxYkFeVp9VHrcMVizjJTkGZRmQ+kPZ5G/wOsZhIrvLX3Dw6Y0NkuBcP+jDHz/o3TA==}
+  '@zag-js/toggle-group@1.40.0':
+    resolution: {integrity: sha512-+JKcnfEbdQnr5p7uRvYLdivhUsM6iio71UC10tK74nXYRnYm0/Uvxg3oQzvbNTq9WdcU/DIh3gZVZ2Vex9nBnQ==}
 
-  '@zag-js/toggle@1.35.3':
-    resolution: {integrity: sha512-aFfHKuR4sKzglhkmWLA+0RTNPs9dfeqwtc96qljawGYfAYWJXkEPYK9dFfVa+arZ7L84xBi24QSLiTg7LGSFLw==}
+  '@zag-js/toggle@1.40.0':
+    resolution: {integrity: sha512-DW7682lzTP2eDlMvrS7tUX3zAm7ufrrKr7VDiX8BB6oXBRETXrVIxCYNuoIdqjwXebdjAoxaCiUZEreRVucYQg==}
 
-  '@zag-js/tooltip@1.35.3':
-    resolution: {integrity: sha512-/pImDGYl79MfLdvEphj3rSvNdj2tLW4GwGEncgdLM/GKwQiEUjfi/9EJOfLYP23M4lOOnoW7orehJ9xeaXOAkA==}
+  '@zag-js/tooltip@1.40.0':
+    resolution: {integrity: sha512-pyrvit+nB8dIwVNTGBRlHPsh7yMJGAxxM1zfY7HOTJqF+n6+6xYTQ4gQ/Ocy1Q7I5kO88+m16naEh0qLFiTZww==}
 
-  '@zag-js/tour@1.35.3':
-    resolution: {integrity: sha512-DI2aCXmZaE9KcPZDs9itc2BO7ixLApJ/yVRfM69pXwVOrucdSeDDNPFkfbhj5XwB+9VjjZEkqWFHKntRIyPl5g==}
+  '@zag-js/tour@1.40.0':
+    resolution: {integrity: sha512-VczYGFQM9xsSbfy5N0NP91GdKxbYvfPCDAguD+WQSs1umEIgAAozSKPUdV3NNCX5Pq6B1F3dBxi6gYPdNqrAHg==}
 
-  '@zag-js/tree-view@1.35.3':
-    resolution: {integrity: sha512-DbHaLxSNa1goE3o3IsXxEdzp8P5dvmkk1rVWgNUUIhpA+44idEjSSNXJkHPl18Mk5blqSMVjK1EX91oqai01Vw==}
+  '@zag-js/tree-view@1.40.0':
+    resolution: {integrity: sha512-v/20ekjbM+HXDEkpHAz6k8WpoZRmZmdCApDIkIgXVHPRQk+kwAiiIPY20ZDG+DjRu7Lh0MUdQavdZtGj6Ihwkw==}
 
-  '@zag-js/types@1.35.3':
-    resolution: {integrity: sha512-Fnm3AMs1lfb55hlkip/eJeWHOjFB3gSi1JkZlkkdltG2l7y/zsHkumPSe6jIKy+DRRIFKRCyXVTatbPN27bO3w==}
+  '@zag-js/types@1.40.0':
+    resolution: {integrity: sha512-LVvxEyqFv/u9SEe5xdivvG2vYb9cCmbkD+5r6s+IGljpDLaRgv4BYyxEh40ri1ai070tL08ZKmoLfx2/xfvY/A==}
 
-  '@zag-js/utils@1.35.3':
-    resolution: {integrity: sha512-LHcC+9y6TFhDsIz9I3koYxONl2JFfx5yQDzc6ZEQO2cqzXedRcN0R9IPqNGCX7JuhGt14ctDkVCm1JWGP2J6Wg==}
+  '@zag-js/utils@1.40.0':
+    resolution: {integrity: sha512-XUpqDtXfHe7CySjOhLPLj9H8rxbiFUJAGgmBzNdpsGPP4wx12cpOXrpSjRXZ2kMwooMPz/P7RPDBteto8sqhAQ==}
 
   '@zarrita/storage@0.2.0':
     resolution: {integrity: sha512-855ZXqtnds7spnT8vNvD+MXa3QExP1m2GqShe8yt7uZXHnQLgJHgkpVwFjE1B0KDDRO0ki09hmk6OboTaIfPsQ==}
@@ -6054,73 +6068,75 @@ snapshots:
 
   '@adobe/css-tools@4.4.2': {}
 
-  '@ark-ui/react@5.34.1(patch_hash=6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@ark-ui/react@5.36.2(patch_hash=767aaf2c2661cde67481abcb34f0720395e9f3f4e467e888edda574784cdc73a)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@internationalized/date': 3.11.0
-      '@zag-js/accordion': 1.35.3
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/angle-slider': 1.35.3
-      '@zag-js/async-list': 1.35.3
-      '@zag-js/auto-resize': 1.35.3
-      '@zag-js/avatar': 1.35.3
-      '@zag-js/carousel': 1.35.3
-      '@zag-js/cascade-select': 1.35.3
-      '@zag-js/checkbox': 1.35.3
-      '@zag-js/clipboard': 1.35.3
-      '@zag-js/collapsible': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/color-picker': 1.35.3
-      '@zag-js/color-utils': 1.35.3
-      '@zag-js/combobox': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/date-picker': 1.35.3(@internationalized/date@3.11.0)
-      '@zag-js/date-utils': 1.35.3(@internationalized/date@3.11.0)
-      '@zag-js/dialog': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/drawer': 1.35.3
-      '@zag-js/editable': 1.35.3
-      '@zag-js/file-upload': 1.35.3
-      '@zag-js/file-utils': 1.35.3
-      '@zag-js/floating-panel': 1.35.3
-      '@zag-js/focus-trap': 1.35.3
-      '@zag-js/highlight-word': 1.35.3
-      '@zag-js/hover-card': 1.35.3
-      '@zag-js/i18n-utils': 1.35.3
-      '@zag-js/image-cropper': 1.35.3
-      '@zag-js/json-tree-utils': 1.35.3
-      '@zag-js/listbox': 1.35.3
-      '@zag-js/marquee': 1.35.3
-      '@zag-js/menu': 1.35.3
-      '@zag-js/navigation-menu': 1.35.3
-      '@zag-js/number-input': 1.35.3
-      '@zag-js/pagination': 1.35.3
-      '@zag-js/password-input': 1.35.3
-      '@zag-js/pin-input': 1.35.3
-      '@zag-js/popover': 1.35.3
-      '@zag-js/presence': 1.35.3
-      '@zag-js/progress': 1.35.3
-      '@zag-js/qr-code': 1.35.3
-      '@zag-js/radio-group': 1.35.3
-      '@zag-js/rating-group': 1.35.3
-      '@zag-js/react': 1.35.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@zag-js/scroll-area': 1.35.3
-      '@zag-js/select': 1.35.3
-      '@zag-js/signature-pad': 1.35.3
-      '@zag-js/slider': 1.35.3
-      '@zag-js/splitter': 1.35.3(patch_hash=075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb)
-      '@zag-js/steps': 1.35.3
-      '@zag-js/switch': 1.35.3
-      '@zag-js/tabs': 1.35.3
-      '@zag-js/tags-input': 1.35.3
-      '@zag-js/timer': 1.35.3
-      '@zag-js/toast': 1.35.3
-      '@zag-js/toggle': 1.35.3
-      '@zag-js/toggle-group': 1.35.3
-      '@zag-js/tooltip': 1.35.3
-      '@zag-js/tour': 1.35.3
-      '@zag-js/tree-view': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@internationalized/date': 3.12.0
+      '@zag-js/accordion': 1.40.0
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/angle-slider': 1.40.0
+      '@zag-js/async-list': 1.40.0
+      '@zag-js/auto-resize': 1.40.0
+      '@zag-js/avatar': 1.40.0
+      '@zag-js/carousel': 1.40.0
+      '@zag-js/cascade-select': 1.40.0
+      '@zag-js/checkbox': 1.40.0
+      '@zag-js/clipboard': 1.40.0
+      '@zag-js/collapsible': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/color-picker': 1.40.0
+      '@zag-js/color-utils': 1.40.0
+      '@zag-js/combobox': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/date-input': 1.40.0(@internationalized/date@3.12.0)
+      '@zag-js/date-picker': 1.40.0(@internationalized/date@3.12.0)
+      '@zag-js/date-utils': 1.40.0(@internationalized/date@3.12.0)
+      '@zag-js/dialog': 1.40.0(patch_hash=c7620689b03416985613dfd5126a308b887f7577b377d686da1dce19f4385525)
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/drawer': 1.40.0(patch_hash=004eff6f10fcc2c83fdf9c83e34d6b2728c274e1c22ae6ce4116373336abcf5d)
+      '@zag-js/editable': 1.40.0
+      '@zag-js/file-upload': 1.40.0
+      '@zag-js/file-utils': 1.40.0
+      '@zag-js/floating-panel': 1.40.0
+      '@zag-js/focus-trap': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/highlight-word': 1.40.0
+      '@zag-js/hover-card': 1.40.0(patch_hash=7c3393b15aff61dadd3f7351d1d10a1451867829d8ee2bfcdb46bf572867ff3e)
+      '@zag-js/i18n-utils': 1.40.0
+      '@zag-js/image-cropper': 1.40.0
+      '@zag-js/json-tree-utils': 1.40.0
+      '@zag-js/listbox': 1.40.0
+      '@zag-js/marquee': 1.40.0
+      '@zag-js/menu': 1.40.0(patch_hash=e48af45dcee69745ca6cd7e12a21283d987b71f80e0df1203a90ad81785e57c1)
+      '@zag-js/navigation-menu': 1.40.0
+      '@zag-js/number-input': 1.40.0
+      '@zag-js/pagination': 1.40.0
+      '@zag-js/password-input': 1.40.0
+      '@zag-js/pin-input': 1.40.0
+      '@zag-js/popover': 1.40.0(patch_hash=7eae3b904fed032547f7236426f90393b3f33cb5f2bf72dd7cbc9f0fadd1f518)
+      '@zag-js/presence': 1.40.0
+      '@zag-js/progress': 1.40.0
+      '@zag-js/qr-code': 1.40.0
+      '@zag-js/radio-group': 1.40.0
+      '@zag-js/rating-group': 1.40.0
+      '@zag-js/react': 1.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@zag-js/scroll-area': 1.40.0
+      '@zag-js/select': 1.40.0
+      '@zag-js/signature-pad': 1.40.0
+      '@zag-js/slider': 1.40.0
+      '@zag-js/splitter': 1.40.0
+      '@zag-js/steps': 1.40.0
+      '@zag-js/switch': 1.40.0
+      '@zag-js/tabs': 1.40.0
+      '@zag-js/tags-input': 1.40.0
+      '@zag-js/timer': 1.40.0
+      '@zag-js/toast': 1.40.0
+      '@zag-js/toggle': 1.40.0
+      '@zag-js/toggle-group': 1.40.0
+      '@zag-js/tooltip': 1.40.0(patch_hash=fe503ab94d51d94738b31849a8626cd0196ff0072c8f8d25be204c5fee8e8bcc)
+      '@zag-js/tour': 1.40.0
+      '@zag-js/tree-view': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 
@@ -6250,9 +6266,9 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@chakra-ui/react@3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@chakra-ui/react@3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@ark-ui/react': 5.34.1(patch_hash=6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@ark-ui/react': 5.36.2(patch_hash=767aaf2c2661cde67481abcb34f0720395e9f3f4e467e888edda574784cdc73a)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.6)
       '@emotion/serialize': 1.3.3
@@ -6643,16 +6659,16 @@ snapshots:
 
   '@exodus/bytes@1.15.0': {}
 
-  '@floating-ui/core@1.7.4':
+  '@floating-ui/core@1.7.5':
     dependencies:
-      '@floating-ui/utils': 0.2.10
+      '@floating-ui/utils': 0.2.11
 
-  '@floating-ui/dom@1.7.5':
+  '@floating-ui/dom@1.7.6':
     dependencies:
-      '@floating-ui/core': 1.7.4
-      '@floating-ui/utils': 0.2.10
+      '@floating-ui/core': 1.7.5
+      '@floating-ui/utils': 0.2.11
 
-  '@floating-ui/utils@0.2.10': {}
+  '@floating-ui/utils@0.2.11': {}
 
   '@formatjs/fast-memoize@3.1.5': {}
 
@@ -6696,7 +6712,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.19.41
 
-  '@internationalized/date@3.11.0':
+  '@internationalized/date@3.12.0':
     dependencies:
       '@swc/helpers': 0.5.15
 
@@ -6779,9 +6795,9 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@open-pioneer/base-theme@4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@open-pioneer/base-theme@4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@chakra-ui/react': 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@chakra-ui/react': 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
     transitivePeerDependencies:
       - '@emotion/react'
       - react
@@ -6831,12 +6847,12 @@ snapshots:
 
   '@open-pioneer/build-support@3.1.0': {}
 
-  '@open-pioneer/chakra-snippets@4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))':
+  '@open-pioneer/chakra-snippets@4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))':
     dependencies:
-      '@ark-ui/react': 5.34.1(patch_hash=6c7ccdc3ae257d66f6007fd0e7de6405701490cd678ce8c7f1570d5a4bef79eb)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@chakra-ui/react': 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@ark-ui/react': 5.36.2(patch_hash=767aaf2c2661cde67481abcb34f0720395e9f3f4e467e888edda574784cdc73a)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@chakra-ui/react': 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react: 19.2.6
       react-icons: 5.6.0(react@19.2.6)
     transitivePeerDependencies:
@@ -6857,30 +6873,30 @@ snapshots:
       commander: 14.0.3
       js-yaml: 4.1.1
 
-  '@open-pioneer/core@4.6.0-dev.20260519113011':
+  '@open-pioneer/core@4.6.0-dev.20260519125519':
     dependencies:
       '@conterra/reactivity-events': 0.8.5
 
-  '@open-pioneer/http@4.6.0-dev.20260519113011(@types/react@19.2.14)':
+  '@open-pioneer/http@4.6.0-dev.20260519125519(@types/react@19.2.14)':
     dependencies:
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/local-storage@4.6.0-dev.20260519113011(@types/react@19.2.14)':
+  '@open-pioneer/local-storage@4.6.0-dev.20260519125519(@types/react@19.2.14)':
     dependencies:
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/notifier@4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))':
+  '@open-pioneer/notifier@4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))':
     dependencies:
-      '@chakra-ui/react': 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/react-utils': 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@chakra-ui/react': 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/react-utils': 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
       react: 19.2.6
       react-icons: 5.6.0(react@19.2.6)
     transitivePeerDependencies:
@@ -6888,42 +6904,42 @@ snapshots:
       - '@types/react'
       - react-dom
 
-  '@open-pioneer/react-utils@4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))':
+  '@open-pioneer/react-utils@4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))':
     dependencies:
-      '@chakra-ui/react': 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@chakra-ui/react': 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core': 0.8.5
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/reactivity': 4.6.0-dev.20260519113011
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/reactivity': 4.6.0-dev.20260519125519
       react: 19.2.6
     transitivePeerDependencies:
       - '@emotion/react'
       - react-dom
 
-  '@open-pioneer/reactivity@4.6.0-dev.20260519113011':
+  '@open-pioneer/reactivity@4.6.0-dev.20260519125519':
     dependencies:
       '@conterra/reactivity-core': 0.8.5
       react: 19.2.6
 
-  '@open-pioneer/runtime@4.6.0-dev.20260519113011(@types/react@19.2.14)':
+  '@open-pioneer/runtime@4.6.0-dev.20260519125519(@types/react@19.2.14)':
     dependencies:
-      '@chakra-ui/react': 3.34.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@chakra-ui/react': 3.35.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@conterra/reactivity-core': 0.8.5
       '@emotion/cache': 11.14.0
       '@emotion/react': 11.14.0(@types/react@19.2.14)(react@19.2.6)
       '@formatjs/intl': 4.1.11
-      '@open-pioneer/base-theme': 4.6.0-dev.20260519113011(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      '@open-pioneer/core': 4.6.0-dev.20260519113011
-      '@open-pioneer/reactivity': 4.6.0-dev.20260519113011
+      '@open-pioneer/base-theme': 4.6.0-dev.20260519125519(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@open-pioneer/core': 4.6.0-dev.20260519125519
+      '@open-pioneer/reactivity': 4.6.0-dev.20260519125519
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/test-utils@4.6.0-dev.20260519113011(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)':
+  '@open-pioneer/test-utils@4.6.0-dev.20260519125519(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)':
     dependencies:
       '@conterra/reactivity-core': 0.8.5
       '@formatjs/intl': 4.1.11
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
       '@testing-library/dom': 10.4.1
       '@testing-library/react': 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react: 19.2.6
@@ -6932,13 +6948,13 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@open-pioneer/vite-plugin-pioneer@6.0.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@open-pioneer/runtime@4.6.0-dev.20260519113011(@types/react@19.2.14))(rollup@4.60.4)(sass@1.99.0)(vite@8.0.13(@types/node@20.19.41)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.0)(yaml@2.9.0))':
+  '@open-pioneer/vite-plugin-pioneer@6.0.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@open-pioneer/runtime@4.6.0-dev.20260519125519(@types/react@19.2.14))(rollup@4.60.4)(sass@1.99.0)(vite@8.0.13(@types/node@20.19.41)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.0)(yaml@2.9.0))':
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/template': 7.28.6
       '@babel/types': 7.29.0
       '@open-pioneer/build-common': 4.0.0(rollup@4.60.4)
-      '@open-pioneer/runtime': 4.6.0-dev.20260519113011(@types/react@19.2.14)
+      '@open-pioneer/runtime': 4.6.0-dev.20260519125519(@types/react@19.2.14)
       debug: 4.4.3
       js-yaml: 4.1.1
       oxc-resolver: 11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
@@ -7682,561 +7698,572 @@ snapshots:
 
   '@xobotyi/scrollbar-width@1.9.5': {}
 
-  '@zag-js/accordion@1.35.3':
+  '@zag-js/accordion@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/anatomy@1.35.3': {}
+  '@zag-js/anatomy@1.40.0': {}
 
-  '@zag-js/angle-slider@1.35.3':
+  '@zag-js/angle-slider@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/rect-utils': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/rect-utils': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/aria-hidden@1.35.3':
+  '@zag-js/aria-hidden@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/async-list@1.35.3':
+  '@zag-js/async-list@1.40.0':
     dependencies:
-      '@zag-js/core': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/core': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/auto-resize@1.35.3':
+  '@zag-js/auto-resize@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/avatar@1.35.3':
+  '@zag-js/avatar@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/carousel@1.35.3':
+  '@zag-js/carousel@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/scroll-snap': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/scroll-snap': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/cascade-select@1.35.3':
+  '@zag-js/cascade-select@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/rect-utils': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/rect-utils': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/checkbox@1.35.3':
+  '@zag-js/checkbox@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/clipboard@1.35.3':
+  '@zag-js/clipboard@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/collapsible@1.35.3':
+  '@zag-js/collapsible@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/collection@1.35.3':
+  '@zag-js/collection@1.40.0':
     dependencies:
-      '@zag-js/utils': 1.35.3
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/color-picker@1.35.3':
+  '@zag-js/color-picker@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/color-utils': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/color-utils': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/color-utils@1.35.3':
+  '@zag-js/color-utils@1.40.0':
     dependencies:
-      '@zag-js/utils': 1.35.3
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/combobox@1.35.3':
+  '@zag-js/combobox@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/aria-hidden': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/live-region': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/core@1.35.3':
+  '@zag-js/core@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/date-picker@1.35.3(@internationalized/date@3.11.0)':
+  '@zag-js/date-input@1.40.0(@internationalized/date@3.12.0)':
     dependencies:
-      '@internationalized/date': 3.11.0
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/date-utils': 1.35.3(@internationalized/date@3.11.0)
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/live-region': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@internationalized/date': 3.12.0
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/date-utils': 1.40.0(@internationalized/date@3.12.0)
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/live-region': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/date-utils@1.35.3(@internationalized/date@3.11.0)':
+  '@zag-js/date-picker@1.40.0(@internationalized/date@3.12.0)':
     dependencies:
-      '@internationalized/date': 3.11.0
+      '@internationalized/date': 3.12.0
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/date-utils': 1.40.0(@internationalized/date@3.12.0)
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/live-region': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/dialog@1.35.3':
+  '@zag-js/date-utils@1.40.0(@internationalized/date@3.12.0)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/aria-hidden': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-trap': 1.35.3
-      '@zag-js/remove-scroll': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@internationalized/date': 3.12.0
 
-  '@zag-js/dismissable@1.35.3':
+  '@zag-js/dialog@1.40.0(patch_hash=c7620689b03416985613dfd5126a308b887f7577b377d686da1dce19f4385525)':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/aria-hidden': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-trap': 1.40.0
+      '@zag-js/remove-scroll': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/dom-query@1.35.3':
+  '@zag-js/dismissable@1.40.0':
     dependencies:
-      '@zag-js/types': 1.35.3
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/interact-outside': 1.40.0(patch_hash=53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6)
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/drawer@1.35.3':
+  '@zag-js/dom-query@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/aria-hidden': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-trap': 1.35.3
-      '@zag-js/remove-scroll': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/types': 1.40.0
 
-  '@zag-js/editable@1.35.3':
+  '@zag-js/drawer@1.40.0(patch_hash=004eff6f10fcc2c83fdf9c83e34d6b2728c274e1c22ae6ce4116373336abcf5d)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/aria-hidden': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-trap': 1.40.0
+      '@zag-js/remove-scroll': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/file-upload@1.35.3':
+  '@zag-js/editable@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/file-utils': 1.35.3
-      '@zag-js/i18n-utils': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/interact-outside': 1.40.0(patch_hash=53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6)
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/file-utils@1.35.3':
+  '@zag-js/file-upload@1.40.0':
     dependencies:
-      '@zag-js/i18n-utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/file-utils': 1.40.0
+      '@zag-js/i18n-utils': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/floating-panel@1.35.3':
+  '@zag-js/file-utils@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/rect-utils': 1.35.3
-      '@zag-js/store': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/i18n-utils': 1.40.0
 
-  '@zag-js/focus-trap@1.35.3':
+  '@zag-js/floating-panel@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/rect-utils': 1.40.0
+      '@zag-js/store': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/focus-visible@1.35.3':
+  '@zag-js/focus-trap@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/highlight-word@1.35.3': {}
-
-  '@zag-js/hover-card@1.35.3':
+  '@zag-js/focus-visible@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/i18n-utils@1.35.3':
+  '@zag-js/highlight-word@1.40.0': {}
+
+  '@zag-js/hover-card@1.40.0(patch_hash=7c3393b15aff61dadd3f7351d1d10a1451867829d8ee2bfcdb46bf572867ff3e)':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/image-cropper@1.35.3':
+  '@zag-js/i18n-utils@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/interact-outside@1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)':
+  '@zag-js/image-cropper@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/json-tree-utils@1.35.3': {}
-
-  '@zag-js/listbox@1.35.3':
+  '@zag-js/interact-outside@1.40.0(patch_hash=53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/live-region@1.35.3': {}
+  '@zag-js/json-tree-utils@1.40.0': {}
 
-  '@zag-js/marquee@1.35.3':
+  '@zag-js/listbox@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/menu@1.35.3':
+  '@zag-js/live-region@1.40.0': {}
+
+  '@zag-js/marquee@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/rect-utils': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/navigation-menu@1.35.3':
+  '@zag-js/menu@1.40.0(patch_hash=e48af45dcee69745ca6cd7e12a21283d987b71f80e0df1203a90ad81785e57c1)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/rect-utils': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/number-input@1.35.3':
+  '@zag-js/navigation-menu@1.40.0':
+    dependencies:
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
+
+  '@zag-js/number-input@1.40.0':
     dependencies:
       '@internationalized/number': 3.6.5
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/pagination@1.35.3':
+  '@zag-js/pagination@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/password-input@1.35.3':
+  '@zag-js/password-input@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/pin-input@1.35.3':
+  '@zag-js/pin-input@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/popover@1.35.3':
+  '@zag-js/popover@1.40.0(patch_hash=7eae3b904fed032547f7236426f90393b3f33cb5f2bf72dd7cbc9f0fadd1f518)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/aria-hidden': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-trap': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/remove-scroll': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/aria-hidden': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-trap': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/remove-scroll': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/popper@1.35.3':
+  '@zag-js/popper@1.40.0':
     dependencies:
-      '@floating-ui/dom': 1.7.5
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@floating-ui/dom': 1.7.6
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/presence@1.35.3':
+  '@zag-js/presence@1.40.0':
     dependencies:
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
 
-  '@zag-js/progress@1.35.3':
+  '@zag-js/progress@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/qr-code@1.35.3':
+  '@zag-js/qr-code@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
       proxy-memoize: 3.0.1
       uqr: 0.1.2
 
-  '@zag-js/radio-group@1.35.3':
+  '@zag-js/radio-group@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/rating-group@1.35.3':
+  '@zag-js/rating-group@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/react@1.35.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+  '@zag-js/react@1.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      '@zag-js/core': 1.35.3
-      '@zag-js/store': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/core': 1.40.0
+      '@zag-js/store': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
 
-  '@zag-js/rect-utils@1.35.3': {}
+  '@zag-js/rect-utils@1.40.0': {}
 
-  '@zag-js/remove-scroll@1.35.3':
+  '@zag-js/remove-scroll@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/scroll-area@1.35.3':
+  '@zag-js/scroll-area@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/scroll-snap@1.35.3':
+  '@zag-js/scroll-snap@1.40.0':
     dependencies:
-      '@zag-js/dom-query': 1.35.3
+      '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/select@1.35.3':
+  '@zag-js/select@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/signature-pad@1.35.3':
+  '@zag-js/signature-pad@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
       perfect-freehand: 1.2.3
 
-  '@zag-js/slider@1.35.3':
+  '@zag-js/slider@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/splitter@1.35.3(patch_hash=075d08c3b1dc7858e4c6cc6b336042f36f1ee6c6f2d5e054747a872f1b58f9cb)':
+  '@zag-js/splitter@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/steps@1.35.3':
+  '@zag-js/steps@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/store@1.35.3':
+  '@zag-js/store@1.40.0':
     dependencies:
       proxy-compare: 3.0.1
 
-  '@zag-js/switch@1.35.3':
+  '@zag-js/switch@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/tabs@1.35.3':
+  '@zag-js/tabs@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/tags-input@1.35.3':
+  '@zag-js/tags-input@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/auto-resize': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
-      '@zag-js/live-region': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/auto-resize': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/interact-outside': 1.40.0(patch_hash=53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6)
+      '@zag-js/live-region': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/timer@1.35.3':
+  '@zag-js/timer@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/toast@1.35.3':
+  '@zag-js/toast@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/toggle-group@1.35.3':
+  '@zag-js/toggle-group@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/toggle@1.35.3':
+  '@zag-js/toggle@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/tooltip@1.35.3':
+  '@zag-js/tooltip@1.40.0(patch_hash=fe503ab94d51d94738b31849a8626cd0196ff0072c8f8d25be204c5fee8e8bcc)':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-visible': 1.35.3
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-visible': 1.40.0
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/tour@1.35.3':
+  '@zag-js/tour@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dismissable': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/focus-trap': 1.35.3
-      '@zag-js/interact-outside': 1.35.3(patch_hash=7a4ba966901c52e148876cbcd8f0d83d2b9cd5332e1e32c5a8bba781c7d6ac2d)
-      '@zag-js/popper': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dismissable': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/focus-trap': 1.40.0
+      '@zag-js/interact-outside': 1.40.0(patch_hash=53d739b8583ba2852bf6f2183a466abbb6e5aacb2159ffb1570285fbe08d5fd6)
+      '@zag-js/popper': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/tree-view@1.35.3':
+  '@zag-js/tree-view@1.40.0':
     dependencies:
-      '@zag-js/anatomy': 1.35.3
-      '@zag-js/collection': 1.35.3
-      '@zag-js/core': 1.35.3
-      '@zag-js/dom-query': 1.35.3
-      '@zag-js/types': 1.35.3
-      '@zag-js/utils': 1.35.3
+      '@zag-js/anatomy': 1.40.0
+      '@zag-js/collection': 1.40.0
+      '@zag-js/core': 1.40.0
+      '@zag-js/dom-query': 1.40.0
+      '@zag-js/types': 1.40.0
+      '@zag-js/utils': 1.40.0
 
-  '@zag-js/types@1.35.3':
+  '@zag-js/types@1.40.0':
     dependencies:
       csstype: 3.2.3
 
-  '@zag-js/utils@1.35.3': {}
+  '@zag-js/utils@1.40.0': {}
 
   '@zarrita/storage@0.2.0':
     dependencies:
