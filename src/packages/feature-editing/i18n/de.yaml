@@ -10,6 +10,7 @@ messages:
   propertyEditor:
     defaultEditHeading: Geoobjekt bearbeiten
     defaultCreateHeading: Geoobjekt erstellen
+    requiredFieldHint: "Pflichtfeld"
     saveButtonTitle: Speichern
     cancelButtonTitle: Abbrechen
     deleteButtonTooltip: Geoobjekt löschen

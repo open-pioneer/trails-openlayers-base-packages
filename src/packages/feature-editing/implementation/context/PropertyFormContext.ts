@@ -14,6 +14,7 @@ import { EditingCallbacks } from "../editor/useEditingCallbacks";
 export class PropertyFormContextClass implements PropertyFormContext {
     private readonly propertiesMap: ReactiveMap<string, unknown>;
     private readonly isValidSignal = reactive(false);
+    private readonly hasRequiredFieldsSignal = reactive(false);
 
     constructor(
         private readonly modificationStep: ModificationStep,
@@ -50,6 +51,14 @@ export class PropertyFormContextClass implements PropertyFormContext {
 
     set isValid(value: boolean) {
         this.isValidSignal.value = value;
+    }
+
+    get hasRequiredFields(): boolean {
+        return this.hasRequiredFieldsSignal.value;
+    }
+
+    set hasRequiredFields(value: boolean) {
+        this.hasRequiredFieldsSignal.value = value;
     }
 
     get template(): FeatureTemplate | undefined {

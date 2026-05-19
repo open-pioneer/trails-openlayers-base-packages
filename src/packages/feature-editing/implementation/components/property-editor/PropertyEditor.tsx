@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, VStack, useDisclosure } from "@chakra-ui/react";
+import { Box, Text, VStack, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useIntl } from "open-pioneer:react-hooks";
 import type { ReactElement, ReactNode } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ButtonRow } from "./ButtonRow";
@@ -16,6 +17,9 @@ export interface PropertyEditorProps {
 export function PropertyEditor({ children }: PropertyEditorProps): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
+    const hasRequiredFields = useReactiveSnapshot(() => context.hasRequiredFields, [context]);
+    const { formatRichMessage } = useIntl();
+
     const {
         open: deleteDialogIsOpen,
         onOpen: openDeleteDialog,
@@ -49,6 +53,14 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
                 <Box flex={1} overflowY="auto">
                     {children}
                 </Box>
+                {hasRequiredFields && (
+                    <Text fontSize={"sm"} aria-hidden="true">
+                        <Text as="span" color="fg.error">
+                            *
+                        </Text>{" "}
+                        {formatRichMessage({ id: "propertyEditor.requiredFieldHint" })}
+                    </Text>
+                )}
                 <ButtonRow
                     canSave={canSave}
                     showDeleteButton={context.mode === "update"}

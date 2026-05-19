@@ -15,6 +15,8 @@ import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
 import { PropertyForm } from "./PropertyForm";
 
+type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
+
 describe("create mode workflow", () => {
     it("renders property form for creating a feature", () => {
         const template = createTemplate();
@@ -57,6 +59,39 @@ describe("create mode workflow", () => {
 
         const saveButton = screen.getByRole("button", { name: /saveButtonTitle/i });
         expect(saveButton).toBeDisabled();
+        expect(screen.getByText(/requiredFieldHint/i)).toBeInTheDocument();
+    });
+
+    it("shows required field hint when the form has required fields", () => {
+        const template = createTemplate();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "creation",
+            drawLayer: {} as any,
+            template,
+            feature
+        };
+        renderEditor({ step, templates: [template] });
+
+        expect(screen.queryByText(/requiredFieldHint/i)).toBeInTheDocument();
+    });
+
+    it("does not show required field hint when the form has no required fields", () => {
+        const template = createTemplateWithoutRequiredField();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "creation",
+            drawLayer: {} as any,
+            template,
+            feature
+        };
+        renderEditor({ step, templates: [template] });
+
+        expect(screen.queryByText(/requiredFieldHint/i)).not.toBeInTheDocument();
     });
 
     it("allows filling in form and saving", async () => {
@@ -445,7 +480,7 @@ function renderEditor(options: {
     );
 }
 
-function createTemplate(): FeatureTemplate {
+function createTemplate(): DeclarativeFeatureTemplate {
     return {
         name: "Test Template",
         kind: "declarative",
@@ -465,6 +500,24 @@ function createTemplate(): FeatureTemplate {
                 propertyName: "description"
             }
         ]
+    };
+}
+
+function createTemplateWithoutRequiredField(): DeclarativeFeatureTemplate {
+    const template = createTemplate();
+
+    return {
+        ...template,
+        fields: template.fields.map((field) => {
+            if (field.propertyName === "name") {
+                return {
+                    ...field,
+                    isRequired: false
+                };
+            }
+
+            return field;
+        })
     };
 }
 
