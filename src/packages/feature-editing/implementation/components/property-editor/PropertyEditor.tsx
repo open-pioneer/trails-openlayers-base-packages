@@ -6,6 +6,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { ReactElement, ReactNode } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ButtonRow } from "./ButtonRow";
+import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 
 export interface PropertyEditorProps {
@@ -15,7 +16,16 @@ export interface PropertyEditorProps {
 export function PropertyEditor({ children }: PropertyEditorProps): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
-    const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
+    const {
+        open: deleteDialogIsOpen,
+        onOpen: openDeleteDialog,
+        onClose: closeDeleteDialog
+    } = useDisclosure();
+    const {
+        open: cancelDialogIsOpen,
+        onOpen: openCancelDialog,
+        onClose: closeCancelConfirmationDialog
+    } = useDisclosure();
 
     const onSaveClick = useEvent(async () => {
         const properties = context.getPropertiesAsObject();
@@ -25,7 +35,12 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
 
     const onDeleteClick = useEvent(async () => {
         await context.callbacks.onDelete();
-        closeDialog();
+        closeDeleteDialog();
+    });
+
+    const onConfirmCancelClick = useEvent(() => {
+        context.callbacks.onCancel();
+        closeCancelConfirmationDialog();
     });
 
     return (
@@ -38,14 +53,19 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
                     canSave={canSave}
                     showDeleteButton={context.mode === "update"}
                     onSave={onSaveClick}
-                    onDelete={openDialog}
-                    onCancel={context.callbacks.onCancel}
+                    onDelete={openDeleteDialog}
+                    onCancel={openCancelDialog}
                 />
             </VStack>
             <DeleteConfirmationDialog
-                isOpen={dialogIsOpen}
+                isOpen={deleteDialogIsOpen}
                 onDelete={onDeleteClick}
-                onCancel={closeDialog}
+                onCancel={closeDeleteDialog}
+            />
+            <CancelConfirmationDialog
+                isOpen={cancelDialogIsOpen}
+                onConfirmCancel={onConfirmCancelClick}
+                onAbortCancel={closeCancelConfirmationDialog}
             />
         </>
     );

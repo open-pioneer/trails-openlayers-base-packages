@@ -1,23 +1,28 @@
 messages:
   actionSelector:
-    editFeatureHeading: Edit Feature
-    createFeatureHeading: Create Feature
+    editFeatureHeading: Edit feature
+    createFeatureHeading: Create feature
     selectButtonTitle: Select
     finishButtonTooltip: Finish drawing
     resetButtonTooltip: Reset drawing
     undoButtonTooltip: Undo
     redoButtonTooltip: Redo
   propertyEditor:
-    defaultEditHeading: Edit Feature
-    defaultCreateHeading: Create Feature
+    defaultEditHeading: Edit feature
+    defaultCreateHeading: Create feature
     saveButtonTitle: Save
     cancelButtonTitle: Cancel
-    deleteButtonTooltip: Delete Feature
+    deleteButtonTooltip: Delete feature
   deleteConfirmationDialog:
-    title: Delete Feature
+    title: Delete feature
     message: Are you sure you want to delete this feature?
-    deleteButtonTitle: Delete Feature
+    deleteButtonTitle: Delete feature
     cancelButtonTitle: Cancel
+  cancelConfirmationDialog:
+    title: Discard changes
+    message: Are you sure you want to discard your changes?
+    confirmCancelButtonTitle: Discard changes
+    abortCancelButtonTitle: Continue editing
   notifier:
     creationSuccess: Feature created
     creationFailure: The feature failed to be created.

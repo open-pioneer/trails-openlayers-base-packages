@@ -18,6 +18,11 @@ messages:
     message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?
     deleteButtonTitle: Geoobjekt löschen
     cancelButtonTitle: Abbrechen
+  cancelConfirmationDialog:
+    title: Änderungen verwerfen
+    message: Sind Sie sicher, dass Sie Ihre Änderungen verwerfen möchten?
+    confirmCancelButtonTitle: Änderungen verwerfen
+    abortCancelButtonTitle: Weiter bearbeiten
   notifier:
     creationSuccess: Geoobjekt erstellt
     creationFailure: Das Geoobjekt konnte nicht erstellt werden.
