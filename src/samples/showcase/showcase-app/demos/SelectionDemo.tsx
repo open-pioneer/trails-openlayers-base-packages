@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
+import { computed, reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import {
     Selection,
@@ -12,6 +12,7 @@ import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
+import { DemoDescription } from "./DemoDescription";
 import VectorSource from "ol/source/Vector";
 import {
     FormatOptions,
@@ -35,7 +36,9 @@ interface ResultListState {
 export function createSelectionDemo(options: SharedDemoOptions): Demo {
     return {
         id: "selectionResultList",
-        title: options.intl.formatMessage({ id: "demos.selectionResultList.title" }),
+        title: computed(() =>
+            options.currentIntl.value.formatMessage({ id: "demos.selectionResultList.title" })
+        ),
         createModel() {
             return new DemoModelImpl(options);
         }
@@ -55,12 +58,12 @@ class DemoModelImpl implements DemoModel {
     mainWidget: ReactNode;
 
     constructor(options: SharedDemoOptions) {
-        const { mapModel, vectorSelectionSourceFactory, intl } = options;
+        const { mapModel, vectorSelectionSourceFactory } = options;
 
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
 
-        this.description = intl.formatRichMessage({ id: "demos.selectionResultList.description" });
+        this.description = <DemoDescription messageId="demos.selectionResultList.description" />;
         this.mainWidget = (
             <Selection
                 sources={[this.#selectionSource]}

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { watchValue } from "@conterra/reactivity-core";
+import { constant, watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
@@ -264,7 +264,12 @@ describe("whenDisplayed", () => {
 });
 
 function create(mapId: string, mapConfig: MapConfig) {
-    return createMapModel(mapId, mapConfig, createIntl(), MOCKED_HTTP_SERVICE as HttpService);
+    return createMapModel(
+        mapId,
+        mapConfig,
+        constant(createIntl()),
+        MOCKED_HTTP_SERVICE as HttpService
+    );
 }
 
 function waitTick() {

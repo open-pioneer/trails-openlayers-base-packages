@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch } from "@conterra/reactivity-core";
+import { batch, ReadonlyReactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -34,22 +34,27 @@ const LOG = createLogger(sourceId);
 export async function createMapModel(
     mapId: string,
     mapConfig: MapConfig,
-    intl: PackageIntl,
+    currentIntl: ReadonlyReactive<PackageIntl>,
     httpService: HttpService
 ): Promise<MapModel> {
-    return await new MapModelFactory(mapId, mapConfig, intl, httpService).createMapModel();
+    return await new MapModelFactory(mapId, mapConfig, currentIntl, httpService).createMapModel();
 }
 
 class MapModelFactory {
     private mapId: string;
     private mapConfig: MapConfig;
-    private intl: PackageIntl;
+    private currentIntl: ReadonlyReactive<PackageIntl>;
     private httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig, intl: PackageIntl, httpService: HttpService) {
+    constructor(
+        mapId: string,
+        mapConfig: MapConfig,
+        currentIntl: ReadonlyReactive<PackageIntl>,
+        httpService: HttpService
+    ) {
         this.mapId = mapId;
         this.mapConfig = mapConfig;
-        this.intl = intl;
+        this.currentIntl = currentIntl;
         this.httpService = httpService;
     }
 
@@ -111,7 +116,7 @@ class MapModelFactory {
                 olMap,
                 initialExtent,
                 showDefaultAttributions,
-                intl: this.intl,
+                currentIntl: this.currentIntl,
                 httpService: this.httpService
             },
             INTERNAL_CONSTRUCTOR_TAG

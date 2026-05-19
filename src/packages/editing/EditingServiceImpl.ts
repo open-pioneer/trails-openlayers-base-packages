@@ -46,7 +46,7 @@ export class EditingServiceImpl implements EditingService {
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.currentIntl
         });
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowDestroyEvent(workflow, mapId);
@@ -80,7 +80,7 @@ export class EditingServiceImpl implements EditingService {
             vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.currentIntl
         });
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowDestroyEvent(workflow, mapId);

@@ -165,7 +165,7 @@ export class MapModel {
             olMap: OlMap;
             initialExtent: ExtentConfig | undefined;
             showDefaultAttributions: boolean;
-            intl: PackageIntl;
+            currentIntl: ReadonlyReactive<PackageIntl>;
             httpService: HttpService;
         },
         tag: InternalConstructorTag
@@ -175,7 +175,7 @@ export class MapModel {
         this.#id = options.id;
         this.#olMap = options.olMap;
         this.#attributions = new MapAttributions({
-            intl: options.intl,
+            intl: options.currentIntl,
             olMap: this.#olMap,
             showControl: options.showDefaultAttributions
         });

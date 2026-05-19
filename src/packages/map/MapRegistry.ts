@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch } from "@conterra/reactivity-core";
+import { batch, ReadonlyReactive } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { createLogger, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
@@ -77,7 +77,7 @@ type ModelJobResult =
 export class MapRegistry implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "map.MapRegistry";
 
-    #intl: PackageIntl;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
     #httpService: HttpService;
     #layerFactory: LayerFactory;
 
@@ -87,8 +87,8 @@ export class MapRegistry implements Service {
     #modelsByOlMap = new WeakMap<OlMap, MapModel>();
     #destroyed = false;
 
-    constructor({ references, intl }: ServiceOptions<References>) {
-        this.#intl = intl;
+    constructor({ references, currentIntl }: ServiceOptions<References>) {
+        this.#currentIntl = currentIntl;
         this.#httpService = references.httpService;
         this.#layerFactory = references.layerFactory;
 
@@ -241,7 +241,12 @@ export class MapRegistry implements Service {
     ): Promise<MapModel> {
         LOG.info(`Creating map with id '${mapId}'`);
         const mapConfig = await configProvider();
-        const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
+        const mapModel = await createMapModel(
+            mapId,
+            mapConfig,
+            this.#currentIntl,
+            this.#httpService
+        );
         return mapModel;
     }
 

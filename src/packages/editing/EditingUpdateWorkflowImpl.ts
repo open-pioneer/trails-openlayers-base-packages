@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, effect, reactive } from "@conterra/reactivity-core";
+import { Reactive, ReadonlyReactive, effect, reactive } from "@conterra/reactivity-core";
 import { ManualPromise, Resource, createManualPromise } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
@@ -28,7 +28,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
-    private _intl: PackageIntl;
+    private _intl: ReadonlyReactive<PackageIntl>;
     private _layerFactory: LayerFactory;
 
     private _map: MapModel;
@@ -101,7 +101,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
 
         this._tooltip = createTooltip(
             this._map,
-            this._intl.formatMessage({ id: "create.tooltip.deselect" })
+            this._intl.value.formatMessage({ id: "create.tooltip.deselect" })
         );
 
         this._enterHandler = (e: KeyboardEvent) => {

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
-import { Demo, createDemos } from "../demos/Demo";
-import type {
+import { reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { createDemos } from "../demos/Demo";
+import {
     DECLARE_SERVICE_INTERFACE,
     PackageIntl,
     Service,
@@ -17,7 +17,10 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { EditingService } from "@open-pioneer/editing";
 
-export type DemoInfo = Pick<Demo, "id" | "title">;
+export interface DemoInfo {
+    id: string;
+    title: string;
+}
 
 export interface References {
     httpService: HttpService;
@@ -61,7 +64,7 @@ export class AppInitModel implements Service {
             editingService,
             notificationService
         } = serviceOptions.references;
-        const intl = serviceOptions.intl;
+        const currentIntl = serviceOptions.currentIntl;
 
         this.#init({
             mapRegistry,
@@ -69,7 +72,7 @@ export class AppInitModel implements Service {
             notifier,
             vectorSelectionSourceFactory,
             editingService,
-            intl,
+            currentIntl,
             notificationService
         }).catch((err) => {
             this.#appState.value = {
@@ -96,7 +99,7 @@ export class AppInitModel implements Service {
         notifier: NotificationService;
         vectorSelectionSourceFactory: VectorSelectionSourceFactory;
         editingService: EditingService;
-        intl: PackageIntl;
+        currentIntl: ReadonlyReactive<PackageIntl>;
         notificationService: NotificationService;
     }) {
         const {
@@ -105,7 +108,7 @@ export class AppInitModel implements Service {
             notifier,
             vectorSelectionSourceFactory,
             editingService,
-            intl,
+            currentIntl,
             notificationService
         } = options;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
@@ -115,16 +118,18 @@ export class AppInitModel implements Service {
         }
 
         const demos = createDemos({
-            intl,
+            currentIntl,
             httpService,
             mapModel,
             vectorSelectionSourceFactory,
             editingService,
             notificationService
         });
+        const appModel = new AppModel(mapModel, notifier, currentIntl, demos);
+
         const state: AppStateReady = {
             kind: "ready",
-            appModel: new AppModel(mapModel, notifier, intl, demos),
+            appModel,
             destroy() {
                 this.appModel.destroy();
             }

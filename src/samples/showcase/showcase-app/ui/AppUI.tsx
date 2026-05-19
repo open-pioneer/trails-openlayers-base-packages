@@ -35,9 +35,10 @@ export function AppUI() {
 function AppContent(props: { state: AppStateReady }) {
     const intl = useIntl();
     const appModel = props.state.appModel;
-    const { currentDemo, currentDemoModel } = useReactiveSnapshot(
+    const { currentDemo, currentDemoTitle, currentDemoModel } = useReactiveSnapshot(
         () => ({
             currentDemo: appModel.currentDemo,
+            currentDemoTitle: appModel.currentDemo.title.value,
             currentDemoModel: appModel.currentDemoModel
         }),
         [appModel]
@@ -88,7 +89,7 @@ function AppContent(props: { state: AppStateReady }) {
                                     >
                                         <TitledSection
                                             key={currentDemo.id}
-                                            title={currentDemo.title}
+                                            title={currentDemoTitle}
                                             sectionHeadingProps={{ id: headingId, size: "lg" }}
                                         >
                                             <Text py={4}>{currentDemoModel.description}</Text>
