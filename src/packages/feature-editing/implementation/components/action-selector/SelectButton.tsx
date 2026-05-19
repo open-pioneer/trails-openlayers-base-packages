@@ -25,7 +25,9 @@ export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactEle
                 onClick={onClick}
             >
                 <LuMousePointerClick aria-hidden="true" />
-                {formatMessage({ id: "actionSelector.selectButtonTitle" })}
+                {isActive
+                    ? formatMessage({ id: "actionSelector.selectButtonActiveTitle" })
+                    : formatMessage({ id: "actionSelector.selectButtonTitle" })}
             </Button>
         </Toggle.Root>
     );

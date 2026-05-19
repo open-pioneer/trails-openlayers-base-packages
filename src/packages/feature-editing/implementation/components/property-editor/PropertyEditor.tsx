@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, VStack, useDisclosure } from "@chakra-ui/react";
+import { Box, Text, VStack, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useIntl } from "open-pioneer:react-hooks";
 import type { ReactElement, ReactNode } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ButtonRow } from "./ButtonRow";
+import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 
 export interface PropertyEditorProps {
@@ -15,7 +17,19 @@ export interface PropertyEditorProps {
 export function PropertyEditor({ children }: PropertyEditorProps): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
-    const { open: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
+    const hasRequiredFields = useReactiveSnapshot(() => context.hasRequiredFields, [context]);
+    const { formatRichMessage } = useIntl();
+
+    const {
+        open: deleteDialogIsOpen,
+        onOpen: openDeleteDialog,
+        onClose: closeDeleteDialog
+    } = useDisclosure();
+    const {
+        open: cancelDialogIsOpen,
+        onOpen: openCancelDialog,
+        onClose: closeCancelConfirmationDialog
+    } = useDisclosure();
 
     const onSaveClick = useEvent(async () => {
         const properties = context.getPropertiesAsObject();
@@ -25,7 +39,12 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
 
     const onDeleteClick = useEvent(async () => {
         await context.callbacks.onDelete();
-        closeDialog();
+        closeDeleteDialog();
+    });
+
+    const onConfirmCancelClick = useEvent(() => {
+        context.callbacks.onCancel();
+        closeCancelConfirmationDialog();
     });
 
     return (
@@ -34,18 +53,31 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
                 <Box flex={1} overflowY="auto">
                     {children}
                 </Box>
+                {hasRequiredFields && (
+                    <Text fontSize={"sm"} aria-hidden="true" textAlign={"right"} paddingRight={2}>
+                        <Text as="span" color="fg.error">
+                            *
+                        </Text>{" "}
+                        {formatRichMessage({ id: "propertyEditor.requiredFieldHint" })}
+                    </Text>
+                )}
                 <ButtonRow
                     canSave={canSave}
                     showDeleteButton={context.mode === "update"}
                     onSave={onSaveClick}
-                    onDelete={openDialog}
-                    onCancel={context.callbacks.onCancel}
+                    onDelete={openDeleteDialog}
+                    onCancel={openCancelDialog}
                 />
             </VStack>
             <DeleteConfirmationDialog
-                isOpen={dialogIsOpen}
+                isOpen={deleteDialogIsOpen}
                 onDelete={onDeleteClick}
-                onCancel={closeDialog}
+                onCancel={closeDeleteDialog}
+            />
+            <CancelConfirmationDialog
+                isOpen={cancelDialogIsOpen}
+                onConfirmCancel={onConfirmCancelClick}
+                onAbortCancel={closeCancelConfirmationDialog}
             />
         </>
     );

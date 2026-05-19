@@ -15,6 +15,8 @@ import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
 import { PropertyForm } from "./PropertyForm";
 
+type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
+
 describe("create mode workflow", () => {
     it("renders property form for creating a feature", () => {
         const template = createTemplate();
@@ -57,6 +59,39 @@ describe("create mode workflow", () => {
 
         const saveButton = screen.getByRole("button", { name: /saveButtonTitle/i });
         expect(saveButton).toBeDisabled();
+        expect(screen.getByText(/requiredFieldHint/i)).toBeInTheDocument();
+    });
+
+    it("shows required field hint when the form has required fields", () => {
+        const template = createTemplate();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "creation",
+            drawLayer: {} as any,
+            template,
+            feature
+        };
+        renderEditor({ step, templates: [template] });
+
+        expect(screen.queryByText(/requiredFieldHint/i)).toBeInTheDocument();
+    });
+
+    it("does not show required field hint when the form has no required fields", () => {
+        const template = createTemplateWithoutRequiredField();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "creation",
+            drawLayer: {} as any,
+            template,
+            feature
+        };
+        renderEditor({ step, templates: [template] });
+
+        expect(screen.queryByText(/requiredFieldHint/i)).not.toBeInTheDocument();
     });
 
     it("allows filling in form and saving", async () => {
@@ -95,7 +130,7 @@ describe("create mode workflow", () => {
         expect(onSave).toHaveBeenCalledOnce();
     });
 
-    it("allows canceling without saving", async () => {
+    it("shows cancel confirmation dialog before canceling and allows canceling without saving", async () => {
         const user = userEvent.setup();
         const template = createTemplate();
         const feature = new Feature();
@@ -113,8 +148,52 @@ describe("create mode workflow", () => {
 
         const cancelButton = screen.getByRole("button", { name: /cancelButtonTitle/i });
         await user.click(cancelButton);
+
+        await waitFor(() => {
+            expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+        });
+
+        expect(onCancel).not.toHaveBeenCalled();
+        expect(onSave).not.toHaveBeenCalled();
+
+        const confirmCancelButton = screen.getByRole("button", {
+            name: /confirmCancelButtonTitle/i
+        });
+        await user.click(confirmCancelButton);
+
         expect(onCancel).toHaveBeenCalledOnce();
         expect(onSave).not.toHaveBeenCalled();
+    });
+
+    it("can close cancel confirmation dialog and continue editing", async () => {
+        const user = userEvent.setup();
+        const template = createTemplate();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "creation",
+            drawLayer: {} as any,
+            template,
+            feature
+        };
+        const onSave = vi.fn();
+        const onCancel = vi.fn();
+        renderEditor({ step, callbacks: { onSave, onCancel } });
+
+        await user.click(screen.getByRole("button", { name: /cancelButtonTitle/i }));
+        await waitFor(() => {
+            expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+        });
+
+        await user.click(
+            screen.getByRole("button", { name: /cancelConfirmationDialog.abortCancelButtonTitle/i })
+        );
+
+        await waitFor(() => {
+            expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+        });
+        expect(onCancel).not.toHaveBeenCalled();
     });
 });
 
@@ -401,7 +480,7 @@ function renderEditor(options: {
     );
 }
 
-function createTemplate(): FeatureTemplate {
+function createTemplate(): DeclarativeFeatureTemplate {
     return {
         name: "Test Template",
         kind: "declarative",
@@ -421,6 +500,24 @@ function createTemplate(): FeatureTemplate {
                 propertyName: "description"
             }
         ]
+    };
+}
+
+function createTemplateWithoutRequiredField(): DeclarativeFeatureTemplate {
+    const template = createTemplate();
+
+    return {
+        ...template,
+        fields: template.fields.map((field) => {
+            if (field.propertyName === "name") {
+                return {
+                    ...field,
+                    isRequired: false
+                };
+            }
+
+            return field;
+        })
     };
 }
 

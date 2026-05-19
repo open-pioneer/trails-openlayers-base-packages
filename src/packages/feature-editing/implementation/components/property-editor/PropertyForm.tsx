@@ -21,6 +21,7 @@ export function PropertyForm({ templates, resolveFormTemplate }: PropertyForm): 
     const template = useFormTemplate(templates, resolveFormTemplate);
     const heading = useHeading(template);
     useUpdateValidity(template);
+    useHasRequiredFields(template);
 
     return (
         <Flex className="editor__property-form" direction="column" height="full">
@@ -76,7 +77,7 @@ function useHeading(template: FormTemplate | undefined) {
                 ? "propertyEditor.defaultEditHeading"
                 : "propertyEditor.defaultCreateHeading"
     });
-    return template?.name ?? defaultHeading;
+    return template?.name ? `${defaultHeading}: ${template?.name} ` : defaultHeading;
 }
 
 function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
@@ -90,6 +91,24 @@ function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
         },
         [templates]
     );
+}
+
+function useHasRequiredFields(template: FormTemplate | undefined): void {
+    const context = usePropertyFormContext();
+
+    useEffect(() => {
+        const handle = effect(() => {
+            if (template?.kind === "declarative") {
+                const properties = context.getPropertiesAsObject();
+                context.hasRequiredFields = template.fields.some((field) =>
+                    isTrue(field.isRequired, properties)
+                );
+            } else {
+                context.hasRequiredFields = false;
+            }
+        });
+        return () => handle.destroy();
+    }, [context, template]);
 }
 
 function useUpdateValidity(template: FormTemplate | undefined): void {

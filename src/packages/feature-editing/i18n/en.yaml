@@ -3,6 +3,7 @@ messages:
     editFeatureHeading: Edit Feature
     createFeatureHeading: Create Feature
     selectButtonTitle: Select
+    selectButtonActiveTitle: Cancel selection
     finishButtonTooltip: Finish drawing
     resetButtonTooltip: Reset drawing
     undoButtonTooltip: Undo
@@ -10,14 +11,20 @@ messages:
   propertyEditor:
     defaultEditHeading: Edit Feature
     defaultCreateHeading: Create Feature
+    requiredFieldHint: "Required field"
     saveButtonTitle: Save
     cancelButtonTitle: Cancel
-    deleteButtonTooltip: Delete Feature
+    deleteButtonTooltip: Delete feature
   deleteConfirmationDialog:
     title: Delete Feature
     message: Are you sure you want to delete this feature?
-    deleteButtonTitle: Delete Feature
+    deleteButtonTitle: Delete feature
     cancelButtonTitle: Cancel
+  cancelConfirmationDialog:
+    title: Discard changes
+    message: Are you sure you want to discard your changes?
+    confirmCancelButtonTitle: Discard changes
+    abortCancelButtonTitle: Continue editing
   notifier:
     creationSuccess: Feature created
     creationFailure: The feature failed to be created.
