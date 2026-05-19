@@ -3,6 +3,7 @@ messages:
     editFeatureHeading: Edit Feature
     createFeatureHeading: Create Feature
     selectButtonTitle: Select
+    selectButtonActiveTitle: Cancel selection
     finishButtonTooltip: Finish drawing
     resetButtonTooltip: Reset drawing
     undoButtonTooltip: Undo

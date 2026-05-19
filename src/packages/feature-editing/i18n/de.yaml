@@ -3,6 +3,7 @@ messages:
     editFeatureHeading: Geoobjekt bearbeiten
     createFeatureHeading: Geoobjekt erstellen
     selectButtonTitle: Auswählen
+    selectButtonActiveTitle: Auswählen beenden
     finishButtonTooltip: Zeichnen beenden
     resetButtonTooltip: Zeichnung zurücksetzen
     undoButtonTooltip: Rückgängig machen
