@@ -11,7 +11,7 @@ import {
 } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";

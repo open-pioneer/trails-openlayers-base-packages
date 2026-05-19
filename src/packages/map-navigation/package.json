@@ -24,7 +24,6 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"

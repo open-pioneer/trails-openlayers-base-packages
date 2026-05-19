@@ -15,7 +15,7 @@ import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";

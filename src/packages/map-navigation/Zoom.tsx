@@ -5,7 +5,7 @@ import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefAttributes, useState } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";

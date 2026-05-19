@@ -6,7 +6,7 @@ import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefAttributes } from "react";
 import { LuCornerUpLeft, LuCornerUpRight } from "react-icons/lu";
