@@ -14,7 +14,7 @@ import {
     Table as TanstackTable,
     flexRender
 } from "@tanstack/react-table";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { MouseEvent, createContext, useContext, useEffect, useMemo, useState } from "react";

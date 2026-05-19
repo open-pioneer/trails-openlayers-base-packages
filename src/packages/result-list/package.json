@@ -26,7 +26,6 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
-        "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-use": "catalog:",

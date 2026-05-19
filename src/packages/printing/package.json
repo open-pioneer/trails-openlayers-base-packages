@@ -24,7 +24,6 @@
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "classnames": "catalog:",
         "html2canvas": "catalog:",
         "jspdf": "catalog:",
         "ol": "catalog:",

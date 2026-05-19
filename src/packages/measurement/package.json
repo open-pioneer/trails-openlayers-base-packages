@@ -23,7 +23,6 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/chakra-snippets": "catalog:",
-        "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:"
     },

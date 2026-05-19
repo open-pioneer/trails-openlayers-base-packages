@@ -7,7 +7,7 @@ import {
     mergeChakraProps,
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import {
     FC,
     MouseEvent,
