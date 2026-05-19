@@ -1,13 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    CleanupHandle,
-    computed,
-    reactive,
-    ReadonlyReactive,
-    synchronized,
-    watchValue
-} from "@conterra/reactivity-core";
+import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
 import {
     createAbortError,
@@ -162,8 +155,6 @@ export class MapModel {
     readonly #abortController = new AbortController();
     #displayStatus: DisplayStatus;
     #displayWaiter: ManualPromise<void> | undefined;
-    
-    #attributionsHandler: CleanupHandle;
 
     /**
      * @internal
@@ -184,17 +175,10 @@ export class MapModel {
         this.#id = options.id;
         this.#olMap = options.olMap;
         this.#attributions = new MapAttributions({
-            intl: options.currentIntl.value,
+            intl: options.currentIntl,
             olMap: this.#olMap,
             showControl: options.showDefaultAttributions
         });
-
-        this.#attributionsHandler = watchValue(
-            () => options.currentIntl.value,
-            (intl) => {
-                this.#attributions.intl = intl;
-            }
-        );
 
         this.#olView = synchronized(
             () => this.#olMap.getView(),
@@ -285,7 +269,6 @@ export class MapModel {
         this.#highlights[DESTROY_HIGHLIGHTS]();
         this.#attributions.destroy();
         this.#olMap.dispose();
-        this.#attributionsHandler.destroy();
     }
 
     /**

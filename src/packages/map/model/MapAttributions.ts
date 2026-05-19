@@ -1,14 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { computed, effect, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { destroyResources, Resource } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
 import OlMap, { FrameState } from "ol/Map";
 import Attribution from "ol/control/Attribution";
 import { sanitizeHtml } from "../utils/sanitize";
-import { computed, reactive } from "@conterra/reactivity-core";
 import { AttributionItem } from "./MapModel";
 
 export class MapAttributions {
     #olMap: OlMap;
+    #intl: ReadonlyReactive<PackageIntl>;
 
     /**
      * When default rendering of attributions is active, we simply display this control on the map (otherwise: hidden).
@@ -27,17 +29,18 @@ export class MapAttributions {
             text: attribution
         }))
     );
-    #intl: PackageIntl;
+
+    #resources: Resource[] = [];
 
     constructor(options: {
         olMap: OlMap;
         /** false: not rendered */
         showControl: boolean;
-        intl: PackageIntl;
+        intl: ReadonlyReactive<PackageIntl>;
     }) {
         this.#olMap = options.olMap;
         this.#intl = options.intl;
-        
+
         const control = (this.#control = new Attribution({
             collapsible: false,
             target: options.showControl ? undefined : createDummyTargetNode()
@@ -55,7 +58,11 @@ export class MapAttributions {
         const element = (control as any).element as HTMLElement | undefined;
         if (element) {
             element.role = "region";
-            element.ariaLabel = this.#intl.formatMessage({ id: "attribution.label" });
+            this.#resources.push(
+                effect(() => {
+                    element.ariaLabel = this.#intl.value.formatMessage({ id: "attribution.label" });
+                })
+            );
         }
 
         this.#olMap.addControl(control);
@@ -63,14 +70,12 @@ export class MapAttributions {
 
     destroy() {
         this.#olMap.removeControl(this.#control);
+        destroyResources(this.#resources);
         this.#control.dispose();
     }
 
     get attributionItems(): AttributionItem[] {
         return this.#attributionItems.value;
-    }
-    set intl(intl: PackageIntl) {
-        this.#intl = intl;
     }
 }
 
