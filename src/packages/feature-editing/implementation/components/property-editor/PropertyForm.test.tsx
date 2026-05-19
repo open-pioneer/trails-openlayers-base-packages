@@ -406,7 +406,7 @@ describe("rendering", () => {
 
     it("renders form title", async () => {
         renderForm();
-        const title = screen.getByText("All Input Types");
+        const title = screen.getByText("All Input Types", { exact: false });
         expect(title).toBeDefined();
     });
 });

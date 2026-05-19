@@ -54,7 +54,7 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
                     {children}
                 </Box>
                 {hasRequiredFields && (
-                    <Text fontSize={"sm"} aria-hidden="true">
+                    <Text fontSize={"sm"} aria-hidden="true" textAlign={"right"} paddingRight={2}>
                         <Text as="span" color="fg.error">
                             *
                         </Text>{" "}

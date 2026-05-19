@@ -77,7 +77,7 @@ function useHeading(template: FormTemplate | undefined) {
                 ? "propertyEditor.defaultEditHeading"
                 : "propertyEditor.defaultCreateHeading"
     });
-    return template?.name ?? defaultHeading;
+    return template?.name ? `${defaultHeading}: ${template?.name} ` : defaultHeading;
 }
 
 function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
