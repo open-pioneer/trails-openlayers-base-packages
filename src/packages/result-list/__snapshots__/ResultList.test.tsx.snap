@@ -46,6 +46,7 @@ exports[`expect result list to be created successfully 1`] = `
             >
               <span
                 class="chakra-tooltip__trigger"
+                data-ownedby="_r_0_"
                 data-part="trigger"
                 data-scope="tooltip"
                 data-state="closed"
