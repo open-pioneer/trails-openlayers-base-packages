@@ -17,10 +17,10 @@ import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Demo, SharedDemoOptions } from "./Demo";
-import { DemoDescription } from "./DemoDescription";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 
 export function createCoordinateViewerDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {
@@ -30,7 +30,12 @@ export function createCoordinateViewerDemo({ currentIntl }: SharedDemoOptions): 
         ),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.coordinateViewer.description" />,
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.coordinateViewer.description"
+                    />
+                ),
                 mainWidget: <CoordinateViewer />
             };
         }
@@ -43,7 +48,9 @@ export function createGeolocationDemo({ currentIntl }: SharedDemoOptions): Demo 
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.geolocation.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.geolocation.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.geolocation.description" />
+                ),
                 tools: <Geolocation />
             };
         }
@@ -56,7 +63,9 @@ export function createMapNavigationDemo({ currentIntl }: SharedDemoOptions): Dem
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.mapNavigation.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.mapNavigation.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.mapNavigation.description" />
+                ),
                 tools: (
                     <>
                         <ZoomIn />
@@ -77,7 +86,9 @@ export function createMeasurementDemo({ currentIntl }: SharedDemoOptions): Demo 
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.measurement.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.measurement.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.measurement.description" />
+                ),
                 mainWidget: <Measurement />
             };
         }
@@ -94,7 +105,9 @@ export function createOverviewMapDemo({ currentIntl }: SharedDemoOptions): Demo 
             });
 
             return {
-                description: <DemoDescription messageId="demos.overviewMap.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.overviewMap.description" />
+                ),
                 mainWidget: <OverviewMap olLayer={overviewMapLayer} />,
                 destroy() {
                     overviewMapLayer.dispose();
@@ -110,7 +123,9 @@ export function createPrintingDemo({ currentIntl }: SharedDemoOptions): Demo {
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.printing.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.printing.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.printing.description" />
+                ),
                 mainWidget: <Printing />
             };
         }
@@ -123,7 +138,9 @@ export function createScaleBarDemo({ currentIntl }: SharedDemoOptions): Demo {
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleBar.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.scaleBar.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.scaleBar.description" />
+                ),
                 tools: <ScaleBar />
             };
         }
@@ -136,7 +153,9 @@ export function createScaleViewerDemo({ currentIntl }: SharedDemoOptions): Demo 
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleViewer.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.scaleViewer.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.scaleViewer.description" />
+                ),
                 mainWidget: <ScaleViewer />
             };
         }
@@ -149,7 +168,9 @@ export function createScaleSetterDemo({ currentIntl }: SharedDemoOptions): Demo 
         title: computed(() => currentIntl.value.formatMessage({ id: "demos.scaleSetter.title" })),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.scaleSetter.description" />,
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.scaleSetter.description" />
+                ),
                 mainWidget: <ScaleSetter />
             };
         }
@@ -164,7 +185,12 @@ export function createSpatialBookmarksDemo({ currentIntl }: SharedDemoOptions): 
         ),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.spatialBookmarks.description" />,
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.spatialBookmarks.description"
+                    />
+                ),
                 mainWidget: <SpatialBookmarks />
             };
         }

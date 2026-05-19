@@ -2,6 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { computed, reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
 import {
     Selection,
     SelectionCompleteEvent,
@@ -10,17 +18,9 @@ import {
 } from "@open-pioneer/selection";
 import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import { DemoDescription } from "./DemoDescription";
-import VectorSource from "ol/source/Vector";
-import {
-    FormatOptions,
-    ResultColumn,
-    ResultList,
-    ResultListInput,
-    ResultListSelectionChangeEvent
-} from "@open-pioneer/result-list";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -58,12 +58,14 @@ class DemoModelImpl implements DemoModel {
     mainWidget: ReactNode;
 
     constructor(options: SharedDemoOptions) {
-        const { mapModel, vectorSelectionSourceFactory } = options;
+        const { mapModel, vectorSelectionSourceFactory, currentIntl } = options;
 
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
 
-        this.description = <DemoDescription messageId="demos.selectionResultList.description" />;
+        this.description = (
+            <FormattedRichMessage intl={currentIntl} id="demos.selectionResultList.description" />
+        );
         this.mainWidget = (
             <Selection
                 sources={[this.#selectionSource]}

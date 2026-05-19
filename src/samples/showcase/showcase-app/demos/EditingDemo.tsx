@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed, Reactive, reactive, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import { Button, Flex } from "@chakra-ui/react";
+import { computed, Reactive, reactive, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
 import { Layer, MapModel, Overlay } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EventsKey } from "ol/events";
@@ -17,7 +18,6 @@ import VectorSource from "ol/source/Vector";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import { DemoDescription } from "./DemoDescription";
 
 const EDIT_LAYER_ID: string = "krankenhaus";
 
@@ -50,7 +50,9 @@ class DemoModelImpl implements DemoModel {
 
         this.#mapModel = mapModel;
 
-        this.description = <DemoDescription messageId="demos.editing.description" />;
+        this.description = (
+            <FormattedRichMessage intl={currentIntl} id="demos.editing.description" />
+        );
         this.#editingController = new EditingController(
             mapModel,
             editingService,

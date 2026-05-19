@@ -1,19 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed } from "@conterra/reactivity-core";
 import { Button, Flex } from "@chakra-ui/react";
+import { computed } from "@conterra/reactivity-core";
 import {
     CoordinateInput,
     CoordinateSearch,
     ProjectionInput
 } from "@open-pioneer/coordinate-search";
 import { NotificationService } from "@open-pioneer/notifier";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { Coordinate } from "ol/coordinate";
 import { Projection } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
-import { DemoDescription } from "./DemoDescription";
 
 const PROJECTIONS: ProjectionInput[] = [
     {
@@ -57,7 +57,12 @@ export function createCoordinateInputDemo({
         ),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.coordinateInput.description" />,
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.coordinateInput.description"
+                    />
+                ),
                 mainWidget: <CoordinateInputComponent notificationService={notificationService} />
             };
         }
@@ -120,7 +125,12 @@ export function createCoordinateSearchDemo({
         ),
         createModel() {
             return {
-                description: <DemoDescription messageId="demos.coordinateSearch.description" />,
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.coordinateSearch.description"
+                    />
+                ),
                 mainWidget: <CoordinateSearchComponent notificationService={notificationService} />
             };
         }

@@ -1,23 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed } from "@conterra/reactivity-core";
 import { Box } from "@chakra-ui/react";
+import { computed } from "@conterra/reactivity-core";
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import {
     LayerFactory,
     MapModel,
     SimpleLayer,
-    type Layer,
-    useMapModelValue
+    useMapModelValue,
+    type Layer
 } from "@open-pioneer/map";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactElement, ReactNode, useEffect, useMemo } from "react";
+import { FormattedRichMessage, SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Collection, Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { ReactElement, ReactNode, useEffect, useMemo } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import { DemoDescription } from "./DemoDescription";
 import { LAYER_CONFIG } from "./feature-editing/layerConfig";
 
 export function createFeatureEditingDemo(options: SharedDemoOptions): Demo {
@@ -27,7 +26,7 @@ export function createFeatureEditingDemo(options: SharedDemoOptions): Demo {
             options.currentIntl.value.formatMessage({ id: "demos.featureEditing.title" })
         ),
         createModel() {
-            return new DemoModelImpl();
+            return new DemoModelImpl(options);
         }
     };
 }
@@ -36,8 +35,13 @@ class DemoModelImpl implements DemoModel {
     description: ReactNode;
     mainWidget: ReactNode;
 
-    constructor() {
-        this.description = <DemoDescription messageId="demos.featureEditing.description" />;
+    constructor(options: SharedDemoOptions) {
+        this.description = (
+            <FormattedRichMessage
+                intl={options.currentIntl}
+                id="demos.featureEditing.description"
+            />
+        );
         this.mainWidget = <EditorComponent />;
     }
 }
