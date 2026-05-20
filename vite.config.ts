@@ -46,6 +46,13 @@ export default defineConfig(({ mode }) => {
             target: "baseline-widely-available"
         },
 
+        optimizeDeps: {
+            // Include services.ts files as entry points.
+            // This makes it easier for vite's dev server to find dependencies,
+            // and thereby reduces the number of repeated bundler executions on dev server startup.
+            entries: ["**/*.html", "**/services.{ts,js}", "!**/dist/**"]
+        },
+
         plugins: [
             pioneer({
                 // Whether to include src/index.html in the built output
