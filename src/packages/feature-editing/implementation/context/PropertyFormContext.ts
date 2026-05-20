@@ -162,17 +162,6 @@ export class DeclarativeFormContext extends BaseFormContext {
     }
 }
 
-function isTrue(
-    value: PropertyFunctionOr<boolean> | undefined,
-    properties: Record<string, unknown>,
-    defaultValue: boolean
-): boolean {
-    if (value == null) {
-        return defaultValue;
-    }
-    return typeof value === "function" ? value(properties) : value;
-}
-
 export class CustomFormContext extends BaseFormContext {
     readonly #isValid = reactive(false);
 
@@ -200,3 +189,14 @@ export class CustomFormContext extends BaseFormContext {
 export type AnyPropertyFormContext = DeclarativeFormContext | CustomFormContext;
 
 export const FormContext = createContext<AnyPropertyFormContext | undefined>(undefined);
+
+function isTrue(
+    value: PropertyFunctionOr<boolean> | undefined,
+    properties: Record<string, unknown>,
+    defaultValue: boolean
+): boolean {
+    if (value == null) {
+        return defaultValue;
+    }
+    return typeof value === "function" ? value(properties) : value;
+}

@@ -2,20 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Field } from "@chakra-ui/react";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useIntl } from "open-pioneer:react-hooks";
 import { useMemo, useState, type ReactElement } from "react";
 import type { PropertyFunction, PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
 import type { FieldConfig } from "../../../api/fields/FieldConfig";
-import { DeclarativeFormContext } from "../../context/PropertyFormContext";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
+import {
+    useDeclarativeFormContext,
+    usePropertyFormContext
+} from "../../context/usePropertyFormContext";
 import { DefaultControl } from "../controls/DefaultControl";
-import { useIntl } from "open-pioneer:react-hooks";
 
 export interface PropertyFieldProps {
     readonly field: FieldConfig;
 }
 
 export function PropertyField({ field }: PropertyFieldProps): ReactElement | undefined {
-    const context = usePropertyFormContext() as DeclarativeFormContext; // TODO: Type check
+    const context = useDeclarativeFormContext();
     const isRequired = useValue(field.isRequired) ?? false;
     const isEnabled = useValue(field.isEnabled) ?? true;
     const isVisible = useValue(field.isVisible) ?? true;

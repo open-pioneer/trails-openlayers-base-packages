@@ -4,23 +4,22 @@ import type { ReactiveMap } from "@conterra/reactivity-core";
 import type { Layer } from "@open-pioneer/map";
 import type { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { Feature } from "ol";
-import { usePropertyFormContext as usePropertyFormContextImpl } from "../../implementation/context/usePropertyFormContext";
+import { useCustomFormContext } from "../../implementation/context/usePropertyFormContext";
 import type { CreationStep, ModificationStep, UpdateStep } from "../model/EditingStep";
 import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTemplate";
 
 /**
- * React hook for accessing the property form context.
+ * React hook for accessing the property form context within a custom form.
  *
  * Provides access to the {@link PropertyFormContext} instance, which contains the current feature
  * being edited and methods to read and update its properties. This hook must be called from within
- * a component that is rendered inside a property form (typically in a custom form rendered by
- * {@link DynamicFormTemplate}).
+ * a component that is rendered inside a custom property form (see {@link DynamicFormTemplate}).
  *
  * The context also allows controlling the form's validity by setting the `isValid` property,
  * which determines whether the save button is enabled.
  *
  * @returns The current {@link PropertyFormContext} instance.
- * @throws Error if called outside of a property form context (e.g., when no feature is being
+ * @throws Error if called outside of a custom property form context (e.g., when no feature is being
  * edited).
  *
  * @example
@@ -46,7 +45,7 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  *
  * @group Editor
  */
-export const usePropertyFormContext: () => PropertyFormContext = usePropertyFormContextImpl;
+export const usePropertyFormContext: () => PropertyFormContext = useCustomFormContext;
 
 /**
  * Context object providing access to feature properties and editing state during form editing.
