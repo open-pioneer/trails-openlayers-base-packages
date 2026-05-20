@@ -7,17 +7,17 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.6.0-dev.20260519134944
-  "@open-pioneer/core": 4.6.0-dev.20260519134944
-  "@open-pioneer/http": 4.6.0-dev.20260519134944
-  "@open-pioneer/integration": 4.6.0-dev.20260519134944
-  "@open-pioneer/local-storage": 4.6.0-dev.20260519134944
-  "@open-pioneer/notifier": 4.6.0-dev.20260519134944
-  "@open-pioneer/react-utils": 4.6.0-dev.20260519134944
-  "@open-pioneer/reactivity": 4.6.0-dev.20260519134944
-  "@open-pioneer/runtime": 4.6.0-dev.20260519134944
-  "@open-pioneer/test-utils": 4.6.0-dev.20260519134944
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260519134944
+  "@open-pioneer/base-theme": ^4.6.0
+  "@open-pioneer/core": ^4.6.0
+  "@open-pioneer/http": ^4.6.0
+  "@open-pioneer/integration": ^4.6.0
+  "@open-pioneer/local-storage": ^4.6.0
+  "@open-pioneer/notifier": ^4.6.0
+  "@open-pioneer/react-utils": ^4.6.0
+  "@open-pioneer/reactivity": ^4.6.0
+  "@open-pioneer/runtime": ^4.6.0
+  "@open-pioneer/test-utils": ^4.6.0
+  "@open-pioneer/chakra-snippets": ^4.6.0
 
   # Frontend dependencies
   "@chakra-ui/react": ^3.35.0
@@ -168,19 +168,6 @@ overrides:
   "@zag-js/tooltip": "1.40.0"
   "@zag-js/interact-outside": "1.40.0"
 
-  # Remove before release
-  "@open-pioneer/base-theme": 4.6.0-dev.20260519134944
-  "@open-pioneer/core": 4.6.0-dev.20260519134944
-  "@open-pioneer/http": 4.6.0-dev.20260519134944
-  "@open-pioneer/integration": 4.6.0-dev.20260519134944
-  "@open-pioneer/local-storage": 4.6.0-dev.20260519134944
-  "@open-pioneer/notifier": 4.6.0-dev.20260519134944
-  "@open-pioneer/reactivity": 4.6.0-dev.20260519134944
-  "@open-pioneer/react-utils": 4.6.0-dev.20260519134944
-  "@open-pioneer/runtime": 4.6.0-dev.20260519134944
-  "@open-pioneer/test-utils": 4.6.0-dev.20260519134944
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260519134944
-
 allowUnusedPatches: true
 patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
@@ -190,8 +177,9 @@ patchedDependencies:
   # Can be removed if https://github.com/chakra-ui/zag/issues/3088 is fixed.
   "@zag-js/interact-outside": patches/@zag-js__interact-outside.patch
 
-  # Fix popover positioning (popover, tooltip, toggle tip, ...)
-  # See https://github.com/chakra-ui/zag/pull/3127
+  # Fix popover positioning (popover, tooltip, toggle tip, ...).
+  # - See https://github.com/chakra-ui/zag/pull/3127 for the shadow dom problems (getDoc() -> getRootNode())
+  # - See https://github.com/chakra-ui/zag/pull/3129 for the positioning/click-outside problems
   "@zag-js/dialog": patches/@zag-js__dialog.patch
   "@zag-js/drawer": patches/@zag-js__drawer.patch
   "@zag-js/hover-card": patches/@zag-js__hover-card.patch

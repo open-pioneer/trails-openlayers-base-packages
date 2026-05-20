@@ -23,4 +23,4 @@
 "@open-pioneer/spatial-bookmarks": minor
 ---
 
-Update to Chakra UI 3.34.0
+Update to Chakra UI 3.35.0

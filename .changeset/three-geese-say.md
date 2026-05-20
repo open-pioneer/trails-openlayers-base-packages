@@ -23,4 +23,4 @@
 "@open-pioneer/toc": minor
 ---
 
-Update to trails core packages 4.5.0
+Update to trails core packages 4.6.0
