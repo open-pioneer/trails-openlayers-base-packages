@@ -6,16 +6,19 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FormTemplateContext } from "../../../api/editor/editor";
 import type { ModificationStep } from "../../../api/model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
-import { PropertyFormContextProvider } from "../../context/PropertyFormContextProvider";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
-import { PropertyForm } from "./PropertyForm";
+import { disableReactActWarnings } from "test-utils";
 
 type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 describe("create mode workflow", () => {
     it("renders property form for creating a feature", () => {
@@ -456,9 +459,15 @@ describe("validation", () => {
         });
 
         // There should be an error message linked to the input field via aria-describedby
-        expect(
-            screen.getByRole("textbox", { name: /name/i, description: /custom error text/i })
-        ).toBeInTheDocument();
+        const nameInput = await screen.findByRole("textbox", { name: /name/i });
+        expect(nameInput).toBeInTheDocument();
+        nameInput.focus();
+
+        await waitFor(() => {
+            expect(
+                screen.getByRole("textbox", { name: /name/i, description: /custom error text/i })
+            ).toBeInTheDocument();
+        });
     });
 });
 
@@ -471,11 +480,12 @@ function renderEditor(options: {
     const { step, callbacks, templates = [], resolveFormTemplate } = options;
     return render(
         <PackageContextProvider>
-            <PropertyFormContextProvider editingStep={step} callbacks={createCallbacks(callbacks)}>
-                <PropertyEditor>
-                    <PropertyForm templates={templates} resolveFormTemplate={resolveFormTemplate} />
-                </PropertyEditor>
-            </PropertyFormContextProvider>
+            <PropertyEditor
+                editingStep={step}
+                callbacks={createCallbacks(callbacks)}
+                templates={templates}
+                resolveFormTemplate={resolveFormTemplate}
+            ></PropertyEditor>
         </PackageContextProvider>
     );
 }

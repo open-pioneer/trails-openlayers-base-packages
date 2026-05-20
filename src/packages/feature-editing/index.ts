@@ -25,7 +25,7 @@ export {
     type FeatureEditorProps,
     type FormTemplateContext
 } from "./api/editor/editor";
-export { usePropertyFormContext, type Mode, type PropertyFormContext } from "./api/editor/context";
+export { useCustomFormContext, type Mode, type CustomFormContext } from "./api/editor/context";
 
 // =================================================================
 // Editing model types

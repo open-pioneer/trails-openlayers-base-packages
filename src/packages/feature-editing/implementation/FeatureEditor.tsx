@@ -3,18 +3,16 @@
 import { Box } from "@chakra-ui/react";
 import { useMapModelValue } from "@open-pioneer/map";
 import { useCommonComponentProps } from "@open-pioneer/react-utils";
-import { type ReactElement, type ReactNode, useMemo } from "react";
+import type { Type as GeometryType } from "ol/geom/Geometry";
 import { useIntl } from "open-pioneer:react-hooks";
+import { type ReactElement, type ReactNode, useMemo } from "react";
 import type { FeatureEditorProps } from "../api/editor/editor";
 import { ActionSelector } from "./components/action-selector/ActionSelector";
-import { PropertyForm } from "./components/property-editor/PropertyForm";
 import { PropertyEditor } from "./components/property-editor/PropertyEditor";
-import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 import { useEditingStep, useOnActionChange, useSnappingSources } from "./editor/editorHooks";
 import { useEditingCallbacks } from "./editor/useEditingCallbacks";
-import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
-import type { Type as GeometryType } from "ol/geom/Geometry";
 import { TooltipMessages } from "./geometry-editing/controller/EditingController";
+import { useGeometryEditing } from "./geometry-editing/useGeometryEditing";
 
 export function FeatureEditor(props: FeatureEditorProps): ReactElement {
     const {
@@ -98,14 +96,12 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
         case "creation":
         case "update":
             content = (
-                <PropertyFormContextProvider editingStep={editingStep} callbacks={editingCallbacks}>
-                    <PropertyEditor>
-                        <PropertyForm
-                            templates={templates}
-                            resolveFormTemplate={resolveFormTemplate}
-                        />
-                    </PropertyEditor>
-                </PropertyFormContextProvider>
+                <PropertyEditor
+                    editingStep={editingStep}
+                    callbacks={editingCallbacks}
+                    templates={templates}
+                    resolveFormTemplate={resolveFormTemplate}
+                />
             );
             break;
     }
@@ -116,3 +112,4 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
         </Box>
     );
 }
+

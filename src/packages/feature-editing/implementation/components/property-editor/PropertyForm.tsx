@@ -1,76 +1,67 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, VStack } from "@chakra-ui/react";
-import { effect } from "@conterra/reactivity-core";
+import { Flex, VStack, Text } from "@chakra-ui/react";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useCallback, useEffect, useMemo, type ReactElement } from "react";
-import { FormTemplateContext } from "../../../api/editor/editor";
-import type { PropertyFunctionOr } from "../../../api/fields/BaseFieldConfig";
-import type { FieldConfig } from "../../../api/fields/FieldConfig";
-import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
+import { ReactNode, type ReactElement } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import { PropertyField } from "./PropertyField";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
-export interface PropertyForm {
-    readonly templates: FeatureTemplate[];
-    readonly resolveFormTemplate?: (context: FormTemplateContext) => FormTemplate | undefined;
+export interface PropertyFormProps {
+    children?: ReactNode;
 }
 
-export function PropertyForm({ templates, resolveFormTemplate }: PropertyForm): ReactElement {
-    const template = useFormTemplate(templates, resolveFormTemplate);
-    const heading = useHeading(template);
-    useUpdateValidity(template);
-    useHasRequiredFields(template);
+export function PropertyForm(props: PropertyFormProps): ReactElement {
+    const { children } = props;
+    const heading = useHeading();
+    const context = usePropertyFormContext();
+    const hasRequiredFields = useReactiveSnapshot(() => context.hasRequiredFields, [context]);
+    const { formatRichMessage } = useIntl();
 
     return (
-        <Flex className="editor__property-form" direction="column" height="full">
-            <TitledSection>
+        <TitledSection>
+            <Flex
+                className="editor__property-form"
+                direction={"column"}
+                flex={1}
+                overflowY="hidden"
+            >
                 <SectionHeading mb={2} size="sm">
                     {heading}
                 </SectionHeading>
-                <Box flex={1} overflowY="auto">
-                    <VStack
-                        gap={4}
-                        align="stretch"
-                        // for focus ring
-                        px="1px"
-                        pb="4px"
+                <VStack
+                    gap={4}
+                    align="stretch"
+                    // for focus ring
+                    px="1px"
+                    pb="4px"
+                    flex={1}
+                    overflowY={"auto"}
+                >
+                    {children}
+                </VStack>
+                {hasRequiredFields && (
+                    <Text
+                        fontSize={"sm"}
+                        aria-hidden="true"
+                        textAlign={"right"}
+                        paddingRight={2}
+                        mb={2}
                     >
-                        {template?.kind === "dynamic"
-                            ? template.renderForm()
-                            : template?.fields.map((field, index) => (
-                                  <PropertyField key={index} field={field} />
-                              ))}
-                    </VStack>
-                </Box>
-            </TitledSection>
-        </Flex>
+                        <Text as="span" color="fg.error">
+                            *
+                        </Text>{" "}
+                        {formatRichMessage({ id: "propertyEditor.requiredFieldHint" })}
+                    </Text>
+                )}
+            </Flex>
+        </TitledSection>
     );
 }
 
-function useFormTemplate(
-    templates: FeatureTemplate[],
-    customResolver: PropertyForm["resolveFormTemplate"]
-): FormTemplate | undefined {
-    const { mode, feature, template: explicitTemplate, layer } = usePropertyFormContext();
-    const defaultResolver = useDefaultFormTemplateResolver(templates);
-    const resolveFormTemplate = customResolver ?? defaultResolver;
-
-    return useMemo(() => {
-        if (explicitTemplate) {
-            return explicitTemplate;
-        } else if (mode === "update") {
-            return resolveFormTemplate({ feature, layer });
-        } else {
-            return undefined;
-        }
-    }, [feature, mode, explicitTemplate, layer, resolveFormTemplate]);
-}
-
-function useHeading(template: FormTemplate | undefined) {
+function useHeading() {
     const intl = useIntl();
-    const { mode } = usePropertyFormContext();
+    const { mode, formTemplate: template } = usePropertyFormContext();
     const defaultHeading = intl.formatMessage({
         id:
             mode === "update"
@@ -78,64 +69,4 @@ function useHeading(template: FormTemplate | undefined) {
                 : "propertyEditor.defaultCreateHeading"
     });
     return template?.name ? `${defaultHeading}: ${template?.name} ` : defaultHeading;
-}
-
-function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
-    return useCallback(
-        ({ layer }: FormTemplateContext) => {
-            if (layer?.id != null) {
-                return templates.find(({ layerId }) => layer.id === layerId);
-            } else {
-                return undefined;
-            }
-        },
-        [templates]
-    );
-}
-
-function useHasRequiredFields(template: FormTemplate | undefined): void {
-    const context = usePropertyFormContext();
-
-    useEffect(() => {
-        const handle = effect(() => {
-            if (template?.kind === "declarative") {
-                const properties = context.getPropertiesAsObject();
-                context.hasRequiredFields = template.fields.some((field) =>
-                    isTrue(field.isRequired, properties)
-                );
-            } else {
-                context.hasRequiredFields = false;
-            }
-        });
-        return () => handle.destroy();
-    }, [context, template]);
-}
-
-function useUpdateValidity(template: FormTemplate | undefined): void {
-    const context = usePropertyFormContext();
-
-    useEffect(() => {
-        const handle = effect(() => {
-            if (template?.kind === "declarative") {
-                const properties = context.getPropertiesAsObject();
-                context.isValid = template.fields.every((field) => isValid(field, properties));
-            }
-        });
-        return () => handle.destroy();
-    }, [context, template]);
-}
-
-function isValid(field: FieldConfig, properties: Record<string, unknown>): boolean {
-    return (
-        (!isTrue(field.isRequired, properties) || properties[field.propertyName] != null) &&
-        isTrue(field.isValid, properties, true)
-    );
-}
-
-function isTrue(
-    value: PropertyFunctionOr<boolean> | undefined,
-    properties: Record<string, unknown>,
-    defaultValue: boolean = false
-): boolean {
-    return typeof value === "function" ? value(properties) : (value ?? defaultValue);
 }
