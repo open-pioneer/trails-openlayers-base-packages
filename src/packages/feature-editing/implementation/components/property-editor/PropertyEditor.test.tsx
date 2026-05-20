@@ -10,10 +10,8 @@ import { describe, expect, it, vi } from "vitest";
 import { FormTemplateContext } from "../../../api/editor/editor";
 import type { ModificationStep } from "../../../api/model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
-import { PropertyFormContextProvider } from "../../context/PropertyFormContextProvider";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
-import { PropertyForm } from "./PropertyForm";
 
 type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
 
@@ -471,11 +469,8 @@ function renderEditor(options: {
     const { step, callbacks, templates = [], resolveFormTemplate } = options;
     return render(
         <PackageContextProvider>
-            <PropertyFormContextProvider editingStep={step} callbacks={createCallbacks(callbacks)}>
-                <PropertyEditor>
-                    <PropertyForm templates={templates} resolveFormTemplate={resolveFormTemplate} />
-                </PropertyEditor>
-            </PropertyFormContextProvider>
+            <PropertyEditor editingStep={step} callbacks={createCallbacks(callbacks)} templates={templates} resolveFormTemplate={resolveFormTemplate}>
+            </PropertyEditor>
         </PackageContextProvider>
     );
 }
