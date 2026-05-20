@@ -1,24 +1,108 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Text, VStack, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import type { ReactElement, ReactNode } from "react";
+import { useCallback, useMemo, type ReactElement, type ReactNode } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ButtonRow } from "./ButtonRow";
 import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import { FeatureEditorProps, FormTemplateContext } from "../../../api/editor/editor";
+import { CreationStep, UpdateStep } from "../../../api/model/EditingStep";
+import { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
+import { DeclarativeFormContext, CustomFormContext, FormContext } from "../../context/PropertyFormContext";
+import { EditingCallbacks } from "../../editor/useEditingCallbacks";
+import { PropertyField } from "./PropertyField";
+import { PropertyForm } from "./PropertyForm";
 
-export interface PropertyEditorProps {
-    readonly children: ReactNode;
+
+
+export function PropertyEditor(props: {
+    editingStep: CreationStep | UpdateStep;
+    callbacks: EditingCallbacks;
+    templates: FeatureTemplate[];
+    resolveFormTemplate: FeatureEditorProps["resolveFormTemplate"];
+}) {
+    const { editingStep, callbacks, templates, resolveFormTemplate } = props;
+    const formTemplate = useFormTemplate(templates, resolveFormTemplate, editingStep);
+
+    const context = useMemo(() => {
+        if (!formTemplate) {
+            return undefined;
+        }
+
+        if (formTemplate.kind === "declarative") {
+            return new DeclarativeFormContext(editingStep, callbacks, formTemplate);
+        } else {
+            return new CustomFormContext(editingStep, callbacks, formTemplate);
+        }
+    }, [formTemplate, editingStep, callbacks]);
+
+    return (
+        context &&
+        formTemplate && (
+            <FormContext value={context}>
+                <Flex className="editor__property-editor" direction="column" height="full" overflowY={"hidden"}>
+                    <PropertyForm>
+                        {formTemplate.kind === "dynamic"
+                            ? formTemplate.renderForm()
+                            : formTemplate.fields.map((field, index) => (
+                                    <PropertyField key={index} field={field} />
+                                ))}
+                    </PropertyForm>
+                    <EditorControls></EditorControls>
+                </Flex>
+            </FormContext>
+        )
+    );
 }
 
-export function PropertyEditor({ children }: PropertyEditorProps): ReactElement {
+function useFormTemplate(
+    templates: FeatureTemplate[],
+    customResolver: FeatureEditorProps["resolveFormTemplate"],
+    editingStep: CreationStep | UpdateStep
+): FormTemplate | undefined {
+    const defaultResolver = useDefaultFormTemplateResolver(templates);
+    const resolveFormTemplate = customResolver ?? defaultResolver;
+
+    const feature = editingStep.feature;
+    const layer = editingStep.id === "update" ? editingStep.layer : undefined;
+    const explicitTemplate = editingStep.id === "creation" ? editingStep.template : undefined;
+
+    return useMemo(() => {
+        if (explicitTemplate) {
+            return explicitTemplate;
+        } else if (editingStep.id === "update") {
+            return resolveFormTemplate({ feature, layer });
+        } else {
+            return undefined;
+        }
+    }, [explicitTemplate, editingStep.id, feature, layer, resolveFormTemplate]);
+}
+
+function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
+    return useCallback(
+        ({ layer }: FormTemplateContext) => {
+            if (layer?.id != null) {
+                return templates.find(({ layerId }) => layer.id === layerId);
+            } else {
+                return undefined;
+            }
+        },
+        [templates]
+    );
+}
+
+
+
+
+
+function EditorControls(): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
-    const hasRequiredFields = useReactiveSnapshot(() => context.hasRequiredFields, [context]);
-    const { formatRichMessage } = useIntl();
+
 
     const {
         open: deleteDialogIsOpen,
@@ -49,26 +133,13 @@ export function PropertyEditor({ children }: PropertyEditorProps): ReactElement 
 
     return (
         <>
-            <VStack className="editor__property-editor" height="full" gap={5} align="stretch">
-                <Box flex={1} overflowY="auto">
-                    {children}
-                </Box>
-                {hasRequiredFields && (
-                    <Text fontSize={"sm"} aria-hidden="true" textAlign={"right"} paddingRight={2}>
-                        <Text as="span" color="fg.error">
-                            *
-                        </Text>{" "}
-                        {formatRichMessage({ id: "propertyEditor.requiredFieldHint" })}
-                    </Text>
-                )}
-                <ButtonRow
-                    canSave={canSave}
-                    showDeleteButton={context.mode === "update"}
-                    onSave={onSaveClick}
-                    onDelete={openDeleteDialog}
-                    onCancel={openCancelDialog}
-                />
-            </VStack>
+            <ButtonRow
+                canSave={canSave}
+                showDeleteButton={context.mode === "update"}
+                onSave={onSaveClick}
+                onDelete={openDeleteDialog}
+                onCancel={openCancelDialog}
+            />
             <DeleteConfirmationDialog
                 isOpen={deleteDialogIsOpen}
                 onDelete={onDeleteClick}
