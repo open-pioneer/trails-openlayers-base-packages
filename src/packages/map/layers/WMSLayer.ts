@@ -28,7 +28,8 @@ import {
     GET_RAW_SUBLAYERS,
     LayerConstructor,
     LayerDependencies,
-    SET_LEGEND
+    SET_LEGEND,
+    SET_METADATA_STATE
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
@@ -243,18 +244,25 @@ export class WMSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
+        this[SET_METADATA_STATE]("loading");
         this.#fetchWMSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
+                    this[SET_METADATA_STATE]("loaded");
                 });
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
                 LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
+                const wrappedError =
+                    error instanceof Error
+                        ? error
+                        : new Error(`Failed to initialize WMS layer '${this.id}'`);
+                this[SET_METADATA_STATE]("error", wrappedError);
             });
     }
 
@@ -306,11 +314,28 @@ export class WMSLayer extends AbstractLayer {
             }
         }
 
+        // Only validate sublayer names if the capabilities document actually
+        // contains a layer tree. Empty / unparseable responses are tolerated to
+        // avoid false positives.
+        const hasCapabilityTree = !!capabilities?.Capability?.Layer;
+        const knownNames = hasCapabilityTree ? collectLayerNames(capabilities) : undefined;
+
+        const missing: string[] = [];
         for (const layer of walkLeaves(this.#sublayers)) {
-            if (layer.name) {
-                const legendUrl = getLegendUrl(capabilities, layer.name);
-                layer[SET_LEGEND](legendUrl);
+            if (!layer.name) {
+                continue;
             }
+            if (knownNames && !knownNames.has(layer.name)) {
+                missing.push(layer.name);
+                continue;
+            }
+            const legendUrl = getLegendUrl(capabilities, layer.name);
+            layer[SET_LEGEND](legendUrl);
+        }
+
+        if (missing.length) {
+            const list = missing.map((name) => `'${name}'`).join(", ");
+            throw new Error(`WMS sublayer name(s) not found in capabilities: ${list}`);
         }
     }
 
@@ -337,6 +362,30 @@ export class WMSLayer extends AbstractLayer {
         image.addEventListener("error", finish);
         image.src = objectUrl;
     }
+}
+
+/**
+ * Collects all layer `Name` values from a parsed WMS capabilities document.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function collectLayerNames(capabilities: Record<string, any> | undefined): Set<string> {
+    const names = new Set<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const visit = (layer: Record<string, any> | undefined) => {
+        if (!layer) {
+            return;
+        }
+        if (typeof layer.Name === "string") {
+            names.add(layer.Name);
+        }
+        if (Array.isArray(layer.Layer)) {
+            for (const child of layer.Layer) {
+                visit(child);
+            }
+        }
+    };
+    visit(capabilities?.Capability?.Layer);
+    return names;
 }
 
 /**

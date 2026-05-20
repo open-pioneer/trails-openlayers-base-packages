@@ -16,7 +16,13 @@ import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
-import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
+import {
+    ATTACH_TO_MAP,
+    GET_DEPS,
+    LayerConstructor,
+    LayerDependencies,
+    SET_METADATA_STATE
+} from "./shared/internals";
 import { getAttributions } from "./wmts/getAttributions";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 
@@ -167,19 +173,25 @@ export class WMTSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
+        this[SET_METADATA_STATE]("loading");
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
+                    this[SET_METADATA_STATE]("loaded");
                 });
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.name}' has been destroyed before fetching the data`);
                     return;
                 }
                 LOG.error(`Failed to initialize WMTS layer '${this.name}'`, error);
-                //TODO: how to set the load state to error?
+                const wrappedError =
+                    error instanceof Error
+                        ? error
+                        : new Error(`Failed to initialize WMTS layer '${this.name}'`);
+                this[SET_METADATA_STATE]("error", wrappedError);
             });
     }
 

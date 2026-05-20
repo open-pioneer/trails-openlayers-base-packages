@@ -222,7 +222,7 @@ it("loads attributions from service metadata", async () => {
         url: SERVICE_URL,
         sublayers: [
             {
-                name: "sublayer-name",
+                name: "nw_dgk5_grundriss",
                 title: "Sublayer"
             }
         ],
@@ -234,6 +234,130 @@ it("loads attributions from service metadata", async () => {
     expect(attributions).toMatchInlineSnapshot(
         `"Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: Es gelten die durch den IT-Planungsrat im Datenportal für Deutschland (GovData) veröffentlichten einheitlichen Lizenzbedingungen „Datenlizenz Deutschland – Zero“ (https://www.govdata.de/dl-de/zero-2-0). Jede Nutzung ist ohne Einschränkungen oder Bedingungen zulässig. Eine Haftung für die zur Verfügung gestellten Daten und Dienste wird ausgeschlossen. Dies gilt insbesondere für deren Aktualität, Richtigkeit, Verfügbarkeit, Qualität und Vollständigkeit sowie die Kompatibilität und Interoperabilität mit den Systemen des Nutzers. Vom Haftungsausschluss ausgenommen sind gesetzliche Schadensersatzansprüche für eine Verletzung des Lebens, des Körpers und der Gesundheit sowie die gesetzliche Haftung für sonstige Schäden, soweit diese auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung beruhen."`
     );
+});
+
+describe("metadata errors", () => {
+    it("sets loadState to 'error' and exposes the error when a sublayer name is not in the capabilities", async () => {
+        const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "does-not-exist",
+                    title: "foo"
+                }
+            ],
+            fetch,
+            attach: true
+        });
+
+        await vi.waitUntil(() => layer.loadState === "error");
+        expect(layer.error?.message).toContain("does-not-exist");
+        expect(logErrorSpy).toHaveBeenCalled();
+        expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMS layer");
+    });
+
+    it("lists every missing sublayer name in the error message", async () => {
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "nw_dgk5_grundriss",
+                    title: "Real"
+                },
+                {
+                    name: "missing-a",
+                    title: "foo A"
+                },
+                {
+                    name: "missing-b",
+                    title: "foo B"
+                }
+            ],
+            fetch,
+            attach: true
+        });
+
+        await vi.waitUntil(() => layer.loadState === "error");
+        const message = layer.error?.message ?? "";
+        expect(message).toContain("missing-a");
+        expect(message).toContain("missing-b");
+        expect(message).not.toContain("nw_dgk5_grundriss");
+    });
+
+    it("stays loaded when all sublayer names exist in the capabilities", async () => {
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "nw_dgk5_grundriss",
+                    title: "Grundriss"
+                },
+                {
+                    name: "nw_dgk5_hoehen",
+                    title: "Hoehen"
+                }
+            ],
+            fetch,
+            attach: true
+        });
+
+        // Wait for capabilities to be parsed
+        const olSource = layer.olSource!;
+        await vi.waitUntil(() => getAttributions(olSource));
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.error).toBeUndefined();
+    });
+
+    it("sets loadState to 'error' when the capabilities request fails", async () => {
+        const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = vi.fn(async () => new Response("Server gone", { status: 503 }));
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "sublayer-1",
+                    title: "Sublayer 1"
+                }
+            ],
+            fetch,
+            attach: true
+        });
+
+        await vi.waitUntil(() => layer.loadState === "error");
+        expect(layer.error?.message).toContain("503");
+        expect(logErrorSpy).toHaveBeenCalled();
+    });
+
+    it("propagates the error to sublayers via the parent layer", async () => {
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "does-not-exist",
+                    title: "foo"
+                }
+            ],
+            fetch,
+            attach: true
+        });
+
+        await vi.waitUntil(() => layer.loadState === "error");
+        const sublayer = layer.sublayers.getSublayers()[0]!;
+        expect(sublayer.parentLayer.loadState).toBe("error");
+        expect(sublayer.parentLayer.error?.message).toContain("does-not-exist");
+    });
 });
 
 describe("sublayers", () => {

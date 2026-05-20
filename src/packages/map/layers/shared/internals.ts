@@ -70,3 +70,4 @@ export const GET_RAW_SUBLAYERS = Symbol("GET_RAW_SUBLAYERS");
 export const ATTACH_TO_PARENT = Symbol("ATTACH_TO_PARENT");
 export const SET_LEGEND = Symbol("SET_LEGEND");
 export const LAYER_DEPS = Symbol("LAYER_DEPS");
+export const SET_METADATA_STATE = Symbol("SET_METADATA_STATE");
