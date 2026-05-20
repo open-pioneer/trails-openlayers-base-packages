@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import type { ReactNode } from "react";
-import type { PropertyFormContext } from "../editor/context";
+import type { CustomFormContext } from "../editor/context";
 import type { FieldConfig } from "../fields/FieldConfig";
 import type { DrawingOptions } from "./InteractionOptions";
 import type { FeatureEditorProps } from "../editor/editor";
@@ -109,7 +109,7 @@ export interface DeclarativeFormTemplate {
  * component. Use this when you need advanced form layouts, custom validation logic, or
  * specialized UI components that cannot be expressed through declarative field configurations.
  *
- * The render function should use {@link PropertyFormContext} to read and update feature properties.
+ * The render function should use {@link CustomFormContext} to read and update feature properties.
  *
  * @group Model
  */
@@ -129,7 +129,7 @@ export interface DynamicFormTemplate {
      * Function that renders the custom form content.
      *
      * Should return a React element representing the form UI. The function can use React hooks
-     * and {@link PropertyFormContext} to interact with feature properties.
+     * and {@link CustomFormContext} to interact with feature properties.
      */
     readonly renderForm: () => ReactNode;
 }

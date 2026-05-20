@@ -10,7 +10,7 @@ import {
 import type { Layer } from "@open-pioneer/map";
 import type { Feature } from "ol";
 import { createContext } from "react";
-import type { Mode } from "../../api/editor/context";
+import type { CustomFormContext, Mode } from "../../api/editor/context";
 import { PropertyFunctionOr } from "../../api/fields/BaseFieldConfig";
 import { FieldConfig } from "../../api/fields/FieldConfig";
 import type { ModificationStep } from "../../api/model/EditingStep";
@@ -24,7 +24,7 @@ import { EditingCallbacks } from "../editor/useEditingCallbacks";
 export abstract class BaseFormContext {
     readonly #propertiesMap: ReactiveMap<string, unknown>;
     readonly #modificationStep: ModificationStep;
-    readonly #formTemplate: FormTemplate; // TODO
+    readonly #formTemplate: FormTemplate;
     readonly #propsAsObject: ReadonlyReactive<Record<string, unknown>>;
 
     readonly callbacks: EditingCallbacks;
@@ -43,7 +43,6 @@ export abstract class BaseFormContext {
         this.#propsAsObject = computed(() => {
             const entries = this.properties.entries();
             const object = Object.fromEntries(entries);
-            console.log(object);
             return object;
         });
     }
@@ -162,7 +161,7 @@ export class DeclarativeFormContext extends BaseFormContext {
     }
 }
 
-export class CustomFormContext extends BaseFormContext {
+export class CustomFormContextImpl extends BaseFormContext implements CustomFormContext {
     readonly #isValid = reactive(false);
 
     constructor(
@@ -186,7 +185,7 @@ export class CustomFormContext extends BaseFormContext {
     }
 }
 
-export type AnyPropertyFormContext = DeclarativeFormContext | CustomFormContext;
+export type AnyPropertyFormContext = DeclarativeFormContext | CustomFormContextImpl;
 
 export const FormContext = createContext<AnyPropertyFormContext | undefined>(undefined);
 

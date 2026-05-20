@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useContext } from "react";
 import {
-    CustomFormContext,
+    CustomFormContextImpl,
     DeclarativeFormContext,
     FormContext,
     type AnyPropertyFormContext
@@ -38,9 +38,9 @@ export function useDeclarativeFormContext(): DeclarativeFormContext {
 /**
  * Used for custom form contents.
  */
-export function useCustomFormContext(): CustomFormContext {
+export function useCustomFormContext(): CustomFormContextImpl {
     const value = usePropertyFormContext();
-    if (!(value instanceof CustomFormContext)) {
+    if (!(value instanceof CustomFormContextImpl)) {
         throw new Error("No custom form context available");
     }
     return value;

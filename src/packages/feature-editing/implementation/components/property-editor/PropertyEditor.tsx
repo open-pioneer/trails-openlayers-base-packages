@@ -1,23 +1,24 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack, useDisclosure } from "@chakra-ui/react";
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { useIntl } from "open-pioneer:react-hooks";
-import { useCallback, useMemo, type ReactElement, type ReactNode } from "react";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
+import { useCallback, useMemo, type ReactElement } from "react";
 import { ButtonRow } from "./ButtonRow";
 import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { FeatureEditorProps, FormTemplateContext } from "../../../api/editor/editor";
 import { CreationStep, UpdateStep } from "../../../api/model/EditingStep";
 import { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
-import { DeclarativeFormContext, CustomFormContext, FormContext } from "../../context/PropertyFormContext";
+import {
+    DeclarativeFormContext,
+    CustomFormContextImpl,
+    FormContext
+} from "../../context/PropertyFormContext";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyField } from "./PropertyField";
 import { PropertyForm } from "./PropertyForm";
-
-
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 
 export function PropertyEditor(props: {
     editingStep: CreationStep | UpdateStep;
@@ -36,7 +37,7 @@ export function PropertyEditor(props: {
         if (formTemplate.kind === "declarative") {
             return new DeclarativeFormContext(editingStep, callbacks, formTemplate);
         } else {
-            return new CustomFormContext(editingStep, callbacks, formTemplate);
+            return new CustomFormContextImpl(editingStep, callbacks, formTemplate);
         }
     }, [formTemplate, editingStep, callbacks]);
 
@@ -44,13 +45,18 @@ export function PropertyEditor(props: {
         context &&
         formTemplate && (
             <FormContext value={context}>
-                <Flex className="editor__property-editor" direction="column" height="full" overflowY={"hidden"}>
+                <Flex
+                    className="editor__property-editor"
+                    direction="column"
+                    height="full"
+                    overflowY={"hidden"}
+                >
                     <PropertyForm>
                         {formTemplate.kind === "dynamic"
                             ? formTemplate.renderForm()
                             : formTemplate.fields.map((field, index) => (
-                                    <PropertyField key={index} field={field} />
-                                ))}
+                                  <PropertyField key={index} field={field} />
+                              ))}
                     </PropertyForm>
                     <EditorControls></EditorControls>
                 </Flex>
@@ -95,14 +101,9 @@ function useDefaultFormTemplateResolver(templates: FeatureTemplate[]) {
     );
 }
 
-
-
-
-
 function EditorControls(): ReactElement {
     const context = usePropertyFormContext();
     const canSave = useReactiveSnapshot(() => context.isValid, [context]);
-
 
     const {
         open: deleteDialogIsOpen,

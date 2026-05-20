@@ -4,10 +4,7 @@ import { Flex, VStack, Text } from "@chakra-ui/react";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ReactNode, type ReactElement } from "react";
-import {
-    useDeclarativeFormContext,
-    usePropertyFormContext
-} from "../../context/usePropertyFormContext";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export interface PropertyFormProps {
@@ -17,7 +14,7 @@ export interface PropertyFormProps {
 export function PropertyForm(props: PropertyFormProps): ReactElement {
     const { children } = props;
     const heading = useHeading();
-    const context = useDeclarativeFormContext();
+    const context = usePropertyFormContext();
     const hasRequiredFields = useReactiveSnapshot(() => context.hasRequiredFields, [context]);
     const { formatRichMessage } = useIntl();
 
