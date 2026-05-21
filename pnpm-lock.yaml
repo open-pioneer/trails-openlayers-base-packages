@@ -716,6 +716,9 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/map:
