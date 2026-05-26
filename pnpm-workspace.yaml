@@ -89,6 +89,31 @@ catalog:
   zx: ^8.8.5
 
 overrides:
+  # We don't actually use the babel plugin.
+  # The babel runtime is also not used as a production dependency.
+  # See e.g. https://github.com/emotion-js/emotion/issues/2371
+  "@emotion/react>@emotion/babel-plugin": "-"
+  "@emotion/styled>@emotion/babel-plugin": "-"
+  "@emotion/react>@babel/runtime": "-"
+  "@emotion/styled>@babel/runtime": "-"
+
+  # Just to get rid of some duplicate dependencies
+  "source-map@<0.6.1": ">=0.6.1"
+  "stylis@<4.3.5": ">= 4.3.5"
+  "regenerator-runtime@<=0.13.11": "^0.14.0"
+  "csstype@<3.2.3": ">=3.2.3"
+
+  # Ensure patched packages have the expected version (patch was tested with this version):
+  "@chakra-ui/react": "3.35.0"
+  "@ark-ui/react": "5.36.2"
+  "@zag-js/dialog": "1.40.0"
+  "@zag-js/drawer": "1.40.0"
+  "@zag-js/hover-card": "1.40.0"
+  "@zag-js/menu": "1.40.0"
+  "@zag-js/popover": "1.40.0"
+  "@zag-js/tooltip": "1.40.0"
+  "@zag-js/interact-outside": "1.40.0"
+
   # https://github.com/advisories/GHSA-7h2j-956f-4vf2
   "@isaacs/brace-expansion@<=5.0.0": "^5.0.1"
 
@@ -143,30 +168,8 @@ overrides:
   # https://github.com/advisories/GHSA-58qx-3vcg-4xpx
   "ws@>=8.0.0 <8.20.1": "^8.20.1"
 
-  # We don't actually use the babel plugin.
-  # The babel runtime is also not used as a production dependency.
-  # See e.g. https://github.com/emotion-js/emotion/issues/2371
-  "@emotion/react>@emotion/babel-plugin": "-"
-  "@emotion/styled>@emotion/babel-plugin": "-"
-  "@emotion/react>@babel/runtime": "-"
-  "@emotion/styled>@babel/runtime": "-"
-
-  # Just to get rid of some duplicate dependencies
-  "source-map@<0.6.1": ">=0.6.1"
-  "stylis@<4.3.5": ">= 4.3.5"
-  "regenerator-runtime@<=0.13.11": "^0.14.0"
-  "csstype@<3.2.3": ">=3.2.3"
-
-  # Ensure patched packages have the expected version (patch was tested with this version):
-  "@chakra-ui/react": "3.35.0"
-  "@ark-ui/react": "5.36.2"
-  "@zag-js/dialog": "1.40.0"
-  "@zag-js/drawer": "1.40.0"
-  "@zag-js/hover-card": "1.40.0"
-  "@zag-js/menu": "1.40.0"
-  "@zag-js/popover": "1.40.0"
-  "@zag-js/tooltip": "1.40.0"
-  "@zag-js/interact-outside": "1.40.0"
+  # https://github.com/advisories/GHSA-qjx8-664m-686j
+  "js-cookie@<=3.0.5": "^3.0.7"
 
 allowUnusedPatches: true
 patchedDependencies:
