@@ -337,6 +337,14 @@ export class MapModel {
     }
 
     /**
+     * Returns the current rotation of the map.
+     * Same as `olView.getRotation()`, but reactive.
+     */
+    get rotation(): number | undefined {
+        return this.#viewBindings.value.rotation.value;
+    }
+
+    /**
      * Returns the current scale of the map.
      *
      * The scale is a value derived from the current `center`, `resolution` and `projection` of the map.
@@ -610,6 +618,7 @@ interface ViewBindings {
     resolution: ReadonlyReactive<number | undefined>;
     center: ReadonlyReactive<Coordinate | undefined>;
     zoom: ReadonlyReactive<number | undefined>;
+    rotation: ReadonlyReactive<number | undefined>;
     projection: Projection; // not reactive (change view to change projection)
 }
 
@@ -633,6 +642,13 @@ function createViewBindings(view: OlView): ViewBindings {
             () => view.getZoom(),
             (cb) => {
                 const key = view.on("change:resolution", cb);
+                return () => unByKey(key);
+            }
+        ),
+        rotation: synchronized(
+            () => view.getRotation(),
+            (cb) => {
+                const key = view.on("change:rotation", cb);
                 return () => unByKey(key);
             }
         ),
