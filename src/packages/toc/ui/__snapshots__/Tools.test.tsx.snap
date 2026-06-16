@@ -205,6 +205,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"
+  data-side="bottom"
   data-state="open"
   dir="ltr"
   id="menu:_r_2_:content"
