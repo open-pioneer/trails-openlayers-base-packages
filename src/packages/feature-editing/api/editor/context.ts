@@ -4,23 +4,22 @@ import type { ReactiveMap } from "@conterra/reactivity-core";
 import type { Layer } from "@open-pioneer/map";
 import type { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { Feature } from "ol";
-import { usePropertyFormContext as usePropertyFormContextImpl } from "../../implementation/context/usePropertyFormContext";
+import { useCustomFormContext as useCustomFormContextImpl } from "../../implementation/context/usePropertyFormContext";
 import type { CreationStep, ModificationStep, UpdateStep } from "../model/EditingStep";
 import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTemplate";
 
 /**
- * React hook for accessing the property form context.
+ * React hook for accessing the property form context within a custom form.
  *
- * Provides access to the {@link PropertyFormContext} instance, which contains the current feature
+ * Provides access to the {@link CustomFormContext} instance, which contains the current feature
  * being edited and methods to read and update its properties. This hook must be called from within
- * a component that is rendered inside a property form (typically in a custom form rendered by
- * {@link DynamicFormTemplate}).
+ * a component that is rendered inside a custom property form (see {@link DynamicFormTemplate}).
  *
  * The context also allows controlling the form's validity by setting the `isValid` property,
  * which determines whether the save button is enabled.
  *
- * @returns The current {@link PropertyFormContext} instance.
- * @throws Error if called outside of a property form context (e.g., when no feature is being
+ * @returns The current {@link CustomFormContext} instance.
+ * @throws Error if called outside of a custom property form context (e.g., when no feature is being
  * edited).
  *
  * @example
@@ -28,38 +27,37 @@ import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTempl
  * import { useReactiveSnapshot, DISPATCH_SYNC } from "@open-pioneer/reactivity";
  *
  * function CustomForm() {
- *     const context = usePropertyFormContext();
- *     const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context], DISPATCH_SYNC);
+ *     const context = useCustomFormContext();
+ *     const name = useReactiveSnapshot(
+ *         () => (context.properties.get("name") as string) ?? "",
+ *         [context],
+ *         DISPATCH_SYNC
+ *     );
  *
  *     useEffect(() => {
  *         context.isValid = name.length >= 1;
  *     }, [context, name]);
  *
- *     return (
- *         <input
- *             value={name}
- *             onChange={(e) => context.properties.set("name", e.target.value)}
- *         />
- *     );
+ *     return <Input value={name} onChange={(e) => context.properties.set("name", e.target.value)} />;
  * }
  * ```
  *
  * @group Editor
  */
-export const usePropertyFormContext: () => PropertyFormContext = usePropertyFormContextImpl;
+export const useCustomFormContext: () => CustomFormContext = useCustomFormContextImpl;
 
 /**
  * Context object providing access to feature properties and editing state during form editing.
  *
- * This class manages the state of a feature being edited, including its properties, validation
+ * The context manages the state of a feature being edited, including its properties, validation
  * status, and associated metadata. It provides reactive property management through a
  * {@link ReactiveMap}, allowing components to automatically re-render when properties change.
  *
- * Access this context in custom forms using the {@link usePropertyFormContext} hook.
+ * Access this context in custom forms using the {@link useCustomFormContext} hook.
  *
  * @group Editor
  */
-export interface PropertyFormContext {
+export interface CustomFormContext {
     /**
      * The OpenLayers feature being edited.
      *

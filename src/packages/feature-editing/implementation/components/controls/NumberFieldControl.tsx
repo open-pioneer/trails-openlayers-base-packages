@@ -45,6 +45,7 @@ export function NumberFieldControl({
             step={field.step}
             formatOptions={field.formatOptions}
             onValueChange={onValueChange}
+            clampValueOnBlur={false}
         >
             <NumberInput.Input ref={element} placeholder={field.placeholder ?? field.label} />
             {field.showSteppers && <NumberInput.Control />}

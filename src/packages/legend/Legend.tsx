@@ -163,9 +163,8 @@ function LegendContent(props: { layer: AnyLayer; content: ReactNode }) {
 
 function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
     const intl = useIntl();
-
     const { layer, imageUrl } = props;
-
+    const title = useReactiveSnapshot(() => layer.title, [layer]);
     const [isError, setIsError] = useState(false);
     useEffect(() => {
         setIsError(false);
@@ -190,16 +189,16 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
                 maxW="none"
                 maxH="none"
                 src={imageUrl}
-                alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
+                alt={intl.formatMessage({ id: "altLabel" }, { layerName: title })}
                 className={"legend-item__image"}
                 onError={() => setIsError(true)}
             />
         );
-    }, [intl, layer.title, imageUrl, isError]);
+    }, [intl, title, imageUrl, isError]);
 
     return (
         <Box>
-            <Text>{layer.title}</Text>
+            <Text>{title}</Text>
             {content}
         </Box>
     );

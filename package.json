@@ -1,6 +1,6 @@
 {
     "name": "openlayers-base-packages",
-    "version": "0.0.1",
+    "version": "1.3.0",
     "private": true,
     "type": "module",
     "license": "Apache-2.0",
@@ -31,9 +31,9 @@
         "@eslint/js": "catalog:",
         "@open-pioneer/build-package-cli": "catalog:",
         "@open-pioneer/build-support": "catalog:",
+        "@open-pioneer/changesets-release-line": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
         "@open-pioneer/vite-plugin-pioneer": "catalog:",
-        "@open-pioneer/changesets-release-line": "catalog:",
         "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",
         "@testing-library/react": "catalog:",
@@ -78,5 +78,5 @@
         "node": ">= 24",
         "pnpm": ">= 10"
     },
-    "packageManager": "pnpm@11.1.2"
+    "packageManager": "pnpm@11.3.0"
 }

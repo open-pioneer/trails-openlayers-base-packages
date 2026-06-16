@@ -5,16 +5,15 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { disableReactActWarnings } from "test-utils";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { PropertyFormContext } from "../../../api/editor/context";
 import type { CreationStep, ModificationStep } from "../../../api/model/EditingStep";
-import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
-import { PropertyFormContextProvider } from "../../context/PropertyFormContextProvider";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
+import type { DeclarativeFormTemplate, FeatureTemplate } from "../../../api/model/FeatureTemplate";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyForm } from "./PropertyForm";
+import { DeclarativeFormContext, FormContext } from "../../context/PropertyFormContext";
+import { PropertyField } from "./PropertyField";
 
 beforeEach(() => {
     disableReactActWarnings();
@@ -23,7 +22,7 @@ beforeEach(() => {
 describe("rendering", () => {
     it("renders text-field input and updates property on typing", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Text Field");
         expect(label).toBeDefined();
@@ -35,13 +34,13 @@ describe("rendering", () => {
 
         await user.type(input, "Hello World");
         await waitFor(() => {
-            expect(getContext()?.properties.get("textField")).toBe("Hello World");
+            expect(context.properties.get("textField")).toBe("Hello World");
         });
     });
 
     it("renders text-area input and updates property on typing", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Text Area");
         expect(label).toBeDefined();
@@ -52,13 +51,13 @@ describe("rendering", () => {
 
         await user.type(textarea, "Multi-line\ntext content");
         await waitFor(() => {
-            expect(getContext()?.properties.get("textArea")).toBe("Multi-line\ntext content");
+            expect(context.properties.get("textArea")).toBe("Multi-line\ntext content");
         });
     });
 
     it("renders number input and updates property on change", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Number Input");
         expect(label).toBeDefined();
@@ -69,13 +68,13 @@ describe("rendering", () => {
         await user.clear(input);
         await user.type(input, "42");
         await waitFor(() => {
-            expect(getContext()?.properties.get("numberInput")).toBe(42);
+            expect(context.properties.get("numberInput")).toBe(42);
         });
     });
 
     it("renders string radio group input and updates property on selection", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("String Radio Group");
         expect(label).toBeDefined();
@@ -91,13 +90,13 @@ describe("rendering", () => {
         expect(radioB).toBeDefined();
         await user.click(radioB!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("stringRadioGroup")).toBe("b");
+            expect(context.properties.get("stringRadioGroup")).toBe("b");
         });
     });
 
     it("renders number radio group input and updates property on selection", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Number Radio Group");
         expect(label).toBeDefined();
@@ -113,13 +112,13 @@ describe("rendering", () => {
         expect(radio2).toBeDefined();
         await user.click(radio2!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("numberRadioGroup")).toBe(2);
+            expect(context.properties.get("numberRadioGroup")).toBe(2);
         });
     });
 
     it("renders string combo box input and updates property on selection", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("String Combo Box");
         expect(label).toBeDefined();
@@ -147,13 +146,13 @@ describe("rendering", () => {
 
         await user.click(optionB!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("stringComboBox")).toBe("b");
+            expect(context.properties.get("stringComboBox")).toBe("b");
         });
     });
 
     it("renders check-box input and updates property on click", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Check Box");
         expect(label).toBeDefined();
@@ -172,19 +171,19 @@ describe("rendering", () => {
 
         await user.click(checkbox!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("checkBox")).toBe(true);
+            expect(context.properties.get("checkBox")).toBe(true);
         });
 
         // Click again to uncheck
         await user.click(checkbox!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("checkBox")).toBe(false);
+            expect(context.properties.get("checkBox")).toBe(false);
         });
     });
 
     it("renders color input and updates property on color change", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Color Input");
         expect(label).toBeDefined();
@@ -209,7 +208,7 @@ describe("rendering", () => {
         fireEvent.blur(colorInput);
 
         await waitFor(() => {
-            const colorValue = getContext()?.properties.get("colorInput");
+            const colorValue = context.properties.get("colorInput");
             expect(colorValue).toBeDefined();
             expect(colorValue).toMatch(/^#[0-9A-Fa-f]{6,8}$/i);
         });
@@ -225,7 +224,7 @@ describe("rendering", () => {
     });
 
     it("renders date input without time and updates property on change", async () => {
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Date Input");
         expect(label).toBeDefined();
@@ -239,13 +238,13 @@ describe("rendering", () => {
         const testDate = "2026-12-25";
         fireEvent.change(dateInput, { target: { value: testDate } });
         await waitFor(() => {
-            const dateValue = getContext()?.properties.get("dateInput");
+            const dateValue = context.properties.get("dateInput");
             expect(dateValue).toBe(testDate);
         });
     });
 
     it("renders date input with time and updates property on change", async () => {
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("DateTime Input");
         expect(label).toBeDefined();
@@ -259,14 +258,14 @@ describe("rendering", () => {
         const testDateTime = "2026-12-25T14:30";
         fireEvent.change(dateTimeInput, { target: { value: testDateTime } });
         await waitFor(() => {
-            const dateTimeValue = getContext()?.properties.get("dateTimeInput");
+            const dateTimeValue = context.properties.get("dateTimeInput");
             expect(dateTimeValue).toBe(testDateTime);
         });
     });
 
     it("renders string select input and updates property on selection", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("String Select");
         expect(label).toBeDefined();
@@ -295,13 +294,13 @@ describe("rendering", () => {
 
         await user.click(optionB!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("stringSelect")).toBe("b");
+            expect(context.properties.get("stringSelect")).toBe("b");
         });
     });
 
     it("renders number select input and updates property on selection", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const labels = screen.getAllByText("Number Select");
         expect(labels.length).toBeGreaterThan(0);
@@ -327,13 +326,13 @@ describe("rendering", () => {
 
         await user.click(optionTwo!);
         await waitFor(() => {
-            expect(getContext()?.properties.get("numberSelect")).toBe(2);
+            expect(context.properties.get("numberSelect")).toBe(2);
         });
     });
 
     it("renders switch input and updates property on toggle", async () => {
         const user = userEvent.setup();
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Switch");
         expect(label).toBeDefined();
@@ -353,19 +352,19 @@ describe("rendering", () => {
         await user.click(switchInput!);
 
         await waitFor(() => {
-            expect(getContext()?.properties.get("switch")).toBe(true);
+            expect(context.properties.get("switch")).toBe(true);
         });
 
         // Click again to toggle off
         await user.click(switchInput!);
 
         await waitFor(() => {
-            expect(getContext()?.properties.get("switch")).toBe(false);
+            expect(context.properties.get("switch")).toBe(false);
         });
     });
 
     it("renders custom slider input and updates property on change", async () => {
-        const { getContext } = renderForm();
+        const { context } = renderForm();
 
         const label = screen.getByText("Custom Input");
         expect(label).toBeDefined();
@@ -377,14 +376,14 @@ describe("rendering", () => {
         expect(slider.value).toBe("50"); // Default value
 
         // Verify initial state
-        expect(getContext()).toBeDefined();
+        expect(context).toBeDefined();
 
         // Change the slider value
         const newValue = 75;
         fireEvent.change(slider, { target: { value: newValue.toString() } });
 
         await waitFor(() => {
-            const updatedValue = getContext()?.properties.get("customInput");
+            const updatedValue = context.properties.get("customInput");
             expect(updatedValue).toBe(newValue);
         });
     });
@@ -426,7 +425,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         const label = screen.getByText("Required Field");
         const asterisk = label.querySelector(".chakra-field__requiredIndicator");
@@ -457,7 +456,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         const nameInput = screen.getByPlaceholderText("Name") as HTMLInputElement;
         expect(nameInput.required).toBe(false);
@@ -491,7 +490,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         const nameInput = screen.getByPlaceholderText("Enter name") as HTMLInputElement;
         expect(nameInput).toBeDisabled();
@@ -529,7 +528,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         expect(screen.queryByText("Details")).not.toBeInTheDocument();
         expect(screen.queryByPlaceholderText("Enter details")).not.toBeInTheDocument();
@@ -568,9 +567,9 @@ describe("property functions", () => {
                 }
             ]
         };
-        const { getContext } = renderForm({
+        const { context } = renderForm({
             editingStep: createTestEditingStep(template),
-            templates: [template]
+            template: template
         });
 
         const minInput = screen.getByLabelText("Minimum Value") as HTMLInputElement;
@@ -580,8 +579,8 @@ describe("property functions", () => {
         await user.type(maxInput, "5");
 
         await waitFor(() => {
-            expect(getContext()?.properties.get("minValue")).toBe(10);
-            expect(getContext()?.properties.get("maxValue")).toBe(5);
+            expect(context.properties.get("minValue")).toBe(10);
+            expect(context.properties.get("maxValue")).toBe(5);
             expect(maxInput.getAttribute("aria-invalid")).toBe("true");
         });
 
@@ -589,7 +588,7 @@ describe("property functions", () => {
         await user.type(maxInput, "15");
 
         await waitFor(() => {
-            expect(getContext()?.properties.get("maxValue")).toBe(15);
+            expect(context.properties.get("maxValue")).toBe(15);
             expect(maxInput.getAttribute("aria-invalid")).toBeOneOf([null, "false"]);
         });
     });
@@ -619,7 +618,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         const ageInput = screen.getByLabelText("Age") as HTMLInputElement;
         await user.type(ageInput, "150");
@@ -650,7 +649,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         expect(screen.getByText("Enter a valid email address")).toBeInTheDocument();
         expect(screen.getByLabelText("Email")).toBeDefined();
@@ -676,7 +675,7 @@ describe("property functions", () => {
                 }
             ]
         };
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         expect(screen.getByText("Name is required")).toBeInTheDocument();
 
@@ -719,7 +718,7 @@ describe("property functions", () => {
             ]
         };
 
-        renderForm({ editingStep: createTestEditingStep(template), templates: [template] });
+        renderForm({ editingStep: createTestEditingStep(template), template: template });
 
         // Initial hidden
         expect(screen.queryByText("Street")).not.toBeInTheDocument();
@@ -757,36 +756,28 @@ const DUMMY_CALLBACKS: EditingCallbacks = {
     }
 };
 
-function renderForm(options?: { editingStep?: ModificationStep; templates?: FeatureTemplate[] }) {
-    const { editingStep = createTestEditingStep(), templates = [allInputTypesTemplate] } =
+function renderForm(options?: { editingStep?: ModificationStep; template?: FeatureTemplate & DeclarativeFormTemplate }) {
+    const { editingStep = createTestEditingStep(), template = allInputTypesTemplate} =
         options ?? {};
-
-    let lastContext: PropertyFormContext | undefined;
+    const context = new DeclarativeFormContext(editingStep, DUMMY_CALLBACKS, template);
+    const children = template.fields.map((field, index) => (
+                                      <PropertyField key={index} field={field} />
+                                  ));
     const renderResult = render(
         <PackageContextProvider>
-            <PropertyFormContextProvider callbacks={DUMMY_CALLBACKS} editingStep={editingStep}>
-                <ContextCapture onCapture={(ctx) => (lastContext = ctx)} />
-                <PropertyForm templates={templates} />
-            </PropertyFormContextProvider>
+            <FormContext value={context}>
+                <PropertyForm>{children}</PropertyForm>
+            </FormContext>
         </PackageContextProvider>
     );
     return {
         ...renderResult,
-        getContext: () => lastContext
+        context: context
     };
 }
 
-// Test helper component to capture context
-function ContextCapture({ onCapture }: { onCapture: (ctx: PropertyFormContext) => void }): null {
-    const context = usePropertyFormContext();
-    useEffect(() => {
-        onCapture(context);
-    }, [context, onCapture]);
-    return null;
-}
-
 // Define one field input for each input type
-const allInputTypesTemplate: FeatureTemplate = {
+const allInputTypesTemplate: FeatureTemplate & DeclarativeFormTemplate = {
     kind: "declarative",
     name: "All Input Types",
     geometryType: "Point",

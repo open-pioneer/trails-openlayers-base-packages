@@ -15,6 +15,12 @@ messages:
     saveButtonTitle: Speichern
     cancelButtonTitle: Abbrechen
     deleteButtonTooltip: Geoobjekt löschen
+
+    errors:
+      minAndMax: Der Wert muss zwischen {min} und {max} liegen.
+      minOnly: Der Wert muss mindestens {min} sein.
+      maxOnly: Der Wert darf höchstens {max} sein.
+
   deleteConfirmationDialog:
     title: Geoobjekt löschen
     message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?

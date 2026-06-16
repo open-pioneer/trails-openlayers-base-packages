@@ -15,6 +15,12 @@ messages:
     saveButtonTitle: Save
     cancelButtonTitle: Cancel
     deleteButtonTooltip: Delete feature
+
+    errors:
+      minAndMax: The value must be between {min} and {max}.
+      minOnly: The value must be {min} or higher.
+      maxOnly: The value must be {max} or lower.
+
   deleteConfirmationDialog:
     title: Delete Feature
     message: Are you sure you want to delete this feature?
