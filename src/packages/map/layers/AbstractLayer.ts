@@ -69,7 +69,12 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #sourceState: Reactive<LayerLoadState>;
     #healthState: Reactive<LayerLoadState>;
     #metadataState: Reactive<LayerLoadState>;
-    #error: Reactive<Error | undefined>;
+    // One error per channel. The public `error` is derived from these, so an
+    // error is cleared automatically as soon as its channel recovers.
+    #sourceError: Reactive<Error | undefined>;
+    #healthError: Reactive<Error | undefined>;
+    #metadataError: Reactive<Error | undefined>;
+    #error: ReadonlyReactive<Error | undefined>;
     #loadState: ReadonlyReactive<LayerLoadState>;
 
     #stateWatchResource: Resource | undefined;
@@ -125,13 +130,21 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#sourceState = reactive(getSourceState(getSource(this.#olLayer)));
         this.#healthState = reactive<LayerLoadState>("loaded");
         this.#metadataState = reactive<LayerLoadState>("loaded");
-        this.#error = reactive<Error | undefined>(undefined);
+        this.#sourceError = reactive<Error | undefined>(undefined);
+        this.#healthError = reactive<Error | undefined>(undefined);
+        this.#metadataError = reactive<Error | undefined>(undefined);
         this.#loadState = computed(() =>
             combineLoadStates(
                 this.#sourceState.value,
                 this.#healthState.value,
                 this.#metadataState.value
             )
+        );
+        // The most relevant error, following the same priority as the load state
+        // (source > health > metadata). Recomputes whenever any channel changes,
+        // so recovery of a channel clears its error without manual bookkeeping.
+        this.#error = computed(
+            () => this.#sourceError.value ?? this.#healthError.value ?? this.#metadataError.value
         );
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
@@ -221,8 +234,12 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The most recent error associated with this layer,if any.
-     * Reset to `undefined` when the layer recovers.
+     * The most relevant error associated with this layer, if any.
+     *
+     * Combines errors from the OpenLayers source, the health check and the
+     * metadata request, using the same priority as {@link loadState}
+     * (source > health > metadata). Cleared automatically once the offending
+     * channel recovers (e.g. `undefined` again after a successful reload).
      */
     get error(): Error | undefined {
         return this.#error.value;
@@ -302,14 +319,19 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         if (!this.#stateWatchResource) {
             this.#stateWatchResource = watchLoadState(this, this.#healthCheck, {
                 onSourceState: (state) => {
-                    this.#sourceState.value = state;
+                    batch(() => {
+                        this.#sourceState.value = state;
+                        // OpenLayers sources carry no error detail, so synthesize one.
+                        this.#sourceError.value =
+                            state === "error"
+                                ? new Error(`Source of layer '${this.id}' is in error state`)
+                                : undefined;
+                    });
                 },
                 onHealthState: (state, error) => {
                     batch(() => {
                         this.#healthState.value = state;
-                        if (state === "error") {
-                            this.#error.value = error;
-                        }
+                        this.#healthError.value = state === "error" ? error : undefined;
                     });
                 }
             });
@@ -327,11 +349,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     [SET_METADATA_STATE](state: LayerLoadState, error?: Error): void {
         batch(() => {
             this.#metadataState.value = state;
-            if (state === "error") {
-                this.#error.value = error;
-            } else if (state === "loaded" && this.#healthState.value !== "error") {
-                this.#error.value = undefined;
-            }
+            this.#metadataError.value = state === "error" ? error : undefined;
         });
     }
 

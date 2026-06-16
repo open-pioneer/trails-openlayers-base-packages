@@ -1,14 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, reactive } from "@conterra/reactivity-core";
+import { batch, Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModel } from "../../model/MapModel";
+import type { LayerLoadState } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
     ATTACH_TO_PARENT,
     DETACH_FROM_MAP,
     GET_RAW_SUBLAYERS,
-    SET_LEGEND
+    SET_LEGEND,
+    SET_SUBLAYER_LOAD_STATE
 } from "../shared/internals";
 import {
     assertInternalConstructor,
@@ -29,6 +31,12 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
     /**
      * The name of the WMS sublayer in the service's capabilities.
      * Not mandatory, e.g. for WMS group layer. See [WMS spec](https://www.ogc.org/standard/wms/).
+     *
+     * If a name is given, it is validated against the service's capabilities once they
+     * have been loaded. A name that does not appear in the capabilities document puts this
+     * sublayer into the `error` load state (see {@link WMSSublayer.loadState}). The parent
+     * {@link WMSLayer} surfaces the problem as an aggregated error in the UI but stays
+     * usable, so its other (valid) sublayers remain unaffected.
      */
     name?: string;
 
@@ -48,6 +56,8 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #legend = reactive<string | undefined>();
     #sublayers: SublayersCollection<WMSSublayer>;
     #visible: Reactive<boolean>;
+    #loadState: Reactive<LayerLoadState> = reactive<LayerLoadState>("loaded");
+    #error: Reactive<Error | undefined> = reactive<Error | undefined>(undefined);
 
     /**
      * @internal
@@ -103,6 +113,23 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
 
     override get legend(): string | undefined {
         return this.#legend.value;
+    }
+
+    /**
+     * The load state of this sublayer.
+     *
+     * It is `error` if the sublayer's {@link name} could not be found in the parent
+     * service's capabilities; otherwise `loaded`.
+     */
+    get loadState(): LayerLoadState {
+        return this.#loadState.value;
+    }
+
+    /**
+     * The error associated with this sublayer, if any (e.g. an invalid {@link name}).
+     */
+    get error(): Error | undefined {
+        return this.#error.value;
     }
 
     override get visible(): boolean {
@@ -164,6 +191,18 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
      */
     [SET_LEGEND](legendUrl: string | undefined) {
         this.#legend.value = legendUrl;
+    }
+
+    /**
+     * Called by the parent layer once the capabilities have been validated.
+     *
+     * @internal
+     */
+    [SET_SUBLAYER_LOAD_STATE](state: LayerLoadState, error?: Error): void {
+        batch(() => {
+            this.#loadState.value = state;
+            this.#error.value = state === "error" ? error : undefined;
+        });
     }
 
     override setVisible(newVisibility: boolean): void {

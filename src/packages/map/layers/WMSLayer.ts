@@ -29,7 +29,8 @@ import {
     LayerConstructor,
     LayerDependencies,
     SET_LEGEND,
-    SET_METADATA_STATE
+    SET_METADATA_STATE,
+    SET_SUBLAYER_LOAD_STATE
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
@@ -287,6 +288,11 @@ export class WMSLayer extends AbstractLayer {
         const layers: string[] = [];
         const filter = (sublayer: Sublayer) => sublayer.visible;
         for (const sublayer of walkLeaves(this.#sublayers, filter)) {
+            // Skip sublayers with an invalid name: including them in the request would
+            // make the whole GetMap fail and hide the valid sublayers as well.
+            if (sublayer.loadState === "error") {
+                continue;
+            }
             // Push sublayer if layer name is not an empty string | undefined | ...
             if (sublayer.name) {
                 layers.push(sublayer.name);
@@ -320,22 +326,26 @@ export class WMSLayer extends AbstractLayer {
         const hasCapabilityTree = !!capabilities?.Capability?.Layer;
         const knownNames = hasCapabilityTree ? collectLayerNames(capabilities) : undefined;
 
-        const missing: string[] = [];
         for (const layer of walkLeaves(this.#sublayers)) {
             if (!layer.name) {
                 continue;
             }
+            // A name that is not part of the capabilities document marks _only_ that
+            // sublayer as broken. The parent layer surfaces this as an aggregated error
+            // in the UI, but its other (valid) sublayers stay usable.
             if (knownNames && !knownNames.has(layer.name)) {
-                missing.push(layer.name);
+                LOG.warn(
+                    `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities`
+                );
+                layer[SET_SUBLAYER_LOAD_STATE](
+                    "error",
+                    new Error(`WMS sublayer name '${layer.name}' not found in capabilities`)
+                );
                 continue;
             }
+            layer[SET_SUBLAYER_LOAD_STATE]("loaded");
             const legendUrl = getLegendUrl(capabilities, layer.name);
             layer[SET_LEGEND](legendUrl);
-        }
-
-        if (missing.length) {
-            const list = missing.map((name) => `'${name}'`).join(", ");
-            throw new Error(`WMS sublayer name(s) not found in capabilities: ${list}`);
         }
     }
 
