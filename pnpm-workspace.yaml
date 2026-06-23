@@ -233,6 +233,8 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
+  # Renovate security update: js-yaml@4.2.0
+  - js-yaml@4.2.0
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true
