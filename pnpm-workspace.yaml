@@ -73,7 +73,7 @@ catalog:
   handlebars: ^4.7.9
   happy-dom: ^20.10.6
   husky: ^9.1.7
-  js-yaml: ^4.1.1
+  js-yaml: ^4.2.0
   jsdom: ^29.1.1
   lint-staged: ^17.0.7
   prettier: ^3.8.4
@@ -128,6 +128,8 @@ peerDependencyRules:
 
 auditConfig:
   ignoreGhsas:
+    # https://github.com/advisories/GHSA-h67p-54hq-rp68, CVE-2026-53550
+    - GHSA-h67p-54hq-rp68
 
 allowBuilds:
   "@parcel/watcher": true
