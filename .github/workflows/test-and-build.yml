@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
@@ -98,7 +98,7 @@ jobs:
       - version
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # https://github.com/JamesIves/github-pages-deploy-action/issues/1928#issuecomment-3635092712
           persist-credentials: false
