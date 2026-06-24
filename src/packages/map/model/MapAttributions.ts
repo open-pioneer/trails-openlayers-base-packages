@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { computed, effect, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
-import { destroyResources, Resource } from "@open-pioneer/core";
+import { destroyResources, Resource, shallowEqual } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
 import OlMap, { FrameState } from "ol/Map";
 import Attribution from "ol/control/Attribution";
@@ -108,9 +108,4 @@ function createDummyTargetNode() {
     node.style.display = "none";
     node.className = "map-attribution-dummy-target";
     return node;
-}
-
-// TODO: generic shallowEqual, deepEqual helpers @open-pioneer/core
-function shallowEqual<T>(a: T[], b: T[]) {
-    return a.length === b.length && a.every((v, i) => v == b[i]);
 }
