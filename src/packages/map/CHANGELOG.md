@@ -1,5 +1,16 @@
 # @open-pioneer/map
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+- c9b3ced: Provide reactive rotation in MapModel
+
+### Patch Changes
+
+- b58a50f: Use new `shallowEqual` function to compare attribution arrays.
+
 ## 1.3.0
 
 ### Minor Changes
