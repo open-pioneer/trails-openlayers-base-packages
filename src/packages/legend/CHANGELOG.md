@@ -1,5 +1,15 @@
 # @open-pioneer/legend
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+
+### Patch Changes
+
+- c17f0e7: Support reactive changes of layer.title
+
 ## 1.3.0
 
 ### Minor Changes
