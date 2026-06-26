@@ -84,8 +84,10 @@ it("logs error when capabilities cannot be fetched", async () => {
         expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain("404");
     });
-    // TODO: should be "error" once implemented
-    expect(l.layer.loadState).toBe("loaded");
+    await vi.waitFor(() => {
+        expect(l.layer.loadState).toBe("error");
+    });
+    expect(l.layer.error?.message).toContain("404");
 });
 
 it("logs error when layer not detected in capabilities", async () => {

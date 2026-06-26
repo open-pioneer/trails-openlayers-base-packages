@@ -21,7 +21,13 @@ import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
+import {
+    useAggregatedError,
+    useAggregatedLoadState,
+    useChildLayers,
+    useLoadState,
+    useVisibleInScale
+} from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
@@ -212,8 +218,12 @@ function useTocItem(layer: AnyLayer, display: boolean) {
 }
 
 function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
-    const isAvailable = useLoadState(layer) !== "error";
+    const ownLoadState = useLoadState(layer);
+    const aggregatedLoadState = useAggregatedLoadState(layer);
     const visibleInScale = useVisibleInScale(layer);
+    const aggregatedError = useAggregatedError(layer);
+    const isOwnError = ownLoadState === "error";
+    const isAvailable = aggregatedLoadState !== "error";
 
     return useMemo(() => {
         let problemIndicator;
@@ -221,12 +231,22 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
         let opacity;
         let disabled;
         if (!isAvailable) {
-            const label = intl.formatMessage({ id: "layerNotAvailable" });
+            const labelId = isOwnError ? "layerNotAvailable" : "childLayerNotAvailable";
+            const baseLabel = intl.formatMessage({ id: labelId });
+            const detail = aggregatedError
+                ? isOwnError
+                    ? aggregatedError.error.message
+                    : `${aggregatedError.source.title}: ${aggregatedError.error.message}`
+                : undefined;
+            const label = detail ? `${baseLabel}: ${detail}` : baseLabel;
+            const color = isOwnError ? "red" : "orange";
             problemIndicator = (
-                <ProblemIndicator message={label} Icon={LuTriangleAlert} color="red" />
+                <ProblemIndicator message={label} Icon={LuTriangleAlert} color={color} />
             );
             problemLabel = label;
-            disabled = true;
+            // Only disable the checkbox for the layer that is the actual source
+            // of the error, so a group with a broken child can still be toggled.
+            disabled = isOwnError;
         } else if (!visibleInScale) {
             const label = intl.formatMessage({ id: "layerNotVisible" });
             problemIndicator = <ProblemIndicator message={label} Icon={LuInfo} />;
@@ -234,7 +254,7 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
             opacity = 0.5;
         }
         return { problemIndicator, problemLabel, opacity, disabled };
-    }, [isAvailable, visibleInScale, intl]);
+    }, [isAvailable, isOwnError, visibleInScale, aggregatedError, intl]);
 }
 
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {

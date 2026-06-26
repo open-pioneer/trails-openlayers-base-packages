@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { GroupLayer } from "@open-pioneer/map";
+import { GroupLayer, WMSLayer } from "@open-pioneer/map";
 import {
     createTestLayer,
     createTestOlLayer,
@@ -25,6 +25,23 @@ import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
 import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
+
+const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
+const CONTENT_PROBLEM_INDICATOR_SELECTOR = `.toc-layer-item-content ${PROBLEM_INDICATOR_SELECTOR}`;
+
+/** Minimal WMS capabilities document exposing a single layer named "valid". */
+const WMS_CAPABILITIES = `<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms">
+  <Capability>
+    <Layer>
+      <Title>Root</Title>
+      <Layer>
+        <Name>valid</Name>
+        <Title>Valid</Title>
+      </Layer>
+    </Layer>
+  </Capability>
+</WMS_Capabilities>`;
 
 it("should show layers in the correct order", async () => {
     const { map, Wrapper } = await setup({
@@ -406,7 +423,7 @@ it("reacts to changes of the layer load state", async () => {
 
     const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
     const button = queryByRole<HTMLInputElement>(container, "button");
-    let icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    let icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
 
     expect(checkbox).toBeTruthy();
     expect(checkbox.disabled).toBe(false);
@@ -418,11 +435,13 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(checkbox.disabled).toBe(true);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
+    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(
+        `"layerNotAvailable: Source of layer 'layer1' is in error state"`
+    );
 
     // and back
     await act(async () => {
@@ -430,7 +449,7 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(checkbox.disabled).toBe(false);
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
@@ -458,7 +477,7 @@ it("updates problem indicators when there are visibility issues", async () => {
         wrapper: Wrapper
     });
     {
-        const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+        const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
         expect(icons).toHaveLength(0);
     }
     // set map out of layer visibility
@@ -466,7 +485,7 @@ it("updates problem indicators when there are visibility issues", async () => {
         map.olView.setZoom(5);
         await nextTick();
     });
-    const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(icons).toHaveLength(1);
     expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
 });
@@ -813,6 +832,139 @@ it("does not display layer item for child layer if the group's listMode is `hide
     expect(groupLayerItem).toBeTruthy(); //layer item for group should still be there
     childLayerItem = findLayerItem(container, childLayer.id);
     expect(childLayerItem).toBeFalsy(); //layer item for child should not be there anymore
+});
+
+it("propagates child layer errors to the group's problem indicator", async () => {
+    const childSource = new OSM();
+    const childLayer = createTestLayer({
+        id: "child",
+        title: "Broken Child",
+        olLayer: new TileLayer({ source: childSource })
+    });
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        layers: [childLayer]
+    });
+
+    const { map, Wrapper } = await setup({
+        layers: [groupLayer]
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    const childItem = findLayerItem(container, "child")!;
+    expect(groupItem).toBeTruthy();
+    expect(childItem).toBeTruthy();
+
+    const groupCheckbox = groupItem.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    )!;
+    const childCheckbox = childItem.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    )!;
+
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(childCheckbox.disabled).toBe(false);
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+
+    await act(async () => {
+        childSource.setState("error");
+        await nextTick();
+    });
+
+    // Group: indicator shown, checkbox NOT disabled (warning only)
+    const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(groupIcon).not.toBeNull();
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
+        `"childLayerNotAvailable: Broken Child: Source of layer 'child' is in error state"`
+    );
+
+    // Child: indicator shown, checkbox disabled (direct error)
+    const childIcon = childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(childIcon).not.toBeNull();
+    expect(childCheckbox.disabled).toBe(true);
+    expect(childIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
+        `"layerNotAvailable: Source of layer 'child' is in error state"`
+    );
+
+    // Recovery: both clear
+    await act(async () => {
+        childSource.setState("ready");
+        await nextTick();
+    });
+
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+    expect(childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(childCheckbox.disabled).toBe(false);
+});
+
+it("marks only the offending WMS sublayer as error, not its siblings or parents", async () => {
+    const wmsLayer = createTestLayer(
+        {
+            type: WMSLayer,
+            id: "wms",
+            title: "WMS Layer",
+            url: "https://example.com/wms",
+            sublayers: [
+                { id: "valid", name: "valid", title: "Valid Sublayer" },
+                { id: "broken", name: "does-not-exist", title: "Broken Sublayer" }
+            ]
+        },
+        { fetch: async () => new Response(WMS_CAPABILITIES) }
+    );
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        layers: [wmsLayer]
+    });
+
+    const { map, Wrapper } = await setup({
+        layers: [groupLayer]
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    const wmsItem = findLayerItem(container, "wms")!;
+    const validItem = findLayerItem(container, "valid")!;
+    const brokenItem = findLayerItem(container, "broken")!;
+    expect(groupItem).toBeTruthy();
+    expect(wmsItem).toBeTruthy();
+    expect(validItem).toBeTruthy();
+    expect(brokenItem).toBeTruthy();
+
+    const contentCheckbox = (item: HTMLElement) =>
+        item.querySelector<HTMLInputElement>(".toc-layer-item-content input[type='checkbox']")!;
+    const contentIndicator = (item: HTMLElement) =>
+        item.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+
+    // Wait for the capabilities to be fetched and validated.
+    await waitFor(() => {
+        expect(contentCheckbox(brokenItem).disabled).toBe(true);
+    });
+
+    // Broken sublayer: direct error -> indicator shown, checkbox disabled.
+    expect(contentIndicator(brokenItem)).not.toBeNull();
+
+    // Valid sibling sublayer: no problem at all.
+    expect(contentIndicator(validItem)).toBeNull();
+    expect(contentCheckbox(validItem).disabled).toBe(false);
+
+    // Parent WMS layer and group: aggregated warning, but still toggleable.
+    expect(contentIndicator(wmsItem)).not.toBeNull();
+    expect(contentCheckbox(wmsItem).disabled).toBe(false);
+    expect(contentIndicator(groupItem)).not.toBeNull();
+    expect(contentCheckbox(groupItem).disabled).toBe(false);
 });
 
 /** Returns the layer list's current list items. */

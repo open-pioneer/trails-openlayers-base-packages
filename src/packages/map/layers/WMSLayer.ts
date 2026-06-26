@@ -28,7 +28,9 @@ import {
     GET_RAW_SUBLAYERS,
     LayerConstructor,
     LayerDependencies,
-    SET_LEGEND
+    SET_LEGEND,
+    SET_METADATA_STATE,
+    SET_SUBLAYER_LOAD_STATE
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
@@ -243,18 +245,25 @@ export class WMSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
+        this[SET_METADATA_STATE]("loading");
         this.#fetchWMSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
+                    this[SET_METADATA_STATE]("loaded");
                 });
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
                 LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
+                const wrappedError =
+                    error instanceof Error
+                        ? error
+                        : new Error(`Failed to initialize WMS layer '${this.id}'`);
+                this[SET_METADATA_STATE]("error", wrappedError);
             });
     }
 
@@ -279,6 +288,11 @@ export class WMSLayer extends AbstractLayer {
         const layers: string[] = [];
         const filter = (sublayer: Sublayer) => sublayer.visible;
         for (const sublayer of walkLeaves(this.#sublayers, filter)) {
+            // Skip sublayers with an invalid name: including them in the request would
+            // make the whole GetMap fail and hide the valid sublayers as well.
+            if (sublayer.loadState === "error") {
+                continue;
+            }
             // Push sublayer if layer name is not an empty string | undefined | ...
             if (sublayer.name) {
                 layers.push(sublayer.name);
@@ -306,11 +320,32 @@ export class WMSLayer extends AbstractLayer {
             }
         }
 
+        // Only validate sublayer names if the capabilities document actually
+        // contains a layer tree. Empty / unparseable responses are tolerated to
+        // avoid false positives.
+        const hasCapabilityTree = !!capabilities?.Capability?.Layer;
+        const knownNames = hasCapabilityTree ? collectLayerNames(capabilities) : undefined;
+
         for (const layer of walkLeaves(this.#sublayers)) {
-            if (layer.name) {
-                const legendUrl = getLegendUrl(capabilities, layer.name);
-                layer[SET_LEGEND](legendUrl);
+            if (!layer.name) {
+                continue;
             }
+            // A name that is not part of the capabilities document marks _only_ that
+            // sublayer as broken. The parent layer surfaces this as an aggregated error
+            // in the UI, but its other (valid) sublayers stay usable.
+            if (knownNames && !knownNames.has(layer.name)) {
+                LOG.warn(
+                    `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities`
+                );
+                layer[SET_SUBLAYER_LOAD_STATE](
+                    "error",
+                    new Error(`WMS sublayer name '${layer.name}' not found in capabilities`)
+                );
+                continue;
+            }
+            layer[SET_SUBLAYER_LOAD_STATE]("loaded");
+            const legendUrl = getLegendUrl(capabilities, layer.name);
+            layer[SET_LEGEND](legendUrl);
         }
     }
 
@@ -337,6 +372,30 @@ export class WMSLayer extends AbstractLayer {
         image.addEventListener("error", finish);
         image.src = objectUrl;
     }
+}
+
+/**
+ * Collects all layer `Name` values from a parsed WMS capabilities document.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function collectLayerNames(capabilities: Record<string, any> | undefined): Set<string> {
+    const names = new Set<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const visit = (layer: Record<string, any> | undefined) => {
+        if (!layer) {
+            return;
+        }
+        if (typeof layer.Name === "string") {
+            names.add(layer.Name);
+        }
+        if (Array.isArray(layer.Layer)) {
+            for (const child of layer.Layer) {
+                visit(child);
+            }
+        }
+    };
+    visit(capabilities?.Capability?.Layer);
+    return names;
 }
 
 /**
