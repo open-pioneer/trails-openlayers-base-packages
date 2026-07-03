@@ -19,13 +19,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@3e0709264e6cb50fb00af3bf97d0b05bd0024591 # main
 
       - name: "Publish packages"
-        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@3e0709264e6cb50fb00af3bf97d0b05bd0024591 # main
         with:
           snapshot-tag: ${{ inputs.snapshot-tag }}
           npm-token: ${{ secrets.NPM_TOKEN }}
