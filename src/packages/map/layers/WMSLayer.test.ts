@@ -353,9 +353,7 @@ describe("metadata errors", () => {
         });
 
         // Wait for capabilities to be parsed
-        const olSource = layer.olSource!;
-        await vi.waitUntil(() => getAttributions(olSource));
-        expect(layer.loadState).toBe("loaded");
+        await vi.waitUntil(() => layer.loadState === "loaded");
         expect(layer.error).toBeUndefined();
     });
 

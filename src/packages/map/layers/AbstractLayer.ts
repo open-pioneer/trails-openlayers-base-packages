@@ -128,8 +128,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         );
 
         this.#sourceState = reactive(getSourceState(getSource(this.#olLayer)));
-        this.#healthState = reactive<LayerLoadState>("loaded");
-        this.#metadataState = reactive<LayerLoadState>("loaded");
+        this.#healthState = reactive<LayerLoadState>("not-loaded");
+        this.#metadataState = reactive<LayerLoadState>("not-loaded");
         this.#sourceError = reactive<Error | undefined>(undefined);
         this.#healthError = reactive<Error | undefined>(undefined);
         this.#metadataError = reactive<Error | undefined>(undefined);

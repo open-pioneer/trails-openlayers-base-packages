@@ -21,13 +21,7 @@ import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import {
-    useAggregatedError,
-    useAggregatedLoadState,
-    useChildLayers,
-    useLoadState,
-    useVisibleInScale
-} from "./hooks";
+import { useHasChildProblems, useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
@@ -219,26 +213,19 @@ function useTocItem(layer: AnyLayer, display: boolean) {
 
 function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
     const ownLoadState = useLoadState(layer);
-    const aggregatedLoadState = useAggregatedLoadState(layer);
+    const hasChildProblems = useHasChildProblems(layer);
     const visibleInScale = useVisibleInScale(layer);
-    const aggregatedError = useAggregatedError(layer);
     const isOwnError = ownLoadState === "error";
-    const isAvailable = aggregatedLoadState !== "error";
+    const hasErrors = !isOwnError && !hasChildProblems;
 
     return useMemo(() => {
         let problemIndicator;
         let problemLabel;
         let opacity;
         let disabled;
-        if (!isAvailable) {
+        if (!hasErrors) {
             const labelId = isOwnError ? "layerNotAvailable" : "childLayerNotAvailable";
-            const baseLabel = intl.formatMessage({ id: labelId });
-            const detail = aggregatedError
-                ? isOwnError
-                    ? aggregatedError.error.message
-                    : `${aggregatedError.source.title}: ${aggregatedError.error.message}`
-                : undefined;
-            const label = detail ? `${baseLabel}: ${detail}` : baseLabel;
+            const label = intl.formatMessage({ id: labelId });
             const color = isOwnError ? "red" : "orange";
             problemIndicator = (
                 <ProblemIndicator message={label} Icon={LuTriangleAlert} color={color} />
@@ -254,7 +241,7 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
             opacity = 0.5;
         }
         return { problemIndicator, problemLabel, opacity, disabled };
-    }, [isAvailable, isOwnError, visibleInScale, aggregatedError, intl]);
+    }, [hasErrors, isOwnError, visibleInScale, intl]);
 }
 
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {

@@ -50,39 +50,16 @@ export function useLoadState(layer: AnyLayer): LayerLoadState {
  * layers with sublayers) this aggregates the worst load state of all descendants,
  * so a parent reflects errors of its children (e.g. a single broken WMS sublayer).
  */
-export function useAggregatedLoadState(layer: AnyLayer): LayerLoadState {
+export function useHasChildProblems(layer: AnyLayer): boolean {
     return useReactiveSnapshot(() => {
-        let worst = ownLoadState(layer);
-        if (worst === "error") {
-            return "error";
-        }
+        let worst: LayerLoadState = "loaded";
         for (const descendant of walkDescendants(layer)) {
             worst = worseState(worst, ownLoadState(descendant));
             if (worst === "error") {
-                return "error";
+                return true;
             }
         }
-        return worst;
-    }, [layer]);
-}
-
-/**
- * Returns the first error found on the layer or on any descendant layer.
- * Also reports which layer produced the error.
- */
-export function useAggregatedError(layer: AnyLayer): AggregatedLayerError | undefined {
-    return useReactiveSnapshot(() => {
-        const own = ownError(layer);
-        if (own) {
-            return { error: own, source: layer };
-        }
-        for (const descendant of walkDescendants(layer)) {
-            const error = ownError(descendant);
-            if (error) {
-                return { error, source: descendant };
-            }
-        }
-        return undefined;
+        return false;
     }, [layer]);
 }
 

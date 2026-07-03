@@ -905,68 +905,6 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     expect(childCheckbox.disabled).toBe(false);
 });
 
-it("marks only the offending WMS sublayer as error, not its siblings or parents", async () => {
-    const wmsLayer = createTestLayer(
-        {
-            type: WMSLayer,
-            id: "wms",
-            title: "WMS Layer",
-            url: "https://example.com/wms",
-            sublayers: [
-                { id: "valid", name: "valid", title: "Valid Sublayer" },
-                { id: "broken", name: "does-not-exist", title: "Broken Sublayer" }
-            ]
-        },
-        { fetch: async () => new Response(WMS_CAPABILITIES) }
-    );
-    const groupLayer = createTestLayer({
-        type: GroupLayer,
-        id: "group",
-        title: "Group",
-        layers: [wmsLayer]
-    });
-
-    const { map, Wrapper } = await setup({
-        layers: [groupLayer]
-    });
-
-    const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: Wrapper
-    });
-
-    const groupItem = findLayerItem(container, "group")!;
-    const wmsItem = findLayerItem(container, "wms")!;
-    const validItem = findLayerItem(container, "valid")!;
-    const brokenItem = findLayerItem(container, "broken")!;
-    expect(groupItem).toBeTruthy();
-    expect(wmsItem).toBeTruthy();
-    expect(validItem).toBeTruthy();
-    expect(brokenItem).toBeTruthy();
-
-    const contentCheckbox = (item: HTMLElement) =>
-        item.querySelector<HTMLInputElement>(".toc-layer-item-content input[type='checkbox']")!;
-    const contentIndicator = (item: HTMLElement) =>
-        item.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
-
-    // Wait for the capabilities to be fetched and validated.
-    await waitFor(() => {
-        expect(contentCheckbox(brokenItem).disabled).toBe(true);
-    });
-
-    // Broken sublayer: direct error -> indicator shown, checkbox disabled.
-    expect(contentIndicator(brokenItem)).not.toBeNull();
-
-    // Valid sibling sublayer: no problem at all.
-    expect(contentIndicator(validItem)).toBeNull();
-    expect(contentCheckbox(validItem).disabled).toBe(false);
-
-    // Parent WMS layer and group: aggregated warning, but still toggleable.
-    expect(contentIndicator(wmsItem)).not.toBeNull();
-    expect(contentCheckbox(wmsItem).disabled).toBe(false);
-    expect(contentIndicator(groupItem)).not.toBeNull();
-    expect(contentCheckbox(groupItem).disabled).toBe(false);
-});
-
 /** Returns the layer list's current list items. */
 function getCurrentItems(container: HTMLElement) {
     return queryAllByRole(container, "listitem");

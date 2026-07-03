@@ -184,7 +184,6 @@ export class WMTSLayer extends AbstractLayer {
             .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.name}' has been destroyed before fetching the data`);
-                    return;
                 }
                 LOG.error(`Failed to initialize WMTS layer '${this.name}'`, error);
                 const wrappedError =

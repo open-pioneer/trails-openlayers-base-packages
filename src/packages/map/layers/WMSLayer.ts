@@ -92,6 +92,8 @@ export class WMSLayer extends AbstractLayer {
     #loadStarted = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
+    // Sublayer names that were not found in the capabilities document.
+    readonly #invalidSubLayerNames = new Set<string>();
     readonly #abortController = new AbortController();
 
     #visibleSublayers: ReadonlyReactive<string[]>;
@@ -256,7 +258,6 @@ export class WMSLayer extends AbstractLayer {
             .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
-                    return;
                 }
                 LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
                 const wrappedError =
@@ -290,7 +291,7 @@ export class WMSLayer extends AbstractLayer {
         for (const sublayer of walkLeaves(this.#sublayers, filter)) {
             // Skip sublayers with an invalid name: including them in the request would
             // make the whole GetMap fail and hide the valid sublayers as well.
-            if (sublayer.loadState === "error") {
+            if (sublayer.name && this.#invalidSubLayerNames.has(sublayer.name)) {
                 continue;
             }
             // Push sublayer if layer name is not an empty string | undefined | ...
@@ -320,9 +321,6 @@ export class WMSLayer extends AbstractLayer {
             }
         }
 
-        // Only validate sublayer names if the capabilities document actually
-        // contains a layer tree. Empty / unparseable responses are tolerated to
-        // avoid false positives.
         const hasCapabilityTree = !!capabilities?.Capability?.Layer;
         const knownNames = hasCapabilityTree ? collectLayerNames(capabilities) : undefined;
 
@@ -330,13 +328,13 @@ export class WMSLayer extends AbstractLayer {
             if (!layer.name) {
                 continue;
             }
-            // A name that is not part of the capabilities document marks _only_ that
-            // sublayer as broken. The parent layer surfaces this as an aggregated error
-            // in the UI, but its other (valid) sublayers stay usable.
+            // A name that is not part of the capabilities document marks only that
+            // sublayer as broken.
             if (knownNames && !knownNames.has(layer.name)) {
-                LOG.warn(
+                LOG.error(
                     `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities`
                 );
+                this.#invalidSubLayerNames.add(layer.name);
                 layer[SET_SUBLAYER_LOAD_STATE](
                     "error",
                     new Error(`WMS sublayer name '${layer.name}' not found in capabilities`)
