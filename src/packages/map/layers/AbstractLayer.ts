@@ -1,15 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    batch,
     computed,
     reactive,
     Reactive,
     ReadonlyReactive,
     synchronized
 } from "@conterra/reactivity-core";
-import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
-import { EventsKey } from "ol/events";
+import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
@@ -41,6 +39,11 @@ const LOG = createLogger(sourceId);
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
+ * Load state of a single layer channel, bundling the state with its error.
+ */
+type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
+
+/**
  * Represents an operational layer in the map.
  *
  * These layers always have an associated OpenLayers layer.
@@ -65,25 +68,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #minZoom: ReadonlyReactive<number>;
     #maxZoom: ReadonlyReactive<number>;
 
-    // handle layer load state:
-    #sourceState: Reactive<LayerLoadState>;
-    #healthState: Reactive<LayerLoadState>;
-    #metadataState: Reactive<LayerLoadState>;
-    // One error per channel. The public `error` is derived from these, so an
-    // error is cleared automatically as soon as its channel recovers.
-    #sourceError: Reactive<Error | undefined>;
-    #healthError: Reactive<Error | undefined>;
-    #metadataError: Reactive<Error | undefined>;
-    #error: ReadonlyReactive<Error | undefined>;
-    #loadState = computed(() =>
-        combineLoadStates(
-            this.#sourceState.value,
-            this.#healthState.value,
-            this.#metadataState.value
-        )
+    // Load state per channel. Each LayerLoadInfo carries its own error
+    #sourceState: ReadonlyReactive<LayerLoadState>;
+    #sourceInfo: ReadonlyReactive<LayerLoadInfo>;
+    #healthInfo: Reactive<LayerLoadInfo>;
+    #metadataInfo: Reactive<LayerLoadInfo>;
+    #loadInfo = computed(() =>
+        combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
-
-    #stateWatchResource: Resource | undefined;
 
     #visibleInScale: ReadonlyReactive<boolean>;
 
@@ -133,18 +125,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             }
         );
 
-        this.#sourceState = reactive(getSourceState(getSource(this.#olLayer)));
-        this.#healthState = reactive<LayerLoadState>("not-loaded");
-        this.#metadataState = reactive<LayerLoadState>("not-loaded");
-        this.#sourceError = reactive<Error | undefined>(undefined);
-        this.#healthError = reactive<Error | undefined>(undefined);
-        this.#metadataError = reactive<Error | undefined>(undefined);
-        // The most relevant error, following the same priority as the load state
-        // (source > health > metadata). Recomputes whenever any channel changes,
-        // so recovery of a channel clears its error without manual bookkeeping.
-        this.#error = computed(
-            () => this.#sourceError.value ?? this.#healthError.value ?? this.#metadataError.value
+        this.#sourceState = synchronized(
+            () => getSourceState(getSource(this.#olLayer)),
+            (cb) => subscribeToSourceState(this.#olLayer, cb)
         );
+        // OpenLayers sources carry no error detail, so synthesize one.
+        this.#sourceInfo = computed(() => makeSourceInfo(this.id, this.#sourceState.value));
+        this.#healthInfo = reactive<LayerLoadInfo>("not-loaded");
+        this.#metadataInfo = reactive<LayerLoadInfo>("not-loaded");
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
@@ -192,7 +180,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             return;
         }
 
-        this.#stateWatchResource = destroyResource(this.#stateWatchResource);
         this.olLayer.dispose();
         super.destroy();
     }
@@ -229,7 +216,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Priority for the state: `error` > `loading` > `not-loaded` > `loaded`.
      */
     get loadState(): LayerLoadState {
-        return this.#loadState.value;
+        return loadInfoState(this.#loadInfo.value);
     }
 
     /**
@@ -237,11 +224,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      *
      * Combines errors from the OpenLayers source, the health check and the
      * metadata request, using the same priority as {@link loadState}
-     * (source > health > metadata). Cleared automatically once the offending
-     * channel recovers (e.g. `undefined` again after a successful reload).
+     * (health > metadata > source).
      */
     get error(): Error | undefined {
-        return this.#error.value;
+        return errorOf(this.#loadInfo.value);
     }
 
     /**
@@ -315,24 +301,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     override [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
 
-        if (!this.#stateWatchResource) {
-            this.#stateWatchResource = watchLoadState(this, this.#healthCheck, {
-                onSourceState: (state) => {
-                    batch(() => {
-                        this.#sourceState.value = state;
-                        // OpenLayers sources carry no error detail, so synthesize one.
-                        this.#sourceError.value =
-                            state === "error"
-                                ? new Error(`Source of layer '${this.id}' is in error state`)
-                                : undefined;
-                    });
-                },
-                onHealthState: (state, error) => {
-                    batch(() => {
-                        this.#healthState.value = state;
-                        this.#healthError.value = state === "error" ? error : undefined;
-                    });
-                }
+        // Custom health check is not needed when OpenLayers already reports an error state.
+        if (this.#sourceState.value !== "error") {
+            doHealthCheck(this, this.#healthCheck).then(({ state, error }) => {
+                this.#healthInfo.value = toLoadInfo(state, error);
             });
         }
     }
@@ -346,10 +318,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * @internal
      */
     [SET_METADATA_STATE](state: LayerLoadState, error?: Error): void {
-        batch(() => {
-            this.#metadataState.value = state;
-            this.#metadataError.value = state === "error" ? error : undefined;
-        });
+        this.#metadataInfo.value = toLoadInfo(state, error);
     }
 
     override setVisible(newVisibility: boolean): void {
@@ -388,61 +357,23 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 }
 
-interface LoadStateCallbacks {
-    onSourceState: (state: LayerLoadState) => void;
-    onHealthState: (state: LayerLoadState, error: Error | undefined) => void;
-}
-
-function watchLoadState(
-    layer: AbstractLayer,
-    healthCheck: LayerConfig["healthCheck"],
-    callbacks: LoadStateCallbacks
-): Resource {
-    const olLayer = layer.olLayer;
-
+function subscribeToSourceState(olLayer: OlBaseLayer, cb: () => void): () => void {
     if (!(olLayer instanceof OlLayer)) {
-        // Some layers don't have a source (such as group)
-        return {
-            destroy() {
-                void 0;
-            }
-        };
+        // Some layers don't have a source (such as group).
+        return () => undefined;
     }
 
-    let currentSource = getSource(olLayer);
-    const initialState = getSourceState(currentSource);
-    callbacks.onSourceState(initialState);
-
-    // custom health check not needed when OpenLayers already returning an error state
-    if (initialState !== "error") {
-        // health check only once during initialization
-        doHealthCheck(layer, healthCheck).then(({ state, error }) => {
-            callbacks.onHealthState(state, error);
-        });
-    }
-
-    const emitSourceState = () => {
-        callbacks.onSourceState(getSourceState(currentSource));
-    };
-
-    let stateHandle: EventsKey | undefined;
-    stateHandle = currentSource?.on("change", emitSourceState);
-
-    const sourceHandle = olLayer.on("change:source", () => {
-        // unsubscribe from old source
-        stateHandle && unByKey(stateHandle);
-        stateHandle = undefined;
-
-        // subscribe to new source and update state
-        currentSource = getSource(olLayer);
-        stateHandle = currentSource?.on("change", emitSourceState);
-        emitSourceState();
+    let sourceHandle = getSource(olLayer)?.on("change", cb);
+    const layerHandle = olLayer.on("change:source", () => {
+        // Move the "change" subscription to the new source, then recompute.
+        sourceHandle && unByKey(sourceHandle);
+        sourceHandle = getSource(olLayer)?.on("change", cb);
+        cb();
     });
-    return {
-        destroy() {
-            stateHandle && unByKey(stateHandle);
-            unByKey(sourceHandle);
-        }
+
+    return () => {
+        sourceHandle && unByKey(sourceHandle);
+        unByKey(layerHandle);
     };
 }
 
@@ -498,23 +429,54 @@ async function doHealthCheck(
     }
 }
 
-function combineLoadStates(
-    source: LayerLoadState,
-    health: LayerLoadState,
-    metadata: LayerLoadState
-): LayerLoadState {
-    if (source === "error" || health === "error" || metadata === "error") {
-        return "error";
+const LOAD_STATE_SEVERITY: Record<LayerLoadState, number> = {
+    loaded: 0,
+    "not-loaded": 1,
+    loading: 2,
+    error: 3
+};
+
+/** Returns the higher severity of two load states: error > loading > not-loaded > loaded. */
+function higherSeverity(a: LayerLoadState, b: LayerLoadState): LayerLoadState {
+    return LOAD_STATE_SEVERITY[a] >= LOAD_STATE_SEVERITY[b] ? a : b;
+}
+
+function combineLoadInfos(
+    source: LayerLoadInfo,
+    health: LayerLoadInfo,
+    metadata: LayerLoadInfo
+): LayerLoadInfo {
+    // If several channels are in error, report the most relevant one (health > metadata > source).
+    const error = errorOf(health) ?? errorOf(metadata) ?? errorOf(source);
+    if (error) {
+        return { kind: "error", error };
     }
-    // The health check's "loading" phase is internal and does not contribute,
-    // Source and metadata loading do propagate.
-    if (source === "loading" || metadata === "loading") {
-        return "loading";
+    return higherSeverity(loadInfoState(source), loadInfoState(metadata)) as LayerLoadInfo;
+}
+
+function errorOf(info: LayerLoadInfo): Error | undefined {
+    return typeof info === "object" ? info.error : undefined;
+}
+
+function loadInfoState(info: LayerLoadInfo): LayerLoadState {
+    return typeof info === "object" ? "error" : info;
+}
+
+function toLoadInfo(state: LayerLoadState, error: Error | undefined): LayerLoadInfo {
+    if (state === "error") {
+        return { kind: "error", error: error ?? new Error("Unknown error") };
     }
-    if (source === "not-loaded" || metadata === "not-loaded") {
-        return "not-loaded";
+    return state;
+}
+
+function makeSourceInfo(id: string, state: LayerLoadState): LayerLoadInfo {
+    if (state === "error") {
+        return {
+            kind: "error",
+            error: new Error(`Source of layer '${id}' is in error state`)
+        };
     }
-    return "loaded";
+    return state;
 }
 
 function getSource(olLayer: OlLayer | OlBaseLayer) {

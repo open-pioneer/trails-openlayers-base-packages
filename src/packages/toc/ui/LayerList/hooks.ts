@@ -87,14 +87,6 @@ function ownLoadState(layer: AnyLayer): LayerLoadState {
     return layer.loadState;
 }
 
-/** The error shown directly on a layer's own TOC item (see {@link ownLoadState}). */
-function ownError(layer: AnyLayer): Error | undefined {
-    if (isSublayer(layer)) {
-        return layer.parentLayer.error ?? layer.error;
-    }
-    return layer.error;
-}
-
 /** Yields all descendant layers of a layer (recursive, excluding the layer itself). */
 function* walkDescendants(layer: AnyLayer): Generator<AnyLayer> {
     const children = layer.children?.getItems({ includeInternalLayers: true });
