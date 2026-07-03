@@ -299,13 +299,13 @@ it("should construct a map with the configured layers", async () => {
       [
         {
           "id": "id1",
-          "loadState": "loaded",
+          "loadState": "not-loaded",
           "title": "foo",
           "visible": true,
         },
         {
           "id": "id2",
-          "loadState": "loaded",
+          "loadState": "not-loaded",
           "title": "bar",
           "visible": false,
         },
@@ -411,13 +411,13 @@ describe("createMapModel", () => {
       [
         {
           "id": "id1",
-          "loadState": "loaded",
+          "loadState": "not-loaded",
           "title": "foo",
           "visible": true,
         },
         {
           "id": "id2",
-          "loadState": "loaded",
+          "loadState": "not-loaded",
           "title": "bar",
           "visible": false,
         },

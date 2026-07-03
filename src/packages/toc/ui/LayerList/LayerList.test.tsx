@@ -439,9 +439,7 @@ it("reacts to changes of the layer load state", async () => {
     expect(checkbox.disabled).toBe(true);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(
-        `"layerNotAvailable: Source of layer 'layer1' is in error state"`
-    );
+    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
 
     // and back
     await act(async () => {
@@ -881,17 +879,13 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(groupIcon).not.toBeNull();
     expect(groupCheckbox.disabled).toBe(false);
-    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
-        `"childLayerNotAvailable: Broken Child: Source of layer 'child' is in error state"`
-    );
+    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(`"childLayerNotAvailable"`);
 
     // Child: indicator shown, checkbox disabled (direct error)
     const childIcon = childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(childIcon).not.toBeNull();
     expect(childCheckbox.disabled).toBe(true);
-    expect(childIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
-        `"layerNotAvailable: Source of layer 'child' is in error state"`
-    );
+    expect(childIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
 
     // Recovery: both clear
     await act(async () => {

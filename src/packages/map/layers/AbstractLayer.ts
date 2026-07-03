@@ -76,7 +76,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #loadInfo = computed(() =>
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
-
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(

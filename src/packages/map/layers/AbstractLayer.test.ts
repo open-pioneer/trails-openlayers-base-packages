@@ -126,7 +126,7 @@ it("tracks the layer source's state", async () => {
 
     // Changes on initial source
     {
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
 
         source.setState("error");
         expect(layer.loadState).toBe("error");
@@ -137,10 +137,10 @@ it("tracks the layer source's state", async () => {
         // we assume hard "undefined" means loaded because the source likely
         // doesn't support states at all.
         source.setState(undefined as any);
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
 
         source.setState("ready");
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
     }
 
     // Also supports source changes
@@ -183,11 +183,11 @@ describe("health checks", () => {
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
         expect(eventEmitted).toBe(0);
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
 
         await sleep(25);
         expect(eventEmitted).toBe(0); // no change of state
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
@@ -218,7 +218,7 @@ describe("health checks", () => {
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
         expect(eventEmitted).toBe(0);
 
         await sleep(25);
@@ -270,7 +270,7 @@ describe("health checks", () => {
         expect(mockedCustomHealthCheck).toHaveBeenCalledWith(layer);
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(eventEmitted).toBe(0);
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
         expect(didResolve).toBe(false);
 
         await sleep(25);
@@ -295,7 +295,7 @@ describe("health checks", () => {
 
         await sleep(25);
         expect(mockedCustomHealthCheck).toHaveBeenCalledOnce();
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
     });
 
     it("when specified as function throwing an error", async () => {
@@ -343,7 +343,7 @@ describe("health checks", () => {
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no change of state
-        expect(layer.loadState).toBe("loaded");
+        expect(layer.loadState).toBe("not-loaded");
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
 

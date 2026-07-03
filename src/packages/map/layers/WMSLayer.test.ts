@@ -238,7 +238,7 @@ it("loads attributions from service metadata", async () => {
 
 describe("metadata errors", () => {
     it("sets the offending sublayer's loadState to 'error' and exposes the error when its name is not in the capabilities", async () => {
-        const logWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
         const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
         const { layer } = createLayer({
             title: "Layer",
@@ -262,8 +262,8 @@ describe("metadata errors", () => {
         expect(layer.loadState).toBe("loaded");
         expect(layer.error).toBeUndefined();
 
-        expect(logWarnSpy).toHaveBeenCalled();
-        expect(logWarnSpy.mock.lastCall![0]).toContain("not found in capabilities");
+        expect(errorSpy).toHaveBeenCalled();
+        expect(errorSpy.mock.lastCall![0]).toContain("not found in capabilities");
     });
 
     it("marks every missing sublayer individually and leaves valid ones untouched", async () => {
@@ -330,6 +330,7 @@ describe("metadata errors", () => {
 
         // The invalid name is dropped, so the request for the remaining valid sublayer succeeds.
         const params = layer.olSource!.getParams();
+        console.log("LAYERS param:", params.LAYERS);
         expect(params.LAYERS).toEqual(["nw_dgk5_grundriss"]);
     });
 
