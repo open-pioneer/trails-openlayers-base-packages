@@ -75,7 +75,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #healthError: Reactive<Error | undefined>;
     #metadataError: Reactive<Error | undefined>;
     #error: ReadonlyReactive<Error | undefined>;
-    #loadState: ReadonlyReactive<LayerLoadState>;
+    #loadState = computed(() =>
+        combineLoadStates(
+            this.#sourceState.value,
+            this.#healthState.value,
+            this.#metadataState.value
+        )
+    );
 
     #stateWatchResource: Resource | undefined;
 
@@ -133,13 +139,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#sourceError = reactive<Error | undefined>(undefined);
         this.#healthError = reactive<Error | undefined>(undefined);
         this.#metadataError = reactive<Error | undefined>(undefined);
-        this.#loadState = computed(() =>
-            combineLoadStates(
-                this.#sourceState.value,
-                this.#healthState.value,
-                this.#metadataState.value
-            )
-        );
         // The most relevant error, following the same priority as the load state
         // (source > health > metadata). Recomputes whenever any channel changes,
         // so recovery of a channel clears its error without manual bookkeeping.
