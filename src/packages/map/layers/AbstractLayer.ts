@@ -76,7 +76,9 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #loadInfo = computed(() =>
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
-    #sublayerError = computed(() => collectSublayerError(this));
+    #sublayerError = computed(() => collectSublayerError(this), {
+        equal: sameSublayerError
+    });
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
@@ -490,6 +492,18 @@ function collectSublayerError(layer: AbstractLayer): AggregateError | undefined 
         errors,
         `Layer '${layer.id}' has ${errors.length} sublayer(s) in error state`
     );
+}
+
+function sameSublayerError(a: AggregateError | undefined, b: AggregateError | undefined): boolean {
+    if (a === b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
+    const aErrors = a.errors as Error[];
+    const bErrors = b.errors as Error[];
+    return aErrors.length === bErrors.length && aErrors.every((e, i) => e === bErrors[i]);
 }
 
 function* walkDescendants(layer: AbstractLayerBase): Generator<AnyLayer> {
