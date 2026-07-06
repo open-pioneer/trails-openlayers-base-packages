@@ -330,7 +330,6 @@ describe("metadata errors", () => {
 
         // The invalid name is dropped, so the request for the remaining valid sublayer succeeds.
         const params = layer.olSource!.getParams();
-        console.log("LAYERS param:", params.LAYERS);
         expect(params.LAYERS).toEqual(["nw_dgk5_grundriss"]);
     });
 

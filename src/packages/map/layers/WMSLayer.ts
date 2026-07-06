@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, computed, ReadonlyReactive, watch } from "@conterra/reactivity-core";
+import { batch, computed, reactiveSet, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import {
     createLogger,
     deprecated,
@@ -93,7 +93,8 @@ export class WMSLayer extends AbstractLayer {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     // Sublayer names that were not found in the capabilities document.
-    readonly #invalidSubLayerNames = new Set<string>();
+    // Reactive so that #getVisibleLayerNames recomputes when a name is marked invalid.
+    readonly #invalidSubLayerNames = reactiveSet<string>();
     readonly #abortController = new AbortController();
 
     #visibleSublayers: ReadonlyReactive<string[]>;
