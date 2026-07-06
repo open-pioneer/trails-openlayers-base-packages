@@ -333,12 +333,12 @@ export class WMSLayer extends AbstractLayer {
             // sublayer as broken.
             if (knownNames && !knownNames.has(layer.name)) {
                 LOG.error(
-                    `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities`
+                    `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities.`
                 );
                 this.#invalidSubLayerNames.add(layer.name);
                 layer[SET_SUBLAYER_LOAD_STATE](
                     "error",
-                    new Error(`WMS sublayer name '${layer.name}' not found in capabilities`)
+                    new Error(`WMS sublayer name '${layer.name}' not found in capabilities.`)
                 );
                 continue;
             }

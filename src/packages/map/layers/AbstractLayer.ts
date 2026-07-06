@@ -27,7 +27,7 @@ import {
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
-import { Layer, LayerTypes } from "./unions";
+import { AnyLayer, Layer, LayerTypes } from "./unions";
 
 const LOG = createLogger(sourceId);
 
@@ -76,6 +76,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #loadInfo = computed(() =>
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
+    #sublayerError = computed(() => collectSublayerError(this));
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
@@ -222,11 +223,17 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * The most relevant error associated with this layer, if any.
      *
      * Combines errors from the OpenLayers source, the health check and the
-     * metadata request, using the same priority as {@link loadState}
-     * (health > metadata > source).
+     * metadata request (health > metadata > source).
      */
     get error(): Error | undefined {
         return errorOf(this.#loadInfo.value);
+    }
+
+    /**
+     * The combined errors of all descendant sublayers (recursively), if any.
+     */
+    get sublayerError(): AggregateError | undefined {
+        return this.#sublayerError.value;
     }
 
     /**
@@ -466,6 +473,34 @@ function toLoadInfo(state: LayerLoadState, error: Error | undefined): LayerLoadI
         return { kind: "error", error: error ?? new Error("Unknown error") };
     }
     return state;
+}
+
+function collectSublayerError(layer: AbstractLayer): AggregateError | undefined {
+    const errors: Error[] = [];
+    for (const descendant of walkDescendants(layer)) {
+        const error = descendant.error;
+        if (error) {
+            errors.push(error);
+        }
+    }
+    if (errors.length === 0) {
+        return undefined;
+    }
+    return new AggregateError(
+        errors,
+        `Layer '${layer.id}' has ${errors.length} sublayer(s) in error state`
+    );
+}
+
+function* walkDescendants(layer: AbstractLayerBase): Generator<AnyLayer> {
+    const children = layer.children?.getItems({ includeInternalLayers: true });
+    if (!children) {
+        return;
+    }
+    for (const child of children) {
+        yield child;
+        yield* walkDescendants(child);
+    }
 }
 
 function makeSourceInfo(id: string, state: LayerLoadState): LayerLoadInfo {

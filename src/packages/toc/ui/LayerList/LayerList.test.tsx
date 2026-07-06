@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { GroupLayer, WMSLayer } from "@open-pioneer/map";
+import { GroupLayer } from "@open-pioneer/map";
 import {
     createTestLayer,
     createTestOlLayer,
@@ -28,20 +28,6 @@ import { TopLevelLayerList } from "./LayerList";
 
 const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
 const CONTENT_PROBLEM_INDICATOR_SELECTOR = `.toc-layer-item-content ${PROBLEM_INDICATOR_SELECTOR}`;
-
-/** Minimal WMS capabilities document exposing a single layer named "valid". */
-const WMS_CAPABILITIES = `<?xml version="1.0" encoding="UTF-8"?>
-<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms">
-  <Capability>
-    <Layer>
-      <Title>Root</Title>
-      <Layer>
-        <Name>valid</Name>
-        <Title>Valid</Title>
-      </Layer>
-    </Layer>
-  </Capability>
-</WMS_Capabilities>`;
 
 it("should show layers in the correct order", async () => {
     const { map, Wrapper } = await setup({
@@ -897,6 +883,55 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     expect(childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
     expect(groupCheckbox.disabled).toBe(false);
     expect(childCheckbox.disabled).toBe(false);
+});
+
+it("shows an aggregated child error message on the parent when list mode is 'hide-children'", async () => {
+    const childSource = new OSM();
+    const childLayer = createTestLayer({
+        id: "child",
+        title: "Broken Child",
+        olLayer: new TileLayer({ source: childSource })
+    });
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        layers: [childLayer],
+        attributes: {
+            toc: {
+                listMode: "hide-children"
+            }
+        }
+    });
+
+    const { map, Wrapper } = await setup({
+        layers: [groupLayer]
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeTruthy();
+    expect(findLayerItem(container, "child")).toBeFalsy();
+
+    await act(async () => {
+        childSource.setState("error");
+        await nextTick();
+    });
+
+    const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(groupIcon).not.toBeNull();
+    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
+        `"childLayerNotAvailableDetails"`
+    );
+
+    await act(async () => {
+        childSource.setState("ready");
+        await nextTick();
+    });
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
 });
 
 /** Returns the layer list's current list items. */

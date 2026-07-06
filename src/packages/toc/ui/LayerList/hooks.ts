@@ -3,15 +3,6 @@
 import { AnyLayer, isSublayer, Layer, LayerLoadState, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
-/**
- * Information about an aggregated error: which descendant produced it.
- */
-export interface AggregatedLayerError {
-    error: Error;
-    /** The (top-level or descendant) layer that exposes the error. */
-    source: AnyLayer;
-}
-
 /** Returns the top level operational layers in render order (topmost layer first). */
 export function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {

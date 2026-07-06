@@ -266,6 +266,34 @@ describe("metadata errors", () => {
         expect(errorSpy.mock.lastCall![0]).toContain("not found in capabilities");
     });
 
+    it("aggregates the errors of all broken sublayers into the parent's sublayerError", async () => {
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                { name: "nw_dgk5_grundriss", title: "Valid" },
+                { name: "missing-a", title: "foo A" },
+                { name: "missing-b", title: "foo B" }
+            ],
+            fetch,
+            attach: true
+        });
+
+        expect(layer.sublayerError).toBeUndefined();
+        const aggregate = await vi.waitUntil(() => layer.sublayerError);
+        expect(aggregate).toBeInstanceOf(AggregateError);
+        const messages = aggregate!.errors.map((e: Error) => e.message);
+        expect(messages).toHaveLength(2);
+        expect(messages.some((m: string) => m.includes("missing-a"))).toBe(true);
+        expect(messages.some((m: string) => m.includes("missing-b"))).toBe(true);
+
+        // Expect parent own error stays unaffected
+        expect(layer.error).toBeUndefined();
+        expect(layer.loadState).toBe("loaded");
+    });
+
     it("marks every missing sublayer individually and leaves valid ones untouched", async () => {
         vi.spyOn(console, "warn").mockImplementation(() => {});
         const fetch = mockFetch(WMS_NW_DGK5_CAPAS);

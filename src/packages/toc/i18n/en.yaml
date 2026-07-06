@@ -11,6 +11,7 @@ messages:
 
   layerNotAvailable: "Layer not available"
   childLayerNotAvailable: "A child layer is not available"
+  childLayerNotAvailableDetails: "The following child layers are not available:\n{details}"
   layerNotVisible: "Layer not visible in this scale"
 
   toolsLabel: "Map tools"

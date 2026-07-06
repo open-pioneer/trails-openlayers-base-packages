@@ -264,7 +264,7 @@ function createStrassenLayer(layerFactory: LayerFactory) {
         maxZoom: 13,
         attributes: {
             toc: {
-                listMode: "show"
+                listMode: "hide-children"
             } satisfies LayerTocAttributes
         },
         sublayers: [
@@ -273,11 +273,13 @@ function createStrassenLayer(layerFactory: LayerFactory) {
                 title: "Verwaltungen"
             },
             {
-                name: "4",
+                // Broken test layer, "4" would be correct
+                name: "BrokenLayer1",
                 title: "Abschnitte und Äste"
             },
             {
-                name: "6",
+                // Broken test layer, "6" would be correct
+                name: "BrokenLayer2",
                 title: "Unfälle"
             }
         ]
