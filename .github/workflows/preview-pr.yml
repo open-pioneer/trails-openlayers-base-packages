@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      # This is a separate file that simply waits for the other checks to complete because
-      # we don't want to run duplicate checks for pr + push events.
-      # Checks and builds run on all branches (on _push_) but this workflow runs only on PR events.
+      # This job simply waits for the test-and-build checks to complete.
+      # test-and-build runs on the pull_request event (for both same-repo and fork PRs);
+      # this workflow (pull_request_target) then deploys the resulting build artifact as a preview.
       # If you know a smarter way, let us now.
       - name: Wait for other checks to succeed
         uses: lewagon/wait-on-check-action@96d9100b431964d10e0136aff8b9ccb92470505e # v1.8.0
@@ -46,14 +46,8 @@ jobs:
 
       - name: Download latest build artifact
         run: |
-          # Use build result of latest push for local branches
-          WORKFLOW_EVENT=
-          if [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.event.pull_request.base.repo.full_name }}" ]]; then
-            WORKFLOW_EVENT="pull_request"
-          else
-            WORKFLOW_EVENT="push"
-          fi
-          WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e $WORKFLOW_EVENT --json databaseId --limit 1 | jq .[0].databaseId -r)
+          # Both same-repo and fork PRs build via the pull_request-triggered test-and-build run.
+          WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e pull_request --json databaseId --limit 1 | jq .[0].databaseId -r)
           echo "Latest workflow run: $WORKFLOW_RUN"
 
           mkdir site && cd site;

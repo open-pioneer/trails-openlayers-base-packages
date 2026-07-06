@@ -3,6 +3,8 @@ name: Build and deploy
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
 
 permissions:
@@ -11,8 +13,6 @@ permissions:
 jobs:
   # Performs quality checks
   checks:
-    # Don't run for pull requests from this repository to avoid duplicate builds (push also triggers build).
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Run quality checks"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -28,7 +28,6 @@ jobs:
 
   # Builds samples and documentation and uploads contents of ./dist/ as an artifact ("build")
   build_site:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build samples and documentation"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -58,7 +57,6 @@ jobs:
 
   # Builds all publishable packages
   build_packages:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build packages"
     runs-on: ubuntu-latest
     timeout-minutes: 5
