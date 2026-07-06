@@ -216,21 +216,21 @@ function useTocItem(layer: AnyLayer, display: boolean) {
 }
 
 function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
-    const ownLoadState = useLoadState(layer);
+    const loadState = useLoadState(layer);
     const sublayerError = useReactiveSnapshot(
         () => (isLayer(layer) ? layer.sublayerError : undefined),
         [layer]
     );
     const visibleInScale = useVisibleInScale(layer);
-    const isOwnError = ownLoadState === "error";
-    const hasProblem = isOwnError || sublayerError?.errors.length;
+    const isOwnError = loadState === "error";
+    const hasChildError = !!sublayerError;
 
     return useMemo(() => {
         let problemIndicator;
         let problemLabel;
         let opacity;
         let disabled;
-        if (hasProblem) {
+        if (isOwnError || hasChildError) {
             const label = getProblemLabel(intl, isOwnError, listMode, sublayerError);
             const color = isOwnError ? "red" : "orange";
             problemIndicator = (
@@ -247,7 +247,7 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode |
             opacity = 0.5;
         }
         return { problemIndicator, problemLabel, opacity, disabled };
-    }, [hasProblem, isOwnError, visibleInScale, intl, listMode, sublayerError]);
+    }, [isOwnError, hasChildError, visibleInScale, intl, listMode, sublayerError]);
 }
 
 /**
@@ -266,7 +266,7 @@ function getProblemLabel(
     if (isOwnError) {
         return intl.formatMessage({ id: "layerNotAvailable" });
     }
-    if (listMode === "hide-children" && sublayerError && sublayerError.errors.length) {
+    if (listMode === "hide-children" && sublayerError) {
         const details = sublayerError.errors.map((error: Error) => `- ${error.message}`).join("\n");
         return intl.formatMessage({ id: "childLayerNotAvailableDetails" }, { details });
     }

@@ -31,27 +31,8 @@ export function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     }, [layer]);
 }
 
-/** Returns the layer's own load state (the state shown directly on its TOC item). */
 export function useLoadState(layer: AnyLayer): LayerLoadState {
     return useReactiveSnapshot(() => ownLoadState(layer), [layer]);
-}
-
-/**
- * Returns the load state of the layer. For layers with children (group layers or
- * layers with sublayers) this aggregates the worst load state of all descendants,
- * so a parent reflects errors of its children (e.g. a single broken WMS sublayer).
- */
-export function useHasChildProblems(layer: AnyLayer): boolean {
-    return useReactiveSnapshot(() => {
-        let worst: LayerLoadState = "loaded";
-        for (const descendant of walkDescendants(layer)) {
-            worst = worseState(worst, ownLoadState(descendant));
-            if (worst === "error") {
-                return true;
-            }
-        }
-        return false;
-    }, [layer]);
 }
 
 /** Returns the layers current visibility. */
@@ -65,29 +46,16 @@ export function useVisibleInScale(layer: AnyLayer): boolean {
 }
 
 /**
- * The load state shown directly on a layer's own TOC item.
+ * The layer load state.
  *
  * For sublayers this combines the parent layer's load state (e.g. a failed source or
- * capabilities request affects all sublayers) with the sublayer's own state (e.g. an
- * invalid sublayer name affects only that sublayer).
+ * capabilities request affects all sublayers) with the sublayer's own state.
  */
 function ownLoadState(layer: AnyLayer): LayerLoadState {
     if (isSublayer(layer)) {
         return worseState(layer.parentLayer.loadState, layer.loadState);
     }
     return layer.loadState;
-}
-
-/** Yields all descendant layers of a layer (recursive, excluding the layer itself). */
-function* walkDescendants(layer: AnyLayer): Generator<AnyLayer> {
-    const children = layer.children?.getItems({ includeInternalLayers: true });
-    if (!children) {
-        return;
-    }
-    for (const child of children) {
-        yield child;
-        yield* walkDescendants(child);
-    }
 }
 
 const STATE_SEVERITY: Record<LayerLoadState, number> = {

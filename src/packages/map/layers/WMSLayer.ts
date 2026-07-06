@@ -92,8 +92,6 @@ export class WMSLayer extends AbstractLayer {
     #loadStarted = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
-    // Sublayer names that were not found in the capabilities document.
-    // Reactive so that #getVisibleLayerNames recomputes when a name is marked invalid.
     readonly #invalidSubLayerNames = reactiveSet<string>();
     readonly #abortController = new AbortController();
 
@@ -329,8 +327,6 @@ export class WMSLayer extends AbstractLayer {
             if (!layer.name) {
                 continue;
             }
-            // A name that is not part of the capabilities document marks only that
-            // sublayer as broken.
             if (knownNames && !knownNames.has(layer.name)) {
                 LOG.error(
                     `WMS sublayer name '${layer.name}' of layer '${this.id}' not found in capabilities.`

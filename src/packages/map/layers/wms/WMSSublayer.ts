@@ -31,12 +31,6 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
     /**
      * The name of the WMS sublayer in the service's capabilities.
      * Not mandatory, e.g. for WMS group layer. See [WMS spec](https://www.ogc.org/standard/wms/).
-     *
-     * If a name is given, it is validated against the service's capabilities once they
-     * have been loaded. A name that does not appear in the capabilities document puts this
-     * sublayer into the `error` load state (see {@link WMSSublayer.loadState}). The parent
-     * {@link WMSLayer} surfaces the problem as an aggregated error in the UI but stays
-     * usable, so its other (valid) sublayers remain unaffected.
      */
     name?: string;
 
@@ -53,11 +47,11 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #parent: WMSSublayer | WMSLayer | undefined;
     #parentLayer: WMSLayer | undefined;
     #name: string | undefined;
-    #legend = reactive<string | undefined>();
+    #legend = reactive<string>();
     #sublayers: SublayersCollection<WMSSublayer>;
     #visible: Reactive<boolean>;
-    #loadState: Reactive<LayerLoadState> = reactive<LayerLoadState>("loaded");
-    #error: Reactive<Error | undefined> = reactive<Error | undefined>(undefined);
+    #loadState = reactive<LayerLoadState>("loaded");
+    #error = reactive<Error>();
 
     /**
      * @internal
@@ -115,18 +109,12 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
         return this.#legend.value;
     }
 
-    /**
-     * The load state of this sublayer.
-     *
-     * It is `error` if the sublayer's {@link name} could not be found in the parent
-     * service's capabilities; otherwise `loaded`.
-     */
     get loadState(): LayerLoadState {
         return this.#loadState.value;
     }
 
     /**
-     * The error associated with this sublayer, if any (e.g. an invalid {@link name}).
+     * The error associated with this sublayer.
      */
     get error(): Error | undefined {
         return this.#error.value;

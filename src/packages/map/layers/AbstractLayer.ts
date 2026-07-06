@@ -7,7 +7,7 @@ import {
     ReadonlyReactive,
     synchronized
 } from "@conterra/reactivity-core";
-import { createLogger } from "@open-pioneer/core";
+import { createLogger, deepEqual } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
@@ -39,7 +39,7 @@ const LOG = createLogger(sourceId);
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
- * Load state of a single layer channel, bundling the state with its error.
+ * Load state of a single layer, bundling the state with its error.
  */
 type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
 
@@ -68,7 +68,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #minZoom: ReadonlyReactive<number>;
     #maxZoom: ReadonlyReactive<number>;
 
-    // Load state per channel. Each LayerLoadInfo carries its own error
     #sourceState: ReadonlyReactive<LayerLoadState>;
     #sourceInfo: ReadonlyReactive<LayerLoadInfo>;
     #healthInfo: Reactive<LayerLoadInfo>;
@@ -77,7 +76,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
     #sublayerError = computed(() => collectSublayerError(this), {
-        equal: sameSublayerError
+        equal: deepEqual
     });
     #visibleInScale: ReadonlyReactive<boolean>;
 
@@ -232,7 +231,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The combined errors of all descendant sublayers (recursively), if any.
+     * The combined errors of all sublayers
      */
     get sublayerError(): AggregateError | undefined {
         return this.#sublayerError.value;
@@ -318,10 +317,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * Updates the load state of the layer's metadata request (e.g. capabilities).
-     *
-     * Layer implementations that perform an internal metadata fetch should call this
-     * to expose the request lifecycle through {@link loadState} and {@link error}.
+     * Updates the load state of the layer's metadata request.
      *
      * @internal
      */
@@ -373,7 +369,6 @@ function subscribeToSourceState(olLayer: OlBaseLayer, cb: () => void): () => voi
 
     let sourceHandle = getSource(olLayer)?.on("change", cb);
     const layerHandle = olLayer.on("change:source", () => {
-        // Move the "change" subscription to the new source, then recompute.
         sourceHandle && unByKey(sourceHandle);
         sourceHandle = getSource(olLayer)?.on("change", cb);
         cb();
@@ -492,18 +487,6 @@ function collectSublayerError(layer: AbstractLayer): AggregateError | undefined 
         errors,
         `Layer '${layer.id}' has ${errors.length} sublayer(s) in error state`
     );
-}
-
-function sameSublayerError(a: AggregateError | undefined, b: AggregateError | undefined): boolean {
-    if (a === b) {
-        return true;
-    }
-    if (!a || !b) {
-        return false;
-    }
-    const aErrors = a.errors as Error[];
-    const bErrors = b.errors as Error[];
-    return aErrors.length === bErrors.length && aErrors.every((e, i) => e === bErrors[i]);
 }
 
 function* walkDescendants(layer: AbstractLayerBase): Generator<AnyLayer> {
