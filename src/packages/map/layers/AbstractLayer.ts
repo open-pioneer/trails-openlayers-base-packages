@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     computed,
+    constant,
     reactive,
     Reactive,
     ReadonlyReactive,
@@ -9,9 +10,9 @@ import {
 } from "@conterra/reactivity-core";
 import { createLogger, deepEqual } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
+import OlSource from "ol/source/Source";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
-import OlSource from "ol/source/Source";
 import { sourceId } from "open-pioneer:source-info";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -59,6 +60,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     // from the map, once connected).
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
+    #olSource: ReadonlyReactive<OlSource | undefined>;
     #isBaseLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
 
@@ -68,7 +70,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #minZoom: ReadonlyReactive<number>;
     #maxZoom: ReadonlyReactive<number>;
 
-    #sourceState: ReadonlyReactive<LayerLoadState>;
+    #sourceState: ReadonlyReactive<ReadonlyReactive<LayerLoadState> | undefined>;
     #sourceInfo: ReadonlyReactive<LayerLoadInfo>;
     #healthInfo: Reactive<LayerLoadInfo>;
     #metadataInfo: Reactive<LayerLoadInfo>;
@@ -81,13 +83,17 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
-        config: SimpleLayerConfig,
+        config: SimpleLayerConfig & {
+            /** The initial load state (default: not-loaded). */
+            initialLoadInfo?: LayerLoadInfo;
+        },
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
         super(config);
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
+        this.#olSource = synchronizedOlSource(this.#olLayer);
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#healthCheck = config.healthCheck;
         this.#visible = synchronized(
@@ -125,15 +131,23 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return () => unByKey(key);
             }
         );
+        this.#sourceState = computed(() => {
+            const olSource = this.olSource;
+            if (!olSource) {
+                return undefined;
+            }
 
-        this.#sourceState = synchronized(
-            () => getSourceState(getSource(this.#olLayer)),
-            (cb) => subscribeToSourceState(this.#olLayer, cb)
-        );
-        // OpenLayers sources carry no error detail, so synthesize one.
-        this.#sourceInfo = computed(() => makeSourceInfo(this.id, this.#sourceState.value));
-        this.#healthInfo = reactive<LayerLoadInfo>(this.defaultLoadState);
-        this.#metadataInfo = reactive<LayerLoadInfo>(this.defaultLoadState);
+            return synchronized(
+                () => getSourceState(olSource),
+                (cb) => {
+                    const key = olSource.on("change", cb);
+                    return () => unByKey(key);
+                }
+            );
+        });
+        this.#sourceInfo = computed(() => makeSourceInfo(this.id, this.#sourceState.value?.value));
+        this.#healthInfo = reactive<LayerLoadInfo>("not-loaded");
+        this.#metadataInfo = reactive<LayerLoadInfo>(config.initialLoadInfo ?? "not-loaded");
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
@@ -186,13 +200,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * Initial load state.
-     */
-    protected get defaultLoadState(): Exclude<LayerLoadState, "error"> {
-        return "not-loaded";
-    }
-
-    /**
      * Identifies the type of this layer.
      */
     abstract override readonly type: LayerTypes;
@@ -206,6 +213,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get olLayer(): OlBaseLayer {
         return this.#olLayer;
+    }
+
+    /**
+     * The current source of the {@link olLayer}.
+     */
+    get olSource(): OlSource | undefined {
+        return this.#olSource.value;
     }
 
     /**
@@ -316,7 +330,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         super[ATTACH_TO_MAP](map);
 
         // Custom health check is not needed when OpenLayers already reports an error state.
-        if (this.#sourceState.value !== "error") {
+        if (errorOf(this.#sourceInfo.value) == null) {
             doHealthCheck(this, this.#healthCheck).then(({ state, error }) => {
                 this.#healthInfo.value = toLoadInfo(state, error);
             });
@@ -366,25 +380,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             + "Use the LayerFactory to create an instance or add the layer to the map first.`
         );
     }
-}
-
-function subscribeToSourceState(olLayer: OlBaseLayer, cb: () => void): () => void {
-    if (!(olLayer instanceof OlLayer)) {
-        // Some layers don't have a source (such as group).
-        return () => undefined;
-    }
-
-    let sourceHandle = getSource(olLayer)?.on("change", cb);
-    const layerHandle = olLayer.on("change:source", () => {
-        sourceHandle && unByKey(sourceHandle);
-        sourceHandle = getSource(olLayer)?.on("change", cb);
-        cb();
-    });
-
-    return () => {
-        sourceHandle && unByKey(sourceHandle);
-        unByKey(layerHandle);
-    };
 }
 
 async function doHealthCheck(
@@ -440,8 +435,8 @@ async function doHealthCheck(
 }
 
 const LOAD_STATE_SEVERITY: Record<LayerLoadState, number> = {
-    loaded: 0,
-    "not-loaded": 1,
+    "not-loaded": 0,
+    loaded: 1,
     loading: 2,
     error: 3
 };
@@ -507,7 +502,12 @@ function* walkDescendants(layer: AbstractLayerBase): Generator<AnyLayer> {
     }
 }
 
-function makeSourceInfo(id: string, state: LayerLoadState): LayerLoadInfo {
+// OpenLayers sources carry no error detail, so synthesize one.
+function makeSourceInfo(id: string, state: LayerLoadState | undefined): LayerLoadInfo {
+    if (state == null) {
+        // no state -> no source -> just pretend its loaded
+        return "loaded";
+    }
     if (state === "error") {
         return {
             kind: "error",
@@ -517,15 +517,23 @@ function makeSourceInfo(id: string, state: LayerLoadState): LayerLoadInfo {
     return state;
 }
 
-function getSource(olLayer: OlLayer | OlBaseLayer) {
-    if (!(olLayer instanceof OlLayer)) {
-        return undefined;
+function synchronizedOlSource(layer: OlBaseLayer): ReadonlyReactive<OlSource | undefined> {
+    if (!(layer instanceof OlLayer)) {
+        // GroupLayer etc.
+        return constant(undefined);
     }
-    return (olLayer?.getSource() as OlSource | null) ?? undefined;
+
+    return synchronized(
+        () => layer.getSource() ?? undefined,
+        (cb) => {
+            const key = layer.on("change:source", cb);
+            return () => unByKey(key);
+        }
+    );
 }
 
-function getSourceState(olSource: OlSource | undefined) {
-    const state = olSource?.getState();
+function getSourceState(olSource: OlSource) {
+    const state = olSource.getState();
     switch (state) {
         case undefined:
             return "loaded";

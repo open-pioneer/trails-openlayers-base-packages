@@ -126,7 +126,7 @@ it("tracks the layer source's state", async () => {
 
     // Changes on initial source
     {
-        expect(layer.loadState).toBe("not-loaded");
+        expect(layer.loadState).toBe("loaded");
 
         source.setState("error");
         expect(layer.loadState).toBe("error");
@@ -180,11 +180,11 @@ describe("health checks", () => {
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
         expect(eventEmitted).toBe(0);
-        expect(layer.loadState).toBe("not-loaded");
+        expect(layer.loadState).toBe("loaded");
 
         layer[SET_METADATA_STATE]("loaded");
         await vi.waitFor(() => expect(layer.loadState).toBe("loaded"));
-        expect(eventEmitted).toBe(1);
+        expect(eventEmitted).toBe(0);
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
@@ -215,7 +215,7 @@ describe("health checks", () => {
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
-        expect(layer.loadState).toBe("not-loaded");
+        expect(layer.loadState).toBe("loaded");
         expect(eventEmitted).toBe(0);
 
         await sleep(25);
@@ -267,7 +267,7 @@ describe("health checks", () => {
         expect(mockedCustomHealthCheck).toHaveBeenCalledWith(layer);
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(eventEmitted).toBe(0);
-        expect(layer.loadState).toBe("not-loaded");
+        expect(layer.loadState).toBe("loaded");
         expect(didResolve).toBe(false);
 
         await sleep(25);
@@ -341,7 +341,7 @@ describe("health checks", () => {
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no change of state
-        expect(layer.loadState).toBe("not-loaded");
+        expect(layer.loadState).toBe("loaded");
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
 
