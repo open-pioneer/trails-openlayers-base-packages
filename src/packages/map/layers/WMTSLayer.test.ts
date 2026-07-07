@@ -87,7 +87,7 @@ it("logs error when capabilities cannot be fetched", async () => {
     await vi.waitFor(() => {
         expect(l.layer.loadState).toBe("error");
     });
-    expect(l.layer.error?.message).toContain("404");
+    expect(l.layer.loadError?.message).toContain("404");
 });
 
 it("logs error when layer not detected in capabilities", async () => {

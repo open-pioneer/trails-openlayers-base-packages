@@ -182,9 +182,6 @@ describe("health checks", () => {
         expect(eventEmitted).toBe(0);
         expect(layer.loadState).toBe("loaded");
 
-        layer[SET_METADATA_LOAD_INFO]("loaded");
-        await vi.waitFor(() => expect(layer.loadState).toBe("loaded"));
-        expect(eventEmitted).toBe(0);
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });

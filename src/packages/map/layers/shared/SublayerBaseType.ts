@@ -34,5 +34,5 @@ export interface SublayerBaseType extends AbstractLayerBase {
     /**
      * The error associated with this sublayer, if any.
      */
-    readonly error: Error | undefined;
+    readonly loadError: Error | undefined;
 }

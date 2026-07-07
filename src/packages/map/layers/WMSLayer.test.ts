@@ -261,7 +261,7 @@ describe("metadata errors", () => {
         expect(messages.some((m: string) => m.includes("missing-b"))).toBe(true);
 
         // Expect parent own error stays unaffected
-        expect(layer.error).toBeUndefined();
+        expect(layer.loadError).toBeUndefined();
         expect(layer.loadState).toBe("loaded");
     });
 
@@ -310,7 +310,7 @@ describe("metadata errors", () => {
         });
 
         await vi.waitUntil(() => layer.loadState === "error");
-        expect(layer.error?.message).toContain("503");
+        expect(layer.loadError?.message).toContain("503");
         expect(logErrorSpy).toHaveBeenCalled();
     });
 });

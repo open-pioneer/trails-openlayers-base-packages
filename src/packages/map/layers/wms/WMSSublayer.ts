@@ -1,16 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, Reactive, reactive } from "@conterra/reactivity-core";
+import { Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModel } from "../../model/MapModel";
-import type { LayerLoadState } from "../AbstractLayer";
+import type { LayerLoadInfo, LayerLoadState } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
     ATTACH_TO_PARENT,
     DETACH_FROM_MAP,
     GET_RAW_SUBLAYERS,
-    SET_LEGEND,
-    SET_SUBLAYER_LOAD_STATE
+    SET_LEGEND
 } from "../shared/internals";
 import {
     assertInternalConstructor,
@@ -38,6 +37,8 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
     sublayers?: WMSSublayerConfig[];
 }
 
+export const SET_SUBLAYER_LOAD_INFO = Symbol("SET_SUBLAYER_LOAD_INFO");
+
 /**
  * Represents a sublayer of a {@link WMSLayer}.
  *
@@ -50,8 +51,7 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #legend = reactive<string>();
     #sublayers: SublayersCollection<WMSSublayer>;
     #visible: Reactive<boolean>;
-    #loadState = reactive<LayerLoadState>("loaded");
-    #error = reactive<Error>();
+    #loadInfo = reactive<LayerLoadInfo>("loaded");
 
     /**
      * @internal
@@ -110,14 +110,22 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     }
 
     get loadState(): LayerLoadState {
-        return this.#loadState.value;
+        const current = this.#loadInfo.value;
+        if (typeof current === "string") {
+            return current;
+        }
+        return current.kind;
     }
 
     /**
-     * The error associated with this sublayer.
+     * The error (if any) that prevented this sublayer from loading.
      */
-    get error(): Error | undefined {
-        return this.#error.value;
+    get loadError(): Error | undefined {
+        const current = this.#loadInfo.value;
+        if (typeof current === "object" && "kind" in current && current.kind === "error") {
+            return current.error;
+        }
+        return undefined;
     }
 
     override get visible(): boolean {
@@ -186,11 +194,8 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
      *
      * @internal
      */
-    [SET_SUBLAYER_LOAD_STATE](state: LayerLoadState, error?: Error): void {
-        batch(() => {
-            this.#loadState.value = state;
-            this.#error.value = state === "error" ? error : undefined;
-        });
+    [SET_SUBLAYER_LOAD_INFO](loadInfo: LayerLoadInfo): void {
+        this.#loadInfo.value = loadInfo;
     }
 
     override setVisible(newVisibility: boolean): void {

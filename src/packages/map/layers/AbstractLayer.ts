@@ -245,12 +245,12 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The most relevant error associated with this layer, if any.
+     * The error (if any) that prevented this layer from loading.
      *
      * Combines errors from the OpenLayers source, the health check and the
      * metadata request (health > metadata > source).
      */
-    get error(): Error | undefined {
+    get loadError(): Error | undefined {
         return errorOf(this.#loadInfo.value);
     }
 
@@ -474,7 +474,7 @@ function loadInfoState(info: LayerLoadInfo): LayerLoadState {
 function collectSublayerError(layer: AbstractLayer): AggregateError | undefined {
     const errors: Error[] = [];
     for (const descendant of walkDescendants(layer)) {
-        const error = descendant.error;
+        const error = descendant.loadError;
         if (error) {
             errors.push(error);
         }

@@ -309,7 +309,7 @@ class SublayerImpl extends SharedParent {
         return "loaded" as const;
     }
 
-    get error(): Error | undefined {
+    get loadError(): Error | undefined {
         return undefined;
     }
 }
