@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer } from "@open-pioneer/map";
+import { AnyLayer, isLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { classNames } from "@open-pioneer/react-utils";
@@ -24,7 +24,7 @@ import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { LayerTocAttributes } from "../Toc";
+import { LayerTocAttributes, ListMode } from "../Toc";
 import { displayItemForLayer } from "../../utils/displayLayer";
 import type { IconType } from "react-icons/lib";
 
@@ -53,7 +53,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         };
     }, [layer]);
 
-    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(layer, intl);
+    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(
+        layer,
+        intl,
+        listMode
+    );
     const ariaLabel = useMemo(() => {
         let label = title;
         if (problemLabel) {
@@ -211,22 +215,31 @@ function useTocItem(layer: AnyLayer, display: boolean) {
     return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
 
-function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
-    const isAvailable = useLoadState(layer) !== "error";
+function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
+    const loadState = useLoadState(layer);
+    const sublayerError = useReactiveSnapshot(
+        () => (isLayer(layer) ? layer.sublayerError : undefined),
+        [layer]
+    );
     const visibleInScale = useVisibleInScale(layer);
+    const isOwnError = loadState === "error";
+    const hasChildError = !!sublayerError;
 
     return useMemo(() => {
         let problemIndicator;
         let problemLabel;
         let opacity;
         let disabled;
-        if (!isAvailable) {
-            const label = intl.formatMessage({ id: "layerNotAvailable" });
+        if (isOwnError || hasChildError) {
+            const label = getProblemLabel(intl, isOwnError, listMode, sublayerError);
+            const color = isOwnError ? "red" : "orange";
             problemIndicator = (
-                <ProblemIndicator message={label} Icon={LuTriangleAlert} color="red" />
+                <ProblemIndicator message={label} Icon={LuTriangleAlert} color={color} />
             );
             problemLabel = label;
-            disabled = true;
+            // Only disable the checkbox for the layer that is the actual source
+            // of the error, so a group with a broken child can still be toggled.
+            disabled = isOwnError;
         } else if (!visibleInScale) {
             const label = intl.formatMessage({ id: "layerNotVisible" });
             problemIndicator = <ProblemIndicator message={label} Icon={LuInfo} />;
@@ -234,7 +247,30 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
             opacity = 0.5;
         }
         return { problemIndicator, problemLabel, opacity, disabled };
-    }, [isAvailable, visibleInScale, intl]);
+    }, [isOwnError, hasChildError, visibleInScale, intl, listMode, sublayerError]);
+}
+
+/**
+ * Builds the message shown in the problem indicator.
+ *
+ * When the layer's own load state is in error, a generic message is used.
+ * If the list mode is "hide-children" the aggregated sublayer errors are listed so the user can
+ * still see which children failed, since their own indicators are not rendered.
+ */
+function getProblemLabel(
+    intl: PackageIntl,
+    isOwnError: boolean,
+    listMode: ListMode | undefined,
+    sublayerError: AggregateError | undefined
+): string {
+    if (isOwnError) {
+        return intl.formatMessage({ id: "layerNotAvailable" });
+    }
+    if (listMode === "hide-children" && sublayerError) {
+        const details = sublayerError.errors.map((error: Error) => `- ${error.message}`).join("\n");
+        return intl.formatMessage({ id: "childLayerNotAvailableDetails" }, { details });
+    }
+    return intl.formatMessage({ id: "childLayerNotAvailable" });
 }
 
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {

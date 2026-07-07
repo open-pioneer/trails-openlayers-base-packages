@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, computed, ReadonlyReactive, watch } from "@conterra/reactivity-core";
+import { batch, computed, reactive, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import {
     createLogger,
     deprecated,
@@ -28,14 +28,20 @@ import {
     GET_RAW_SUBLAYERS,
     LayerConstructor,
     LayerDependencies,
-    SET_LEGEND
+    SET_LEGEND,
+    SET_METADATA_LOAD_INFO
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
+import { Sublayer } from "./unions";
 import { getAttributions } from "./wms/getAttributions";
 import { getLegendUrl } from "./wms/getLegendUrl";
-import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
-import { Sublayer } from "./unions";
+import {
+    constructSublayers,
+    SET_SUBLAYER_LOAD_INFO,
+    WMSSublayer,
+    WMSSublayerConfig
+} from "./wms/WMSSublayer";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.
@@ -90,6 +96,7 @@ export class WMSLayer extends AbstractLayer {
     #loadStarted = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
+    readonly #invalidSublayerNames = reactive<Set<string>>();
     readonly #abortController = new AbortController();
 
     #visibleSublayers: ReadonlyReactive<string[]>;
@@ -243,18 +250,27 @@ export class WMSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
+        this[SET_METADATA_LOAD_INFO]("loading");
         this.#fetchWMSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
+                    this[SET_METADATA_LOAD_INFO]("loaded");
                 });
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
-                    return;
                 }
                 LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
+                const wrappedError =
+                    error instanceof Error
+                        ? error
+                        : new Error(`Failed to initialize WMS layer '${this.id}'`);
+                this[SET_METADATA_LOAD_INFO]({
+                    kind: "error",
+                    error: wrappedError
+                });
             });
     }
 
@@ -276,9 +292,16 @@ export class WMSLayer extends AbstractLayer {
     }
 
     #getVisibleLayerNames() {
+        const invalidSublayerNames = this.#invalidSublayerNames.value;
+
         const layers: string[] = [];
         const filter = (sublayer: Sublayer) => sublayer.visible;
         for (const sublayer of walkLeaves(this.#sublayers, filter)) {
+            // Skip sublayers with an invalid name: including them in the request would
+            // make the whole GetMap fail and hide the valid sublayers as well.
+            if (sublayer.name && invalidSublayerNames && invalidSublayerNames.has(sublayer.name)) {
+                continue;
+            }
             // Push sublayer if layer name is not an empty string | undefined | ...
             if (sublayer.name) {
                 layers.push(sublayer.name);
@@ -306,12 +329,32 @@ export class WMSLayer extends AbstractLayer {
             }
         }
 
-        for (const layer of walkLeaves(this.#sublayers)) {
-            if (layer.name) {
-                const legendUrl = getLegendUrl(capabilities, layer.name);
-                layer[SET_LEGEND](legendUrl);
+        const hasCapabilityTree = !!capabilities?.Capability?.Layer;
+        const sublayerNames = hasCapabilityTree ? collectLayerNames(capabilities) : undefined;
+        const invalidSublayerNames = new Set<string>();
+        for (const sublayer of walkLeaves(this.#sublayers)) {
+            if (!sublayer.name) {
+                continue;
             }
+            if (sublayerNames && !sublayerNames.has(sublayer.name)) {
+                LOG.error(
+                    `WMS sublayer name '${sublayer.name}' of layer '${this.id}' not found in capabilities.`
+                );
+                invalidSublayerNames.add(sublayer.name);
+                sublayer[SET_SUBLAYER_LOAD_INFO]({
+                    kind: "error",
+                    error: new Error(
+                        `WMS sublayer name '${sublayer.name}' not found in capabilities.`
+                    )
+                });
+                continue;
+            }
+            sublayer[SET_SUBLAYER_LOAD_INFO]("loaded");
+            const legendUrl = getLegendUrl(capabilities, sublayer.name);
+            sublayer[SET_LEGEND](legendUrl);
         }
+
+        this.#invalidSublayerNames.value = invalidSublayerNames;
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
@@ -337,6 +380,30 @@ export class WMSLayer extends AbstractLayer {
         image.addEventListener("error", finish);
         image.src = objectUrl;
     }
+}
+
+/**
+ * Collects all layer `Name` values from a parsed WMS capabilities document.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function collectLayerNames(capabilities: Record<string, any> | undefined): Set<string> {
+    const names = new Set<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const visit = (layer: Record<string, any> | undefined) => {
+        if (!layer) {
+            return;
+        }
+        if (typeof layer.Name === "string") {
+            names.add(layer.Name);
+        }
+        if (Array.isArray(layer.Layer)) {
+            for (const child of layer.Layer) {
+                visit(child);
+            }
+        }
+    };
+    visit(capabilities?.Capability?.Layer);
+    return names;
 }
 
 /**

@@ -304,4 +304,12 @@ class SublayerImpl extends SharedParent {
     get parentLayer(): never {
         throw new Error("not implemented");
     }
+
+    get loadState() {
+        return "loaded" as const;
+    }
+
+    get loadError(): Error | undefined {
+        return undefined;
+    }
 }

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { LayerLoadState } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { AnyLayer, Layer, SublayerTypes } from "../unions";
 
@@ -24,4 +25,14 @@ export interface SublayerBaseType extends AbstractLayerBase {
      * The parent layer that owns this sublayer.
      */
     readonly parentLayer: Layer;
+
+    /**
+     * The load state of this sublayer (independent of its parent layer).
+     */
+    readonly loadState: LayerLoadState;
+
+    /**
+     * The error associated with this sublayer, if any.
+     */
+    readonly loadError: Error | undefined;
 }

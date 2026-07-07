@@ -10,6 +10,8 @@ messages:
     collapse: "Gruppe {title} einklappen"
 
   layerNotAvailable: "Layer nicht verfügbar"
+  childLayerNotAvailable: "Ein untergeordneter Layer ist nicht verfügbar"
+  childLayerNotAvailableDetails: "Die folgenden untergeordneten Layer sind nicht verfügbar:\n{details}"
   layerNotVisible: "Layer in diesem Maßstab nicht sichtbar"
 
   toolsLabel: "Kartenwerkzeuge"

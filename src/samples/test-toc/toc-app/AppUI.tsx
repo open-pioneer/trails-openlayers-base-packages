@@ -141,11 +141,13 @@ export function AppUI() {
                                             {'"'} and {'"'}TopPlus Open (Grau){'"'}) and one
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
+                                            {'"'}Straßennetz{'"'} should show a warning and list the
+                                            broken sublayer names as tooltipps.
                                         </Text>
                                         <Text>
-                                            The &quot;Toggle steets group&quot; button allows
-                                            testing expanded or collapsing specific toc items using
-                                            the Toc{"'"}s API.
+                                            The &quot;Toggle education&quot; button allows testing
+                                            expanded or collapsing specific toc items using the Toc
+                                            {"'"}s API.
                                         </Text>
                                         <Text>
                                             The &quot;Toggle layer internal&quot; button makes the
@@ -160,8 +162,8 @@ export function AppUI() {
                                             list mode determines whether a layer is shown, shown
                                             without child layers or completely hidden in the Toc.
                                         </Text>
-                                        <Button onClick={() => toggleTocItem("streets")}>
-                                            Toggle streets group
+                                        <Button onClick={() => toggleTocItem("group_edu")}>
+                                            Toggle education
                                         </Button>
                                         <Button onClick={() => toggleLayerInternal("busstops")}>
                                             Toggle layer internal
