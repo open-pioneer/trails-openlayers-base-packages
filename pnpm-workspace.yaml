@@ -73,10 +73,10 @@ catalog:
   handlebars: ^4.7.9
   happy-dom: ^20.10.6
   husky: ^9.1.7
+  oxfmt: ^0.57.0
   js-yaml: ^4.3.0
   jsdom: ^29.1.1
   lint-staged: ^17.0.8
-  prettier: ^3.9.4
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.1.3
   sass: ^1.101.0
