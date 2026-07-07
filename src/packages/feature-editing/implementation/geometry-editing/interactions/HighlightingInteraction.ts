@@ -20,7 +20,7 @@ export class HighlightingInteraction extends BaseInteraction<HighlightingParamet
         const geometry = feature.getGeometry();
 
         if (geometry != null) {
-            const options = this.getHighlightOptions(highlightOptions);
+            const options = this.#getHighlightOptions(highlightOptions);
             const highlight = this.mapModel.highlights.add([geometry], options);
             return { highlight };
         } else {
@@ -32,17 +32,17 @@ export class HighlightingInteraction extends BaseInteraction<HighlightingParamet
         highlight?.destroy();
     }
 
-    private getHighlightOptions(highlightOptions: HighlightOptions | undefined): HighlightOptions {
+    #getHighlightOptions(highlightOptions: HighlightOptions | undefined): HighlightOptions {
         return {
             ...highlightOptions,
             highlightStyle: {
-                Point: HighlightingInteraction.DEFAULT_POINT_HIGHLIGHT_STYLE,
+                Point: HighlightingInteraction.#DEFAULT_POINT_HIGHLIGHT_STYLE,
                 ...highlightOptions?.highlightStyle
             }
         };
     }
 
-    private static readonly DEFAULT_POINT_HIGHLIGHT_STYLE = new Style({
+    static readonly #DEFAULT_POINT_HIGHLIGHT_STYLE = new Style({
         image: new Circle({
             stroke: new Stroke({
                 color: "cyan",

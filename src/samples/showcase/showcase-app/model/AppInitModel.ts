@@ -1,21 +1,24 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, ReadonlyReactive } from "@conterra/reactivity-core";
-import { createDemos } from "../demos/Demo";
+import { createLogger, Resource } from "@open-pioneer/core";
+import { EditingService } from "@open-pioneer/editing";
+import { HttpService } from "@open-pioneer/http";
+import { MapRegistry } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
 import {
     DECLARE_SERVICE_INTERFACE,
     PackageIntl,
     Service,
     ServiceOptions
 } from "@open-pioneer/runtime";
-import { MapRegistry } from "@open-pioneer/map";
-import { HttpService } from "@open-pioneer/http";
-import { Resource } from "@open-pioneer/core";
+import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { sourceId } from "open-pioneer:source-info";
+import { createDemos } from "../demos/Demo";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppModel } from "./AppModel";
-import { NotificationService } from "@open-pioneer/notifier";
-import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
-import { EditingService } from "@open-pioneer/editing";
+
+const LOG = createLogger(sourceId);
 
 export interface DemoInfo {
     id: string;
@@ -75,6 +78,8 @@ export class AppInitModel implements Service {
             currentIntl,
             notificationService
         }).catch((err) => {
+            LOG.error("Failed to initialize application", err);
+
             this.#appState.value = {
                 kind: "error",
                 message: (err as Error).message || "Unknown error"

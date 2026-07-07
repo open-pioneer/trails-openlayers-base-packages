@@ -151,8 +151,7 @@ async function waitForMeasurement() {
 function getGeometryType(olMap: OlMap) {
     const interactions = olMap.getInteractions().getArray();
     const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw) as
-        | Draw
-        | undefined;
+        Draw | undefined;
     const geometryType: string | undefined = (draw as any)?.type_;
     return geometryType;
 }

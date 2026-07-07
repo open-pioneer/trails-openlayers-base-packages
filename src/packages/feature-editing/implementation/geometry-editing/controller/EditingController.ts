@@ -34,92 +34,96 @@ export interface TooltipMessages {
 }
 
 export class EditingController {
-    private currentInteractions: BaseInteraction<unknown, unknown>[] = [];
-    private snappingSources: VectorSource[] = [];
-    private interactionOptions: InteractionOptions = {};
+    #currentInteractions: BaseInteraction<unknown, unknown>[] = [];
+    #snappingSources: VectorSource[] = [];
+    #interactionOptions: InteractionOptions = {};
 
     readonly drawingSession = new DrawingSession();
 
-    constructor(
-        private readonly mapModel: MapModel,
-        private readonly layerFactory: LayerFactory,
-        private readonly tooltipMessages: TooltipMessages
-    ) {}
+    readonly #mapModel: MapModel;
+    readonly #layerFactory: LayerFactory;
+    readonly #tooltipMessages: TooltipMessages;
+
+    constructor(mapModel: MapModel, layerFactory: LayerFactory, tooltipMessages: TooltipMessages) {
+        this.#mapModel = mapModel;
+        this.#layerFactory = layerFactory;
+        this.#tooltipMessages = tooltipMessages;
+    }
 
     startDrawingFeature({
         geometryType,
         drawingOptions,
         completionHandler
     }: StartDrawingFeatureOptions): void {
-        this.replaceInteractions(
-            new DrawingInteraction(this.mapModel, {
+        this.#replaceInteractions(
+            new DrawingInteraction(this.#mapModel, {
                 geometryType,
                 tracker: this.drawingSession,
-                drawingOptions: { ...this.interactionOptions.drawingOptions, ...drawingOptions },
+                drawingOptions: { ...this.#interactionOptions.drawingOptions, ...drawingOptions },
                 completionHandler,
-                layerFactory: this.layerFactory,
-                tooltipMessages: this.tooltipMessages
+                layerFactory: this.#layerFactory,
+                tooltipMessages: this.#tooltipMessages
             }),
-            new KeyboardInteraction(this.mapModel, {
+            new KeyboardInteraction(this.#mapModel, {
                 actions: this.drawingSession
             }),
-            new SnappingInteraction(this.mapModel, {
-                snappingSources: this.snappingSources,
-                snappingOptions: this.interactionOptions.snappingOptions
+            new SnappingInteraction(this.#mapModel, {
+                snappingSources: this.#snappingSources,
+                snappingOptions: this.#interactionOptions.snappingOptions
             }),
-            new DoubleClickInteraction(this.mapModel)
+            new DoubleClickInteraction(this.#mapModel)
         );
     }
 
     startSelectingFeature({ layers, completionHandler }: StartSelectingFeatureOptions): void {
-        this.replaceInteractions(
-            new SelectionInteraction(this.mapModel, {
+        this.#replaceInteractions(
+            new SelectionInteraction(this.#mapModel, {
                 layers,
-                selectionOptions: this.interactionOptions.selectionOptions,
+                selectionOptions: this.#interactionOptions.selectionOptions,
                 completionHandler,
-                tooltipMessages: this.tooltipMessages
+                tooltipMessages: this.#tooltipMessages
             })
         );
     }
 
     startModifyingFeature({ feature, drawLayer }: StartModifyingFeatureOptions): void {
-        this.replaceInteractions(
-            new ModificationInteraction(this.mapModel, {
+        this.#replaceInteractions(
+            new ModificationInteraction(this.#mapModel, {
                 feature,
                 drawLayer,
-                modificationOptions: this.interactionOptions.modificationOptions,
-                tooltipMessages: this.tooltipMessages
+                modificationOptions: this.#interactionOptions.modificationOptions,
+                tooltipMessages: this.#tooltipMessages
             }),
-            new HighlightingInteraction(this.mapModel, {
+            new HighlightingInteraction(this.#mapModel, {
                 feature,
-                highlightOptions: this.interactionOptions.highlightingOptions
+                highlightOptions: this.#interactionOptions.highlightingOptions
             }),
-            new SnappingInteraction(this.mapModel, {
-                snappingSources: this.snappingSources,
-                snappingOptions: this.interactionOptions.snappingOptions
+            new SnappingInteraction(this.#mapModel, {
+                snappingSources: this.#snappingSources,
+                snappingOptions: this.#interactionOptions.snappingOptions
             })
         );
     }
 
     setSnappingSources(sources: VectorSource[] | undefined): void {
-        this.snappingSources = sources ?? [];
+        this.#snappingSources = sources ?? [];
     }
 
     setInteractionOptions(options: InteractionOptions): void {
-        this.interactionOptions = options;
+        this.#interactionOptions = options;
     }
 
     stopCurrentInteractions(): void {
-        this.currentInteractions.forEach((interaction) => {
+        this.#currentInteractions.forEach((interaction) => {
             interaction.stop();
         });
-        this.currentInteractions = [];
+        this.#currentInteractions = [];
     }
 
-    private replaceInteractions(...interactions: BaseInteraction<unknown, unknown>[]): void {
+    #replaceInteractions(...interactions: BaseInteraction<unknown, unknown>[]): void {
         this.stopCurrentInteractions();
-        this.currentInteractions = interactions;
-        this.currentInteractions.forEach((interaction) => {
+        this.#currentInteractions = interactions;
+        this.#currentInteractions.forEach((interaction) => {
             interaction.start();
         });
     }

@@ -31,8 +31,8 @@ interface DrawingData {
 }
 
 export class DrawingInteraction extends BaseInteraction<DrawingParameters, DrawingData> {
-    private tooltip?: Overlay;
-    private drawLayer: SimpleLayer | undefined;
+    #tooltip?: Overlay;
+    #drawLayer: SimpleLayer | undefined;
 
     protected override startInteraction(parameters: DrawingParameters): DrawingData {
         const {
@@ -45,7 +45,7 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         } = parameters;
 
         const source = new VectorSource();
-        const drawLayer = (this.drawLayer = layerFactory.create({
+        const drawLayer = (this.#drawLayer = layerFactory.create({
             type: SimpleLayer,
             internal: true,
             title: "editing-draw-layer",
@@ -66,19 +66,19 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
             draw.on("drawstart", ({ feature }) => tracker.trackCapabilities(feature, handler)),
             draw.on("drawabort", () => tracker.untrackCapabilities()),
             draw.once("drawend", ({ feature }) => {
-                const drawLayer = this.drawLayer;
+                const drawLayer = this.#drawLayer;
                 if (!drawLayer) {
                     return;
                 }
 
                 // Remove from map but DO NOT destroy: completionHandler takes ownership
                 this.mapModel.layers.removeLayer(drawLayer);
-                this.drawLayer = undefined;
+                this.#drawLayer = undefined;
                 completionHandler(feature, drawLayer);
             })
         ];
 
-        this.tooltip = this.createHelpTooltip(this.mapModel, tooltipMessages, geometryType);
+        this.#tooltip = this.#createHelpTooltip(this.mapModel, tooltipMessages, geometryType);
 
         this.mapModel.layers.addLayer(drawLayer, { at: "topmost" });
 
@@ -93,16 +93,16 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         this.map.removeInteraction(draw);
 
         // Cleanup draw layer if it wasn't passed to the completionHandler
-        if (this.drawLayer) {
-            this.mapModel.layers.removeLayer(this.drawLayer);
-            this.drawLayer = destroyResource(this.drawLayer);
+        if (this.#drawLayer) {
+            this.mapModel.layers.removeLayer(this.#drawLayer);
+            this.#drawLayer = destroyResource(this.#drawLayer);
         }
-        this.tooltip?.destroy();
+        this.#tooltip?.destroy();
         unByKey(eventsKeys);
         tracker.untrackCapabilities();
     }
 
-    private createHelpTooltip(
+    #createHelpTooltip(
         mapModel: MapModel,
         tooltipMessages: TooltipMessages,
         geometryType: GeometryType

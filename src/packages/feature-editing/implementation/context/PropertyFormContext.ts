@@ -38,7 +38,7 @@ export abstract class BaseFormContext {
         this.callbacks = callbacks;
         this.#formTemplate = formTemplate;
 
-        const entries = BaseFormContext.getPropertyEntries(modificationStep.feature);
+        const entries = BaseFormContext.#getPropertyEntries(modificationStep.feature);
         this.#propertiesMap = reactiveMap(entries);
         this.#propsAsObject = computed(() => {
             const entries = this.properties.entries();
@@ -82,7 +82,7 @@ export abstract class BaseFormContext {
     abstract get isValid(): boolean;
     abstract get hasRequiredFields(): boolean;
 
-    private static getPropertyEntries(feature: Feature): [string, unknown][] {
+    static #getPropertyEntries(feature: Feature): [string, unknown][] {
         const properties = feature.getProperties();
         const geometryName = feature.getGeometryName();
         return Object.entries(properties).filter(([key, _]) => key !== geometryName);

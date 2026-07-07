@@ -17,6 +17,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Assign to board
-        uses: open-pioneer/trails-repo-automation/.github/actions/add-to-maintenance-board@main
+        uses: open-pioneer/trails-repo-automation/.github/actions/add-to-maintenance-board@417c824a6aab4deea1edaa18e3a8b16f94c44594 # main
         with:
           github-token: ${{ secrets.ISSUE_AUTOMATION_TOKEN }}

@@ -41,10 +41,10 @@ export async function createMapModel(
 }
 
 class MapModelFactory {
-    private mapId: string;
-    private mapConfig: MapConfig;
-    private currentIntl: ReadonlyReactive<PackageIntl>;
-    private httpService: HttpService;
+    #mapId: string;
+    #mapConfig: MapConfig;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
+    #httpService: HttpService;
 
     constructor(
         mapId: string,
@@ -52,15 +52,15 @@ class MapModelFactory {
         currentIntl: ReadonlyReactive<PackageIntl>,
         httpService: HttpService
     ) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig;
-        this.currentIntl = currentIntl;
-        this.httpService = httpService;
+        this.#mapId = mapId;
+        this.#mapConfig = mapConfig;
+        this.#currentIntl = currentIntl;
+        this.#httpService = httpService;
     }
 
     async createMapModel() {
-        const mapId = this.mapId;
-        const mapConfig = this.mapConfig;
+        const mapId = this.#mapId;
+        const mapConfig = this.#mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
         const showDefaultAttributions =
             mapConfig.showAttributions ?? (rawOlOptions.controls ? false : true);
@@ -89,7 +89,7 @@ class MapModelFactory {
         }
 
         const view = (await viewOption) ?? {};
-        this.initializeViewOptions(view);
+        this.#initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
 
         if (!mapOptions.layers && !mapConfig.layers) {
@@ -116,8 +116,8 @@ class MapModelFactory {
                 olMap,
                 initialExtent,
                 showDefaultAttributions,
-                currentIntl: this.currentIntl,
-                httpService: this.httpService
+                currentIntl: this.#currentIntl,
+                httpService: this.#httpService
             },
             INTERNAL_CONSTRUCTOR_TAG
         );
@@ -137,9 +137,9 @@ class MapModelFactory {
         });
     }
 
-    private initializeViewOptions(view: View | ViewOptions) {
-        const mapId = this.mapId;
-        const mapConfig = this.mapConfig;
+    #initializeViewOptions(view: View | ViewOptions) {
+        const mapId = this.#mapId;
+        const mapConfig = this.#mapConfig;
         if (view instanceof View) {
             const warn = (prop: string) => {
                 LOG.warn(
@@ -157,7 +157,7 @@ class MapModelFactory {
             return;
         }
 
-        const projection = (view.projection = this.initializeProjection(mapConfig.projection));
+        const projection = (view.projection = this.#initializeProjection(mapConfig.projection));
         const initialView = mapConfig.initialView;
         if (initialView) {
             switch (initialView.kind) {
@@ -183,11 +183,11 @@ class MapModelFactory {
                 }
             }
         } else {
-            this.setViewDefaults(view, projection);
+            this.#setViewDefaults(view, projection);
         }
     }
 
-    private setViewDefaults(view: ViewOptions, projection: Projection) {
+    #setViewDefaults(view: ViewOptions, projection: Projection) {
         if (view.center == null) {
             const extent = projection.getExtent(); // can be null
             if (!extent) {
@@ -205,7 +205,7 @@ class MapModelFactory {
         }
     }
 
-    private initializeProjection(projectionOption: MapConfig["projection"]) {
+    #initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
