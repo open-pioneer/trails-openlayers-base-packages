@@ -17,7 +17,8 @@
         "test-data",
         "__snapshots",
         "pnpm-lock.yaml",
-        "**/chakra-snippets/**/*.tsx"
+        "**/chakra-snippets/**/*.tsx",
+        "support/licenses"
     ],
     "overrides": [
         {
