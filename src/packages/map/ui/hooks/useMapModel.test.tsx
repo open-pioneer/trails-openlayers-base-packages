@@ -109,6 +109,8 @@ describe("useMapModel", () => {
     });
 
     it("returns the async loading error of the map model", async () => {
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
         const { promise, reject } = createManualPromise<MapModel>();
 
         const services = mockServices({ expectedMapId: "foo", customPromise: promise });
@@ -131,6 +133,34 @@ describe("useMapModel", () => {
         expect(hook.result.current.kind).toBe("rejected");
         expect(hook.result.current.map).toBe(undefined);
         expect(hook.result.current.error).toBe(err);
+        expect(errorSpy.mock.lastCall).toMatchInlineSnapshot(`
+          [
+            "[ERROR] @open-pioneer/map/ui/hooks/useMapModel: Failed to construct map",
+            [Error: some error],
+          ]
+        `);
+    });
+
+    it("does not print the error if 'quiet: true' has been configured", async () => {
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+        const { promise, reject } = createManualPromise<MapModel>();
+
+        const services = mockServices({ expectedMapId: "foo", customPromise: promise });
+        const hook = renderHook(() => useMapModel({ mapId: "foo", quiet: true }), {
+            wrapper: (props) => <PackageContextProvider services={services} {...props} />
+        });
+
+        const err = new Error("some error");
+        reject(err);
+        await waitFor(() => {
+            if (hook.result.current.kind === "loading") {
+                throw new Error("still loading");
+            }
+        });
+
+        expect(hook.result.current.error).toBe(err);
+        expect(errorSpy.mock.calls.length).toBe(0);
     });
 });
 

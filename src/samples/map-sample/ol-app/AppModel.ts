@@ -132,6 +132,7 @@ export class AppModel implements Service, AppState {
     #featureHighlight: Highlight | undefined = undefined;
 
     // Reactive state used by the UI
+    #launchError = reactive<string>();
     #mainContent = reactive<MainContentId[]>(["toc"]);
     #searchSources = reactiveArray<SearchSource>();
     #selectionSources = reactiveArray<SelectionSource>();
@@ -157,7 +158,11 @@ export class AppModel implements Service, AppState {
                     LOG.error("Failed to initialize selection sources", error);
                 });
             })
-            .catch((error) => LOG.error("Failed to initialize map", error));
+            .catch((error) => {
+                LOG.error("Failed to initialize map", error);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                this.#launchError.value = (error as any).message || "Internal error";
+            });
 
         this.#initSearchSources();
     }
@@ -165,6 +170,10 @@ export class AppModel implements Service, AppState {
     destroy(): void {
         this.clearHighlight();
         this.#resources.forEach((r) => r.destroy());
+    }
+
+    get launchError(): string | undefined {
+        return this.#launchError.value;
     }
 
     get map(): MapModel | undefined {
