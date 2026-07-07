@@ -19,9 +19,7 @@ export interface OptionControlProps<T = SelectConfig | ComboBoxConfig> {
 }
 
 type ValueChangeDetails =
-    | SelectValueChangeDetails
-    | ComboboxValueChangeDetails
-    | RadioGroupValueChangeDetails;
+    SelectValueChangeDetails | ComboboxValueChangeDetails | RadioGroupValueChangeDetails;
 
 export function useOptionProps({ value, field, onChange }: OptionControlProps) {
     const selectedValue = useMemo(() => (value != undefined ? [value.toString()] : []), [value]);

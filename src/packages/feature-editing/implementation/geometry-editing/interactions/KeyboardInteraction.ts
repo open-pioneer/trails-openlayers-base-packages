@@ -28,7 +28,7 @@ interface NewNavigator extends Navigator {
 
 export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, KeyboardData> {
     protected override startInteraction({ actions }: KeyboardParameters): KeyboardData {
-        const keyboardListener = this.addKeyboardListener([
+        const keyboardListener = this.#addKeyboardListener([
             { key: "Enter", action: () => actions.finish() },
             { key: "Escape", action: () => actions.reset() },
             { key: "Z", ctrlKey: true, action: () => actions.undo() },
@@ -42,11 +42,11 @@ export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, Key
         document.removeEventListener("keydown", keyboardListener);
     }
 
-    private addKeyboardListener(shortcuts: KeyboardShortcut[]) {
-        const isApple = this.isApplePlatform();
+    #addKeyboardListener(shortcuts: KeyboardShortcut[]) {
+        const isApple = this.#isApplePlatform();
         const listener: KeyboardListener = (event) => {
             const shortcut = shortcuts.find((shortcut) =>
-                this.matchesShortcut(event, shortcut, isApple)
+                this.#matchesShortcut(event, shortcut, isApple)
             );
             if (shortcut != null) {
                 event.preventDefault();
@@ -57,11 +57,7 @@ export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, Key
         return listener;
     }
 
-    private matchesShortcut(
-        event: KeyboardEvent,
-        shortcut: KeyboardShortcut,
-        isApple: boolean
-    ): boolean {
+    #matchesShortcut(event: KeyboardEvent, shortcut: KeyboardShortcut, isApple: boolean): boolean {
         if (isApple) {
             // On Apple platforms, the Command key is represented by 'metaKey'.
             return (
@@ -82,12 +78,12 @@ export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, Key
         }
     }
 
-    private isApplePlatform(): boolean {
-        const platform = this.getPlatform();
-        return platform != null && KeyboardInteraction.APPLE_REGEX.test(platform);
+    #isApplePlatform(): boolean {
+        const platform = this.#getPlatform();
+        return platform != null && KeyboardInteraction.#APPLE_REGEX.test(platform);
     }
 
-    private getPlatform(): string | undefined {
+    #getPlatform(): string | undefined {
         const platform = (navigator as NewNavigator).userAgentData?.platform;
         if (platform != null) {
             return platform;
@@ -96,5 +92,5 @@ export class KeyboardInteraction extends BaseInteraction<KeyboardParameters, Key
         }
     }
 
-    private static readonly APPLE_REGEX = /(Mac|iPad|iPhone|iPod)/i;
+    static readonly #APPLE_REGEX = /(Mac|iPad|iPhone|iPod)/i;
 }

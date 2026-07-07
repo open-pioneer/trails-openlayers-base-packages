@@ -114,14 +114,14 @@ interface EditingJob {
  * The view model manages a single update/create workflow.
  */
 class EditingViewModel {
-    private notificationService: NotificationService;
-    private editingService: EditingService;
-    private map: MapModel;
-    private intl: PackageIntl;
-    private appModel: AppModel;
-    private kind: EditingKind;
+    #notificationService: NotificationService;
+    #editingService: EditingService;
+    #map: MapModel;
+    #intl: PackageIntl;
+    #appModel: AppModel;
+    #kind: EditingKind;
 
-    private job: EditingJob | undefined;
+    #job: EditingJob | undefined;
 
     constructor(
         notificationService: NotificationService,
@@ -131,32 +131,32 @@ class EditingViewModel {
         appModel: AppModel,
         kind: EditingKind
     ) {
-        this.notificationService = notificationService;
-        this.editingService = editingService;
-        this.map = map;
-        this.intl = intl;
-        this.appModel = appModel;
-        this.kind = kind;
+        this.#notificationService = notificationService;
+        this.#editingService = editingService;
+        this.#map = map;
+        this.#intl = intl;
+        this.#appModel = appModel;
+        this.#kind = kind;
 
         let job: EditingJob;
         switch (kind) {
             case "create":
-                job = this.createJob();
+                job = this.#createJob();
                 break;
             case "update":
-                job = this.updateJob();
+                job = this.#updateJob();
                 break;
         }
-        this.job = job;
-        this.job
+        this.#job = job;
+        this.#job
             .run()
             .catch((error) => {
                 if (!isAbortError(error)) {
                     LOG.error("Edit operation failed", error);
 
-                    this.notificationService.notify({
+                    this.#notificationService.notify({
                         level: "error",
-                        message: this.intl.formatMessage({
+                        message: this.#intl.formatMessage({
                             id: "editing.error"
                         })
                     });
@@ -164,26 +164,26 @@ class EditingViewModel {
             })
             .then(() => {
                 // Only hide if not destroyed already
-                if (this.job) {
+                if (this.#job) {
                     this.hide();
                 }
             });
     }
 
     destroy() {
-        this.job?.destroy();
-        this.job = undefined;
+        this.#job?.destroy();
+        this.#job = undefined;
     }
 
     reset() {
-        this.job?.reset();
+        this.#job?.reset();
     }
 
     hide() {
-        this.appModel.hideContent(`editing-${this.kind}`);
+        this.#appModel.hideContent(`editing-${this.#kind}`);
     }
 
-    private createJob(): EditingJob {
+    #createJob(): EditingJob {
         let workflow: EditingWorkflow | undefined;
         return {
             destroy() {
@@ -196,9 +196,9 @@ class EditingViewModel {
             },
 
             run: async () => {
-                const layer = this.findLayer();
+                const layer = this.#findLayer();
                 const url = new URL(layer.attributes.collectionURL + "/items");
-                workflow = this.editingService.createFeature(this.map, url);
+                workflow = this.#editingService.createFeature(this.#map, url);
 
                 const featureData = await workflow.whenComplete();
                 workflow = undefined;
@@ -207,9 +207,9 @@ class EditingViewModel {
                     return;
                 }
 
-                this.notificationService.notify({
+                this.#notificationService.notify({
                     level: "info",
-                    message: this.intl.formatMessage(
+                    message: this.#intl.formatMessage(
                         {
                             id: "editing.create.featureCreated"
                         },
@@ -223,8 +223,8 @@ class EditingViewModel {
         };
     }
 
-    private updateJob(): EditingJob {
-        const map = this.map;
+    #updateJob(): EditingJob {
+        const map = this.#map;
 
         const abortController = new AbortController();
         const signal = abortController.signal;
@@ -254,7 +254,7 @@ class EditingViewModel {
             },
 
             run: async () => {
-                const layer = this.findLayer();
+                const layer = this.#findLayer();
                 const vectorLayer = layer.olLayer as VectorLayer<VectorSource, Feature>;
                 const url = new URL(layer.attributes.collectionURL + "/items");
 
@@ -263,7 +263,7 @@ class EditingViewModel {
                 });
                 map.olMap.addInteraction(selectInteraction);
 
-                tooltip = createEditingTooltip(this.intl, map);
+                tooltip = createEditingTooltip(this.#intl, map);
                 tooltip.overlay.element.classList.remove("editing-tooltip-hidden");
 
                 let feature: Feature<Geometry> | undefined;
@@ -284,15 +284,15 @@ class EditingViewModel {
                     throw Error("Feature is undefined");
                 }
 
-                workflow = this.editingService.updateFeature(map, url, feature);
+                workflow = this.#editingService.updateFeature(map, url, feature);
                 const featureData = await workflow.whenComplete();
                 if (!featureData) {
                     return;
                 }
 
-                this.notificationService.notify({
+                this.#notificationService.notify({
                     level: "info",
-                    message: this.intl.formatMessage(
+                    message: this.#intl.formatMessage(
                         {
                             id: "editing.update.featureModified"
                         },
@@ -305,8 +305,8 @@ class EditingViewModel {
         };
     }
 
-    private findLayer() {
-        const layer = this.map.layers.getLayerById("krankenhaus") as Layer | undefined;
+    #findLayer() {
+        const layer = this.#map.layers.getLayerById("krankenhaus") as Layer | undefined;
         if (!layer) {
             throw new Error("Layer not found");
         }

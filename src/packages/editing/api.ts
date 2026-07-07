@@ -25,10 +25,7 @@ import { FlatStyle } from "ol/style/flat";
  *
  */
 export type EditingWorkflowState =
-    | "active:initialized"
-    | "active:drawing"
-    | "active:saving"
-    | "destroyed";
+    "active:initialized" | "active:drawing" | "active:saving" | "destroyed";
 
 /**
  * Props of an editing workflow

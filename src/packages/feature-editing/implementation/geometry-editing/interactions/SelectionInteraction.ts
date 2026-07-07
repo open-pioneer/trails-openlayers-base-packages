@@ -31,7 +31,7 @@ interface InternalFeature extends Feature {
 }
 
 export class SelectionInteraction extends BaseInteraction<SelectionParameters, SelectionData> {
-    private tooltip?: Overlay;
+    #tooltip?: Overlay;
 
     protected override startInteraction(parameters: SelectionParameters): SelectionData {
         const { layers, selectionOptions, completionHandler, tooltipMessages } = parameters;
@@ -42,19 +42,19 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
 
         const select = new Select({
             layers: olLayers,
-            hitTolerance: SelectionInteraction.DEFAULT_HIT_TOLERANCE,
+            hitTolerance: SelectionInteraction.#DEFAULT_HIT_TOLERANCE,
             ...selectionOptions
         });
 
         const eventsKey = select.once("select", ({ selected }) => {
             const feature = selected[0];
             if (feature != null) {
-                const layer = this.getLayer(select, feature);
+                const layer = this.#getLayer(select, feature);
                 completionHandler(feature, layer);
             }
         });
 
-        this.tooltip = this.createHelpTooltip(this.mapModel, tooltipMessages);
+        this.#tooltip = this.#createHelpTooltip(this.mapModel, tooltipMessages);
 
         this.map.addInteraction(select);
 
@@ -64,25 +64,22 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
     protected override stopInteraction({ select, eventsKey }: SelectionData): void {
         unByKey(eventsKey);
         this.map.removeInteraction(select);
-        this.tooltip?.destroy();
+        this.#tooltip?.destroy();
     }
 
-    private getLayer(select: Select, feature: Feature): Layer | undefined {
-        const olLayer = this.getOlLayer(select, feature);
+    #getLayer(select: Select, feature: Feature): Layer | undefined {
+        const olLayer = this.#getOlLayer(select, feature);
         return olLayer != null ? this.mapModel.layers.getLayerByRawInstance(olLayer) : undefined;
     }
 
     // Use internal properties to obtain the layer associated with the selected feature.
-    private getOlLayer(select: Select, feature: Feature): OlLayer | undefined {
+    #getOlLayer(select: Select, feature: Feature): OlLayer | undefined {
         const { featureLayerAssociation_ } = select as unknown as InternalSelect;
         const { ol_uid } = feature as InternalFeature;
         return ol_uid != null ? featureLayerAssociation_?.[ol_uid] : undefined;
     }
 
-    private createHelpTooltip(
-        mapModel: MapModel,
-        tooltipMessages: TooltipMessages
-    ): Overlay | undefined {
+    #createHelpTooltip(mapModel: MapModel, tooltipMessages: TooltipMessages): Overlay | undefined {
         const helpOverlay = mapModel.overlays.add({
             className: "editing-tooltip printing-hide",
             position: "follow-pointer",
@@ -96,5 +93,5 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
         return helpOverlay;
     }
 
-    private static readonly DEFAULT_HIT_TOLERANCE = 22;
+    static readonly #DEFAULT_HIT_TOLERANCE = 22;
 }

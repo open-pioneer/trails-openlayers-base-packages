@@ -756,13 +756,16 @@ const DUMMY_CALLBACKS: EditingCallbacks = {
     }
 };
 
-function renderForm(options?: { editingStep?: ModificationStep; template?: FeatureTemplate & DeclarativeFormTemplate }) {
-    const { editingStep = createTestEditingStep(), template = allInputTypesTemplate} =
+function renderForm(options?: {
+    editingStep?: ModificationStep;
+    template?: FeatureTemplate & DeclarativeFormTemplate;
+}) {
+    const { editingStep = createTestEditingStep(), template = allInputTypesTemplate } =
         options ?? {};
     const context = new DeclarativeFormContext(editingStep, DUMMY_CALLBACKS, template);
     const children = template.fields.map((field, index) => (
-                                      <PropertyField key={index} field={field} />
-                                  ));
+        <PropertyField key={index} field={field} />
+    ));
     const renderResult = render(
         <PackageContextProvider>
             <FormContext value={context}>
