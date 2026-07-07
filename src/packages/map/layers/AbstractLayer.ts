@@ -73,6 +73,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #sourceState: ReadonlyReactive<ReadonlyReactive<LayerLoadState> | undefined>;
     #sourceInfo: ReadonlyReactive<LayerLoadInfo>;
     #healthInfo: Reactive<LayerLoadInfo>;
+    #healthCheckStarted = false;
     #metadataInfo: Reactive<LayerLoadInfo>;
     #loadInfo = computed(() =>
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
@@ -330,7 +331,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         super[ATTACH_TO_MAP](map);
 
         // Custom health check is not needed when OpenLayers already reports an error state.
-        if (errorOf(this.#sourceInfo.value) == null) {
+        if (!this.#healthCheckStarted && errorOf(this.#sourceInfo.value) == null) {
+            this.#healthCheckStarted = true;
             doHealthCheck(this, this.#healthCheck).then(({ state, error }) => {
                 this.#healthInfo.value = toLoadInfo(state, error);
             });
