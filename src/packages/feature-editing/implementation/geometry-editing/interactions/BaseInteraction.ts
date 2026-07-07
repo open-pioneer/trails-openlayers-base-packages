@@ -15,24 +15,27 @@ interface ActiveState<T> {
 }
 
 export abstract class BaseInteraction<Params, Data> {
-    private state: EditingWorkflowState<Data> = { type: "idle" };
+    #state: EditingWorkflowState<Data> = { type: "idle" };
 
-    constructor(
-        private readonly mapModelInstance: MapModel,
-        private readonly parameters: Params
-    ) {}
+    readonly #mapModelInstance: MapModel;
+    readonly #parameters: Params;
+
+    constructor(mapModelInstance: MapModel, parameters: Params) {
+        this.#mapModelInstance = mapModelInstance;
+        this.#parameters = parameters;
+    }
 
     start(): void {
-        if (this.state.type === "idle") {
-            const data = this.startInteraction(this.parameters);
-            this.state = { type: "active", data };
+        if (this.#state.type === "idle") {
+            const data = this.startInteraction(this.#parameters);
+            this.#state = { type: "active", data };
         }
     }
 
     stop(): void {
-        if (this.state.type === "active") {
-            this.stopInteraction(this.state.data);
-            this.state = { type: "idle" };
+        if (this.#state.type === "active") {
+            this.stopInteraction(this.#state.data);
+            this.#state = { type: "idle" };
         }
     }
 
@@ -41,7 +44,7 @@ export abstract class BaseInteraction<Params, Data> {
     }
 
     protected get mapModel(): MapModel {
-        return this.mapModelInstance;
+        return this.#mapModelInstance;
     }
 
     protected abstract startInteraction(parameters: Params): Data;

@@ -17,7 +17,7 @@ export class DoubleClickInteraction extends BaseInteraction<{}, DoubleClickData>
     }
 
     protected startInteraction(): DoubleClickData {
-        const doubleClickZoom = this.getDoubleClickZoom();
+        const doubleClickZoom = this.#getDoubleClickZoom();
         const wasActive = doubleClickZoom?.getActive() ?? false;
 
         doubleClickZoom?.setActive(false);
@@ -29,7 +29,7 @@ export class DoubleClickInteraction extends BaseInteraction<{}, DoubleClickData>
         doubleClickZoom?.setActive(wasActive);
     }
 
-    private getDoubleClickZoom(): Interaction | undefined {
+    #getDoubleClickZoom(): Interaction | undefined {
         return this.map
             .getInteractions()
             .getArray()

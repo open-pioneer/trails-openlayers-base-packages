@@ -3,6 +3,8 @@ name: Build and deploy
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
 
 permissions:
@@ -11,8 +13,6 @@ permissions:
 jobs:
   # Performs quality checks
   checks:
-    # Don't run for pull requests from this repository to avoid duplicate builds (push also triggers build).
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Run quality checks"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -21,14 +21,13 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@885300a1d435f5341fe732c0cef9351c45c615b7 # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@417c824a6aab4deea1edaa18e3a8b16f94c44594 # main
 
       - name: Run tests
         run: pnpm ci:test
 
   # Builds samples and documentation and uploads contents of ./dist/ as an artifact ("build")
   build_site:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build samples and documentation"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -37,7 +36,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@885300a1d435f5341fe732c0cef9351c45c615b7 # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@417c824a6aab4deea1edaa18e3a8b16f94c44594 # main
 
       - name: Build samples
         run: pnpm build
@@ -58,7 +57,6 @@ jobs:
 
   # Builds all publishable packages
   build_packages:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: "Build packages"
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -67,7 +65,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@885300a1d435f5341fe732c0cef9351c45c615b7 # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@417c824a6aab4deea1edaa18e3a8b16f94c44594 # main
 
       - name: Build packages
         run: pnpm build-packages
@@ -119,7 +117,7 @@ jobs:
           mv dist/docs site/docs;
 
       - name: Deploy
-        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-demo@885300a1d435f5341fe732c0cef9351c45c615b7 # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-demo@417c824a6aab4deea1edaa18e3a8b16f94c44594 # main
         with:
           src-repo: openlayers-base-packages
           target-path: ${{ needs.version.outputs.published == 'true' && 'latest' || 'dev' }}

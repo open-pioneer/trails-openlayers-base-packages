@@ -29,75 +29,75 @@ const LOG = createLogger(sourceId);
 export class EditingCreateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
-    private _httpService: HttpService;
-    private _layerFactory: LayerFactory;
-    private _intl: ReadonlyReactive<PackageIntl>;
+    #httpService: HttpService;
+    #layerFactory: LayerFactory;
+    #intl: ReadonlyReactive<PackageIntl>;
 
-    private _map: MapModel;
-    private _polygonStyle: FlatStyle;
-    private _vertexStyle: FlatStyle;
-    private _state: Reactive<EditingWorkflowState>;
-    private _editLayerURL: URL;
-    private _featureId: string | undefined;
+    #map: MapModel;
+    #polygonStyle: FlatStyle;
+    #vertexStyle: FlatStyle;
+    #state: Reactive<EditingWorkflowState>;
+    #editLayerURL: URL;
+    #featureId: string | undefined;
 
-    private _editingSource: VectorSource;
-    private _editingLayer: SimpleLayer;
-    private _drawInteraction: Draw;
-    private _olMap: OlMap;
-    private _tooltip: Tooltip;
-    private _enterHandler: (e: KeyboardEvent) => void;
-    private _escapeHandler: (e: KeyboardEvent) => void;
+    #editingSource: VectorSource;
+    #editingLayer: SimpleLayer;
+    #drawInteraction: Draw;
+    #olMap: OlMap;
+    #tooltip: Tooltip;
+    #enterHandler: (e: KeyboardEvent) => void;
+    #escapeHandler: (e: KeyboardEvent) => void;
 
-    private _error: Error | undefined;
+    #error: Error | undefined;
 
-    private _interactionListener: Array<EventsKey>;
-    private _mapListener: Array<Resource>;
+    #interactionListener: Array<EventsKey>;
+    #mapListener: Array<Resource>;
 
     constructor(options: EditingWorkflowProps) {
-        this._httpService = options.httpService;
-        this._layerFactory = options.layerFactory;
-        this._intl = options.intl;
+        this.#httpService = options.httpService;
+        this.#layerFactory = options.layerFactory;
+        this.#intl = options.intl;
 
-        this._polygonStyle = options.polygonStyle;
-        this._vertexStyle = options.vertexStyle;
+        this.#polygonStyle = options.polygonStyle;
+        this.#vertexStyle = options.vertexStyle;
 
-        this._map = options.map;
-        this._olMap = options.map.olMap;
-        this._state = reactive("active:initialized");
-        this._editLayerURL = options.ogcApiFeatureLayerUrl;
+        this.#map = options.map;
+        this.#olMap = options.map.olMap;
+        this.#state = reactive("active:initialized");
+        this.#editLayerURL = options.ogcApiFeatureLayerUrl;
 
-        this._editingSource = new VectorSource();
+        this.#editingSource = new VectorSource();
         const olLayer = new VectorLayer({
-            source: this._editingSource
+            source: this.#editingSource
         });
-        this._editingLayer = this._layerFactory.create({
+        this.#editingLayer = this.#layerFactory.create({
             type: SimpleLayer,
             title: "editing-layer",
             internal: true,
             olLayer: olLayer
         });
 
-        this._drawInteraction = new Draw({
-            source: this._editingSource,
+        this.#drawInteraction = new Draw({
+            source: this.#editingSource,
             type: "Polygon",
             style: createStyles({
-                polygon: this._polygonStyle,
-                vertex: this._vertexStyle
+                polygon: this.#polygonStyle,
+                vertex: this.#vertexStyle
             })
         });
 
-        this._tooltip = createTooltip(
-            this._map,
-            this._intl.value.formatMessage({ id: "create.tooltip.begin" })
+        this.#tooltip = createTooltip(
+            this.#map,
+            this.#intl.value.formatMessage({ id: "create.tooltip.begin" })
         );
 
-        this._enterHandler = (e: KeyboardEvent) => {
+        this.#enterHandler = (e: KeyboardEvent) => {
             if (
                 (e.code === "Enter" || e.code === "NumpadEnter") &&
-                e.target === this._olMap.getTargetElement()
+                e.target === this.#olMap.getTargetElement()
             ) {
                 const features =
-                    this._drawInteraction.getOverlay().getSource()?.getFeatures() ?? [];
+                    this.#drawInteraction.getOverlay().getSource()?.getFeatures() ?? [];
 
                 /**
                  * Get the first linear ring of the polygon
@@ -111,43 +111,43 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
             }
         };
 
-        this._escapeHandler = (e: KeyboardEvent) => {
-            if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
+        this.#escapeHandler = (e: KeyboardEvent) => {
+            if (e.code === "Escape" && e.target === this.#olMap.getTargetElement()) {
                 this.reset();
             }
         };
 
-        this._interactionListener = [];
-        this._mapListener = [];
+        this.#interactionListener = [];
+        this.#mapListener = [];
 
-        this._start();
+        this.#start();
     }
 
     getDrawInteraction() {
-        return this._drawInteraction;
+        return this.#drawInteraction;
     }
 
     getState() {
-        return this._state.value;
+        return this.#state.value;
     }
 
-    private _setState(state: EditingWorkflowState) {
-        this._state.value = state;
+    #setState(state: EditingWorkflowState) {
+        this.#state.value = state;
     }
 
-    private _save(feature: Feature) {
-        this._setState("active:saving");
+    #save(feature: Feature) {
+        this.#setState("active:saving");
 
-        const layerUrl = this._editLayerURL;
+        const layerUrl = this.#editLayerURL;
 
         const geometry = feature.getGeometry();
         if (!geometry) {
-            this._destroy();
-            this._error = new Error("no geometry available");
-            this.#waiter?.reject(this._error);
+            this.#destroy();
+            this.#error = new Error("no geometry available");
+            this.#waiter?.reject(this.#error);
             return;
         }
-        const projection = this._olMap.getView().getProjection();
+        const projection = this.#olMap.getView().getProjection();
         const geoJson = new GeoJSON({
             dataProjection: projection
         });
@@ -157,112 +157,112 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
                 decimals: 10
             });
 
-        this._olMap.removeInteraction(this._drawInteraction);
-        this._tooltip.destroy();
+        this.#olMap.removeInteraction(this.#drawInteraction);
+        this.#tooltip.destroy();
 
-        saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
+        saveCreatedFeature(this.#httpService, layerUrl, geoJSONGeometry, projection)
             .then((featureId) => {
-                this._featureId = featureId;
-                this._destroy();
-                this.#waiter?.resolve({ featureId: this._featureId });
+                this.#featureId = featureId;
+                this.#destroy();
+                this.#waiter?.resolve({ featureId: this.#featureId });
             })
             .catch((err: Error) => {
                 LOG.error(err);
-                this._destroy();
-                this._error = new Error("Failed to save feature", { cause: err });
-                this.#waiter?.reject(this._error);
+                this.#destroy();
+                this.#error = new Error("Failed to save feature", { cause: err });
+                this.#waiter?.reject(this.#error);
             });
     }
 
-    private _start() {
-        this._map.layers.addLayer(this._editingLayer, { at: "topmost" });
-        this._olMap.addInteraction(this._drawInteraction);
+    #start() {
+        this.#map.layers.addLayer(this.#editingLayer, { at: "topmost" });
+        this.#olMap.addInteraction(this.#drawInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
         const containerEvents = effect(() => {
-            const container = this._map.container;
+            const container = this.#map.container;
             if (!container) {
                 return;
             }
 
-            container.addEventListener("keydown", this._enterHandler, false);
-            container.addEventListener("keydown", this._escapeHandler, false);
+            container.addEventListener("keydown", this.#enterHandler, false);
+            container.addEventListener("keydown", this.#escapeHandler, false);
             return () => {
-                container.removeEventListener("keydown", this._enterHandler);
-                container.removeEventListener("keydown", this._escapeHandler);
+                container.removeEventListener("keydown", this.#enterHandler);
+                container.removeEventListener("keydown", this.#escapeHandler);
             };
         });
 
-        this._tooltip.setVisible(true);
+        this.#tooltip.setVisible(true);
 
-        const drawStart = this._drawInteraction.on("drawstart", () => {
-            this._setState("active:drawing");
-            this._tooltip.setText(
-                this._intl.value.formatMessage({
+        const drawStart = this.#drawInteraction.on("drawstart", () => {
+            this.#setState("active:drawing");
+            this.#tooltip.setText(
+                this.#intl.value.formatMessage({
                     id: "create.tooltip.continue"
                 })
             );
         });
 
-        const drawEnd = this._drawInteraction.on("drawend", (e) => {
+        const drawEnd = this.#drawInteraction.on("drawend", (e) => {
             const feature = e.feature;
             if (!feature) {
-                this._destroy();
-                this._error = new Error("no feature available");
-                this.#waiter?.reject(this._error);
+                this.#destroy();
+                this.#error = new Error("no feature available");
+                this.#waiter?.reject(this.#error);
                 return;
             }
-            this._save(feature);
+            this.#save(feature);
         });
 
-        this._interactionListener.push(drawStart, drawEnd);
-        this._mapListener.push(containerEvents);
+        this.#interactionListener.push(drawStart, drawEnd);
+        this.#mapListener.push(containerEvents);
     }
 
     reset() {
-        this._drawInteraction.abortDrawing();
-        this._tooltip.setText(
-            this._intl.value.formatMessage({
+        this.#drawInteraction.abortDrawing();
+        this.#tooltip.setText(
+            this.#intl.value.formatMessage({
                 id: "create.tooltip.begin"
             })
         );
-        this._setState("active:initialized");
+        this.#setState("active:initialized");
     }
 
     stop() {
-        this._destroy();
+        this.#destroy();
         this.#waiter?.resolve(undefined);
     }
 
-    private _destroy() {
-        this._map.layers.removeLayer(this._editingLayer);
-        this._editingLayer.destroy();
-        this._olMap.removeInteraction(this._drawInteraction);
-        this._tooltip.destroy();
+    #destroy() {
+        this.#map.layers.removeLayer(this.#editingLayer);
+        this.#editingLayer.destroy();
+        this.#olMap.removeInteraction(this.#drawInteraction);
+        this.#tooltip.destroy();
 
         // Remove event listener on interaction and on map
-        this._interactionListener.forEach((listener) => {
+        this.#interactionListener.forEach((listener) => {
             unByKey(listener);
         });
-        this._mapListener.forEach((listener) => {
+        this.#mapListener.forEach((listener) => {
             listener.destroy();
         });
 
-        this._setState("destroyed");
+        this.#setState("destroyed");
     }
 
     triggerSave() {
         // Stop drawing - the `drawend` event is dispatched before inserting the feature.
-        this._drawInteraction.finishDrawing();
+        this.#drawInteraction.finishDrawing();
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        if (this._state.value === "destroyed") {
-            if (this._error) {
-                return Promise.reject(this._error);
+        if (this.#state.value === "destroyed") {
+            if (this.#error) {
+                return Promise.reject(this.#error);
             } else {
-                if (this._featureId) {
-                    return Promise.resolve({ featureId: this._featureId });
+                if (this.#featureId) {
+                    return Promise.resolve({ featureId: this.#featureId });
                 } else {
                     return Promise.resolve(undefined);
                 }

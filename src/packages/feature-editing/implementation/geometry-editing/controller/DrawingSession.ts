@@ -21,13 +21,13 @@ export interface DrawingActionHandler {
 }
 
 export class DrawingSession implements DrawingTracker, DrawingState {
-    private ignoreNextEdit = false;
-    private actionHandler: DrawingActionHandler | undefined;
-    private watchHandle: CleanupHandle | undefined;
+    #ignoreNextEdit = false;
+    #actionHandler: DrawingActionHandler | undefined;
+    #watchHandle: CleanupHandle | undefined;
 
-    private readonly canFinishSignal = reactive<boolean>();
-    private readonly canResetSignal = reactive<boolean>();
-    private readonly undoManager = new UndoManager<Coordinate>();
+    readonly #canFinishSignal = reactive<boolean>();
+    readonly #canResetSignal = reactive<boolean>();
+    readonly #undoManager = new UndoManager<Coordinate>();
 
     trackCapabilities(feature: Feature, actionHandler: DrawingActionHandler): void {
         this.untrackCapabilities();
@@ -43,85 +43,85 @@ export class DrawingSession implements DrawingTracker, DrawingState {
                 }
             );
 
-            this.ignoreNextEdit = true;
+            this.#ignoreNextEdit = true;
 
             // TODO: When undoing the very first change (that is, removing the first vertex),
             // a "drawabort" event is fired causing the undo history to be reset.
-            this.watchHandle = watchValue(
+            this.#watchHandle = watchValue(
                 () => numberOfVertices.value,
                 (numberOfVertices) => {
-                    this.canFinishSignal.value = canBeFinished(geometry, numberOfVertices);
-                    this.canResetSignal.value = canBeReset(geometry, numberOfVertices);
+                    this.#canFinishSignal.value = canBeFinished(geometry, numberOfVertices);
+                    this.#canResetSignal.value = canBeReset(geometry, numberOfVertices);
 
-                    if (!this.ignoreNextEdit) {
+                    if (!this.#ignoreNextEdit) {
                         const lastCoordinate = getLastCoordinate(geometry);
                         if (lastCoordinate != null) {
-                            this.undoManager.addEdit(lastCoordinate);
+                            this.#undoManager.addEdit(lastCoordinate);
                         }
                     } else {
-                        this.ignoreNextEdit = false;
+                        this.#ignoreNextEdit = false;
                     }
                 },
                 { immediate: true }
             );
 
-            this.actionHandler = actionHandler;
+            this.#actionHandler = actionHandler;
         }
     }
 
     finish(): void {
         if (this.canFinish) {
-            this.actionHandler?.finish();
+            this.#actionHandler?.finish();
         }
     }
 
     reset(): void {
         if (this.canReset) {
-            this.actionHandler?.reset();
+            this.#actionHandler?.reset();
         }
     }
 
     undo(): void {
-        if (this.canUndo && this.actionHandler != null) {
-            this.undoManager.undo();
-            this.ignoreNextEdit = true;
-            this.actionHandler.undo();
+        if (this.canUndo && this.#actionHandler != null) {
+            this.#undoManager.undo();
+            this.#ignoreNextEdit = true;
+            this.#actionHandler.undo();
         }
     }
 
     redo(): void {
-        if (this.canRedo && this.actionHandler != null) {
-            const coordinate = this.undoManager.redo();
+        if (this.canRedo && this.#actionHandler != null) {
+            const coordinate = this.#undoManager.redo();
             if (coordinate != null) {
-                this.ignoreNextEdit = true;
-                this.actionHandler.redo(coordinate);
+                this.#ignoreNextEdit = true;
+                this.#actionHandler.redo(coordinate);
             }
         }
     }
 
     untrackCapabilities(): void {
-        this.watchHandle?.destroy();
+        this.#watchHandle?.destroy();
 
-        this.canFinishSignal.value = undefined;
-        this.canResetSignal.value = undefined;
-        this.undoManager.reset();
+        this.#canFinishSignal.value = undefined;
+        this.#canResetSignal.value = undefined;
+        this.#undoManager.reset();
 
-        this.actionHandler = undefined;
+        this.#actionHandler = undefined;
     }
 
     get canFinish(): boolean {
-        return this.canFinishSignal.value ?? false;
+        return this.#canFinishSignal.value ?? false;
     }
 
     get canReset(): boolean {
-        return this.canResetSignal.value ?? false;
+        return this.#canResetSignal.value ?? false;
     }
 
     get canUndo(): boolean {
-        return this.undoManager.canUndo;
+        return this.#undoManager.canUndo;
     }
 
     get canRedo(): boolean {
-        return this.undoManager.canRedo;
+        return this.#undoManager.canRedo;
     }
 }

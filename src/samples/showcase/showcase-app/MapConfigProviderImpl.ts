@@ -27,10 +27,10 @@ export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
-    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+    #vectorSourceFactory: OgcFeaturesVectorSourceFactory;
 
     constructor(options: ServiceOptions<References>) {
-        this.vectorSourceFactory = options.references.vectorSourceFactory;
+        this.#vectorSourceFactory = options.references.vectorSourceFactory;
     }
 
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
@@ -63,7 +63,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 }),
                 createAdminAreasLayer(layerFactory),
                 createKitasLayer(layerFactory),
-                createKrankenhausLayer(layerFactory, this.vectorSourceFactory)
+                createKrankenhausLayer(layerFactory, this.#vectorSourceFactory)
             ]
         };
     }

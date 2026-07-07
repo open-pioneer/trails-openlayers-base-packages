@@ -17,12 +17,12 @@ export interface References {
 }
 
 export class EditingServiceImpl implements EditingService {
-    private _serviceOptions: ServiceOptions<References>;
-    private _workflows: Map<string, EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl>;
+    #serviceOptions: ServiceOptions<References>;
+    #workflows: Map<string, EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl>;
 
     constructor(serviceOptions: ServiceOptions<References>) {
-        this._serviceOptions = serviceOptions;
-        this._workflows = new Map();
+        this.#serviceOptions = serviceOptions;
+        this.#workflows = new Map();
     }
 
     createFeature(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingCreateWorkflowImpl {
@@ -32,7 +32,7 @@ export class EditingServiceImpl implements EditingService {
 
         const mapId = map.id;
 
-        let workflow = this._workflows.get(mapId);
+        let workflow = this.#workflows.get(mapId);
         if (workflow) {
             throw new Error(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
@@ -42,13 +42,13 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingCreateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
-            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
-            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
-            httpService: this._serviceOptions.references.httpService,
-            layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.currentIntl
+            polygonStyle: this.#serviceOptions.properties.polygonStyle as FlatStyle,
+            vertexStyle: this.#serviceOptions.properties.vertexStyle as FlatStyle,
+            httpService: this.#serviceOptions.references.httpService,
+            layerFactory: this.#serviceOptions.references.layerFactory,
+            intl: this.#serviceOptions.currentIntl
         });
-        this._workflows.set(mapId, workflow);
+        this.#workflows.set(mapId, workflow);
         this._connectToWorkflowDestroyEvent(workflow, mapId);
 
         return workflow;
@@ -65,7 +65,7 @@ export class EditingServiceImpl implements EditingService {
 
         const mapId = map.id;
 
-        let workflow = this._workflows.get(mapId);
+        let workflow = this.#workflows.get(mapId);
         if (workflow) {
             throw new Error(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
@@ -76,13 +76,13 @@ export class EditingServiceImpl implements EditingService {
             map,
             ogcApiFeatureLayerUrl,
             feature,
-            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
-            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
-            httpService: this._serviceOptions.references.httpService,
-            layerFactory: this._serviceOptions.references.layerFactory,
-            intl: this._serviceOptions.currentIntl
+            polygonStyle: this.#serviceOptions.properties.polygonStyle as FlatStyle,
+            vertexStyle: this.#serviceOptions.properties.vertexStyle as FlatStyle,
+            httpService: this.#serviceOptions.references.httpService,
+            layerFactory: this.#serviceOptions.references.layerFactory,
+            intl: this.#serviceOptions.currentIntl
         });
-        this._workflows.set(mapId, workflow);
+        this.#workflows.set(mapId, workflow);
         this._connectToWorkflowDestroyEvent(workflow, mapId);
 
         return workflow;
@@ -90,7 +90,7 @@ export class EditingServiceImpl implements EditingService {
 
     stop(map: string | MapModel): void {
         const mapId = typeof map === "string" ? map : map.id;
-        const workflow = this._workflows.get(mapId);
+        const workflow = this.#workflows.get(mapId);
         if (workflow) {
             workflow.stop();
         }
@@ -99,7 +99,7 @@ export class EditingServiceImpl implements EditingService {
 
     reset(map: string | MapModel): void {
         const mapId = typeof map === "string" ? map : map.id;
-        const workflow = this._workflows.get(mapId);
+        const workflow = this.#workflows.get(mapId);
         if (workflow) {
             workflow.reset();
         } else {
@@ -115,8 +115,8 @@ export class EditingServiceImpl implements EditingService {
             () => [workflow.getState()],
             ([newState]) => {
                 if (newState === "destroyed") {
-                    if (this._workflows.get(mapId) === workflow) {
-                        this._workflows.delete(mapId);
+                    if (this.#workflows.get(mapId) === workflow) {
+                        this.#workflows.delete(mapId);
                     }
                     watchStateHandle.destroy();
                 }

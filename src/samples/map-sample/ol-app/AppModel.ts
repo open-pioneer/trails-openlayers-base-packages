@@ -119,85 +119,85 @@ function isInteraction(content: MainContentId): boolean {
 export class AppModel implements Service, AppState {
     declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
 
-    private _mapRegistry: MapRegistry;
-    private _layerFactory: LayerFactory;
-    private _vectorSourceFactory: OgcFeaturesVectorSourceFactory;
-    private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
-    private _httpService: HttpService;
-    private _resources: Resource[] = [];
+    #mapRegistry: MapRegistry;
+    #layerFactory: LayerFactory;
+    #vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+    #vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
+    #httpService: HttpService;
+    #resources: Resource[] = [];
 
-    private _map = reactive<MapModel>();
+    #map = reactive<MapModel>();
 
     // Highlight for search or selection results (they remove each other in this app).
-    private _featureHighlight: Highlight | undefined = undefined;
+    #featureHighlight: Highlight | undefined = undefined;
 
     // Reactive state used by the UI
-    private _launchError = reactive<string>();
-    private _mainContent = reactive<MainContentId[]>(["toc"]);
-    private _searchSources = reactiveArray<SearchSource>();
-    private _selectionSources = reactiveArray<SelectionSource>();
-    private _sourceMetadata = reactiveMap<unknown, ResultColumn[]>();
-    private _resultListState = reactive<ResultListState>({
+    #launchError = reactive<string>();
+    #mainContent = reactive<MainContentId[]>(["toc"]);
+    #searchSources = reactiveArray<SearchSource>();
+    #selectionSources = reactiveArray<SelectionSource>();
+    #sourceMetadata = reactiveMap<unknown, ResultColumn[]>();
+    #resultListState = reactive<ResultListState>({
         key: 0,
         open: false,
         input: undefined
     });
 
     constructor({ references }: ServiceOptions<References>) {
-        this._mapRegistry = references.mapRegistry;
-        this._layerFactory = references.layerFactory;
-        this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
-        this._vectorSourceFactory = references.vectorSourceFactory;
-        this._httpService = references.httpService;
+        this.#mapRegistry = references.mapRegistry;
+        this.#layerFactory = references.layerFactory;
+        this.#vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
+        this.#vectorSourceFactory = references.vectorSourceFactory;
+        this.#httpService = references.httpService;
 
-        this._mapRegistry
-            .createMapModel("main", getMapConfig(this._layerFactory, this._vectorSourceFactory))
+        this.#mapRegistry
+            .createMapModel("main", getMapConfig(this.#layerFactory, this.#vectorSourceFactory))
             .then((map) => {
-                this._map.value = map;
-                this.initSelectionSources(map).catch((error) => {
+                this.#map.value = map;
+                this.#initSelectionSources(map).catch((error) => {
                     LOG.error("Failed to initialize selection sources", error);
                 });
             })
             .catch((error) => {
                 LOG.error("Failed to initialize map", error);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                this._launchError.value = (error as any).message || "Internal error";
+                this.#launchError.value = (error as any).message || "Internal error";
             });
 
-        this.initSearchSources();
+        this.#initSearchSources();
     }
 
     destroy(): void {
         this.clearHighlight();
-        this._resources.forEach((r) => r.destroy());
+        this.#resources.forEach((r) => r.destroy());
     }
 
     get launchError(): string | undefined {
-        return this._launchError.value;
+        return this.#launchError.value;
     }
 
     get map(): MapModel | undefined {
-        return this._map.value;
+        return this.#map.value;
     }
 
     get mainContent(): readonly MainContentId[] {
-        return this._mainContent.value;
+        return this.#mainContent.value;
     }
 
     get searchSources(): ReadonlyReactiveArray<SearchSource> {
-        return this._searchSources;
+        return this.#searchSources;
     }
 
     get selectionSources(): ReadonlyReactiveArray<SelectionSource> {
-        return this._selectionSources;
+        return this.#selectionSources;
     }
 
     get sourceMetadata(): ReadonlyReactiveMap<unknown, ResultColumn[]> {
-        return this._sourceMetadata;
+        return this.#sourceMetadata;
     }
 
     get resultListState(): Readonly<ResultListState> {
-        return this._resultListState.value;
+        return this.#resultListState.value;
     }
 
     /**
@@ -207,9 +207,9 @@ export class AppModel implements Service, AppState {
      * or exactly one interaction.
      */
     toggleMainContent(content: MainContentId) {
-        const current = this._mainContent.value;
+        const current = this.#mainContent.value;
         if (current.includes(content)) {
-            this._mainContent.value = current.filter((c) => c !== content);
+            this.#mainContent.value = current.filter((c) => c !== content);
             return;
         }
 
@@ -222,29 +222,29 @@ export class AppModel implements Service, AppState {
             next = current.filter((c) => !isInteraction(c));
             next.push(content);
         }
-        this._mainContent.value = next;
+        this.#mainContent.value = next;
     }
 
     /**
      * Hides the content element with the given name.
      */
     hideContent(name: MainContentId) {
-        this._mainContent.value = this._mainContent.value.filter((c) => c !== name);
+        this.#mainContent.value = this.#mainContent.value.filter((c) => c !== name);
     }
 
     /**
      * Resets all currently running interactions.
      */
     clearInteractions() {
-        this._mainContent.value = this._mainContent.value.filter((c) => !isInteraction(c));
+        this.#mainContent.value = this.#mainContent.value.filter((c) => !isInteraction(c));
     }
 
     /**
      * Shows the result list with the given input.
      */
     setResultListInput(input: ResultListInput) {
-        const oldState = this._resultListState.value;
-        this._resultListState.value = {
+        const oldState = this.#resultListState.value;
+        this.#resultListState.value = {
             open: true,
             key: oldState.key + 1,
             input: input
@@ -255,8 +255,8 @@ export class AppModel implements Service, AppState {
      * Sets the visibility of the result list to the given value.
      */
     setResultListVisibility(visible: boolean) {
-        this._resultListState.value = {
-            ...this._resultListState.value,
+        this.#resultListState.value = {
+            ...this.#resultListState.value,
             open: visible
         };
     }
@@ -269,7 +269,7 @@ export class AppModel implements Service, AppState {
         const viewport: HTMLElement = map.olMap.getViewport();
 
         this.clearHighlight();
-        this._featureHighlight = map.highlights.addAndZoom(geometries, {
+        this.#featureHighlight = map.highlights.addAndZoom(geometries, {
             viewPadding:
                 viewport && viewport.offsetWidth < 1000
                     ? { top: 150, right: 75, bottom: 50, left: 75 }
@@ -295,9 +295,9 @@ export class AppModel implements Service, AppState {
      * Removes any highlights created by this instance.
      */
     clearHighlight() {
-        if (this._featureHighlight) {
-            this._featureHighlight.destroy();
-            this._featureHighlight = undefined;
+        if (this.#featureHighlight) {
+            this.#featureHighlight.destroy();
+            this.#featureHighlight = undefined;
         }
     }
 
@@ -305,13 +305,13 @@ export class AppModel implements Service, AppState {
      * Initializes the application's search sources.
      * These are used by the UI to configure the search widget.
      */
-    private initSearchSources() {
+    #initSearchSources() {
         const photonSource = new PhotonGeocoder(
             "Photon Geocoder",
             ["city", "street"],
-            this._httpService
+            this.#httpService
         );
-        this._searchSources.push(photonSource);
+        this.#searchSources.push(photonSource);
     }
 
     /**
@@ -321,7 +321,7 @@ export class AppModel implements Service, AppState {
      * The result list metadata is loaded into a table (`sourceMetadata`) by reading
      * the application specific `resultListMetadata` from the layers' attributes.
      */
-    private async initSelectionSources(map: MapModel) {
+    async #initSelectionSources(map: MapModel) {
         const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
@@ -333,7 +333,7 @@ export class AppModel implements Service, AppState {
                 continue;
             }
 
-            const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
+            const layerSelectionSource = this.#vectorSelectionSourceFactory.createSelectionSource({
                 vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
                 label: opLayer.title
             });
@@ -350,9 +350,9 @@ export class AppModel implements Service, AppState {
                 }
             );
 
-            this._resources.push(statusWatch, layerSelectionSource);
-            this._selectionSources.unshift(layerSelectionSource);
-            this._sourceMetadata.set(
+            this.#resources.push(statusWatch, layerSelectionSource);
+            this.#selectionSources.unshift(layerSelectionSource);
+            this.#sourceMetadata.set(
                 layerSelectionSource,
                 opLayer.attributes.resultListMetadata as ResultColumn[]
             );

@@ -112,4 +112,3 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
         </Box>
     );
 }
-

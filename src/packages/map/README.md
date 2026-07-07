@@ -149,13 +149,9 @@ export class AppModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
     constructor({ references }: ServiceOptions<References>) {
         this._mapRegistry = references.mapRegistry;
-        this._mapRegistry
-            .createMapModel("myMapModelId", {
-                /* map config */
-            })
-            .then((map) => {
-                // use the map model instance
-            });
+        this._mapRegistry.createMapModel("myMapModelId", {/* map config */}).then((map) => {
+            // use the map model instance
+        });
     }
 }
 ```
@@ -193,9 +189,7 @@ import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
-        return {
-            /* map config */
-        };
+        return {/* map config */};
     }
 }
 ```
@@ -995,19 +989,19 @@ interface References {
 }
 
 export class TestService {
-    private registry: MapRegistry;
+    #registry: MapRegistry;
 
     constructor(options: ServiceOptions<References>) {
-        this.registry = options.references.mapRegistry;
+        this.#registry = options.references.mapRegistry;
     }
 
     async centerBerlin() {
-        const model = await this.registry.getMapModel(MAP_ID);
+        const model = await this.#registry.getMapModel(MAP_ID);
         model?.olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
     }
 
     async setLayerVisible() {
-        const model = await this.registry.getMapModel(MAP_ID);
+        const model = await this.#registry.getMapModel(MAP_ID);
         const layer = model?.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
         layer?.setVisible(true);
     }
