@@ -64,6 +64,10 @@ export class SimpleLayer extends AbstractLayer {
         super(config, deps, internalTag);
     }
 
+    protected override get defaultLoadState() {
+        return "loaded" as const;
+    }
+
     override get type() {
         return "simple" as const;
     }

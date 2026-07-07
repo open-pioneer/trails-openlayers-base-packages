@@ -132,8 +132,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         );
         // OpenLayers sources carry no error detail, so synthesize one.
         this.#sourceInfo = computed(() => makeSourceInfo(this.id, this.#sourceState.value));
-        this.#healthInfo = reactive<LayerLoadInfo>("not-loaded");
-        this.#metadataInfo = reactive<LayerLoadInfo>("not-loaded");
+        this.#healthInfo = reactive<LayerLoadInfo>(this.defaultLoadState);
+        this.#metadataInfo = reactive<LayerLoadInfo>(this.defaultLoadState);
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
@@ -183,6 +183,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
         this.olLayer.dispose();
         super.destroy();
+    }
+
+    /**
+     * Initial load state.
+     */
+    protected get defaultLoadState(): Exclude<LayerLoadState, "error"> {
+        return "not-loaded";
     }
 
     /**
