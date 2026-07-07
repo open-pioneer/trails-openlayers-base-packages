@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-/// <reference types="vitest" />
+/// <reference types="vitest/config" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
@@ -91,6 +91,7 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: "happy-dom",
+            silent: "passed-only",
             setupFiles: ["testing/global-setup.ts"],
             server: {
                 deps: {
