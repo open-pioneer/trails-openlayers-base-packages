@@ -24,7 +24,7 @@ interface Data {
 }
 
 export class ModificationInteraction extends BaseInteraction<ModificationParameters, Data> {
-    private tooltip: Overlay | undefined;
+    #tooltip: Overlay | undefined;
 
     protected override startInteraction(parameters: ModificationParameters): Data {
         const { feature, drawLayer, modificationOptions, tooltipMessages } = parameters;
@@ -37,7 +37,7 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
             this.mapModel.layers.addLayer(drawLayer, { at: "topmost" });
         }
 
-        this.tooltip = this.createHelpTooltip(
+        this.#tooltip = this.#createHelpTooltip(
             this.mapModel,
             tooltipMessages,
             originalGeometry?.getType()
@@ -61,10 +61,10 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
             feature.setGeometry(originalGeometry);
         }
 
-        this.tooltip?.destroy();
+        this.#tooltip?.destroy();
     }
 
-    private createHelpTooltip(
+    #createHelpTooltip(
         mapModel: MapModel,
         tooltipMessages: TooltipMessages,
         geometryType?: GeometryType

@@ -42,7 +42,7 @@ export class PhotonGeocoder implements SearchSource {
         inputValue: string,
         { mapProjection, signal }: SearchOptions
     ): Promise<SearchResult[]> {
-        const response = await this.request(inputValue, 100, signal);
+        const response = await this.#request(inputValue, 100, signal);
         const geojson = new GeoJSON({
             dataProjection: "EPSG:4326",
             featureProjection: mapProjection
@@ -56,14 +56,14 @@ export class PhotonGeocoder implements SearchSource {
                 const geometry = geojson.readGeometry(feature.geometry);
                 return {
                     id: feature.properties.osm_id || idx,
-                    label: this.createLabel(feature),
+                    label: this.#createLabel(feature),
                     geometry: geometry,
                     properties: feature.properties
                 };
             });
     }
 
-    private async request(
+    async #request(
         inputValue: string,
         limit: number,
         signal?: AbortSignal | undefined
@@ -82,7 +82,7 @@ export class PhotonGeocoder implements SearchSource {
         return result;
     }
 
-    private createLabel(feature: PhotonResponseFeature) {
+    #createLabel(feature: PhotonResponseFeature) {
         return `${feature.properties.name} (${
             feature.properties.osm_value ? feature.properties.osm_value + ", " : ""
         }${feature.properties.postcode ? feature.properties.postcode + ", " : ""}${

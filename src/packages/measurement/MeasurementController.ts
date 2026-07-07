@@ -37,26 +37,26 @@ export class MeasurementController {
     readonly olMap: OlMap;
     readonly messages: Messages;
 
-    private activeFeatureStyle: StyleFunction | undefined;
+    #activeFeatureStyle: StyleFunction | undefined;
     /**
      * The layer rendering the measurement "features".
      */
-    private layer: SimpleLayer;
+    #layer: SimpleLayer;
 
     /**
      * Source of {@link layer}.
      */
-    private source: VectorSource;
+    #source: VectorSource;
 
     /**
      * Stores the current `Draw` interaction.
      */
-    private draw: Draw | undefined = undefined;
+    #draw: Draw | undefined = undefined;
 
     /**
      * The active measurement manipulated by the `draw` interaction.
      */
-    private activeMeasurement: MeasurementInstance | undefined;
+    #activeMeasurement: MeasurementInstance | undefined;
 
     /**
      * Map that is used to track all predefined measurements currently added to the source.
@@ -64,34 +64,34 @@ export class MeasurementController {
      *
      * The measurement instances here must also be contained in `finishedMeasurements`.
      */
-    private predefinedMeasurements = new Map<MeasurementGeometry, MeasurementInstance>();
+    #predefinedMeasurements = new Map<MeasurementGeometry, MeasurementInstance>();
 
     /**
      * Measurement instances that were finished.
      */
-    private finishedMeasurements = new Set<MeasurementInstance>();
+    #finishedMeasurements = new Set<MeasurementInstance>();
 
     /**
      * Overlay for help tooltip.
      */
-    private helpTooltip: Overlay;
+    #helpTooltip: Overlay;
 
     /**
      * Keeps track of registered event handlers.
      */
-    private resources: Resource[] = [];
+    #resources: Resource[] = [];
 
     /**
      * Called when a measurement is added to or removed from the source.
      */
-    private measurementChangedHandler: MeasurementsChangeHandler | undefined;
+    #measurementChangedHandler: MeasurementsChangeHandler | undefined;
 
     constructor(map: MapModel, layerFactory: LayerFactory, messages: Messages) {
         this.map = map;
         this.olMap = map.olMap;
         this.messages = messages;
-        const source = (this.source = new VectorSource());
-        this.layer = layerFactory.create({
+        const source = (this.#source = new VectorSource());
+        this.#layer = layerFactory.create({
             type: SimpleLayer,
             internal: true,
             title: "measurement-layer",
@@ -99,39 +99,39 @@ export class MeasurementController {
                 source: source
             })
         });
-        map.layers.addLayer(this.layer, { at: "topmost" });
+        map.layers.addLayer(this.#layer, { at: "topmost" });
 
-        this.helpTooltip = createHelpTooltip(this.map);
+        this.#helpTooltip = createHelpTooltip(this.map);
     }
 
     destroy() {
         this.stopMeasurement();
 
         // Cleanup registered event handlers etc.
-        for (const resource of this.resources) {
+        for (const resource of this.#resources) {
             resource.destroy();
         }
-        this.resources = [];
+        this.#resources = [];
 
         // Cleanup measurements and tooltips.
-        this.activeMeasurement = destroyResource(this.activeMeasurement);
-        for (const measurement of this.finishedMeasurements) {
+        this.#activeMeasurement = destroyResource(this.#activeMeasurement);
+        for (const measurement of this.#finishedMeasurements) {
             measurement.destroy();
         }
-        this.finishedMeasurements.clear();
-        this.helpTooltip.destroy();
+        this.#finishedMeasurements.clear();
+        this.#helpTooltip.destroy();
 
         // Cleanup layer
-        this.map.layers.removeLayer(this.layer);
-        this.layer.destroy();
+        this.map.layers.removeLayer(this.#layer);
+        this.#layer.destroy();
 
-        this.measurementChangedHandler = undefined;
-        this.predefinedMeasurements.clear();
+        this.#measurementChangedHandler = undefined;
+        this.#predefinedMeasurements.clear();
     }
 
     /** Returns the vector layer used for finished features. */
     getOlVectorLayer() {
-        return this.layer.olLayer as VectorLayer;
+        return this.#layer.olLayer as VectorLayer;
     }
 
     /** Updates the style used for finished features. */
@@ -140,58 +140,58 @@ export class MeasurementController {
     }
 
     setMeasurementSourceChangedHandler(handler: MeasurementsChangeHandler | undefined) {
-        this.measurementChangedHandler = handler;
+        this.#measurementChangedHandler = handler;
     }
 
     setPredefinedMeasurements(geometries: MeasurementGeometry[]) {
-        this.updatePredefinedMeasurements(geometries);
+        this.#updatePredefinedMeasurements(geometries);
     }
 
     /** Updates the style used for active measurements. */
     setActiveFeatureStyle(style: StyleLike) {
         const styleFunction = toStyleFunction(style);
-        this.activeFeatureStyle = (feature, ...args) => {
+        this.#activeFeatureStyle = (feature, ...args) => {
             const ft = feature?.getGeometry()?.getType();
             if (ft === "Polygon" || ft === "LineString" || ft === "Point") {
                 return styleFunction(feature, ...args);
             }
         };
         // Update style on current draw instance (if any)
-        this.draw?.getOverlay().setStyle(this.activeFeatureStyle);
+        this.#draw?.getOverlay().setStyle(this.#activeFeatureStyle);
     }
 
     /** Removes all finished measurements. */
     clearMeasurements() {
-        const currentFeatures = this.source.getFeatures(); //returns snapshot copy of the features on the source
-        this.source.clear();
+        const currentFeatures = this.#source.getFeatures(); //returns snapshot copy of the features on the source
+        this.#source.clear();
         currentFeatures.forEach((feature) => {
             //raise remove-measurement event for each measurement after the source was cleared
-            this.raiseMeasurementsChangeEvent("remove-measurement", feature);
+            this.#raiseMeasurementsChangeEvent("remove-measurement", feature);
         });
-        this.predefinedMeasurements.clear();
-        for (const measurement of this.finishedMeasurements) {
+        this.#predefinedMeasurements.clear();
+        for (const measurement of this.#finishedMeasurements) {
             measurement.destroy();
         }
-        this.finishedMeasurements.clear();
+        this.#finishedMeasurements.clear();
     }
 
     /** Starts measuring using the provided type. */
     startMeasurement(type: MeasurementType) {
-        if (this.draw) {
+        if (this.#draw) {
             throw new Error("Internal error: another measurement interaction is still active.");
         }
 
         const geometryType = type === "area" ? "Polygon" : "LineString";
-        const draw = (this.draw = new Draw({
-            source: this.source,
+        const draw = (this.#draw = new Draw({
+            source: this.#source,
             type: geometryType,
-            style: this.activeFeatureStyle
+            style: this.#activeFeatureStyle
         }));
         this.olMap.addInteraction(draw);
 
         // update tooltip if user changed drawing mode (and did not move the mouse yet)
         // currently this does not work when the tool is initially activated as the tooltip has no position yet
-        this.updateTooltip();
+        this.#updateTooltip();
 
         let measurement: MeasurementInstance | undefined;
         let changeListenerKey: EventsKey | undefined = undefined;
@@ -202,23 +202,23 @@ export class MeasurementController {
                 return;
             }
 
-            measurement = this.activeMeasurement = new MeasurementInstance("active", sketch, this);
+            measurement = this.#activeMeasurement = new MeasurementInstance("active", sketch, this);
             changeListenerKey = sketch.getGeometry()?.on("change", () => {
                 measurement?.updateTooltipContent();
                 measurement?.updateTooltipPosition();
             });
 
             // update tooltip message if user started drawing but did not yet move the mouse
-            this.updateTooltip();
+            this.#updateTooltip();
         });
 
         draw.on("drawend", () => {
-            if (measurement && measurement === this.activeMeasurement) {
+            if (measurement && measurement === this.#activeMeasurement) {
                 const newMeasurement = measurement;
                 newMeasurement.updateState("finished");
-                this.finishedMeasurements.add(newMeasurement);
-                this.raiseMeasurementsChangeEvent("add-measurement", newMeasurement.feature);
-                this.activeMeasurement = measurement = undefined;
+                this.#finishedMeasurements.add(newMeasurement);
+                this.#raiseMeasurementsChangeEvent("add-measurement", newMeasurement.feature);
+                this.#activeMeasurement = measurement = undefined;
             }
 
             measurement = undefined;
@@ -227,14 +227,14 @@ export class MeasurementController {
             }
 
             // update tooltip if user finished drawing but did not yet move the mouse
-            this.updateTooltip();
+            this.#updateTooltip();
         });
 
         draw.on("drawabort", () => {
             if (measurement) {
                 measurement.destroy();
-                if (measurement === this.activeMeasurement) {
-                    this.activeMeasurement = undefined;
+                if (measurement === this.#activeMeasurement) {
+                    this.#activeMeasurement = undefined;
                 }
                 measurement = undefined;
             }
@@ -247,29 +247,29 @@ export class MeasurementController {
 
     /** Stops the current measuring started by `startMeasurement`. */
     stopMeasurement() {
-        if (this.draw) {
-            this.olMap.removeInteraction(this.draw);
-            this.draw.abortDrawing();
-            this.draw.dispose();
-            this.draw = undefined;
+        if (this.#draw) {
+            this.olMap.removeInteraction(this.#draw);
+            this.#draw.abortDrawing();
+            this.#draw.dispose();
+            this.#draw = undefined;
         }
 
-        this.activeMeasurement = destroyResource(this.activeMeasurement);
+        this.#activeMeasurement = destroyResource(this.#activeMeasurement);
     }
 
-    private updateTooltip() {
-        const overlay = this.helpTooltip;
-        const helpMessage = getHelpMessage(this.messages, this.activeMeasurement);
+    #updateTooltip() {
+        const overlay = this.#helpTooltip;
+        const helpMessage = getHelpMessage(this.messages, this.#activeMeasurement);
         const newContent = createElement(MeasurementTooltipContent, { content: helpMessage });
         overlay.setContent(newContent);
     }
 
-    private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
+    #updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
         const addedMeasurements = geometries.filter(
-            (geom) => !this.predefinedMeasurements.has(geom)
+            (geom) => !this.#predefinedMeasurements.has(geom)
         );
         const removedMeasurements: MeasurementGeometry[] = [];
-        for (const geom of this.predefinedMeasurements.keys()) {
+        for (const geom of this.#predefinedMeasurements.keys()) {
             if (!geometries.includes(geom)) {
                 removedMeasurements.push(geom);
             }
@@ -277,34 +277,34 @@ export class MeasurementController {
 
         addedMeasurements.forEach((geom) => {
             const measurementFeature = new Feature(geom);
-            this.source.addFeature(measurementFeature);
+            this.#source.addFeature(measurementFeature);
 
             const measurement = new MeasurementInstance("finished", measurementFeature, this);
-            this.finishedMeasurements.add(measurement);
-            this.predefinedMeasurements.set(geom, measurement);
-            this.raiseMeasurementsChangeEvent("add-measurement", measurementFeature);
+            this.#finishedMeasurements.add(measurement);
+            this.#predefinedMeasurements.set(geom, measurement);
+            this.#raiseMeasurementsChangeEvent("add-measurement", measurementFeature);
         });
 
         removedMeasurements.forEach((geom) => {
-            const measurement = this.predefinedMeasurements.get(geom);
+            const measurement = this.#predefinedMeasurements.get(geom);
             if (measurement) {
                 //remove measurement feature from source and destroy associated tooltip
-                this.source.removeFeature(measurement.feature);
-                this.finishedMeasurements.delete(measurement);
+                this.#source.removeFeature(measurement.feature);
+                this.#finishedMeasurements.delete(measurement);
                 measurement.destroy();
-                this.raiseMeasurementsChangeEvent("remove-measurement", measurement.feature);
+                this.#raiseMeasurementsChangeEvent("remove-measurement", measurement.feature);
             }
-            this.predefinedMeasurements.delete(geom);
+            this.#predefinedMeasurements.delete(geom);
         });
     }
 
-    private raiseMeasurementsChangeEvent(
+    #raiseMeasurementsChangeEvent(
         kind: MeasurementsChangeEvent["kind"],
         measurementFeature: Feature
     ) {
         const measurementGeom = measurementFeature.getGeometry();
-        if (this.measurementChangedHandler && measurementGeom) {
-            this.measurementChangedHandler({
+        if (this.#measurementChangedHandler && measurementGeom) {
+            this.#measurementChangedHandler({
                 kind: kind,
                 geometry:
                     measurementGeom instanceof Polygon
@@ -326,33 +326,33 @@ class MeasurementInstance {
     readonly controller: MeasurementController;
     readonly feature: Feature;
 
-    private _state: "active" | "finished";
-    private tooltip: Overlay;
+    #state: "active" | "finished";
+    #tooltip: Overlay;
 
     constructor(state: "active" | "finished", feature: Feature, controller: MeasurementController) {
         this.controller = controller;
-        this._state = state;
+        this.#state = state;
         this.feature = feature;
-        this.tooltip = createMeasureTooltip(this.controller.map, state === "finished");
+        this.#tooltip = createMeasureTooltip(this.controller.map, state === "finished");
         this.updateTooltipContent();
         this.updateTooltipPosition();
     }
 
     destroy() {
-        this.tooltip.destroy();
+        this.#tooltip.destroy();
     }
 
     get state(): "active" | "finished" {
-        return this._state;
+        return this.#state;
     }
 
     updateState(state: "active" | "finished") {
-        if (this._state === state) {
+        if (this.#state === state) {
             return;
         }
 
-        this._state = state;
-        if (this._state === "finished") {
+        this.#state = state;
+        if (this.#state === "finished") {
             this.finishTooltip();
         }
     }
@@ -364,15 +364,15 @@ class MeasurementInstance {
             return;
         }
 
-        const projection = this.olMap.getView().getProjection();
+        const projection = this.#olMap.getView().getProjection();
         let output;
         if (geometry instanceof Polygon) {
-            output = formatArea(geometry, projection, this.messages);
+            output = formatArea(geometry, projection, this.#messages);
         } else if (geometry instanceof LineString) {
-            output = formatLength(geometry, projection, this.messages);
+            output = formatLength(geometry, projection, this.#messages);
         }
         if (output) {
-            this.tooltip.setContent(createElement(MeasurementTooltipContent, { content: output }));
+            this.#tooltip.setContent(createElement(MeasurementTooltipContent, { content: output }));
         }
     }
 
@@ -391,21 +391,21 @@ class MeasurementInstance {
         } else {
             return;
         }
-        this.tooltip.setPosition(tooltipCoord);
+        this.#tooltip.setPosition(tooltipCoord);
     }
 
     finishTooltip() {
-        this.tooltip.element.className = FINISHED_MEASUREMENT_CLASSNAME;
-        this.tooltip.setOffset(FINISHED_MEASUREMENT_OFFSET);
+        this.#tooltip.element.className = FINISHED_MEASUREMENT_CLASSNAME;
+        this.#tooltip.setOffset(FINISHED_MEASUREMENT_OFFSET);
         this.updateTooltipContent();
         this.updateTooltipPosition();
     }
 
-    private get olMap(): OlMap {
+    get #olMap(): OlMap {
         return this.controller.olMap;
     }
 
-    private get messages(): Messages {
+    get #messages(): Messages {
         return this.controller.messages;
     }
 }

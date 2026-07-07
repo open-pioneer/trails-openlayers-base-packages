@@ -16,7 +16,7 @@ import { LAYER_CONFIG } from "./layerConfig";
 export const MAP_ID = "main";
 
 export class MainMapProvider implements MapConfigProvider {
-    private static readonly MAP_SETTINGS: Omit<MapConfig, "layers"> = {
+    static readonly #MAP_SETTINGS: Omit<MapConfig, "layers"> = {
         initialView: {
             kind: "position",
             center: {
@@ -30,8 +30,8 @@ export class MainMapProvider implements MapConfigProvider {
 
     getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return Promise.resolve({
-            ...MainMapProvider.MAP_SETTINGS,
-            layers: [this.createOSMLayer(layerFactory), ...this.createVectorLayers(layerFactory)]
+            ...MainMapProvider.#MAP_SETTINGS,
+            layers: [this.#createOSMLayer(layerFactory), ...this.#createVectorLayers(layerFactory)]
         });
     }
 
@@ -39,7 +39,7 @@ export class MainMapProvider implements MapConfigProvider {
         return MAP_ID;
     }
 
-    private createOSMLayer(layerFactory: LayerFactory): Layer {
+    #createOSMLayer(layerFactory: LayerFactory): Layer {
         return layerFactory.create({
             title: "OpenStreetMap",
             type: SimpleLayer,
@@ -53,7 +53,7 @@ export class MainMapProvider implements MapConfigProvider {
         });
     }
 
-    private createVectorLayers(layerFactory: LayerFactory): Layer[] {
+    #createVectorLayers(layerFactory: LayerFactory): Layer[] {
         return [...LAYER_CONFIG].reverse().map(({ id, title, style }) => {
             const store = InMemoryStore.getOrCreate(id);
 

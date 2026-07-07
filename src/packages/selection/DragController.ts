@@ -20,13 +20,13 @@ const ACTIVE_CLASS = "selection-active";
 const INACTIVE_CLASS = "selection-inactive";
 
 export class DragController {
-    private tooltip: Overlay;
-    private interactionResources: InteractionResource[] = [];
-    private olMap: OlMap;
-    private isActive = reactive(true);
-    private tooltipMessage: string;
-    private tooltipDisabledMessage: string;
-    private tooltipSync: Resource | undefined;
+    #tooltip: Overlay;
+    #interactionResources: InteractionResource[] = [];
+    #olMap: OlMap;
+    #isActive = reactive(true);
+    #tooltipMessage: string;
+    #tooltipDisabledMessage: string;
+    #tooltipSync: Resource | undefined;
 
     constructor(
         map: MapModel,
@@ -34,26 +34,26 @@ export class DragController {
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
-        this.olMap = map.olMap;
-        const viewPort = this.initViewport(this.olMap);
-        this.interactionResources.push(
-            this.createDragBox(this.olMap, onExtentSelected, viewPort, this.interactionResources)
+        this.#olMap = map.olMap;
+        const viewPort = this.initViewport(this.#olMap);
+        this.#interactionResources.push(
+            this.#createDragBox(this.#olMap, onExtentSelected, viewPort, this.#interactionResources)
         );
-        this.interactionResources.push(
-            this.createDrag(this.olMap, viewPort, this.interactionResources)
+        this.#interactionResources.push(
+            this.#createDrag(this.#olMap, viewPort, this.#interactionResources)
         );
 
-        this.tooltip = this.createHelpTooltip(map, tooltipMessage);
-        this.tooltipMessage = tooltipMessage;
-        this.tooltipDisabledMessage = tooltipDisabledMessage;
+        this.#tooltip = this.#createHelpTooltip(map, tooltipMessage);
+        this.#tooltipMessage = tooltipMessage;
+        this.#tooltipDisabledMessage = tooltipDisabledMessage;
 
-        this.tooltipSync = watch(
-            () => [this.isActive.value, this.tooltipText],
+        this.#tooltipSync = watch(
+            () => [this.#isActive.value, this.tooltipText],
             ([isActive, tooltipText]) => {
                 const tooltipContent = createElement(SelectionTooltipContent, {
                     content: tooltipText
                 });
-                this.tooltip.setContent(tooltipContent);
+                this.#tooltip.setContent(tooltipContent);
                 viewPort.classList.toggle(ACTIVE_CLASS, isActive);
                 viewPort.classList.toggle(INACTIVE_CLASS, !isActive);
             },
@@ -78,11 +78,11 @@ export class DragController {
      * Method for destroying the controller when it is no longer needed
      */
     destroy() {
-        this.tooltipSync?.destroy();
-        this.tooltipSync = undefined;
+        this.#tooltipSync?.destroy();
+        this.#tooltipSync = undefined;
 
-        this.tooltip.destroy();
-        this.interactionResources.forEach((interaction) => {
+        this.#tooltip.destroy();
+        this.#interactionResources.forEach((interaction) => {
             interaction.destroy();
         });
     }
@@ -91,32 +91,32 @@ export class DragController {
      * The current tooltip text shown to the user.
      */
     get tooltipText(): string {
-        const isActive = this.isActive.value;
-        return isActive ? this.tooltipMessage : this.tooltipDisabledMessage;
+        const isActive = this.#isActive.value;
+        return isActive ? this.#tooltipMessage : this.#tooltipDisabledMessage;
     }
 
     setActive(isActive: boolean) {
-        if (this.isActive.value === isActive) {
+        if (this.#isActive.value === isActive) {
             return;
         }
 
         if (isActive) {
-            this.interactionResources.forEach((interaction) =>
-                this.olMap.addInteraction(interaction.interaction)
+            this.#interactionResources.forEach((interaction) =>
+                this.#olMap.addInteraction(interaction.interaction)
             );
-            this.isActive.value = true;
+            this.#isActive.value = true;
         } else {
-            this.interactionResources.forEach((interaction) =>
-                this.olMap.removeInteraction(interaction.interaction)
+            this.#interactionResources.forEach((interaction) =>
+                this.#olMap.removeInteraction(interaction.interaction)
             );
-            this.isActive.value = false;
+            this.#isActive.value = false;
         }
     }
 
     /**
      * Method to create a simple extent-selection
      */
-    private createDragBox(
+    #createDragBox(
         olMap: OlMap,
         onExtentSelected: (geometry: Geometry) => void,
         viewPort: HTMLElement,
@@ -149,7 +149,7 @@ export class DragController {
     /**
      * Method to activate pan with right-mouse-click
      */
-    private createDrag(
+    #createDrag(
         olMap: OlMap,
         viewPort: HTMLElement,
         interactionResources: InteractionResource[]
@@ -182,7 +182,7 @@ export class DragController {
     /**
      * Method to generate a tooltip on the mouse cursor
      */
-    private createHelpTooltip(map: MapModel, message: string): Overlay {
+    #createHelpTooltip(map: MapModel, message: string): Overlay {
         const tooltipContent = createElement(SelectionTooltipContent, {
             content: message
         });
@@ -203,7 +203,7 @@ export class DragController {
      * @returns InteractionResource of class DragBox
      */
     getDragboxInteraction() {
-        return this.interactionResources.find(
+        return this.#interactionResources.find(
             (interactionResource) => interactionResource.interaction instanceof DragBox
         );
     }
@@ -213,7 +213,7 @@ export class DragController {
      * @returns InteractionResource of class DragPan
      */
     getDragPanInteraction() {
-        return this.interactionResources.find(
+        return this.#interactionResources.find(
             (interactionResource) => interactionResource.interaction instanceof DragPan
         );
     }

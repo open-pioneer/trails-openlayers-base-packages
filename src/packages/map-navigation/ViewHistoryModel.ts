@@ -20,28 +20,28 @@ interface MapViewState {
 const SIZE_LIMIT = 200;
 
 export class ViewHistoryModel {
-    private olMap: OlMap;
-    private handle: EventsKey | undefined;
+    #olMap: OlMap;
+    #handle: EventsKey | undefined;
 
-    private _mapViews: ReactiveMap<number, MapViewState> = reactiveMap<number, MapViewState>();
-    private _activeViewId: Reactive<number> = reactive(0);
+    #mapViews: ReactiveMap<number, MapViewState> = reactiveMap<number, MapViewState>();
+    #activeViewId: Reactive<number> = reactive(0);
 
     constructor(map: MapModel) {
-        this.olMap = map.olMap;
-        this.handle = this.#subscribeToMapEvents();
+        this.#olMap = map.olMap;
+        this.#handle = this.#subscribeToMapEvents();
     }
 
     destroy() {
-        this.handle && unByKey(this.handle);
-        this.handle = undefined;
+        this.#handle && unByKey(this.#handle);
+        this.#handle = undefined;
     }
 
     get activeViewId(): number {
-        return this._activeViewId.value;
+        return this.#activeViewId.value;
     }
 
     get mapViews(): ReactiveMap<number, MapViewState> {
-        return this._mapViews;
+        return this.#mapViews;
     }
 
     get canBackward(): boolean {
@@ -67,12 +67,12 @@ export class ViewHistoryModel {
     };
 
     #goto(activeViewId: number) {
-        const view = this.olMap.getView();
+        const view = this.#olMap.getView();
         const activeView = this.mapViews.get(activeViewId);
         if (activeView == null) {
             throw new Error(`No view found for id ${activeViewId}`);
         }
-        this.olMap.setView(
+        this.#olMap.setView(
             new View({
                 center: activeView.center,
                 resolution: activeView.resolution,
@@ -82,16 +82,16 @@ export class ViewHistoryModel {
     }
 
     #setActiveView(activeViewId: number) {
-        this._activeViewId.value = activeViewId;
+        this.#activeViewId.value = activeViewId;
     }
 
     #subscribeToMapEvents() {
-        const eventsKey: EventsKey = this.olMap.on("moveend", () => {
+        const eventsKey: EventsKey = this.#olMap.on("moveend", () => {
             onCenterResChange();
         });
 
         const onCenterResChange = () => {
-            const olMap = this.olMap;
+            const olMap = this.#olMap;
             const mapViews = this.mapViews;
             const view = olMap.getView();
             const resolution = view.getResolution();
