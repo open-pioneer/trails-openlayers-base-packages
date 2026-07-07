@@ -23,7 +23,7 @@ import {
     getLayerDependencies,
     LAYER_DEPS,
     LayerDependencies,
-    SET_METADATA_STATE,
+    SET_METADATA_LOAD_INFO,
     SET_VISIBLE
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
@@ -41,8 +41,10 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
  * Load state of a single layer, bundling the state with its error.
+ *
+ * @internal
  */
-type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
+export type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
 
 /**
  * Represents an operational layer in the map.
@@ -333,8 +335,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         // Custom health check is not needed when OpenLayers already reports an error state.
         if (!this.#healthCheckStarted && errorOf(this.#sourceInfo.value) == null) {
             this.#healthCheckStarted = true;
-            doHealthCheck(this, this.#healthCheck).then(({ state, error }) => {
-                this.#healthInfo.value = toLoadInfo(state, error);
+            doHealthCheck(this, this.#healthCheck).then((loadInfo) => {
+                this.#healthInfo.value = loadInfo;
             });
         }
     }
@@ -344,8 +346,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      *
      * @internal
      */
-    [SET_METADATA_STATE](state: LayerLoadState, error?: Error): void {
-        this.#metadataInfo.value = toLoadInfo(state, error);
+    [SET_METADATA_LOAD_INFO](loadInfo: LayerLoadInfo): void {
+        this.#metadataInfo.value = loadInfo;
     }
 
     override setVisible(newVisibility: boolean): void {
@@ -387,9 +389,9 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 async function doHealthCheck(
     layer: AbstractLayer,
     healthCheck: LayerConfig["healthCheck"]
-): Promise<{ state: LayerLoadState; error: Error | undefined }> {
+): Promise<LayerLoadInfo> {
     if (healthCheck == null) {
-        return { state: "loaded", error: undefined };
+        return "loaded";
     }
 
     let healthCheckFn: HealthCheckFunction;
@@ -413,7 +415,7 @@ async function doHealthCheck(
             healthCheck
         );
         return {
-            state: "error",
+            kind: "error",
             error: new Error(`Invalid 'healthCheck' configuration for layer '${layer.id}'`)
         };
     }
@@ -422,15 +424,15 @@ async function doHealthCheck(
         const state = await healthCheckFn(layer as Layer);
         if (state === "error") {
             return {
-                state,
+                kind: "error",
                 error: new Error(`Health check failed for layer '${layer.id}'`)
             };
         }
-        return { state, error: undefined };
+        return state;
     } catch (e) {
         LOG.warn(`Health check failed for layer '${layer.id}'`, e);
         return {
-            state: "error",
+            kind: "error",
             error: e instanceof Error ? e : new Error(String(e))
         };
     }
@@ -467,13 +469,6 @@ function errorOf(info: LayerLoadInfo): Error | undefined {
 
 function loadInfoState(info: LayerLoadInfo): LayerLoadState {
     return typeof info === "object" ? "error" : info;
-}
-
-function toLoadInfo(state: LayerLoadState, error: Error | undefined): LayerLoadInfo {
-    if (state === "error") {
-        return { kind: "error", error: error ?? new Error("Unknown error") };
-    }
-    return state;
 }
 
 function collectSublayerError(layer: AbstractLayer): AggregateError | undefined {

@@ -21,7 +21,7 @@ import {
     GET_DEPS,
     LayerConstructor,
     LayerDependencies,
-    SET_METADATA_STATE
+    SET_METADATA_LOAD_INFO
 } from "./shared/internals";
 import { getAttributions } from "./wmts/getAttributions";
 import { getLegendUrl } from "./wmts/getLegendUrl";
@@ -173,12 +173,12 @@ export class WMTSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
-        this[SET_METADATA_STATE]("loading");
+        this[SET_METADATA_LOAD_INFO]("loading");
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
-                    this[SET_METADATA_STATE]("loaded");
+                    this[SET_METADATA_LOAD_INFO]("loaded");
                 });
             })
             .catch((error: unknown) => {
@@ -190,7 +190,10 @@ export class WMTSLayer extends AbstractLayer {
                     error instanceof Error
                         ? error
                         : new Error(`Failed to initialize WMTS layer '${this.name}'`);
-                this[SET_METADATA_STATE]("error", wrappedError);
+                this[SET_METADATA_LOAD_INFO]({
+                    kind: "error",
+                    error: wrappedError
+                });
             });
     }
 

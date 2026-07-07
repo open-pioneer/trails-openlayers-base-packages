@@ -11,7 +11,7 @@ import { MapModel } from "../model/MapModel";
 import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
-import { ATTACH_TO_MAP, LAYER_DEPS, SET_METADATA_STATE } from "./shared/internals";
+import { ATTACH_TO_MAP, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
@@ -135,7 +135,7 @@ it("tracks the layer source's state", async () => {
         expect(layer.loadState).toBe("not-loaded");
 
         source.setState("ready");
-        layer[SET_METADATA_STATE]("loaded");
+        layer[SET_METADATA_LOAD_INFO]("loaded");
 
         await vi.waitFor(() => expect(layer.loadState).toBe("loaded"));
     }
@@ -182,7 +182,7 @@ describe("health checks", () => {
         expect(eventEmitted).toBe(0);
         expect(layer.loadState).toBe("loaded");
 
-        layer[SET_METADATA_STATE]("loaded");
+        layer[SET_METADATA_LOAD_INFO]("loaded");
         await vi.waitFor(() => expect(layer.loadState).toBe("loaded"));
         expect(eventEmitted).toBe(0);
         // ol layer state remains ready and is overwritten by internal health check
@@ -289,7 +289,7 @@ describe("health checks", () => {
             sourceState: "ready",
             healthCheck: mockedCustomHealthCheck
         });
-        layer[SET_METADATA_STATE]("loaded");
+        layer[SET_METADATA_LOAD_INFO]("loaded");
 
         await vi.waitFor(() => expect(layer.loadState).toBe("loaded"));
         expect(mockedCustomHealthCheck).toHaveBeenCalledOnce();

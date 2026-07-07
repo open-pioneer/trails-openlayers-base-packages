@@ -29,7 +29,7 @@ import {
     LayerConstructor,
     LayerDependencies,
     SET_LEGEND,
-    SET_METADATA_STATE,
+    SET_METADATA_LOAD_INFO,
     SET_SUBLAYER_LOAD_STATE
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
@@ -246,12 +246,12 @@ export class WMSLayer extends AbstractLayer {
             return;
         }
         this.#loadStarted = true;
-        this[SET_METADATA_STATE]("loading");
+        this[SET_METADATA_LOAD_INFO]("loading");
         this.#fetchWMSCapabilities()
             .then((result: string) => {
                 batch(() => {
                     this.#initializeWithMetadata(result);
-                    this[SET_METADATA_STATE]("loaded");
+                    this[SET_METADATA_LOAD_INFO]("loaded");
                 });
             })
             .catch((error: unknown) => {
@@ -263,7 +263,10 @@ export class WMSLayer extends AbstractLayer {
                     error instanceof Error
                         ? error
                         : new Error(`Failed to initialize WMS layer '${this.id}'`);
-                this[SET_METADATA_STATE]("error", wrappedError);
+                this[SET_METADATA_LOAD_INFO]({
+                    kind: "error",
+                    error: wrappedError
+                });
             });
     }
 
