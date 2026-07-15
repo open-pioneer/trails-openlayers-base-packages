@@ -216,6 +216,27 @@ describe("search api", () => {
         await expect(waitForMenu(50)).rejects.toThrow("Menu not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
     });
+
+    it("should search and select the first matching result when searchAndSelect is called", async () => {
+        let readyEvent: SearchReadyEvent | undefined;
+
+        await createSearch(undefined, undefined, (e: SearchReadyEvent) => {
+            readyEvent = e;
+        });
+
+        const { searchInput } = await waitForInput();
+
+        const result = await readyEvent?.api.searchAndSelect("Dortmund");
+
+        await waitFor(() => {
+            expect(searchInput).toHaveValue("Dortmund");
+        });
+
+        expect(result).toEqual({
+            id: 0,
+            label: "Dortmund"
+        });
+    });
 });
 
 async function createSearch(

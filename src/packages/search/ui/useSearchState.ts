@@ -46,6 +46,8 @@ export interface SearchState {
     // NOTE: Stable functions
     onOptionConfirmed: (newOption: SearchOption) => void;
     onInputChanged: (newInput: string) => void;
+
+    searchAndSelect: (query: string) => Promise<SearchResult | undefined>;
 }
 
 export type SearchResultsReady = {
@@ -151,6 +153,48 @@ export function useSearchState(
         ));
     });
 
+    /**
+     * Searches for the specified query and automatically selects the first matching result.
+     *
+     * If the search controller is unavailable or the search returns no results,
+     * the promise resolves to `undefined`.
+     *
+     * When a match is found, this function:
+     * - Executes the search using the provided query.
+     * - Updates the UI with the returned search results.
+     * - Selects the first available search option.
+     *
+     * @param query - The search query to execute.
+     * @returns A promise that resolves to the selected {@link SearchResult},
+     * or `undefined` if no result is found or the search cannot be performed.
+     */
+    const searchAndSelect = useEvent(async (query: string): Promise<SearchResult | undefined> => {
+        if (!controller) {
+            return undefined;
+        }
+
+        const groups = await search(controller, query, getId);
+
+        const first = groups.flatMap((g) => g.options)[0];
+
+        if (!first) {
+            return undefined;
+        }
+
+        // update UI
+        dispatch({
+            kind: "accept-results",
+            results: groups
+        });
+
+        dispatch({
+            kind: "select-option",
+            option: first
+        });
+
+        return first.result;
+    });
+
     // Called when the user confirms a search result
     const onOptionConfirmed = useEvent((option: SearchOption) => {
         // Do not start a new search when the user confirms a result
@@ -169,7 +213,8 @@ export function useSearchState(
         results: state.search,
         selectedOption: state.selectedOption,
         onOptionConfirmed,
-        onInputChanged
+        onInputChanged,
+        searchAndSelect
     };
 }
 

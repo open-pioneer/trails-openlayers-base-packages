@@ -135,6 +135,15 @@ export interface SearchApi {
      * @param inputValue The value to be set in the search input field.
      */
     setInputValue(inputValue: string): void;
+
+    /**
+     * Searches for the specified input value and selects the matching result.
+     *
+     * @param inputValue - The value to search for.
+     * @returns A promise that resolves to the selected {@link SearchResult},
+     * or `undefined` if no matching result is found or selected.
+     */
+    searchAndSelect(inputValue: string): Promise<SearchResult | undefined>;
 }
 
 /**

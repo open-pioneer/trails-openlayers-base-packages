@@ -9,6 +9,7 @@ import {
     SearchClearEvent,
     SearchDisposedEvent,
     SearchReadyEvent,
+    SearchResult,
     SearchSelectEvent,
     SearchSource
 } from "../api";
@@ -81,15 +82,11 @@ export const Search: FC<SearchProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const map = useMapModelValue(props);
-    const { input, results, onInputChanged, onOptionConfirmed, selectedOption } = useSearchState(
-        sources,
-        searchTypingDelay,
-        maxResultsPerGroup,
-        map
-    );
+    const { input, results, onInputChanged, onOptionConfirmed, selectedOption, searchAndSelect } =
+        useSearchState(sources, searchTypingDelay, maxResultsPerGroup, map);
 
     // api trigger hooks
-    useSearchApi(onReady, onDisposed, onInputChanged, onClear);
+    useSearchApi(onReady, onDisposed, onInputChanged, onClear, searchAndSelect);
 
     return (
         <Box {...containerProps} width={"100%"}>
@@ -112,7 +109,8 @@ function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
     onInputChanged: (newValue: string) => void,
-    onClear: ((event: SearchClearEvent) => void) | undefined
+    onClear: ((event: SearchClearEvent) => void) | undefined,
+    searchAndSelect: (inputValue: string) => Promise<SearchResult | undefined>
 ) {
     const clearInput = useEvent(() => {
         onInputChanged("");
@@ -123,7 +121,7 @@ function useSearchApi(
     if (!apiRef.current) {
         // NOTE: The API object is only created once.
         // This is why the functions must currently be stable!
-        apiRef.current = new SearchApiImpl(clearInput, onInputChanged);
+        apiRef.current = new SearchApiImpl(clearInput, onInputChanged, searchAndSelect);
     }
 
     const api = apiRef.current;

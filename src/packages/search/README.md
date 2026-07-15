@@ -41,7 +41,7 @@ To change the placeholder text of the search field, use the optional property `p
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the selected search result (and its search source)
-from the parameter `SelectSearchEvent`.
+from the parameter `SearchSelectEvent`.
 
 ```tsx
 import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/search";
@@ -58,10 +58,12 @@ import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/searc
 />;
 ```
 
-The search API allows programmatic access to the search component.
+The search API provides methods to:
 
-Currently, the search API provides a method to clear the search input field.
-Additionally, it provides a method for setting the search input value programmatically without triggering any actions.
+- clear the search input (`resetInput`)
+- set the search input value without triggering a search (`setInputValue`)
+- execute a search and automatically select the first matching result (`searchAndSelect`)
+
 To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
 
 ```tsx
@@ -106,7 +108,30 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
 >
     set search input
 </Button>
+<Button
+    onClick={async () => {
+        const result = await searchApiRef.current?.searchAndSelect("Münster");
+
+        if (!result) {
+            console.log("No matching result found.");
+            return;
+        }
+
+        console.log("Selected result:", result);
+
+        if (!result.geometry) {
+            console.log("Result has no geometry.");
+            return;
+        }
+
+        appModel.highlightAndZoom(map, [result.geometry]);
+    }}
+>
+    Search and select
+</Button>
 ```
+
+`searchAndSelect` performs a search using the provided query, updates the search UI with the returned results, and automatically selects the first matching result. The returned promise resolves to the selected `SearchResult` or `undefined` if no matching result is found.
 
 ### Positioning the search bar
 
