@@ -109,25 +109,28 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
     set search input
 </Button>
 <Button
-    onClick={async () => {
-        const result = await searchApiRef.current?.searchAndSelect("Münster");
-
-        if (!result) {
-            console.log("No matching result found.");
-            return;
-        }
-
-        console.log("Selected result:", result);
-
-        if (!result.geometry) {
-            console.log("Result has no geometry.");
-            return;
-        }
-
-        appModel.highlightAndZoom(map, [result.geometry]);
+    onClick={() => {
+        searchApiRef.current
+            ?.searchAndSelect("Düsseldorf")
+            .then((result) => {
+                if (!result) {
+                    console.debug("No matching result found.");
+                    return;
+                }
+                if (!result.geometry) {
+                    console.log("Result has no geometry.");
+                    return;
+                }
+                appModel.highlightAndZoom(map, [
+                    result.geometry
+                ]);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }}
 >
-    Search and select
+    set and selected search input
 </Button>
 ```
 

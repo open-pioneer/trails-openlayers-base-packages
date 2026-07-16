@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { createLogger } from "@open-pioneer/core";
+import { sourceId } from "open-pioneer:source-info";
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -9,6 +11,8 @@ import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pio
 import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
 import { useRef } from "react";
+
+const LOG = createLogger(sourceId);
 
 export function AppUI() {
     const intl = useIntl();
@@ -127,6 +131,25 @@ export function AppUI() {
                                             }}
                                         >
                                             set search input
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                searchApiRef.current
+                                                    ?.searchAndSelect("Düsseldorf")
+                                                    .then((result) => {
+                                                        if (!result) {
+                                                            LOG.debug("No matching result found.");
+                                                            return;
+                                                        }
+
+                                                        onSearchSelect();
+                                                    })
+                                                    .catch((error) => {
+                                                        LOG.error(error);
+                                                    });
+                                            }}
+                                        >
+                                            set and selected search input
                                         </Button>
                                     </Flex>
                                 </MapAnchor>
