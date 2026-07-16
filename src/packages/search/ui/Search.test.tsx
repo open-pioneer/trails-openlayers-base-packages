@@ -226,7 +226,7 @@ describe("search api", () => {
 
         const { searchInput } = await waitForInput();
 
-        const result = await readyEvent?.api.searchAndSelect("Dortmund");
+        const result = await readyEvent!.api.searchAndSelect("Dortmund");
 
         await waitFor(() => {
             expect(searchInput).toHaveValue("Dortmund");
