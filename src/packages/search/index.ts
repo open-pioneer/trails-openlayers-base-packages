@@ -9,6 +9,8 @@ export type {
     SearchReadyEvent,
     SearchResult,
     SearchSelectEvent,
-    SearchSource
+    SearchSelectTrigger,
+    SearchSource,
+    SelectResult
 } from "./api";
 export { Search, type SearchProps } from "./ui/Search";

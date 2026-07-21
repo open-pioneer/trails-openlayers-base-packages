@@ -107,14 +107,24 @@ export interface SearchSelectEvent {
 
     /** The search result selected by the user. */
     result: SearchResult;
+
+    /**
+     * Specifies the trigger that caused the select event.
+     * It can be triggered by the user or through {@link SearchApi.searchAndSelect}.
+     */
+    trigger: SearchSelectTrigger;
 }
+
+export type SearchSelectTrigger = "user" | "api-select";
 
 /**
  * Event type emitted when the search is cleared.
  */
 export interface SearchClearEvent {
-    /** Specifies the trigger that caused the clear event.
-     * The clear can be triggered by the user or through the {@link resetInput} in the SearchAPI. */
+    /**
+     * Specifies the trigger that caused the clear event.
+     * The clear can be triggered by the user or through {@link SearchApi.resetInput}.
+     **/
     trigger: SearchClearTrigger;
 }
 
@@ -135,6 +145,30 @@ export interface SearchApi {
      * @param inputValue The value to be set in the search input field.
      */
     setInputValue(inputValue: string): void;
+
+    /**
+     * Searches for the specified input value and selects the matching result.
+     *
+     * @param inputValue - The value to search for.
+     * @returns A promise that resolves to the selected {@link SearchResult},
+     * or `undefined` if no matching result is found or selected.
+     */
+    searchAndSelect(inputValue: string): Promise<SelectResult | undefined>;
+}
+
+/**
+ * The result of a select operation via {@link SearchApi.searchAndSelect}.
+ */
+export interface SelectResult {
+    /**
+     * The source that originated the selected result.
+     */
+    source: SearchSource;
+
+    /**
+     * The selected result.
+     */
+    result: SearchResult;
 }
 
 /**

@@ -4,9 +4,10 @@ import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { SearchResult, SearchSource } from "../api";
+import { SearchResult, SearchSource, SelectResult } from "../api";
 import { sourceId } from "open-pioneer:source-info";
 import { SearchController, ResultGroup } from "../model/SearchController";
+import { SearchProps } from "./Search";
 
 const LOG = createLogger(sourceId);
 
@@ -46,6 +47,8 @@ export interface SearchState {
     // NOTE: Stable functions
     onOptionConfirmed: (newOption: SearchOption) => void;
     onInputChanged: (newInput: string) => void;
+
+    searchAndSelect: (query: string) => Promise<SelectResult | undefined>;
 }
 
 export type SearchResultsReady = {
@@ -69,7 +72,8 @@ export function useSearchState(
     sources: SearchSource[],
     searchTypingDelay: number | undefined,
     maxResultsPerGroup: number | undefined,
-    map: MapModel
+    map: MapModel,
+    onSelect: SearchProps["onSelect"] | undefined // TODO: refactor --> model
 ): SearchState {
     interface FullSearchState {
         query: string;
@@ -151,6 +155,49 @@ export function useSearchState(
         ));
     });
 
+    /**
+     * Searches for the specified query and automatically selects the first matching result.
+     *
+     * If the search controller is unavailable or the search returns no results,
+     * the promise resolves to `undefined`.
+     *
+     * When a match is found, this function:
+     * - Executes the search using the provided query.
+     * - Updates the UI with the returned search results.
+     * - Selects the first available search option and notifies the component's callback function (if any).
+     *
+     * @param query - The search query to execute.
+     * @returns A promise that resolves to the selected {@link SearchResult} and its source,
+     * or `undefined` if no result is found or the search cannot be performed.
+     */
+    const searchAndSelect = useEvent(async (query: string): Promise<SelectResult | undefined> => {
+        if (!controller) {
+            return undefined;
+        }
+
+        const groups = await search(controller, query, getId);
+        const firstOption = groups.flatMap((g) => g.options)[0];
+        if (!firstOption) {
+            return undefined;
+        }
+
+        const { result, source } = firstOption;
+
+        // update UI
+        dispatch({
+            kind: "accept-results",
+            results: groups
+        });
+        dispatch({
+            kind: "select-option",
+            option: firstOption
+        });
+
+        // notify component callback
+        onSelect?.({ result, source, trigger: "api-select" });
+        return { result, source };
+    });
+
     // Called when the user confirms a search result
     const onOptionConfirmed = useEvent((option: SearchOption) => {
         // Do not start a new search when the user confirms a result
@@ -169,7 +216,8 @@ export function useSearchState(
         results: state.search,
         selectedOption: state.selectedOption,
         onOptionConfirmed,
-        onInputChanged
+        onInputChanged,
+        searchAndSelect
     };
 }
 

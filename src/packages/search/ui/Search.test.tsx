@@ -58,7 +58,8 @@ it("should successfully call select handler after clicking a suggestion", async 
         "result": {
             "id": 0,
             "label": "Dortmund"
-        }
+        },
+        "trigger": "user"
     });
 });
 
@@ -215,6 +216,38 @@ describe("search api", () => {
         // do not trigger any actions
         await expect(waitForMenu(50)).rejects.toThrow("Menu not found");
         expect(selectHandler).toHaveBeenCalledTimes(1); // only Dortmund selection
+    });
+
+    it("should search and select the first matching result when searchAndSelect is called", async () => {
+        const onSelect = vi.fn();
+
+        let readyEvent: SearchReadyEvent | undefined;
+        await createSearch(onSelect, undefined, (e: SearchReadyEvent) => {
+            readyEvent = e;
+        });
+
+        const { searchInput } = await waitForInput();
+
+        const selection = await readyEvent!.api.searchAndSelect("Dortmund");
+
+        await waitFor(() => {
+            expect(searchInput).toHaveValue("Dortmund");
+            expect(onSelect).toHaveBeenCalled();
+        });
+
+        expect(selection?.result).toEqual({
+            id: 0,
+            label: "Dortmund"
+        });
+        expect(onSelect).toHaveBeenCalledOnce();
+        expect(onSelect).toHaveBeenCalledWith(
+            expect.objectContaining({
+                result: expect.objectContaining({
+                    label: "Dortmund"
+                }),
+                trigger: "api-select"
+            })
+        );
     });
 });
 

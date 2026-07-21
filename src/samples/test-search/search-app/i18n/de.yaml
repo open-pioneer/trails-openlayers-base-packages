@@ -1,5 +1,6 @@
 messages:
-  selected: "Eintrag ausgewählt"
+  selected: "Eintrag ausgewählt: {label}"
+  selectedViaApi: "Eintrag über API gefunden: {label}"
   cleared: "Zurückgesetzt"
   ariaLabel:
     header: "Kopfleiste"
