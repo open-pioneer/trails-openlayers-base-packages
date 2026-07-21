@@ -7,7 +7,14 @@ import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
+import {
+    Search,
+    SearchApi,
+    SearchClearEvent,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent
+} from "@open-pioneer/search";
 import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
 import { useRef } from "react";
@@ -22,12 +29,22 @@ export function AppUI() {
 
     const sources = [new FakeCitySource(1)];
 
-    function onSearchSelect() {
+    function onSearchSelect({ result }: SearchSelectEvent) {
         notificationService.notify({
             level: "info",
-            message: intl.formatMessage({ id: "selected" }),
+            message: intl.formatMessage({ id: "selected" }, { label: result.label }),
             displayDuration: 4000
         });
+    }
+
+    function onSelectViaApi(result: SearchResult) {
+        {
+            notificationService.notify({
+                level: "success",
+                message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
+                displayDuration: 4000
+            });
+        }
     }
 
     function onSearchCleared(event: SearchClearEvent) {
@@ -136,13 +153,13 @@ export function AppUI() {
                                             onClick={() => {
                                                 searchApiRef.current
                                                     ?.searchAndSelect("Düsseldorf")
-                                                    .then((result) => {
-                                                        if (!result) {
+                                                    .then((selection) => {
+                                                        if (!selection) {
                                                             LOG.debug("No matching result found.");
                                                             return;
                                                         }
 
-                                                        onSearchSelect();
+                                                        onSelectViaApi(selection.result);
                                                     })
                                                     .catch((error) => {
                                                         LOG.error(error);

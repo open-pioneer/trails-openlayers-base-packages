@@ -9,9 +9,9 @@ import {
     SearchClearEvent,
     SearchDisposedEvent,
     SearchReadyEvent,
-    SearchResult,
     SearchSelectEvent,
-    SearchSource
+    SearchSource,
+    SelectResult
 } from "../api";
 import { SearchApiImpl } from "./SearchApiImpl";
 import { SearchInput } from "./SearchInput";
@@ -45,12 +45,12 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
     placeholder?: string;
 
     /**
-     * This event handler will be called when the user selects a search result.
+     * This event handler will be called when a search result has been selected.
      */
     onSelect?: (event: SearchSelectEvent) => void;
 
     /**
-     * This event handler will be called when the user clears the search input.
+     * This event handler will be called when the search input has been cleared.
      */
     onClear?: (event: SearchClearEvent) => void;
 
@@ -83,7 +83,7 @@ export const Search: FC<SearchProps> = (props) => {
     const { containerProps } = useCommonComponentProps("search", props);
     const map = useMapModelValue(props);
     const { input, results, onInputChanged, onOptionConfirmed, selectedOption, searchAndSelect } =
-        useSearchState(sources, searchTypingDelay, maxResultsPerGroup, map);
+        useSearchState(sources, searchTypingDelay, maxResultsPerGroup, map, onSelect);
 
     // api trigger hooks
     useSearchApi(onReady, onDisposed, onInputChanged, onClear, searchAndSelect);
@@ -110,7 +110,7 @@ function useSearchApi(
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
     onInputChanged: (newValue: string) => void,
     onClear: ((event: SearchClearEvent) => void) | undefined,
-    searchAndSelect: (inputValue: string) => Promise<SearchResult | undefined>
+    searchAndSelect: (inputValue: string) => Promise<SelectResult | undefined>
 ) {
     const clearInput = useEvent(() => {
         onInputChanged("");

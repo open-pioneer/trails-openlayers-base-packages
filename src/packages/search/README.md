@@ -112,11 +112,13 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
     onClick={() => {
         searchApiRef.current
             ?.searchAndSelect("Düsseldorf")
-            .then((result) => {
-                if (!result) {
+            .then((selection) => {
+                if (!selection) {
                     console.debug("No matching result found.");
                     return;
                 }
+
+                const result = selection.result;
                 if (!result.geometry) {
                     console.log("Result has no geometry.");
                     return;

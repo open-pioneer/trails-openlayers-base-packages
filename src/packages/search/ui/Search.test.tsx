@@ -58,7 +58,8 @@ it("should successfully call select handler after clicking a suggestion", async 
         "result": {
             "id": 0,
             "label": "Dortmund"
-        }
+        },
+        "trigger": "user"
     });
 });
 
@@ -218,24 +219,35 @@ describe("search api", () => {
     });
 
     it("should search and select the first matching result when searchAndSelect is called", async () => {
-        let readyEvent: SearchReadyEvent | undefined;
+        const onSelect = vi.fn();
 
-        await createSearch(undefined, undefined, (e: SearchReadyEvent) => {
+        let readyEvent: SearchReadyEvent | undefined;
+        await createSearch(onSelect, undefined, (e: SearchReadyEvent) => {
             readyEvent = e;
         });
 
         const { searchInput } = await waitForInput();
 
-        const result = await readyEvent!.api.searchAndSelect("Dortmund");
+        const selection = await readyEvent!.api.searchAndSelect("Dortmund");
 
         await waitFor(() => {
             expect(searchInput).toHaveValue("Dortmund");
+            expect(onSelect).toHaveBeenCalled();
         });
 
-        expect(result).toEqual({
+        expect(selection?.result).toEqual({
             id: 0,
             label: "Dortmund"
         });
+        expect(onSelect).toHaveBeenCalledOnce();
+        expect(onSelect).toHaveBeenCalledWith(
+            expect.objectContaining({
+                result: expect.objectContaining({
+                    label: "Dortmund"
+                }),
+                trigger: "api-select"
+            })
+        );
     });
 });
 
