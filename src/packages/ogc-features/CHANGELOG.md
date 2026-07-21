@@ -1,5 +1,15 @@
 # @open-pioneer/ogc-features
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+
+### Patch Changes
+
+- 078bef5: Use private JavaScript properties (#) instead of TypeScript keyword.
+
 ## 1.3.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @open-pioneer/search
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+- 0b9143d: Add `searchAndSelect` to perform programmatic searches, update search results in the UI, and automatically select the first matching result.
+  The method returns the selected `SearchResult` (and its `SearchSource`) or `undefined` when no match is found.
+- 0b9143d: The `onSelect` callback now receives an additional property `trigger` (`"user"` or `"api-select"`) support different reactions based on the way a result was selected:
+
+    - `user` indicates that event was triggered by the end user
+    - `api-select` indicates that the selection was made via the API (i.e. `searchAndSelect`).
+
 ## 1.3.0
 
 ### Minor Changes
