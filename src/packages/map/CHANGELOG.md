@@ -1,5 +1,22 @@
 # @open-pioneer/map
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+- e4b47f1: `useMapModel` now prints an error message if the map model could not be created.
+  This error was previously returned and was easy to silently ignore.
+
+    Use the option `quiet: true` to suppress this error message.
+
+- c9b3ced: Provide reactive rotation in MapModel
+
+### Patch Changes
+
+- 078bef5: Use private JavaScript properties (#) instead of TypeScript keyword.
+- b58a50f: Use new `shallowEqual` function to compare attribution arrays.
+
 ## 1.3.0
 
 ### Minor Changes

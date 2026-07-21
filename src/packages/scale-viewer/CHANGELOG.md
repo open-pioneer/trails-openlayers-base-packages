@@ -1,5 +1,11 @@
 # @open-pioneer/scale-viewer
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.0
+
 ## 1.3.0
 
 ### Minor Changes
