@@ -237,7 +237,7 @@ it("loads attributions from service metadata", async () => {
 });
 
 describe("metadata errors", () => {
-    it("aggregates the errors of all broken sublayers into the parent's sublayerError", async () => {
+    it("put only broken sublayer into an error state", async () => {
         vi.spyOn(console, "error").mockImplementation(() => {});
         const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
         const { layer } = createLayer({
@@ -252,15 +252,13 @@ describe("metadata errors", () => {
             attach: true
         });
 
-        expect(layer.sublayerError).toBeUndefined();
-        const aggregate = await vi.waitUntil(() => layer.sublayerError);
-        expect(aggregate).toBeInstanceOf(AggregateError);
-        const messages = aggregate!.errors.map((e: Error) => e.message);
-        expect(messages).toHaveLength(2);
-        expect(messages.some((m: string) => m.includes("missing-a"))).toBe(true);
-        expect(messages.some((m: string) => m.includes("missing-b"))).toBe(true);
+        const [valid, missingA, missingB] = layer.sublayers.getSublayers();
+        await vi.waitUntil(() => missingA!.loadState === "error");
 
-        // Expect parent own error stays unaffected
+        expect(valid!.loadError).toBeUndefined();
+        expect(missingA!.loadError?.message).toContain("missing-a");
+        expect(missingB!.loadError?.message).toContain("missing-b");
+
         expect(layer.loadError).toBeUndefined();
         expect(layer.loadState).toBe("loaded");
     });

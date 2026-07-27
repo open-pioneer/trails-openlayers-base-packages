@@ -141,13 +141,15 @@ export function AppUI() {
                                             {'"'} and {'"'}TopPlus Open (Grau){'"'}) and one
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
-                                            {'"'}Straßennetz{'"'} should show a warning and list the
-                                            broken sublayer names as tooltipps.
+                                            {'"'} Straßennetz mit hide-children {'"'} should not
+                                            show its children in the Toc, but show that a sublayer
+                                            has an error. {'"'} Verkehr {'"'} should indicate that
+                                            some sublayer are broken.
                                         </Text>
                                         <Text>
-                                            The &quot;Toggle education&quot; button allows testing
-                                            expanded or collapsing specific toc items using the Toc
-                                            {"'"}s API.
+                                            The &quot;Toggle steets group&quot; button allows
+                                            testing expanded or collapsing specific toc items using
+                                            the Toc{"'"}s API.
                                         </Text>
                                         <Text>
                                             The &quot;Toggle layer internal&quot; button makes the
@@ -162,8 +164,8 @@ export function AppUI() {
                                             list mode determines whether a layer is shown, shown
                                             without child layers or completely hidden in the Toc.
                                         </Text>
-                                        <Button onClick={() => toggleTocItem("group_edu")}>
-                                            Toggle education
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
                                         </Button>
                                         <Button onClick={() => toggleLayerInternal("busstops")}>
                                             Toggle layer internal

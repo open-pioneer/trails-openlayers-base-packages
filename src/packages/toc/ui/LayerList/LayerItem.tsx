@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer, isLayer } from "@open-pioneer/map";
+import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { classNames } from "@open-pioneer/react-utils";
@@ -21,7 +21,7 @@ import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
+import { useChildLayers, useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes, ListMode } from "../Toc";
@@ -217,10 +217,7 @@ function useTocItem(layer: AnyLayer, display: boolean) {
 
 function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
     const loadState = useLoadState(layer);
-    const sublayerError = useReactiveSnapshot(
-        () => (isLayer(layer) ? layer.sublayerError : undefined),
-        [layer]
-    );
+    const sublayerError = useSublayerError(layer);
     const visibleInScale = useVisibleInScale(layer);
     const isOwnError = loadState === "error";
     const hasChildError = !!sublayerError;

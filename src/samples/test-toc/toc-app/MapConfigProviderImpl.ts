@@ -133,7 +133,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             isBaseLayer: false,
                             internal: false
                         }),
-                        createStrassenLayer(layerFactory)
+                        createStrassenLayer(layerFactory),
+                        layerFactory.create({
+                            type: GroupLayer,
+                            id: "group_sublayer_errors",
+                            title: "Straßennetz mit hide-children",
+                            minZoom: 8,
+                            maxZoom: 16,
+                            attributes: {
+                                toc: {
+                                    listMode: "hide-children"
+                                } satisfies LayerTocAttributes
+                            },
+                            layers: [createBrokenSublayersLayer(layerFactory)]
+                        })
                     ]
                 })
             ]
@@ -254,6 +267,25 @@ function createSchulenLayer(layerFactory: LayerFactory) {
     });
 }
 
+function createBrokenSublayersLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
+        id: "streets_broken_sublayers",
+        title: "Straßennetz (fehlerhafte Sublayer)",
+        url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        sublayers: [
+            {
+                name: "1",
+                title: "Verwaltungen"
+            },
+            {
+                name: "does-not-exist-a",
+                title: "Kaputter Sublayer A"
+            }
+        ]
+    });
+}
+
 function createStrassenLayer(layerFactory: LayerFactory) {
     return layerFactory.create({
         type: WMSLayer,
@@ -264,7 +296,7 @@ function createStrassenLayer(layerFactory: LayerFactory) {
         maxZoom: 13,
         attributes: {
             toc: {
-                listMode: "hide-children"
+                listMode: "show"
             } satisfies LayerTocAttributes
         },
         sublayers: [
@@ -273,13 +305,11 @@ function createStrassenLayer(layerFactory: LayerFactory) {
                 title: "Verwaltungen"
             },
             {
-                // Broken test layer, "4" would be correct
-                name: "BrokenLayer1",
+                name: "4",
                 title: "Abschnitte und Äste"
             },
             {
-                // Broken test layer, "6" would be correct
-                name: "BrokenLayer2",
+                name: "6",
                 title: "Unfälle"
             }
         ]

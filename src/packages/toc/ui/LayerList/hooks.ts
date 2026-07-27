@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { AnyLayer, isSublayer, Layer, LayerLoadState, MapModel } from "@open-pioneer/map";
+import { AnyLayer, isLayer, isSublayer, Layer, LayerLoadState, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { computed } from "@conterra/reactivity-core";
+import { useMemo } from "react";
 
 /** Returns the top level operational layers in render order (topmost layer first). */
 export function useLayers(map: MapModel): Layer[] {
@@ -43,6 +45,64 @@ export function useVisibleInScale(layer: AnyLayer): boolean {
 
         return target.visibleInScale;
     }, [layer]);
+}
+
+/**
+ * Returns the combined errors of all descendants
+ * or `undefined` if no descendant is in an error state.
+ */
+export function useSublayerError(layer: AnyLayer): AggregateError | undefined {
+    const sublayerError = useMemo(
+        () =>
+            computed(() => (isLayer(layer) ? collectSublayerError(layer) : undefined), {
+                equal: sublayerErrorsEqual
+            }),
+        [layer]
+    );
+    return useReactiveSnapshot(() => sublayerError.value, [sublayerError]);
+}
+
+function collectSublayerError(layer: Layer): AggregateError | undefined {
+    const errors: Error[] = [];
+    for (const descendant of walkDescendants(layer)) {
+        const error = descendant.loadError;
+        if (error) {
+            errors.push(error);
+        }
+    }
+    if (errors.length === 0) {
+        return undefined;
+    }
+    return new AggregateError(
+        errors,
+        `Layer '${layer.id}' has ${errors.length} sublayer(s) in error state`
+    );
+}
+
+function* walkDescendants(layer: AnyLayer): Generator<AnyLayer> {
+    const children = layer.children?.getItems({ includeInternalLayers: true });
+    if (!children) {
+        return;
+    }
+    for (const child of children) {
+        yield child;
+        yield* walkDescendants(child);
+    }
+}
+
+function sublayerErrorsEqual(
+    a: AggregateError | undefined,
+    b: AggregateError | undefined
+): boolean {
+    if (a === b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
+    const aErrors = a.errors as Error[];
+    const bErrors = b.errors as Error[];
+    return aErrors.length === bErrors.length && aErrors.every((error, i) => error === bErrors[i]);
 }
 
 /**

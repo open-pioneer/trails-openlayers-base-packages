@@ -8,7 +8,7 @@ import {
     ReadonlyReactive,
     synchronized
 } from "@conterra/reactivity-core";
-import { createLogger, deepEqual } from "@open-pioneer/core";
+import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import OlSource from "ol/source/Source";
 import OlLayer from "ol/layer/Layer";
@@ -28,7 +28,7 @@ import {
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
-import { AnyLayer, Layer, LayerTypes } from "./unions";
+import { Layer, LayerTypes } from "./unions";
 
 const LOG = createLogger(sourceId);
 
@@ -80,9 +80,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #loadInfo = computed(() =>
         combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
     );
-    #sublayerError = computed(() => collectSublayerError(this), {
-        equal: deepEqual
-    });
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
@@ -252,13 +249,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get loadError(): Error | undefined {
         return errorOf(this.#loadInfo.value);
-    }
-
-    /**
-     * The combined errors of all sublayers
-     */
-    get sublayerError(): AggregateError | undefined {
-        return this.#sublayerError.value;
     }
 
     /**
@@ -469,34 +459,6 @@ function errorOf(info: LayerLoadInfo): Error | undefined {
 
 function loadInfoState(info: LayerLoadInfo): LayerLoadState {
     return typeof info === "object" ? "error" : info;
-}
-
-function collectSublayerError(layer: AbstractLayer): AggregateError | undefined {
-    const errors: Error[] = [];
-    for (const descendant of walkDescendants(layer)) {
-        const error = descendant.loadError;
-        if (error) {
-            errors.push(error);
-        }
-    }
-    if (errors.length === 0) {
-        return undefined;
-    }
-    return new AggregateError(
-        errors,
-        `Layer '${layer.id}' has ${errors.length} sublayer(s) in error state`
-    );
-}
-
-function* walkDescendants(layer: AbstractLayerBase): Generator<AnyLayer> {
-    const children = layer.children?.getItems({ includeInternalLayers: true });
-    if (!children) {
-        return;
-    }
-    for (const child of children) {
-        yield child;
-        yield* walkDescendants(child);
-    }
 }
 
 // OpenLayers sources carry no error detail, so synthesize one.
