@@ -192,7 +192,8 @@ function useSearchHandlers(
         onOptionConfirmed(selectedItem);
         onSelect?.({
             source: selectedItem.source,
-            result: selectedItem.result
+            result: selectedItem.result,
+            trigger: "user"
         });
     });
 
