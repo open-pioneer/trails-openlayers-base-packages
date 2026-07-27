@@ -44,13 +44,13 @@ import { MapAttributions } from "./MapAttributions";
 
 const LOG = createLogger(sourceId);
 
-const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
+export const DEFAULT_DPI = 25.4 / 0.28;
 export const DISPLAY_STATUS = Symbol("DISPLAY_STATUS");
 
 const deprecatedHighlights = deprecated({

@@ -19,7 +19,7 @@ import {
     ViewPadding
 } from "./utils";
 import { ReadonlyReactive } from "@conterra/reactivity-core";
-import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { DEFAULT_DPI, MapModel } from "@open-pioneer/map/model/MapModel";
 
 const MM_PER_INCH = 25.4;
 
@@ -58,7 +58,6 @@ export class PrintJob {
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
     #resolution: number | undefined = undefined;
-    #scale: number | undefined = undefined;
     #height: number | undefined = undefined;
     #width: number | undefined = undefined;
 
@@ -78,7 +77,6 @@ export class PrintJob {
         this.#overlayText = options.overlayText;
         this.#viewPadding = options.viewPadding;
 
-
         // save current state of map
         const viewResolution = map.resolution;
         if (!viewResolution) {
@@ -89,22 +87,24 @@ export class PrintJob {
         this.#viewWidth = this.#olMap.getTargetElement().style.width;
 
         // if no params for target image specified, export current map canvas
-        if (options.scale && options.resolution && options.width && options.height) {
-            this.#scale = options.scale;
-            this.#resolution = options.resolution;
-
-            const padding = getViewPadding(this.#map);
-            this.#width =
-                Math.round((options.width * this.#resolution) / MM_PER_INCH) +
-                padding.left +
-                padding.right;
-            this.#height =
-                Math.round((options.height * this.#resolution) / MM_PER_INCH) +
-                padding.top +
-                padding.bottom;
-
-            this.#scaleResolution = this.#map.scaleToCenterResolution(this.#scale, this.#resolution);
-        }
+        const padding = getViewPadding(this.#map);
+        this.#width =
+            options.resolution && options.width
+                ? Math.round((options.width * options.resolution) / MM_PER_INCH) +
+                  padding.left +
+                  padding.right
+                : this.#olMap.getTargetElement().offsetWidth;
+        this.#height =
+            options.resolution && options.height
+                ? Math.round((options.height * options.resolution) / MM_PER_INCH) +
+                  padding.top +
+                  padding.bottom
+                : this.#olMap.getTargetElement().offsetHeight;
+        this.#scaleResolution =
+            options.scale && options.resolution
+                ? this.#map.scaleToCenterResolution(options.scale, options.resolution)
+                : this.#map.resolution;
+        this.#resolution = options.resolution ? options.resolution : DEFAULT_DPI;
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -159,12 +159,10 @@ export class PrintJob {
         }
 
         // set print size if specified
-        if (this.#width && this.#height && this.#scaleResolution) {
-            this.#olMap.getTargetElement().style.width = this.#width + "px";
-            this.#olMap.getTargetElement().style.height = this.#height + "px";
-            this.#olMap.updateSize();
-            this.#olMap.getView().setResolution(this.#scaleResolution);
-        }
+        this.#olMap.getTargetElement().style.width = this.#width + "px";
+        this.#olMap.getTargetElement().style.height = this.#height + "px";
+        this.#olMap.updateSize();
+        this.#olMap.getView().setResolution(this.#scaleResolution);
 
         await this.#addScaleLine();
     }
@@ -176,9 +174,7 @@ export class PrintJob {
             text: true,
             minWidth: 125
         }));
-        if (this.#resolution) {
-            this.#scaleLine.setDpi(this.#resolution);
-        }
+        this.#scaleLine.setDpi(this.#resolution);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;
@@ -243,10 +239,8 @@ export class PrintJob {
             }
         };
 
-        if (this.#width && this.#height) {
-            exportOptions.width = this.#width;
-            exportOptions.height = this.#height;
-        }
+        exportOptions.width = this.#width;
+        exportOptions.height = this.#height;
 
         // Lazy load html2canvas: it is a large dependency (a few hundred KiB) that is only
         // required when actually printed. This speeds up the initial page load.
