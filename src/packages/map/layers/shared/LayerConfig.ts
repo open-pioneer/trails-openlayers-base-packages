@@ -60,6 +60,8 @@ export interface LayerConfig extends LayerBaseConfig {
      */
     isBaseLayer?: boolean;
 
+    isTopMostLayer?: boolean;
+
     /**
      * Optional property to check the availability of the layer.
      * It is possible to provide either a URL which indicates the state of the service (2xx response meaning "ok")

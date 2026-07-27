@@ -376,12 +376,20 @@ export class LayerCollection {
 
     #getInsertionPos(layer: LayerType, options: AddLayerOptions | undefined): LayerPos {
         if (layer.isBaseLayer) {
+            if (layer.isTopMostLayer) {
+                throw new Error(
+                    `Cannot add base layer '${layer.id}' as topmost layer: base layers cannot be topmost.`
+                );
+            }
+
             if (options?.at) {
                 throw new Error(
                     `Cannot add base layer '${layer.id}' at a specific position: only operational layers can be added at a specific position.`
                 );
             }
             return { which: "base" };
+        } else if (layer.isTopMostLayer) {
+            return { which: "topmost", index: this.#topMostOperationalLayers.length };
         }
 
         switch (options?.at) {

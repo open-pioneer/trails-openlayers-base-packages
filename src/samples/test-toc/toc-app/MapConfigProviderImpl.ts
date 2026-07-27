@@ -97,6 +97,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     })
                 }),
                 layerFactory.create({
+                    type: SimpleLayer,
+                    title: "Topmost Haltestellen Stadt Rostock",
+                    id: "busstops_topmost",
+                    visible: true,
+                    description:
+                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                    olLayer: createHaltestellenLayer(),
+                    isBaseLayer: true,
+                    internal: false,
+                    isTopMostLayer: true
+                }),
+                layerFactory.create({
                     type: GroupLayer,
                     id: "group_edu",
                     title: "Bildung",

@@ -55,6 +55,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
+    #isTopMostLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
 
     #visible: ReadonlyReactive<boolean>;
@@ -77,6 +78,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
+        this.#isTopMostLayer = config.isTopMostLayer ?? false;
         this.#healthCheck = config.healthCheck;
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
@@ -190,6 +192,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get isBaseLayer(): boolean {
         return this.#isBaseLayer;
+    }
+
+    get isTopMostLayer(): boolean {
+        return this.#isTopMostLayer;
     }
 
     /**
