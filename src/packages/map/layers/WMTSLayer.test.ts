@@ -6,9 +6,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import TileState from "ol/TileState";
 import { ViewStateLayerStateExtent } from "ol/View";
-import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
-import { Source, WMTS } from "ol/source";
+import { Source } from "ol/source";
 import { Mock, afterEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
@@ -247,9 +246,7 @@ function createLayer(options: WMTSLayerConfig & { fetch?: Mock; attach?: boolean
 }
 
 async function waitForSource(layer: WMTSLayer) {
-    const olLayer = layer.olLayer as TileLayer<WMTS>;
-    const source = await vi.waitUntil(() => olLayer.getSource());
-    return source!;
+    return await vi.waitUntil(() => layer.olSource);
 }
 
 function getAttributions(source: Source) {

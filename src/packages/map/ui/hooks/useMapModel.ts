@@ -1,11 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAsync } from "react-use";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
 import { useDefaultMap } from "../DefaultMapProvider";
+import { createLogger } from "@open-pioneer/core";
+import { sourceId } from "open-pioneer:source-info";
+
+const LOG = createLogger(sourceId);
 
 /**
  * Return value of {@link useMapModel}.
@@ -52,6 +56,9 @@ export function useMapModel(): UseMapModelResult;
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  *
+ * An error message will be logged if the map model's creation has failed.
+ * Use the option `quiet: true` to suppress this message.
+ *
  * @group UI Components and Hooks
  */
 export function useMapModel(mapId: string): UseMapModelResult;
@@ -64,11 +71,16 @@ export function useMapModel(mapId: string): UseMapModelResult;
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  *
+ * An error message will be logged if the map model's creation has failed.
+ * Use the option `quiet: true` to suppress this message.
+ *
  * @group UI Components and Hooks
  */
-export function useMapModel(props: { mapId: string }): UseMapModelResult;
+export function useMapModel(props: { mapId: string; quiet?: boolean }): UseMapModelResult;
 
-export function useMapModel(props?: undefined | string | { mapId: string }): UseMapModelResult {
+export function useMapModel(
+    props?: undefined | string | { mapId: string; quiet?: boolean }
+): UseMapModelResult {
     if (props instanceof MapModel) {
         // This cannot happen in valid typescript code, but it might be a common mistake.
         throw new Error(
@@ -111,6 +123,13 @@ export function useMapModel(props?: undefined | string | { mapId: string }): Use
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return { kind: "resolved", map: state.value! };
     }, [state]);
+
+    const quiet = (typeof props === "object" ? props.quiet : undefined) ?? false;
+    useEffect(() => {
+        if (!quiet && result.error) {
+            LOG.error("Failed to construct map", result.error);
+        }
+    }, [quiet, result.error]);
     return result;
 }
 

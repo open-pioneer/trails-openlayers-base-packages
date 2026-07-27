@@ -1,14 +1,25 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { createLogger } from "@open-pioneer/core";
+import { sourceId } from "open-pioneer:source-info";
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
+import {
+    Search,
+    SearchApi,
+    SearchClearEvent,
+    SearchReadyEvent,
+    SearchResult,
+    SearchSelectEvent
+} from "@open-pioneer/search";
 import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
 import { useRef } from "react";
+
+const LOG = createLogger(sourceId);
 
 export function AppUI() {
     const intl = useIntl();
@@ -18,12 +29,22 @@ export function AppUI() {
 
     const sources = [new FakeCitySource(1)];
 
-    function onSearchSelect() {
+    function onSearchSelect({ result }: SearchSelectEvent) {
         notificationService.notify({
             level: "info",
-            message: intl.formatMessage({ id: "selected" }),
+            message: intl.formatMessage({ id: "selected" }, { label: result.label }),
             displayDuration: 4000
         });
+    }
+
+    function onSelectViaApi(result: SearchResult) {
+        {
+            notificationService.notify({
+                level: "success",
+                message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
+                displayDuration: 4000
+            });
+        }
     }
 
     function onSearchCleared(event: SearchClearEvent) {
@@ -127,6 +148,25 @@ export function AppUI() {
                                             }}
                                         >
                                             set search input
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                searchApiRef.current
+                                                    ?.searchAndSelect("Düsseldorf")
+                                                    .then((selection) => {
+                                                        if (!selection) {
+                                                            LOG.debug("No matching result found.");
+                                                            return;
+                                                        }
+
+                                                        onSelectViaApi(selection.result);
+                                                    })
+                                                    .catch((error) => {
+                                                        LOG.error(error);
+                                                    });
+                                            }}
+                                        >
+                                            set and selected search input
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

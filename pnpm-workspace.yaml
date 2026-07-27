@@ -7,134 +7,88 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.6.0-dev.20260420101935
-  "@open-pioneer/core": 4.6.0-dev.20260420101935
-  "@open-pioneer/http": 4.6.0-dev.20260420101935
-  "@open-pioneer/integration": 4.6.0-dev.20260420101935
-  "@open-pioneer/local-storage": 4.6.0-dev.20260420101935
-  "@open-pioneer/notifier": 4.6.0-dev.20260420101935
-  "@open-pioneer/react-utils": 4.6.0-dev.20260420101935
-  "@open-pioneer/reactivity": 4.6.0-dev.20260420101935
-  "@open-pioneer/runtime": 4.6.0-dev.20260420101935
-  "@open-pioneer/test-utils": 4.6.0-dev.20260420101935
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260420101935
+  "@open-pioneer/base-theme": 4.7.0-dev.20260727091735
+  "@open-pioneer/core": 4.7.0-dev.20260727091735
+  "@open-pioneer/http": 4.7.0-dev.20260727091735
+  "@open-pioneer/integration": 4.7.0-dev.20260727091735
+  "@open-pioneer/local-storage": 4.7.0-dev.20260727091735
+  "@open-pioneer/notifier": 4.7.0-dev.20260727091735
+  "@open-pioneer/react-utils": 4.7.0-dev.20260727091735
+  "@open-pioneer/reactivity": 4.7.0-dev.20260727091735
+  "@open-pioneer/runtime": 4.7.0-dev.20260727091735
+  "@open-pioneer/test-utils": 4.7.0-dev.20260727091735
+  "@open-pioneer/chakra-snippets": 4.7.0-dev.20260727091735
 
-  "@chakra-ui/cli": ^3.34.0
-  "@chakra-ui/react": ^3.34.0
-  "@conterra/reactivity-core": ^0.8.2
-  "@conterra/reactivity-events": ^0.8.2
+  # Frontend dependencies
+  "@chakra-ui/react": ^3.36.1
+  "@conterra/reactivity-core": ^0.8.6
+  "@conterra/reactivity-events": ^0.8.6
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
   "@emotion/styled": ^11.14.1
   "@esri/arcgis-html-sanitizer": "^4.1.0"
-  "@formatjs/intl": ^4.1.6
+  "@formatjs/intl": ^4.1.17
   "@tanstack/react-table": ^8.21.3
-  classnames: ^2.5.1
   html2canvas: ^1.4.1
   jspdf: ^4.2.1
   ol-mapbox-style: ^13.4.1
   ol: ^10.9.0
-  proj4: ^2.20.8
-  react-dom: ^19.2.5
-  react-icons: ^5.6.0
-  react-use: ^17.6.0
-  react: ^19.2.5
-  uuid: ^13.0.0
+  proj4: ^2.20.9
+  react-dom: ^19.2.8
+  react-icons: ^5.7.0
+  react-use: ^17.6.1
+  react: ^19.2.8
+  uuid: ^14.0.1
 
   # Devtools
-  "@changesets/cli": ^2.30.0
-  "@open-pioneer/build-package-cli": ^3.0.9
-  "@open-pioneer/build-support": ^3.0.6
-  "@open-pioneer/check-pnpm-duplicates": ^0.3.1
-  "@open-pioneer/vite-plugin-pioneer": ^5.1.2
-  "@open-pioneer/changesets-release-line": ^0.1.0
+  "@changesets/cli": ^2.31.1
+  "@open-pioneer/build-package-cli": ^3.2.1
+  "@open-pioneer/build-support": ^3.1.2
+  "@open-pioneer/changesets-release-line": ^0.1.2
+  "@open-pioneer/check-pnpm-duplicates": ^0.3.4
+  "@open-pioneer/vite-plugin-pioneer": ^6.0.2
   "@testing-library/dom": ^10.4.1
-  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/jest-dom": ^7.0.0
   "@testing-library/react": ^16.3.2
   "@testing-library/user-event": ^14.6.1
   "@types/js-yaml": ^4.0.9
-  "@types/jsdom": ^28.0.1
-  "@types/node": ^20.19.39
-  "@types/react": ^19.2.14
+  "@types/jsdom": ^28.0.3
+  "@types/node": ^20.19.43
+  "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
-  "@typescript-eslint/parser": ^8.58.2
-  "@vitejs/plugin-react-swc": ^4.3.0
-  eslint: ^9.39.4
-  "@eslint/js": ^9.39.4
-  "typescript-eslint": ^8.58.2
+  "@typescript-eslint/parser": ^8.65.0
+  "@vitejs/plugin-react": "^6.0.4"
+  eslint: ^9.39.5
+  "@eslint/js": ^9.39.5
+  "typescript-eslint": ^8.65.0
   eslint-config-prettier: ^10.1.8
-  eslint-import-resolver-typescript: ^4.4.4
+  eslint-import-resolver-typescript: ^4.4.5
   eslint-plugin-headers: ^1.3.4
   eslint-plugin-import: ^2.32.0
   eslint-plugin-jsx-a11y: ^6.10.2
   eslint-plugin-react: ^7.37.5
-  eslint-plugin-react-hooks: ^7.1.0
+  eslint-plugin-react-hooks: ^7.1.1
   eslint-plugin-unused-imports: ^4.4.1
   fast-glob: ^3.3.3
   handlebars: ^4.7.9
-  happy-dom: ^20.9.0
+  happy-dom: ^20.11.1
   husky: ^9.1.7
-  js-yaml: ^4.1.1
-  jsdom: ^29.0.2
-  lint-staged: ^16.4.0
-  prettier: ^3.8.3
+  js-yaml: ^5.2.2
+  jsdom: ^29.1.1
+  lint-staged: ^17.2.0
+  prettier: ^3.9.6
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.1.3
-  sass: ^1.99.0
-  tsx: ^4.21.0
-  typedoc: ^0.28.19
-  typescript: ^5.9.3
-  vite: ^7.3.2
+  sass: ^1.101.7
+  tsx: ^4.23.1
+  typedoc: ^0.28.20
+  typescript: ^6.0.3
+  vite: ^8.1.5
   vite-plugin-eslint: ^1.8.1
-  vitest: ^4.1.4
+  vitest: ^4.1.10
   zx: ^8.8.5
 
 overrides:
-  # https://github.com/advisories/GHSA-7h2j-956f-4vf2
-  "@isaacs/brace-expansion@<=5.0.0": "^5.0.1"
-
-  # https://github.com/advisories/GHSA-5j98-mcp5-4vw2
-  "glob@>=10.x <= 11.0.3": "^11.1.0"
-
-  # https://github.com/advisories/GHSA-38c4-r59v-3vqw
-  "markdown-it@>=13.0.0 <14.1.1": "^14.1.1"
-
-  # https://github.com/advisories/GHSA-mw96-cpmx-2vgc
-  "rollup@>=4.0.0 <4.59.0": "^4.59.0"
-  "rollup@>=2.0.0 <2.80.0": "^2.80.0"
-
-  # https://github.com/advisories/GHSA-7r86-cg39-jmmj
-  # https://github.com/advisories/GHSA-23c5-xmqv-rm74
-  # https://github.com/advisories/GHSA-3ppc-4f35-3m26
-  "minimatch@>=3.0.0 <3.1.4": "^3.1.4"
-  "minimatch@>=9.0.0 <9.0.7": "^9.0.9"
-  "minimatch@>=10.0.0 <10.2.3": "^10.2.3"
-
-  # https://github.com/advisories/GHSA-wf6x-7x77-mvgw
-  "immutable@>=5.0.0 <5.1.5": "^5.1.5"
-
-  # https://github.com/advisories/GHSA-v2wj-7wpq-c8vv
-  "dompurify@>=3.1.3 <=3.3.1": "^3.3.2"
-
-  # https://github.com/advisories/GHSA-rf6f-7fwh-wjgh
-  "flatted@<=3.4.1": "^3.4.2"
-
-  # https://github.com/advisories/GHSA-3v7f-55p6-f55p
-  # https://github.com/advisories/GHSA-c2c7-rcm5-vvqj
-  "picomatch@<2.3.2": "^2.3.2"
-  "picomatch@>=3.0.0 <3.0.2": "^3.0.2"
-  "picomatch@>=4.0.0 <4.0.4": "^4.0.4"
-
-  # https://github.com/advisories/GHSA-48c2-rrv3-qjmp
-  "yaml@>=1.0.0 <1.10.3": "^1.10.3"
-  "yaml@>=2.0.0 <2.8.3": "^2.8.3"
-
-  # https://github.com/advisories/GHSA-39q2-94rc-95cp
-  "dompurify@<3.4.0": "^3.4.0"
-
-  # https://github.com/advisories/GHSA-j452-xhg8-qg39
-  "protocol-buffers-schema@<3.6.1": "^3.6.1"
-
   # We don't actually use the babel plugin.
   # The babel runtime is also not used as a production dependency.
   # See e.g. https://github.com/emotion-js/emotion/issues/2371
@@ -144,36 +98,37 @@ overrides:
   "@emotion/styled>@babel/runtime": "-"
 
   # Just to get rid of some duplicate dependencies
-  "source-map@<0.6.1": ">=0.6.1"
   "stylis@<4.3.5": ">= 4.3.5"
   "regenerator-runtime@<=0.13.11": "^0.14.0"
   "csstype@<3.2.3": ">=3.2.3"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
-  "@ark-ui/react": "5.34.1"
-  "@zag-js/splitter": "1.35.3"
+  "@chakra-ui/react": "3.36.1"
+  "@ark-ui/react": "5.37.2"
+  "@zag-js/interact-outside": "1.41.2"
 
-  # Remove before release
-  "@open-pioneer/base-theme": 4.6.0-dev.20260420101935
-  "@open-pioneer/core": 4.6.0-dev.20260420101935
-  "@open-pioneer/http": 4.6.0-dev.20260420101935
-  "@open-pioneer/integration": 4.6.0-dev.20260420101935
-  "@open-pioneer/local-storage": 4.6.0-dev.20260420101935
-  "@open-pioneer/notifier": 4.6.0-dev.20260420101935
-  "@open-pioneer/react-utils": 4.6.0-dev.20260420101935
-  "@open-pioneer/reactivity": 4.6.0-dev.20260420101935
-  "@open-pioneer/runtime": 4.6.0-dev.20260420101935
-  "@open-pioneer/test-utils": 4.6.0-dev.20260420101935
-  "@open-pioneer/chakra-snippets": 4.6.0-dev.20260420101935
+  # https://github.com/advisories/GHSA-g7r4-m6w7-qqqr
+  # https://github.com/advisories/GHSA-gv7w-rqvm-qjhr
+  "esbuild@<=0.28.0": "^0.28.1"
+
+  # https://github.com/advisories/GHSA-52cp-r559-cp3m, CVE-2026-59869
+  "js-yaml@>=3.0.0 <3.15.0": "^3.15.0"
+
+  # https://github.com/advisories/GHSA-3jxr-9vmj-r5cp, CVE-2026-13149
+  # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
+  "brace-expansion@<1.1.16": "^1.1.16"
+  "brace-expansion@>=3.0.0 <5.0.8": "^5.0.8"
+
+  # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
+  "immutable@>=5.0.0 <5.1.8": "^5.1.8"
+
+  # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
+  "dompurify@<=3.4.11": "^3.4.12"
 
 allowUnusedPatches: true
-ignorePatchFailures: false
 patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
-
-  # Fix cursor styling
-  "@zag-js/splitter": patches/@zag-js__splitter.patch
 
   # Fixes 'interact-outside' logic not tabbing between elements within the same shadow dom.
   # Can be removed if https://github.com/chakra-ui/zag/issues/3088 is fixed.
@@ -186,28 +141,27 @@ peerDependencyRules:
     "rollup": "*"
 
 auditConfig:
-  ignoreCves:
-    # This affects ajv, which is a transitive dependency of eslint.
-    # Eslint depends on ajv@v6, and an update to v8 might not be trivial.
-    # Only dev dependencies are (potentially) affected.
-    # https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
-    - CVE-2025-69873
+  ignoreGhsas:
+    # https://github.com/advisories/GHSA-h67p-54hq-rp68, CVE-2026-53550
+    - GHSA-h67p-54hq-rp68
 
-    # See CVE CVE-2025-69873
-    - CVE-2026-26996
+    # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
+    - GHSA-mh99-v99m-4gvg
 
-    # https://github.com/advisories/GHSA-f886-m6hf-6m8v
-    - CVE-2026-33750
-
-onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - "@swc/core"
-  - esbuild
-
-ignoredBuiltDependencies:
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  esbuild: true
   # Seems to work without build scripts; may revisit later if actually needed.
-  - core-js
-  - unrs-resolver
+  core-js: false
+  unrs-resolver: false
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - "undici-types@6.21.0"
+  - "semver@6.3.1"
+  - "chokidar@4.0.3"
+  - "rollup@2.80.0"
 
 # Install older versions by default
 resolutionMode: "lowest-direct"
@@ -217,7 +171,9 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "dompurify@3.4.0"
+  - "nanoid@3.3.15"
+  # Renovate security update: js-yaml@4.2.0
+  - js-yaml@4.2.0
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true

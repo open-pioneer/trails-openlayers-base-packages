@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
@@ -24,10 +25,7 @@ import { FlatStyle } from "ol/style/flat";
  *
  */
 export type EditingWorkflowState =
-    | "active:initialized"
-    | "active:drawing"
-    | "active:saving"
-    | "destroyed";
+    "active:initialized" | "active:drawing" | "active:saving" | "destroyed";
 
 /**
  * Props of an editing workflow
@@ -39,7 +37,7 @@ export interface EditingWorkflowProps {
     vertexStyle: FlatStyle;
     httpService: HttpService;
     layerFactory: LayerFactory;
-    intl: PackageIntl;
+    intl: ReadonlyReactive<PackageIntl>;
 }
 
 /**

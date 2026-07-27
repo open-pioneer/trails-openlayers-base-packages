@@ -76,6 +76,10 @@ messages:
         savingStared: "Feature is being saved..."
       activeInfo: "Status: editing active"
       inactiveInfo: "Status: editing inactive"
+    featureEditing:
+      title: Feature Editing
+      description: This demo shows the editing UI from the <code>feature-editing</code> package using an in-memory store and multiple templates.
+      editorTitle: Feature Editing
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."

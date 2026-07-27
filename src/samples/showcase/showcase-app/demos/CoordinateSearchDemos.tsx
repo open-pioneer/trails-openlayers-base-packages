@@ -1,15 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Button, Flex } from "@chakra-ui/react";
+import { computed } from "@conterra/reactivity-core";
 import {
     CoordinateInput,
     CoordinateSearch,
     ProjectionInput
 } from "@open-pioneer/coordinate-search";
 import { NotificationService } from "@open-pioneer/notifier";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { Coordinate } from "ol/coordinate";
 import { Projection } from "ol/proj";
+import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
 
@@ -44,29 +46,32 @@ const PROJECTIONS: ProjectionInput[] = [
     }
 ];
 
-export function createCoordinateInputDemo({ intl, notificationService }: SharedDemoOptions): Demo {
+export function createCoordinateInputDemo({
+    currentIntl,
+    notificationService
+}: SharedDemoOptions): Demo {
     return {
         id: "coordinateInput",
-        title: intl.formatMessage({ id: "demos.coordinateInput.title" }),
+        title: computed(() =>
+            currentIntl.value.formatMessage({ id: "demos.coordinateInput.title" })
+        ),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.coordinateInput.description" }),
-                mainWidget: (
-                    <CoordinateInputComponent
-                        notificationService={notificationService}
-                        intl={intl}
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.coordinateInput.description"
                     />
-                )
+                ),
+                mainWidget: <CoordinateInputComponent notificationService={notificationService} />
             };
         }
     };
 }
 
-function CoordinateInputComponent(props: {
-    notificationService: NotificationService;
-    intl: PackageIntl;
-}) {
-    const { notificationService, intl } = props;
+function CoordinateInputComponent(props: { notificationService: NotificationService }) {
+    const { notificationService } = props;
+    const intl = useIntl();
     const [input, setInput] = useState<Coordinate | undefined>();
 
     function onCoordinateInput(coords: Coordinate, projection: Projection) {
@@ -109,29 +114,32 @@ function CoordinateInputComponent(props: {
     );
 }
 
-export function createCoordinateSearchDemo({ intl, notificationService }: SharedDemoOptions): Demo {
+export function createCoordinateSearchDemo({
+    currentIntl,
+    notificationService
+}: SharedDemoOptions): Demo {
     return {
         id: "coordinateSearch",
-        title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
+        title: computed(() =>
+            currentIntl.value.formatMessage({ id: "demos.coordinateSearch.title" })
+        ),
         createModel() {
             return {
-                description: intl.formatRichMessage({ id: "demos.coordinateSearch.description" }),
-                mainWidget: (
-                    <CoordinateSearchComponent
-                        notificationService={notificationService}
-                        intl={intl}
+                description: (
+                    <FormattedRichMessage
+                        intl={currentIntl}
+                        id="demos.coordinateSearch.description"
                     />
-                )
+                ),
+                mainWidget: <CoordinateSearchComponent notificationService={notificationService} />
             };
         }
     };
 }
 
-function CoordinateSearchComponent(props: {
-    notificationService: NotificationService;
-    intl: PackageIntl;
-}) {
-    const { notificationService, intl } = props;
+function CoordinateSearchComponent(props: { notificationService: NotificationService }) {
+    const { notificationService } = props;
+    const intl = useIntl();
 
     function onCoordinateSearch(coords: Coordinate, projection: Projection) {
         notificationService.notify({

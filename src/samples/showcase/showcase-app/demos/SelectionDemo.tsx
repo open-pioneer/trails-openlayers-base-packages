@@ -1,7 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
+import { computed, reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
 import {
     Selection,
     SelectionCompleteEvent,
@@ -10,16 +18,9 @@ import {
 } from "@open-pioneer/selection";
 import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import VectorSource from "ol/source/Vector";
-import {
-    FormatOptions,
-    ResultColumn,
-    ResultList,
-    ResultListInput,
-    ResultListSelectionChangeEvent
-} from "@open-pioneer/result-list";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -35,7 +36,9 @@ interface ResultListState {
 export function createSelectionDemo(options: SharedDemoOptions): Demo {
     return {
         id: "selectionResultList",
-        title: options.intl.formatMessage({ id: "demos.selectionResultList.title" }),
+        title: computed(() =>
+            options.currentIntl.value.formatMessage({ id: "demos.selectionResultList.title" })
+        ),
         createModel() {
             return new DemoModelImpl(options);
         }
@@ -55,12 +58,14 @@ class DemoModelImpl implements DemoModel {
     mainWidget: ReactNode;
 
     constructor(options: SharedDemoOptions) {
-        const { mapModel, vectorSelectionSourceFactory, intl } = options;
+        const { mapModel, vectorSelectionSourceFactory, currentIntl } = options;
 
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
 
-        this.description = intl.formatRichMessage({ id: "demos.selectionResultList.description" });
+        this.description = (
+            <FormattedRichMessage intl={currentIntl} id="demos.selectionResultList.description" />
+        );
         this.mainWidget = (
             <Selection
                 sources={[this.#selectionSource]}

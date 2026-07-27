@@ -31,14 +31,20 @@ export function AppUI() {
 
     useGlobalLang();
 
-    const { resultListState, mainContent } = useReactiveSnapshot(() => {
+    const { launchError, resultListState, mainContent } = useReactiveSnapshot(() => {
         return {
+            launchError: appModel.launchError,
             resultListState: appModel.resultListState,
             mainContent: appModel.mainContent
         };
     }, [appModel]);
 
     const showResultList = resultListState.input && resultListState.open;
+
+    if (launchError) {
+        return <Box color="red">Error: {launchError}</Box>;
+    }
+
     return (
         map && (
             <DefaultMapProvider map={map}>

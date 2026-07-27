@@ -1,0 +1,48 @@
+messages:
+  actionSelector:
+    editFeatureHeading: Geoobjekt bearbeiten
+    createFeatureHeading: Geoobjekt erstellen
+    selectButtonTitle: Auswählen
+    selectButtonActiveTitle: Auswählen beenden
+    finishButtonTooltip: Zeichnen beenden
+    resetButtonTooltip: Zeichnung zurücksetzen
+    undoButtonTooltip: Rückgängig machen
+    redoButtonTooltip: Wiederholen
+  propertyEditor:
+    defaultEditHeading: Geoobjekt bearbeiten
+    defaultCreateHeading: Geoobjekt erstellen
+    requiredFieldHint: "Pflichtfeld"
+    saveButtonTitle: Speichern
+    cancelButtonTitle: Abbrechen
+    deleteButtonTooltip: Geoobjekt löschen
+
+    errors:
+      minAndMax: Der Wert muss zwischen {min} und {max} liegen.
+      minOnly: Der Wert muss mindestens {min} sein.
+      maxOnly: Der Wert darf höchstens {max} sein.
+
+  deleteConfirmationDialog:
+    title: Geoobjekt löschen
+    message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?
+    deleteButtonTitle: Geoobjekt löschen
+    cancelButtonTitle: Abbrechen
+  cancelConfirmationDialog:
+    title: Änderungen verwerfen
+    message: Sind Sie sicher, dass Sie Ihre Änderungen verwerfen möchten?
+    confirmCancelButtonTitle: Änderungen verwerfen
+    abortCancelButtonTitle: Weiter bearbeiten
+  notifier:
+    creationSuccess: Geoobjekt erstellt
+    creationFailure: Das Geoobjekt konnte nicht erstellt werden.
+    updateSuccess: Geoobjekt aktualisiert
+    updateFailure: Das Geoobjekt konnte nicht aktualisiert werden.
+    deletionSuccess: Geoobjekt gelöscht
+    deletionFailure: Das Geoobjekt konnte nicht gelöscht werden.
+  tooltips:
+    drawingMessagePoint: Klicken Sie in die Karte, um den Punkt zu zeichnen.
+    drawingMessageLineString: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Doppelklicken, um die Zeichnung zu beenden.
+    drawingMessagePolygon: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Doppelklicken, um die Zeichnung zu beenden.
+    drawingMessageCircle: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Maus zum Aufziehen bewegen. <br></br> Doppelklicken zum Beenden.
+    selectionMessage: Zum Auswählen auf ein Feature in der Karte klicken.
+    modificationMessage: Zum Bearbeiten auf einen Stützpunkt klicken, <br></br> gedrückt halten und ziehen.
+    modificationMessagePoint: Zum Bearbeiten auf den Punkt klicken, <br></br> gedrückt halten und ziehen.

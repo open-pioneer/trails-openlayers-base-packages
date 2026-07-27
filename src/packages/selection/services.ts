@@ -7,18 +7,19 @@ import {
     VectorLayerSelectionSourceFactory,
     VectorLayerSelectionSourceOptions
 } from "./api";
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 
 export class VectorSelectionSourceFactory implements VectorLayerSelectionSourceFactory {
-    #intl: PackageIntl;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
 
-    constructor({ intl }: ServiceOptions<PackageIntl>) {
-        this.#intl = intl;
+    constructor({ currentIntl }: ServiceOptions<PackageIntl>) {
+        this.#currentIntl = currentIntl;
     }
     createSelectionSource(options: VectorLayerSelectionSourceOptions): VectorLayerSelectionSource {
         return new VectorLayerSelectionSourceImpl(
             options.vectorLayer,
             options.label,
-            this.#intl.formatMessage({ id: "layerNotVisibleReason" })
+            this.#currentIntl
         );
     }
 }

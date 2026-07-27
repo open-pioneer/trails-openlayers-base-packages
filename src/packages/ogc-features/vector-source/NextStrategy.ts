@@ -26,10 +26,14 @@ const DEFAULT_LIMIT = 5000;
  * This implementation may be slow for large data sets because it does not allow for any parallelism.
  */
 export class NextStrategy {
-    constructor(private options: NextStrategyOptions) {}
+    #options: NextStrategyOptions;
+
+    constructor(options: NextStrategyOptions) {
+        this.#options = options;
+    }
 
     async load(): Promise<Feature[]> {
-        const options = this.options;
+        const options = this.#options;
         const limit = options.limit ?? DEFAULT_LIMIT;
 
         let url = new URL(options.fullUrl);

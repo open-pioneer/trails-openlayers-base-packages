@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -8,6 +9,7 @@ import { ReactNode } from "react";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
 import { createSelectionDemo } from "./SelectionDemo";
 import { createEditingDemo } from "./EditingDemo";
+import { createFeatureEditingDemo } from "./FeatureEditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
 import {
@@ -25,15 +27,13 @@ import {
 import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
 import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
 
-export interface DemoInfo {
+export interface Demo {
     /** Unique id */
     id: string;
 
-    /** Human readable (and translated) title */
-    title: string;
-}
+    /** Human readable (and translated) title. Reactive so locale switches propagate without rebuilding the demo. */
+    title: ReadonlyReactive<string>;
 
-export interface Demo extends DemoInfo {
     /** Called by the application (and then rendered) when the demo is active. */
     createModel(): DemoModel;
 }
@@ -58,7 +58,7 @@ export interface DemoModel {
 }
 
 export interface SharedDemoOptions {
-    intl: PackageIntl;
+    currentIntl: ReadonlyReactive<PackageIntl>;
     httpService: HttpService;
     mapModel: MapModel;
     vectorSelectionSourceFactory: VectorSelectionSourceFactory;
@@ -77,6 +77,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createScaleBarDemo(options),
         createMeasurementDemo(options),
         createEditingDemo(options),
+        createFeatureEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),

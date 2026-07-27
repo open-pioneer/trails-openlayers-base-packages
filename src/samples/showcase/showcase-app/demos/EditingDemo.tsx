@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, reactive, watch } from "@conterra/reactivity-core";
 import { Button, Flex } from "@chakra-ui/react";
+import { computed, Reactive, reactive, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
 import { Layer, MapModel, Overlay } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EventsKey } from "ol/events";
@@ -28,7 +29,9 @@ interface Tooltip extends Resource {
 export function createEditingDemo(options: SharedDemoOptions): Demo {
     return {
         id: "editing",
-        title: options.intl.formatMessage({ id: "demos.editing.title" }),
+        title: computed(() =>
+            options.currentIntl.value.formatMessage({ id: "demos.editing.title" })
+        ),
         createModel() {
             return new DemoModelImpl(options);
         }
@@ -43,16 +46,18 @@ class DemoModelImpl implements DemoModel {
     #editingController: EditingController;
 
     constructor(options: SharedDemoOptions) {
-        const { mapModel, intl, editingService, notificationService } = options;
+        const { mapModel, currentIntl, editingService, notificationService } = options;
 
         this.#mapModel = mapModel;
 
-        this.description = intl.formatRichMessage({ id: "demos.editing.description" });
+        this.description = (
+            <FormattedRichMessage intl={currentIntl} id="demos.editing.description" />
+        );
         this.#editingController = new EditingController(
             mapModel,
             editingService,
             notificationService,
-            intl
+            currentIntl
         );
 
         this.mainWidget = <EditingButtons editingController={this.#editingController} />;
@@ -76,7 +81,7 @@ class EditingController {
     #mapModel: MapModel;
     #editingService: EditingService;
     #notificationService: NotificationService;
-    #intl: PackageIntl;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
 
     #selectInteraction: Select | undefined;
     #editUpdateSelectHandler: EventsKey | undefined;
@@ -86,13 +91,17 @@ class EditingController {
         mapModel: MapModel,
         editingService: EditingService,
         notificationService: NotificationService,
-        intl: PackageIntl
+        currentIntl: ReadonlyReactive<PackageIntl>
     ) {
         this.#editingActive = reactive(false);
         this.#mapModel = mapModel;
         this.#editingService = editingService;
         this.#notificationService = notificationService;
-        this.#intl = intl;
+        this.#currentIntl = currentIntl;
+    }
+
+    get #intl(): PackageIntl {
+        return this.#currentIntl.value;
     }
 
     editingActive() {

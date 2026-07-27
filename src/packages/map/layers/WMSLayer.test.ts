@@ -5,7 +5,6 @@ import { HttpService } from "@open-pioneer/http";
 import { createTestLayer } from "@open-pioneer/map-test-utils";
 import ImageLayer from "ol/layer/Image";
 import { get as getProjection } from "ol/proj";
-import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
@@ -78,7 +77,7 @@ it("supports additional source options", () => {
         }
     });
 
-    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const olSource = layer.olSource!;
     const attributions = olSource.getAttributions()!(undefined as any);
     expect(attributions).toMatchInlineSnapshot(`
       [
@@ -131,7 +130,7 @@ it("uses http service to fetch images", async () => {
     await vi.waitUntil(() => urls.length > 0); // Initial metadata
     urls = [];
 
-    const source = (layer.olLayer as ImageLayer<ImageSource>).getSource()!;
+    const source = layer.olSource!;
     const projection = getProjection("EPSG:3857")!;
     const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
     image.load();
@@ -187,7 +186,7 @@ it("does not fetch capabilities if 'fetchCapabilities' property is set to false"
         })
     });
 
-    const source = (layer.olLayer as ImageLayer<ImageSource>).getSource()!;
+    const source = layer.olSource!;
     const projection = getProjection("EPSG:3857")!;
     const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
     image.load();
@@ -212,7 +211,7 @@ it("supports explicit attributions via sourceOptions", async () => {
         }
     });
 
-    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const olSource = layer.olSource!;
     expect(getAttributions(olSource)).toMatchInlineSnapshot(`"Custom Attributions"`);
 });
 
@@ -230,7 +229,7 @@ it("loads attributions from service metadata", async () => {
         fetch
     });
 
-    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const olSource = layer.olSource!;
     const attributions = await vi.waitUntil(() => getAttributions(olSource));
     expect(attributions).toMatchInlineSnapshot(
         `"Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: Es gelten die durch den IT-Planungsrat im Datenportal für Deutschland (GovData) veröffentlichten einheitlichen Lizenzbedingungen „Datenlizenz Deutschland – Zero“ (https://www.govdata.de/dl-de/zero-2-0). Jede Nutzung ist ohne Einschränkungen oder Bedingungen zulässig. Eine Haftung für die zur Verfügung gestellten Daten und Dienste wird ausgeschlossen. Dies gilt insbesondere für deren Aktualität, Richtigkeit, Verfügbarkeit, Qualität und Vollständigkeit sowie die Kompatibilität und Interoperabilität mit den Systemen des Nutzers. Vom Haftungsausschluss ausgenommen sind gesetzliche Schadensersatzansprüche für eine Verletzung des Lebens, des Körpers und der Gesundheit sowie die gesetzliche Haftung für sonstige Schäden, soweit diese auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung beruhen."`
@@ -265,7 +264,7 @@ describe("sublayers", () => {
                 }
             ]
         });
-        const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+        const olSource = layer.olSource!;
         const layersParam = olSource.getParams()["LAYERS"];
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
@@ -290,7 +289,7 @@ describe("sublayers", () => {
                 }
             ]
         });
-        const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+        const olSource = layer.olSource!;
         const layersParam = olSource.getParams()["LAYERS"];
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
@@ -319,7 +318,7 @@ describe("sublayers", () => {
 
         // If parent-sublayer were also included in this array, their children would always
         // be shown, even if those children were set to invisible.
-        const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+        const olSource = layer.olSource!;
         const layersParam = olSource.getParams()["LAYERS"];
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
@@ -340,7 +339,7 @@ describe("sublayers", () => {
                 }
             ]
         });
-        const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+        const olSource = layer.olSource!;
         const layersParam = olSource.getParams()["LAYERS"];
         expect(layersParam).toEqual(["sublayer-2"]);
     });
@@ -363,7 +362,7 @@ describe("sublayers", () => {
             attach: true
         });
 
-        const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+        const olSource = layer.olSource!;
         const getLayersParam = () => olSource.getParams()["LAYERS"];
         expect(getLayersParam()).toEqual(["sublayer-2"]);
 

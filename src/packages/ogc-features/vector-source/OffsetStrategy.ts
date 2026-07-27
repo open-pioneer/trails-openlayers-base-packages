@@ -32,20 +32,22 @@ export interface OffsetStrategyOptions {
  * parallel requests for large datasets.
  */
 export class OffsetStrategy {
-    private concurrency: number;
+    #concurrency: number;
+    #options: OffsetStrategyOptions;
 
-    constructor(private options: OffsetStrategyOptions) {
-        this.concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
-        if (this.concurrency < 1) {
-            throw new Error("Invalid concurrency: " + this.concurrency);
+    constructor(options: OffsetStrategyOptions) {
+        this.#options = options;
+        this.#concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
+        if (this.#concurrency < 1) {
+            throw new Error("Invalid concurrency: " + this.#concurrency);
         }
     }
 
     async load(): Promise<Feature[]> {
-        const options = this.options;
+        const options = this.#options;
         const fullUrl = options.fullUrl;
         const pageSize = options.limit ?? DEFAULT_LIMIT;
-        const concurrency = this.concurrency;
+        const concurrency = this.#concurrency;
 
         let startOffset = 0;
         let currentUrl: URL | undefined = fullUrl;
@@ -84,7 +86,7 @@ export class OffsetStrategy {
      * The `nextURL` of the last page (if any) is returned from this function.
      */
     async #loadPages(allUrls: URL[]): Promise<FeatureResponse> {
-        const { featureFormat, httpService, signal, onFeaturesLoaded } = this.options;
+        const { featureFormat, httpService, signal, onFeaturesLoaded } = this.#options;
         const allFeatureResponse: FeatureResponse = {
             nextLink: undefined,
             numberMatched: undefined,

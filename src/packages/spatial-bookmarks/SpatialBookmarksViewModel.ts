@@ -26,10 +26,10 @@ export interface Bookmark {
 }
 
 export class SpatialBookmarkViewModel {
-    private map: MapModel;
-    private packageNamespace: LocalStorageNamespace;
-    private writableBookmarks = reactiveArray<Bookmark>([]);
-    private watchBookmarksHandle: CleanupHandle;
+    #map: MapModel;
+    #packageNamespace: LocalStorageNamespace;
+    #writableBookmarks = reactiveArray<Bookmark>([]);
+    #watchBookmarksHandle: CleanupHandle;
 
     /**
      * Provides read-only access to the bookmarks array.
@@ -37,24 +37,24 @@ export class SpatialBookmarkViewModel {
      * uses the methods below to modify the state.
      */
     get bookmarks(): Bookmark[] {
-        return this.writableBookmarks.getItems();
+        return this.#writableBookmarks.getItems();
     }
 
     constructor(map: MapModel, localStorageService: LocalStorageService) {
-        this.map = map;
-        this.packageNamespace = localStorageService.getNamespace("spatial-bookmarks");
+        this.#map = map;
+        this.#packageNamespace = localStorageService.getNamespace("spatial-bookmarks");
 
         // Load from local storage on start; save changes whenever bookmarks change.
-        this.loadState();
-        this.watchBookmarksHandle = watch(
-            () => [this.writableBookmarks.getItems()],
-            ([bookmarks]) => this.saveState(bookmarks),
+        this.#loadState();
+        this.#watchBookmarksHandle = watch(
+            () => [this.#writableBookmarks.getItems()],
+            ([bookmarks]) => this.#saveState(bookmarks),
             { immediate: false }
         );
     }
 
     destroy() {
-        this.watchBookmarksHandle.destroy();
+        this.#watchBookmarksHandle.destroy();
     }
 
     /**
@@ -63,8 +63,8 @@ export class SpatialBookmarkViewModel {
      */
     createBookmark(title: string) {
         // minx, miny, maxx, maxy
-        const olExtent = this.map.olView.calculateExtent();
-        const projection = this.map.projection.getCode();
+        const olExtent = this.#map.olView.calculateExtent();
+        const projection = this.#map.projection.getCode();
         const [minX = 0, minY = 0, maxX = 0, maxY = 0] = olExtent;
         const extent: Extent = { minX, minY, maxX, maxY };
 
@@ -76,7 +76,7 @@ export class SpatialBookmarkViewModel {
         };
         LOG.debug("Created a new bookmark", bookmark);
 
-        const bookmarks = this.writableBookmarks;
+        const bookmarks = this.#writableBookmarks;
         bookmarks.push(bookmark);
     }
 
@@ -86,10 +86,10 @@ export class SpatialBookmarkViewModel {
      */
     activateBookmark(bookmark: Bookmark) {
         LOG.debug("Activating bookmark", bookmark);
-        const extent = this.getBookmarkExtent(bookmark);
+        const extent = this.#getBookmarkExtent(bookmark);
 
         LOG.debug("Attempting to apply extent", extent);
-        this.applyExtent(extent);
+        this.#applyExtent(extent);
     }
 
     /**
@@ -97,9 +97,9 @@ export class SpatialBookmarkViewModel {
      */
     deleteBookmark(id: string) {
         LOG.debug("Deleting bookmark", id);
-        const index = this.writableBookmarks.findIndex((bookmark) => bookmark.id === id);
+        const index = this.#writableBookmarks.findIndex((bookmark) => bookmark.id === id);
         if (index > -1) {
-            this.writableBookmarks.splice(index, 1);
+            this.#writableBookmarks.splice(index, 1);
         }
     }
 
@@ -108,38 +108,38 @@ export class SpatialBookmarkViewModel {
      */
     deleteAllBookmarks() {
         LOG.debug("Deleting all bookmarks");
-        this.writableBookmarks.splice(0);
+        this.#writableBookmarks.splice(0);
     }
 
     /**
      * Loads the bookmarks from local storage.
      * If the bookmarks are not valid, the initial state (empty array) is restored.
      */
-    private loadState() {
+    #loadState() {
         LOG.debug("Restoring bookmarks from local storage");
 
-        const rawBookmarks = this.packageNamespace.get("bookmarks") ?? [];
+        const rawBookmarks = this.#packageNamespace.get("bookmarks") ?? [];
         try {
             validateBookmarks(rawBookmarks);
-            this.writableBookmarks.push(...rawBookmarks);
+            this.#writableBookmarks.push(...rawBookmarks);
         } catch (e) {
             LOG.error("Bookmarks data in local storage is invalid, resetting to default value.", e);
-            this.writableBookmarks.splice(0);
-            this.saveState([]);
+            this.#writableBookmarks.splice(0);
+            this.#saveState([]);
         }
     }
 
     /**
      * Saves the bookmarks to local storage.
      */
-    private saveState(bookmarks: Bookmark[]) {
+    #saveState(bookmarks: Bookmark[]) {
         LOG.debug("Saving bookmarks to local storage");
-        this.packageNamespace.set("bookmarks", bookmarks);
+        this.#packageNamespace.set("bookmarks", bookmarks);
     }
 
     /** Computes an OpenLayers extent for the given bookmark. */
-    private getBookmarkExtent(bookmark: Bookmark) {
-        const olView = this.map.olView;
+    #getBookmarkExtent(bookmark: Bookmark) {
+        const olView = this.#map.olView;
         const extent = bookmark.extent;
         const olExtent = [extent.minX, extent.minY, extent.maxX, extent.maxY];
         const viewProjection = olView.getProjection();
@@ -148,8 +148,8 @@ export class SpatialBookmarkViewModel {
     }
 
     /** Moves the map to the given extent. */
-    private applyExtent(olExtent: OlExtent) {
-        const olView = this.map.olView;
+    #applyExtent(olExtent: OlExtent) {
+        const olView = this.#map.olView;
         const center = getCenter(olExtent);
         const resolution = olView.getResolutionForExtent(olExtent);
         olView.setCenter(center);

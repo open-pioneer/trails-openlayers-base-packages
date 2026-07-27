@@ -185,6 +185,16 @@ export class WMSLayer extends AbstractLayer {
         return undefined;
     }
 
+    /**
+     * Returns the current source associated with this layer as a reactive property.
+     *
+     * Note that the return type may be expanded in the future with additional source types.
+     */
+    get olSource(): ImageWMS | undefined {
+        // source does not change in this class; no signal is required
+        return this.#source;
+    }
+
     /** The URL of the WMS service that was used during layer construction. */
     get url(): string {
         return this.#url;
@@ -201,6 +211,11 @@ export class WMSLayer extends AbstractLayer {
         return this.#sublayers;
     }
 
+    /**
+     * @internal
+     *
+     * Note: this property was never documented and has been exposed by accident.
+     **/
     get capabilities() {
         return this.#capabilities;
     }

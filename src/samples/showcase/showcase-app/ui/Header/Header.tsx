@@ -26,7 +26,9 @@ export function Header({ appModel }: HeaderProps) {
             alignItems="baseline"
             gap={2}
             boxShadow="1px 0px 3px rgba(0, 0, 0, 0.5)"
-            bgColor="white"
+            bgColor="bg"
+            borderColor="border"
+            borderBottomWidth="2px"
             zIndex={100 /* above all other normal components */}
         >
             <SectionHeading

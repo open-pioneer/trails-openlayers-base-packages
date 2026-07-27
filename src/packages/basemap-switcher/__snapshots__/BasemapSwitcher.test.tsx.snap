@@ -46,6 +46,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
         >
           <span
             class="chakra-tooltip__trigger"
+            data-ownedby="_r_d_"
             data-part="trigger"
             data-scope="tooltip"
             data-state="closed"
@@ -136,6 +137,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
         data-part="trigger"
         data-placement="bottom-start"
         data-scope="select"
+        data-side="bottom"
         data-state="open"
         dir="ltr"
         id="select:_r_3_:trigger"

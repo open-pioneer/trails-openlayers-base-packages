@@ -10,6 +10,7 @@
         "@open-pioneer/coordinate-viewer": "workspace:*",
         "@open-pioneer/coordinate-search": "workspace:*",
         "@open-pioneer/editing": "workspace:*",
+        "@open-pioneer/feature-editing": "workspace:*",
         "@open-pioneer/geolocation": "workspace:*",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/legend": "workspace:*",
@@ -34,6 +35,7 @@
         "@open-pioneer/chakra-snippets": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
+        "react-icons": "catalog:",
         "react-dom": "catalog:"
     }
 }

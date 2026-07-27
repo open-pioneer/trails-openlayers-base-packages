@@ -1,5 +1,17 @@
 # @open-pioneer/editing
 
+## 1.3.0
+
+### Minor Changes
+
+- d54ccfd: Update to Chakra UI 3.35.0
+- 206b397: Update to trails core packages 4.6.0
+
+### Patch Changes
+
+- 989144d: update packages for hmr i18n usage
+- 0f1277f: minor changes to support dark color mode
+
 ## 1.2.0
 
 ### Patch Changes

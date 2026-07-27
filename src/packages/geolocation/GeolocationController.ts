@@ -28,18 +28,18 @@ export class GeolocationController {
     /** True if location tracking is supported by the browser. */
     public readonly supported = !!navigator.geolocation;
 
-    private readonly map: MapModel;
-    private readonly positionHighlightLayer: SimpleLayer;
-    private readonly geolocation: olGeolocation;
-    private readonly onError: OnErrorCallback;
+    readonly #map: MapModel;
+    readonly #positionHighlightLayer: SimpleLayer;
+    readonly #geolocation: olGeolocation;
+    readonly #onError: OnErrorCallback;
 
-    private maxZoom: number = DEFAULT_MAX_ZOOM;
-    private accuracyFeature: Feature | undefined;
-    private positionFeature: Feature | undefined;
-    private changeHandlers: EventsKey[] = [];
-    private setMapToPosition: boolean = true;
-    private trackingOptions: PositionOptions = {};
-    private isInitialZoom: boolean = true;
+    #maxZoom: number = DEFAULT_MAX_ZOOM;
+    #accuracyFeature: Feature | undefined;
+    #positionFeature: Feature | undefined;
+    #changeHandlers: EventsKey[] = [];
+    #setMapToPosition: boolean = true;
+    #trackingOptions: PositionOptions = {};
+    #isInitialZoom: boolean = true;
 
     #loading = reactive(false);
     #active = reactive(false);
@@ -50,22 +50,22 @@ export class GeolocationController {
         onError: OnErrorCallback,
         trackingOptions?: PositionOptions
     ) {
-        this.map = map;
-        this.onError = onError;
-        this.isInitialZoom = true;
+        this.#map = map;
+        this.#onError = onError;
+        this.#isInitialZoom = true;
 
-        this.accuracyFeature = new Feature();
-        this.accuracyFeature.setStyle(getDefaultAccuracyStyle());
+        this.#accuracyFeature = new Feature();
+        this.#accuracyFeature.setStyle(getDefaultAccuracyStyle());
 
-        this.positionFeature = new Feature();
-        this.positionFeature.setStyle(getDefaultPositionStyle());
+        this.#positionFeature = new Feature();
+        this.#positionFeature.setStyle(getDefaultPositionStyle());
 
         const olLayer = new VectorLayer({
             source: new VectorSource({
-                features: [this.accuracyFeature, this.positionFeature]
+                features: [this.#accuracyFeature, this.#positionFeature]
             })
         });
-        this.positionHighlightLayer = layerFactory.create({
+        this.#positionHighlightLayer = layerFactory.create({
             type: SimpleLayer,
             title: "geolocation-highlight-layer",
             internal: true,
@@ -75,23 +75,23 @@ export class GeolocationController {
         const geolocationTrackingOptions: PositionOptions =
             trackingOptions || getDefaultTrackingOptions();
 
-        this.geolocation = new olGeolocation({
+        this.#geolocation = new olGeolocation({
             tracking: false,
             trackingOptions: geolocationTrackingOptions,
             projection: map.olView?.getProjection()
         });
 
-        this.trackingOptions = geolocationTrackingOptions;
-        this.geolocation.on("error", (event) => this.handleGeolocationError(event));
+        this.#trackingOptions = geolocationTrackingOptions;
+        this.#geolocation.on("error", (event) => this.#handleGeolocationError(event));
     }
 
     destroy() {
         this.stopGeolocation();
-        this.geolocation?.setTracking(false);
-        this.geolocation.dispose();
-        this.positionHighlightLayer.destroy();
-        this.accuracyFeature = undefined;
-        this.positionFeature = undefined;
+        this.#geolocation?.setTracking(false);
+        this.#geolocation.dispose();
+        this.#positionHighlightLayer.destroy();
+        this.#accuracyFeature = undefined;
+        this.#positionFeature = undefined;
     }
 
     startGeolocation() {
@@ -103,20 +103,20 @@ export class GeolocationController {
             this.#active.value = true;
             this.#loading.value = true;
 
-            this.geolocation?.setProjection(this.map.olView?.getProjection());
-            this.geolocation?.setTracking(true);
+            this.#geolocation?.setProjection(this.#map.olView?.getProjection());
+            this.#geolocation?.setTracking(true);
 
-            const accuracyChangeHandler: EventsKey = this.geolocation.on(
+            const accuracyChangeHandler: EventsKey = this.#geolocation.on(
                 "change:accuracyGeometry",
                 () => {
                     const accuracyGeometry: Polygon | undefined =
-                        this.geolocation.getAccuracyGeometry() || undefined;
-                    this.accuracyFeature?.setGeometry(accuracyGeometry);
-                    if (this.accuracyFeature?.getGeometry() !== undefined) {
+                        this.#geolocation.getAccuracyGeometry() || undefined;
+                    this.#accuracyFeature?.setGeometry(accuracyGeometry);
+                    if (this.#accuracyFeature?.getGeometry() !== undefined) {
                         resolve();
                     }
-                    if (this.isInitialZoom) {
-                        const accuracyGeometryExtent: Extent | undefined = this?.accuracyFeature
+                    if (this.#isInitialZoom) {
+                        const accuracyGeometryExtent: Extent | undefined = this.#accuracyFeature
                             ?.getGeometry()
                             ?.getExtent();
                         if (accuracyGeometryExtent) {
@@ -124,53 +124,53 @@ export class GeolocationController {
                             if (!bufferedExtent) {
                                 return;
                             }
-                            this.map.olView.fit(bufferedExtent, {
-                                maxZoom: this.maxZoom
+                            this.#map.olView.fit(bufferedExtent, {
+                                maxZoom: this.#maxZoom
                             });
-                            this.isInitialZoom = false;
+                            this.#isInitialZoom = false;
                         }
                     }
                 }
             );
 
-            const positionChangeHandler: EventsKey = this.geolocation.on("change:position", () => {
-                const coordinates: Coordinate | undefined = this.geolocation.getPosition();
+            const positionChangeHandler: EventsKey = this.#geolocation.on("change:position", () => {
+                const coordinates: Coordinate | undefined = this.#geolocation.getPosition();
                 if (coordinates && (coordinates[0] || coordinates[1]) !== undefined) {
-                    this.positionFeature?.setGeometry(new Point(coordinates));
-                    if (this.setMapToPosition) {
-                        this.map.olView.setCenter(coordinates);
+                    this.#positionFeature?.setGeometry(new Point(coordinates));
+                    if (this.#setMapToPosition) {
+                        this.#map.olView.setCenter(coordinates);
                     }
-                    if (this.positionFeature?.getGeometry() !== undefined) {
+                    if (this.#positionFeature?.getGeometry() !== undefined) {
                         resolve();
                     }
                 }
             });
 
             // zoom changes
-            const resolutionChangeHandler: EventsKey = this.map.olView.on(
+            const resolutionChangeHandler: EventsKey = this.#map.olView.on(
                 "change:resolution",
                 () => {
-                    this.setMapToPosition = this.isInitialZoom;
+                    this.#setMapToPosition = this.#isInitialZoom;
                 }
             );
 
             // pointermove is triggered when a pointer is moved.
             // Note that on touch devices this is triggered when the map is panned,
             // so is not the same as mousemove.
-            const draggingHandler: EventsKey = this.map.olMap.on("pointermove", (evt) => {
+            const draggingHandler: EventsKey = this.#map.olMap.on("pointermove", (evt) => {
                 if (evt.dragging) {
-                    this.setMapToPosition = false;
+                    this.#setMapToPosition = false;
                 }
             });
 
-            this.changeHandlers.push(
+            this.#changeHandlers.push(
                 accuracyChangeHandler,
                 positionChangeHandler,
                 resolutionChangeHandler,
                 draggingHandler
             );
 
-            this.map.layers.addLayer(this.positionHighlightLayer, { at: "topmost" });
+            this.#map.layers.addLayer(this.#positionHighlightLayer, { at: "topmost" });
         });
 
         geolocationPromise
@@ -184,20 +184,20 @@ export class GeolocationController {
     }
 
     stopGeolocation() {
-        this.geolocation?.setTracking(false);
+        this.#geolocation?.setTracking(false);
         this.#active.value = false;
         this.#loading.value = false;
-        this.trackingOptions = {};
-        this.setMapToPosition = true;
-        this.isInitialZoom = true;
+        this.#trackingOptions = {};
+        this.#setMapToPosition = true;
+        this.#isInitialZoom = true;
 
-        this.changeHandlers.forEach((handler) => {
+        this.#changeHandlers.forEach((handler) => {
             unByKey(handler);
         });
-        this.changeHandlers = [];
-        this.accuracyFeature?.setGeometry(undefined);
-        this.positionFeature?.setGeometry(undefined);
-        this.map.layers.removeLayer(this.positionHighlightLayer);
+        this.#changeHandlers = [];
+        this.#accuracyFeature?.setGeometry(undefined);
+        this.#positionFeature?.setGeometry(undefined);
+        this.#map.layers.removeLayer(this.#positionHighlightLayer);
     }
 
     /** True if the position is being tracked. */
@@ -214,38 +214,38 @@ export class GeolocationController {
     }
 
     setPositionFeatureStyle(styleLike: StyleLike | undefined) {
-        this.positionFeature?.setStyle(styleLike ?? getDefaultPositionStyle());
+        this.#positionFeature?.setStyle(styleLike ?? getDefaultPositionStyle());
     }
 
     setAccuracyFeatureStyle(styleLike: StyleLike | undefined) {
-        this.accuracyFeature?.setStyle(styleLike ?? getDefaultAccuracyStyle());
+        this.#accuracyFeature?.setStyle(styleLike ?? getDefaultAccuracyStyle());
     }
 
     setMaxZoom(maxZoom: number | undefined) {
-        this.maxZoom = maxZoom ?? DEFAULT_MAX_ZOOM;
+        this.#maxZoom = maxZoom ?? DEFAULT_MAX_ZOOM;
     }
 
     getMaxZoom() {
-        return this.maxZoom;
+        return this.#maxZoom;
     }
 
     getPositionFeature() {
-        return this.positionFeature;
+        return this.#positionFeature;
     }
 
     getAccuracyFeature() {
-        return this.accuracyFeature;
+        return this.#accuracyFeature;
     }
 
     getTrackingOptions() {
-        return this.trackingOptions;
+        return this.#trackingOptions;
     }
 
     getGeolocation() {
-        return this.geolocation;
+        return this.#geolocation;
     }
 
-    private handleGeolocationError(event: GeolocationError) {
+    #handleGeolocationError(event: GeolocationError) {
         LOG.error("Error from geolocation API:", event.message);
 
         this.stopGeolocation();
@@ -261,7 +261,7 @@ export class GeolocationController {
                     return "unknown";
             }
         })();
-        this.onError(error);
+        this.#onError(error);
     }
 }
 

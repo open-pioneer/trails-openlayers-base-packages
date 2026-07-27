@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch } from "@conterra/reactivity-core";
+import { batch, ReadonlyReactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
-import OlMap, { FrameState, MapOptions } from "ol/Map";
+import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
-import Attribution from "ol/control/Attribution";
 import { getCenter } from "ol/extent";
 import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
@@ -19,7 +18,6 @@ import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
-import { sanitizeHtml } from "../utils/sanitize";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -36,37 +34,43 @@ const LOG = createLogger(sourceId);
 export async function createMapModel(
     mapId: string,
     mapConfig: MapConfig,
-    intl: PackageIntl,
+    currentIntl: ReadonlyReactive<PackageIntl>,
     httpService: HttpService
 ): Promise<MapModel> {
-    return await new MapModelFactory(mapId, mapConfig, intl, httpService).createMapModel();
+    return await new MapModelFactory(mapId, mapConfig, currentIntl, httpService).createMapModel();
 }
 
 class MapModelFactory {
-    private mapId: string;
-    private mapConfig: MapConfig;
-    private intl: PackageIntl;
-    private httpService: HttpService;
+    #mapId: string;
+    #mapConfig: MapConfig;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
+    #httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig, intl: PackageIntl, httpService: HttpService) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig;
-        this.intl = intl;
-        this.httpService = httpService;
+    constructor(
+        mapId: string,
+        mapConfig: MapConfig,
+        currentIntl: ReadonlyReactive<PackageIntl>,
+        httpService: HttpService
+    ) {
+        this.#mapId = mapId;
+        this.#mapConfig = mapConfig;
+        this.#currentIntl = currentIntl;
+        this.#httpService = httpService;
     }
 
     async createMapModel() {
-        const mapId = this.mapId;
-        const mapConfig = this.mapConfig;
+        const mapId = this.#mapId;
+        const mapConfig = this.#mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
+        const showDefaultAttributions =
+            mapConfig.showAttributions ?? (rawOlOptions.controls ? false : true);
+
         const mapOptions: MapOptions = {
             ...rawOlOptions
         };
-
         if (!mapOptions.controls) {
-            mapOptions.controls = [createDefaultAttribution(this.intl)];
+            mapOptions.controls = [];
         }
-
         if (!mapOptions.interactions) {
             const shiftCtrlKeysOnly = (
                 mapBrowserEvent: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>
@@ -85,7 +89,7 @@ class MapModelFactory {
         }
 
         const view = (await viewOption) ?? {};
-        this.initializeViewOptions(view);
+        this.#initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
 
         if (!mapOptions.layers && !mapConfig.layers) {
@@ -111,7 +115,9 @@ class MapModelFactory {
                 id: mapId,
                 olMap,
                 initialExtent,
-                httpService: this.httpService
+                showDefaultAttributions,
+                currentIntl: this.#currentIntl,
+                httpService: this.#httpService
             },
             INTERNAL_CONSTRUCTOR_TAG
         );
@@ -131,9 +137,9 @@ class MapModelFactory {
         });
     }
 
-    private initializeViewOptions(view: View | ViewOptions) {
-        const mapId = this.mapId;
-        const mapConfig = this.mapConfig;
+    #initializeViewOptions(view: View | ViewOptions) {
+        const mapId = this.#mapId;
+        const mapConfig = this.#mapConfig;
         if (view instanceof View) {
             const warn = (prop: string) => {
                 LOG.warn(
@@ -151,7 +157,7 @@ class MapModelFactory {
             return;
         }
 
-        const projection = (view.projection = this.initializeProjection(mapConfig.projection));
+        const projection = (view.projection = this.#initializeProjection(mapConfig.projection));
         const initialView = mapConfig.initialView;
         if (initialView) {
             switch (initialView.kind) {
@@ -177,11 +183,11 @@ class MapModelFactory {
                 }
             }
         } else {
-            this.setViewDefaults(view, projection);
+            this.#setViewDefaults(view, projection);
         }
     }
 
-    private setViewDefaults(view: ViewOptions, projection: Projection) {
+    #setViewDefaults(view: ViewOptions, projection: Projection) {
         if (view.center == null) {
             const extent = projection.getExtent(); // can be null
             if (!extent) {
@@ -199,7 +205,7 @@ class MapModelFactory {
         }
     }
 
-    private initializeProjection(projectionOption: MapConfig["projection"]) {
+    #initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
@@ -211,35 +217,4 @@ class MapModelFactory {
         }
         return projection;
     }
-}
-
-function createDefaultAttribution(intl: PackageIntl): Attribution {
-    const attr = new Attribution({ collapsible: false });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const element = (attr as any).element as HTMLElement | undefined;
-    if (element) {
-        element.role = "region";
-        element.ariaLabel = intl.formatMessage({ id: "attribution.label" });
-    }
-    sanitizeAttributionsHtml(attr);
-    return attr;
-}
-
-// Overrides the OpenLayers widget to sanitize HTML attributions.
-// Note that this depends on OpenLayers internals that may change between versions.
-function sanitizeAttributionsHtml(attr: Attribution) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type
-    const originalCollectSourceAttributions = (attr as any).collectSourceAttributions_ as Function;
-    if (!originalCollectSourceAttributions) {
-        throw new Error("Internal error: failed to override attributions widget");
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (attr as any).collectSourceAttributions_ = (frameState: FrameState) => {
-        const attributions = originalCollectSourceAttributions.call(attr, frameState) as string[];
-        if (!Array.isArray(attributions)) {
-            throw new Error("Internal error: unexpected attributions result (should be an array)");
-        }
-        return attributions.map((a) => sanitizeHtml(a));
-    };
 }

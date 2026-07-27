@@ -26,10 +26,10 @@ interface References {
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+    #vectorSourceFactory: OgcFeaturesVectorSourceFactory;
 
     constructor({ references }: ServiceOptions<References>) {
-        this.vectorSourceFactory = references.vectorSourceFactory;
+        this.#vectorSourceFactory = references.vectorSourceFactory;
     }
 
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
@@ -65,7 +65,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 radius: 5
                             })
                         }),
-                        source: this.vectorSourceFactory.createVectorSource({
+                        source: this.#vectorSourceFactory.createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
                             collectionId: "governmentalservice",
                             attributions:
@@ -79,7 +79,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
                     olLayer: new VectorLayer({
-                        source: this.vectorSourceFactory.createVectorSource({
+                        source: this.#vectorSourceFactory.createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/lika/v1",
                             collectionId: "katasterbezirk",
                             limit: 1000

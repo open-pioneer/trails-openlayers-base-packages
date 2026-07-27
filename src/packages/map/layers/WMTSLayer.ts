@@ -64,6 +64,7 @@ export class WMTSLayer extends AbstractLayer {
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
     #sourceOptions: Partial<WMTSSourceOptions>;
+    #olSource = reactive<WMTS>();
     #legend = reactive<string | undefined>();
 
     #loadStarted = false;
@@ -118,6 +119,15 @@ export class WMTSLayer extends AbstractLayer {
 
     get type() {
         return "wmts" as const;
+    }
+
+    /**
+     * Returns the current source associated with this layer as a reactive property.
+     *
+     * Note that the return type may be expanded in the future with additional source types.
+     */
+    get olSource(): WMTS | undefined {
+        return this.#olSource.value;
     }
 
     /** URL of the WMTS service. */
@@ -201,14 +211,14 @@ export class WMTSLayer extends AbstractLayer {
         }
 
         const attributions = explicitAttributions ?? getAttributions(capabilities);
-        const source = new WMTS({
+        const source = (this.#olSource.value = new WMTS({
             ...options,
             attributions,
             ...sourceOptions,
             tileLoadFunction: (tile, tileUrl) => {
                 this.#loadTile(tile, tileUrl);
             }
-        });
+        }));
         this.#layer.setSource(source);
 
         const activeStyleId = source.getStyle();

@@ -105,8 +105,7 @@ async function waitForOverviewMap() {
 function getControl(olMap: OlMap) {
     const controls = olMap.getControls().getArray();
     return controls.find((control) => control instanceof OlOverviewMap) as
-        | OlOverviewMap
-        | undefined;
+        OlOverviewMap | undefined;
 }
 
 function getTileLayer() {

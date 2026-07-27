@@ -25,6 +25,6 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["app.AppInitModel", "runtime.ApplicationContext"]
+        references: ["app.AppInitModel", "runtime.ApplicationContext", "map.LayerFactory"]
     }
 });
