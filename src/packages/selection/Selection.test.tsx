@@ -15,6 +15,8 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { disableReactActWarnings } from "test-utils";
+import { reactive } from "@conterra/reactivity-core";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 beforeEach(() => {
     disableReactActWarnings();
@@ -98,7 +100,7 @@ it("Should disable or enable selection option when changing the status of a sour
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
         layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
-        "Layer not visible"
+        reactive({ formatMessage: () => "Layer not visible" } as unknown as PackageIntl)
     );
     await createSelection([layerSelectionSource]);
     const { selectTrigger } = await waitForSelection();
@@ -259,7 +261,7 @@ function createTestSelectionSource(id: string, title: string, visibility: boolea
     return new VectorLayerSelectionSourceImpl(
         layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
-        "Layer not visible"
+        reactive({ formatMessage: () => "Layer not visible" } as unknown as PackageIntl)
     );
 }
 

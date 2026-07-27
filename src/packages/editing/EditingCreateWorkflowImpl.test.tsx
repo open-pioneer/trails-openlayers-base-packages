@@ -9,12 +9,13 @@ import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
+import { constant } from "@conterra/reactivity-core";
 
 // Flat style parsing doesn't work in tests (node, happy-dom, etc.)
 vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
@@ -65,7 +66,7 @@ describe("starting create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
+        await waitFor(() => expect(beginTooltip.textContent).toBe("create.tooltip.begin"));
 
         workflow.stop();
     });
@@ -189,9 +190,7 @@ describe("during create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
-            `"<span>create.tooltip.continue</span>"`
-        );
+        await waitFor(() => expect(beginTooltip.textContent).toBe("create.tooltip.continue"));
 
         workflow.stop();
     });
@@ -257,16 +256,14 @@ describe("reset create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
-            `"<span>create.tooltip.continue</span>"`
-        );
+        await waitFor(() => expect(beginTooltip.textContent).toEqual("create.tooltip.continue"));
 
         workflow.reset();
         const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         if (resetTooltip instanceof Error) {
             throw resetTooltip;
         }
-        expect(resetTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
+        await waitFor(() => expect(resetTooltip.textContent).toEqual("create.tooltip.begin"));
 
         workflow.stop();
     });
@@ -313,7 +310,9 @@ describe("when create editing workflow complete", () => {
 
         workflow.triggerSave();
 
-        await sleep(DEFAULT_SLEEP);
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
 
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBe("test_id_1");
@@ -329,7 +328,9 @@ describe("when create editing workflow complete", () => {
 
         workflow.stop();
 
-        await sleep(DEFAULT_SLEEP);
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
 
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBeUndefined();
@@ -375,7 +376,11 @@ async function renderMap() {
     return { map, layerFactory };
 }
 
-async function setupCreateWorkflow(map: MapModel, layerFactory: LayerFactory, httpService: HttpService = HTTP_SERVICE) {
+async function setupCreateWorkflow(
+    map: MapModel,
+    layerFactory: LayerFactory,
+    httpService: HttpService = HTTP_SERVICE
+) {
     const intl = {
         formatMessage(props: any) {
             return props.id;
@@ -404,7 +409,7 @@ async function setupCreateWorkflow(map: MapModel, layerFactory: LayerFactory, ht
         polygonStyle,
         vertexStyle,
         httpService,
-        intl,
+        intl: constant(intl),
         layerFactory
     });
 

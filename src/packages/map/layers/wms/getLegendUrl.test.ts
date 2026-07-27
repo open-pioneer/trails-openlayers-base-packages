@@ -9,10 +9,6 @@ import { getLegendUrl } from "./getLegendUrl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 
-// happy dom does not implement a good XML parser
-import jsdom from "jsdom";
-window.DOMParser = new jsdom.JSDOM().window.DOMParser;
-
 it("should retrieve the legendURL from the WMS service capabilities, if available", async () => {
     const capabilitiesXML = readFileSync(
         resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xml"),

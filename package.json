@@ -1,13 +1,13 @@
 {
     "name": "openlayers-base-packages",
-    "version": "0.0.1",
+    "version": "1.3.0",
     "private": true,
     "type": "module",
     "license": "Apache-2.0",
     "scripts": {
         "clean": "rimraf dist && pnpm recursive exec rimraf dist",
         "dev": "vite",
-        "check-types": "tsc --noEmit",
+        "check-types": "tsc --build --noEmit",
         "watch-types": "pnpm check-types -w",
         "check-duplicates": "pnpm check-pnpm-duplicates -c support/duplicate-packages.yaml",
         "build": "vite build",
@@ -23,7 +23,7 @@
         "test": "vitest",
         "prepare": "husky && pnpm check-duplicates",
         "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
-        "ci:version": "pnpm changeset version && pnpm exec prettier './src/**/CHANGELOG.md' --write && pnpm install",
+        "ci:version": "pnpm changeset version && tsx ./support/write-release-package-version.ts && pnpm exec prettier **/package.json ./src/**/CHANGELOG.md --write && pnpm install",
         "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && pnpm changeset tag"
     },
     "devDependencies": {
@@ -31,6 +31,7 @@
         "@eslint/js": "catalog:",
         "@open-pioneer/build-package-cli": "catalog:",
         "@open-pioneer/build-support": "catalog:",
+        "@open-pioneer/changesets-release-line": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
         "@open-pioneer/vite-plugin-pioneer": "catalog:",
         "@testing-library/dom": "catalog:",
@@ -42,7 +43,7 @@
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
         "@typescript-eslint/parser": "catalog:",
-        "@vitejs/plugin-react-swc": "catalog:",
+        "@vitejs/plugin-react": "catalog:",
         "eslint": "catalog:",
         "eslint-config-prettier": "catalog:",
         "eslint-import-resolver-typescript": "catalog:",
@@ -74,8 +75,8 @@
         "zx": "catalog:"
     },
     "engines": {
-        "node": ">= 20",
-        "pnpm": "^10"
+        "node": ">= 24",
+        "pnpm": ">= 10"
     },
-    "packageManager": "pnpm@10.24.0"
+    "packageManager": "pnpm@11.17.0"
 }

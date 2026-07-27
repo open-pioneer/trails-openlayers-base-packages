@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Box, Text } from "@chakra-ui/react";
+import { computed } from "@conterra/reactivity-core";
 import { Legend } from "@open-pioneer/legend";
 import { Layer } from "@open-pioneer/map";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { FormattedRichMessage, SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
-import { Box, Text } from "@chakra-ui/react";
 
-export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): Demo {
+export function createTocAndLegendDemo({ currentIntl, mapModel }: SharedDemoOptions): Demo {
     return {
         id: "tocLegend",
-        title: intl.formatMessage({ id: "demos.tocLegend.title" }),
+        title: computed(() => currentIntl.value.formatMessage({ id: "demos.tocLegend.title" })),
         createModel() {
             function setDemoLayerVisible(visible: boolean = true): void {
                 const layer1 = mapModel.layers.getLayerById("verwaltungsgebiete") as Layer;
@@ -29,7 +30,9 @@ export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): D
                 mapModel?.layers.activateBaseLayer("osm");
             }
             return {
-                description: intl.formatRichMessage({ id: "demos.tocLegend.description" }),
+                description: (
+                    <FormattedRichMessage intl={currentIntl} id="demos.tocLegend.description" />
+                ),
                 mainWidget: <TocLegendView />,
                 destroy: resetDemoLayers
             };

@@ -15,41 +15,41 @@ export interface ExportOptions {
 }
 
 export class PrintingController {
-    private olMap: OlMap;
-    private i18n: I18n;
+    #olMap: OlMap;
+    #i18n: I18n;
 
-    private printingService: PrintingService;
-    private viewPadding: ViewPaddingBehavior | undefined;
+    #printingService: PrintingService;
+    #viewPadding: ViewPaddingBehavior | undefined;
 
-    private printMap: PrintResult | undefined = undefined;
-    private overlay: Resource | undefined = undefined;
+    #printMap: PrintResult | undefined = undefined;
+    #overlay: Resource | undefined = undefined;
 
     constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
-        this.olMap = olMap;
-        this.printingService = printingService;
-        this.i18n = i18n;
+        this.#olMap = olMap;
+        this.#printingService = printingService;
+        this.#i18n = i18n;
     }
 
     destroy() {
-        this.reset();
+        this.#reset();
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {
-        this.viewPadding = padding;
+        this.#viewPadding = padding;
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.olMap) {
+        if (!this.#olMap) {
             return;
         }
 
         try {
-            this.begin();
-            this.printMap = await this.printingService.printMap(this.olMap, {
+            this.#begin();
+            this.#printMap = await this.#printingService.printMap(this.#olMap, {
                 blockUserInteraction: false,
-                viewPadding: this.viewPadding
+                viewPadding: this.#viewPadding
             });
-            const canvas = this.printMap.getCanvas();
+            const canvas = this.#printMap.getCanvas();
             if (canvas) {
                 if (options.fileFormat == "png") {
                     await this.exportMapInPNG(canvas, options);
@@ -60,28 +60,30 @@ export class PrintingController {
                 throw new Error("Canvas export failed");
             }
         } finally {
-            this.reset();
+            this.#reset();
         }
     }
 
-    private begin() {
-        const container = this.olMap.getTargetElement();
+    #begin() {
+        const container = this.#olMap.getTargetElement();
         if (container) {
-            this.overlay = createBlockUserOverlay(container, this.i18n.overlayText);
+            this.#overlay = createBlockUserOverlay(container, this.#i18n.overlayText);
         }
     }
 
-    private reset() {
-        this.overlay?.destroy();
-        this.overlay = undefined;
+    #reset() {
+        this.#overlay?.destroy();
+        this.#overlay = undefined;
     }
 
-    private getTitleAndFileName(options: ExportOptions) {
+    #getTitleAndFileName(options: ExportOptions) {
         const titleValue = options.title || "";
         const fileName = options.title || DEFAULT_FILE_NAME;
         return { title: titleValue, fileName: fileName };
     }
 
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate export-format dispatch from actual file export.
     private async exportMapInPNG(mapCanvas: HTMLCanvasElement, options: ExportOptions) {
         const containerCanvas = document.createElement("canvas");
         containerCanvas.width = mapCanvas.width;
@@ -93,7 +95,7 @@ export class PrintingController {
             throw new Error("2d canvas rendering context not available");
         }
 
-        const { title, fileName } = this.getTitleAndFileName(options);
+        const { title, fileName } = this.#getTitleAndFileName(options);
 
         context.fillStyle = "#fff"; // background color for background rect
         context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
@@ -117,6 +119,8 @@ export class PrintingController {
         link.click();
     }
 
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate export-format dispatch from actual file export.
     private async exportMapInPDF(canvas: HTMLCanvasElement, options: ExportOptions) {
         // Landscape map export.
         // Lazy load pdfjs as well.
@@ -137,7 +141,7 @@ export class PrintingController {
 
         // Render title
         pdf.setFontSize(20);
-        const { title, fileName } = this.getTitleAndFileName(options);
+        const { title, fileName } = this.#getTitleAndFileName(options);
         pdf.text(title, pageWidth / 2, titleOffset, { align: "center" });
 
         // Resize image while keeping aspect ratio

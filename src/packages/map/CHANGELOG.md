@@ -1,5 +1,58 @@
 # @open-pioneer/map
 
+## 1.3.0
+
+### Minor Changes
+
+- c62698d: Add reactive property `mapModel.attributionItems`. This is useful for applications that don't want to rely on OpenLayers' attribution widget.
+- 9b5d5f3: Support for new common container props (role, aria-\*, data-\* and css)
+- c62698d: Add `MapConfig.showAttributions` property to explicitly show or hide the default attributions widget.
+  `showAttributions: false` is intended for situations where the map's attributions are displayed in a custom widget.
+- 194f2ab: Add `olSource` property to layer classes that manage their own sources (WMS, WMTS).
+- fcbd505: WMSLayer, WMTSLayer: Derive `attributions` from service capabilities if no explicit attributions have been configured.
+- 2ceb1ca: MapModel: implement new `loading` property.
+  This property is `true` if the map is currently loading any resources, `false` otherwise.
+  The property is based on OpenLayers `loadstart` and `loadend` events (see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart)).
+- 73453af: Update OpenLayers to 10.9.0
+- fcbd505: Sanitize HTML used for layer attributions.
+- 33ab02f: Move highlight methods to `mapModel.highlights`.
+    - `mapModel.highlight()` -> `mapModel.highlights.add()`
+    - `mapModel.highlightAndZoom()` -> `mapModel.highlights.addAndZoom()`
+    - `mapModel.removeHighlights()` -> `mapModel.highlights.clear()`
+
+    The old methods on the Map Model have been deprecated and will be removed in a future major release.
+
+- d54ccfd: Update to Chakra UI 3.35.0
+- 33ab02f: Add new `mapModel.overlays` API to render arbitrary React content on the map at certain coordinates.
+  This can be helpful for feature info, popups and for tooltips during map interactions.
+
+    Use `mapModel.overlay.add({ content: <SomeReactContent />, ...})` to create a new overlay.
+
+- 206b397: Update to trails core packages 4.6.0
+- 2ceb1ca: MapContainer: allow configuration of `rootProps` and `containerProps`.
+  This can be used to set custom attributes on the respective DOM elements.
+
+### Patch Changes
+
+- 989144d: update packages for hmr i18n usage
+- 36da1be: Do not animate the view when changing the map padding during initialization.
+- 30f75bf: Fix map center / map extent not being animated correctly if view padding changes multiple times in short succession (see [#587](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/587)).
+- 28cf317: Fix baselayer documentation of the map package: use `olLayer` instead of `layer`.
+- 8e526b1: Removed `stopEvents` documentation from the map package README
+- 4bcc8ce: Prevent update of `olMap.padding` by MapContainer if viewPadding did not change.
+  This caused running map animation to be cancelled.
+
+## 1.2.0
+
+### Patch Changes
+
+- 597584b: WMTSLayer: Fix type of `sourceOptions` parameter (was `WMS`, now `WMTS`).
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 597584b: WMTSLayer: Report better errors if `matrixSet` and `style` are not found in service capabilities.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
 ## 1.1.0
 
 ### Minor Changes
@@ -772,12 +825,6 @@
 - b5bb7a1: Adjusted name of Open Pioneer project to Open Pioneer Trails
 - 81bc7da: Update trails dependencies
 - 2c092dc: Update dependencies
-- Updated dependencies [4140646]
-- Updated dependencies [4140646]
-- Updated dependencies [81bc7da]
-- Updated dependencies [2c092dc]
-- Updated dependencies [4140646]
-    - @open-pioneer/react-utils@0.2.3
 
 ## 0.5.0
 
@@ -800,8 +847,6 @@
 - 6162979: Update versions of core packages
 - ac7fdd1: Update documentation
 - 13ea342: Remove duplicate viewPadding application.
-- Updated dependencies [1a8ad89]
-    - @open-pioneer/react-utils@0.2.2
 
 ## 0.3.1
 
@@ -819,19 +864,12 @@
 ### Patch Changes
 
 - a582e5e: Add property `viewPadding` to `HighlightOptions`.
-- Updated dependencies [762e7b9]
-    - @open-pioneer/react-utils@0.2.1
 
 ## 0.2.0
 
 ### Minor Changes
 
 - 70349a8: Update to new core packages major versions
-
-### Patch Changes
-
-- Updated dependencies [70349a8]
-    - @open-pioneer/react-utils@0.2.0
 
 ## 0.1.1
 
@@ -847,8 +885,3 @@
 ### Minor Changes
 
 - bb2f27a: Initial release.
-
-### Patch Changes
-
-- Updated dependencies [182da1c]
-    - @open-pioneer/react-utils@0.1.0

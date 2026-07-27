@@ -21,7 +21,7 @@
         position: sticky;
         top: 0;
         z-index: 1;
-        background: var(--chakra-colors-background_body);
+        background: var(--chakra-colors-bg);
     }
 
     th {
@@ -30,7 +30,7 @@
     }
 
     tbody tr:hover {
-        background: var(--chakra-colors-background_light);
+        background: var(--chakra-colors-bg);
     }
 
     // Resizer

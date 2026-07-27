@@ -10,3 +10,4 @@ skipDevDependencies: true
 # You SHOULD NOT list central dependencies here, such as react or any trails packages.
 allowed:
   - "react-is"
+  - "source-map"

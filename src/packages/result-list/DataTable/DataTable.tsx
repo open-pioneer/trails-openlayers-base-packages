@@ -14,14 +14,16 @@ import {
     Table as TanstackTable,
     flexRender
 } from "@tanstack/react-table";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { MouseEvent, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ResultListSelectionChangeEvent, SelectionMode } from "../ResultList";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
-const LOG = createLogger("result-list:DataTable");
+
+const LOG = createLogger(sourceId);
 
 export interface DataTableProps<Data extends BaseFeature> {
     data: Data[];
@@ -55,6 +57,8 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
             forceRerender: reactive(0)
         };
     }, [table]);
+
+    // XXX: Bad practice, but works
     context.forceRerender.value += 1; // Force rerendering of the TableContent child.
 
     // Block click events while dragging the resize handle.
@@ -234,7 +238,7 @@ function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> 
 function MemoizedTableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
     const memoizedRows = useMemo(() => {
         return <TableRows table={table} />;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
     }, [table, table.getSortedRowModel().rows, table.getSelectedRowModel().rows]);
     return memoizedRows;
 }

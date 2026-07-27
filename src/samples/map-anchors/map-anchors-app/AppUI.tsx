@@ -136,12 +136,7 @@ function getAnchors() {
     const anchors: ReactNode[] = [];
     anchors.push(
         ...ANCHOR_POSITIONS.map((position) => (
-            <MapAnchor
-                key={position}
-                position={position}
-                //verticalGap={30}
-                //horizontalGap={30}
-            >
+            <MapAnchor key={position} position={position}>
                 <Box
                     backgroundColor="whiteAlpha.800"
                     borderWidth="1px"
@@ -155,8 +150,15 @@ function getAnchors() {
         ))
     );
     anchors.push(
-        // See CSS in app.css
-        <MapAnchor className="manual-position" key="manual" position="manual">
+        <MapAnchor
+            className="manual-position"
+            key="manual"
+            position="manual"
+            css={{
+                left: "200px",
+                top: "200px"
+            }}
+        >
             <Box
                 backgroundColor="whiteAlpha.800"
                 borderWidth="1px"

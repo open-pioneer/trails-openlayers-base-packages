@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { computed, effect, reactive, watchValue } from "@conterra/reactivity-core";
 import { createLogger, destroyResources, isAbortError, Resource } from "@open-pioneer/core";
-import { MapModel } from "@open-pioneer/map";
-import { Geometry } from "ol/geom";
-import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
-import { ExtentSelection } from "./ExtentSelection";
+import { MapModel, Overlay } from "@open-pioneer/map";
 import { Extent } from "ol/extent";
-import Overlay from "ol/Overlay";
-import { unByKey } from "ol/Observable";
+import { Geometry } from "ol/geom";
+import { createElement } from "react";
+import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
+import { SelectionTooltipContent } from "../SelectionTooltipContent";
+import { ExtentSelection } from "./ExtentSelection";
 
 const LOG = createLogger("selection:SelectionViewModel");
 
@@ -61,7 +61,7 @@ export class SelectionViewModel {
 
     // For debugging
     // eslint-disable-next-line no-unused-private-class-members
-    #tooltip: Tooltip | undefined;
+    #tooltip: Overlay | undefined;
 
     #resources: Resource[];
 
@@ -196,7 +196,10 @@ export class SelectionViewModel {
                 () => this.ariaMessage,
                 (message) => {
                     // Aria message doubles as tooltip text at this time
-                    tooltip.setText(message);
+                    const tooltipContent = createElement(SelectionTooltipContent, {
+                        content: message
+                    });
+                    tooltip.setContent(tooltipContent);
                 },
                 { immediate: true }
             )
@@ -265,43 +268,13 @@ export function getSourceStatus(source: SelectionSource): SelectionSourceStatusO
     return status;
 }
 
-/** Represents a tooltip rendered on the OpenLayers map. */
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-    setText(value: string): void;
-}
-
-function createHelpTooltip(map: MapModel): Tooltip {
-    const olMap = map.olMap;
-    const element = document.createElement("div");
-    element.className = "selection-tooltip printing-hide";
-    element.role = "tooltip";
-
-    const content = document.createElement("span");
-    element.appendChild(content);
-
-    const overlay = new Overlay({
-        element: element,
+function createHelpTooltip(map: MapModel): Overlay {
+    const overlay = map.overlays.add({
+        position: "follow-pointer",
         offset: [15, 0],
-        positioning: "center-left"
+        positioning: "center-left",
+        ariaRole: "tooltip",
+        className: "selection-tooltip printing-hide"
     });
-
-    const pointHandler = olMap.on("pointermove", (evt) => {
-        overlay.setPosition(evt.coordinate);
-    });
-
-    olMap.addOverlay(overlay);
-    return {
-        overlay,
-        element,
-        destroy() {
-            olMap.removeOverlay(overlay);
-            overlay.dispose();
-            unByKey(pointHandler);
-        },
-        setText(value: string) {
-            content.textContent = value;
-        }
-    };
+    return overlay;
 }

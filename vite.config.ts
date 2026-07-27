@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-/// <reference types="vitest" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
 import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
+
+// @ts-expect-error "invalid typings"
 import eslint from "vite-plugin-eslint";
 
 // Find sites under src/samples with an index.html and build them all.
@@ -44,6 +45,13 @@ export default defineConfig(({ mode }) => {
             target: "baseline-widely-available"
         },
 
+        optimizeDeps: {
+            // Include services.ts files as entry points.
+            // This makes it easier for vite's dev server to find dependencies,
+            // and thereby reduces the number of repeated bundler executions on dev server startup.
+            entries: ["**/*.html", "**/services.{ts,js}", "!**/dist/**"]
+        },
+
         plugins: [
             pioneer({
                 // Whether to include src/index.html in the built output
@@ -58,12 +66,8 @@ export default defineConfig(({ mode }) => {
                 // Apps to distribute as .js files for embedded use cases
                 apps: []
             }),
-            react({
-                // react swc plugin transpiles during development.
-                // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
-                devTarget: "es2024"
-            }),
-            eslint()
+            react(),
+            !testMode && eslint()
         ],
 
         // Ignore irrelevant deprecations
@@ -79,7 +83,7 @@ export default defineConfig(({ mode }) => {
         // See also: https://vitejs.dev/config/shared-options.html#define
         define: {
             __LOG_LEVEL__: JSON.stringify(logLevel),
-            __PRINT_DEPRECATIONS__: !testMode // hide in tests (TODO)
+            __BUILD_TIMESTAMP__: JSON.stringify(new Date().getTime()) // used for timestamp in `src/index.html`
         },
 
         // https://vitest.dev/config/

@@ -3,7 +3,6 @@
 import {
     SelectionResult,
     SelectionOptions,
-    SelectionSourceStatus,
     SelectionKind,
     VectorLayerSelectionSource,
     SelectionSourceStatusObject
@@ -13,8 +12,9 @@ import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { v4 as uuid4v } from "uuid";
 import Feature from "ol/Feature";
-import { reactive } from "@conterra/reactivity-core";
+import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
 import VectorSource from "ol/source/Vector";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
@@ -26,22 +26,31 @@ import VectorSource from "ol/source/Vector";
  */
 export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSource {
     readonly label: string;
-    #status = reactive<SelectionSourceStatusObject>({ kind: "available" });
     #vectorLayer: VectorLayer<VectorSource, Feature>;
     #eventHandler: EventsKey;
-    #layerNotVisibleReason: string;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
+    #layerVisible = reactive<boolean>(true);
+    #status: ReadonlyReactive<SelectionSourceStatusObject>;
 
     constructor(
         vectorLayer: VectorLayer<VectorSource, Feature>,
         label: string,
-        layerNotVisibleReason: string
+        currentIntl: ReadonlyReactive<PackageIntl>
     ) {
         this.label = label;
         this.#vectorLayer = vectorLayer;
-        this.#layerNotVisibleReason = layerNotVisibleReason;
-        this.#updateStatus();
+        this.#currentIntl = currentIntl;
+        this.#layerVisible.value = vectorLayer.getVisible();
+        this.#status = computed<SelectionSourceStatusObject>(() =>
+            this.#layerVisible.value
+                ? { kind: "available" }
+                : {
+                      kind: "unavailable",
+                      reason: this.#currentIntl.value.formatMessage({ id: "layerNotVisibleReason" })
+                  }
+        );
         this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
-            this.#updateStatus();
+            this.#layerVisible.value = this.#vectorLayer.getVisible();
         });
     }
 
@@ -92,15 +101,5 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
                 ? selectedFeatures.slice(0, options.maxResults)
                 : selectedFeatures;
         return limitedFeatures;
-    }
-
-    #updateStatus() {
-        const layerIsVisible = this.#vectorLayer.getVisible();
-        const newStatus: SelectionSourceStatus = layerIsVisible
-            ? { kind: "available" }
-            : { kind: "unavailable", reason: this.#layerNotVisibleReason };
-        if (newStatus.kind !== this.#status.value.kind) {
-            this.#status.value = newStatus;
-        }
     }
 }

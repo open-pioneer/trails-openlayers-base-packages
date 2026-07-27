@@ -249,12 +249,12 @@ it("supports initial empty attribute object and empty attribute object after upd
 
 abstract class SharedParent extends AbstractLayerBase {
     // xxx lying to the compiler (not a real sublayer)
-    private _sublayers: SublayersCollection<any> | undefined;
+    #sublayers: SublayersCollection<any> | undefined;
 
     constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
         super(options);
         if (options.sublayer) {
-            this._sublayers = new SublayersCollection([options.sublayer], INTERNAL_CONSTRUCTOR_TAG);
+            this.#sublayers = new SublayersCollection([options.sublayer], INTERNAL_CONSTRUCTOR_TAG);
         }
     }
 
@@ -275,7 +275,7 @@ abstract class SharedParent extends AbstractLayerBase {
     }
 
     get sublayers() {
-        return this._sublayers;
+        return this.#sublayers;
     }
 
     setVisible(_: boolean): void {

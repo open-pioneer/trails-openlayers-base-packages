@@ -11,7 +11,7 @@ This repository is intended to manage various base packages for building applica
 
 ## Getting started
 
-Requirements: Node >= 20, pnpm >= 10.
+Requirements: Node >= 24, pnpm >= 10.
 
 To start the development server, run:
 
@@ -59,6 +59,7 @@ This repository publishes the following packages:
 | [@open-pioneer/coordinate-search](./src/packages/coordinate-search/) | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fcoordinate-search)](https://www.npmjs.com/package/@open-pioneer/coordinate-search) |
 | [@open-pioneer/coordinate-viewer](./src/packages/coordinate-viewer/) | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fcoordinate-viewer)](https://www.npmjs.com/package/@open-pioneer/coordinate-viewer) |
 | [@open-pioneer/editing](./src/packages/editing/)                     | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fediting)](https://www.npmjs.com/package/@open-pioneer/editing)                     |
+| [@open-pioneer/feature-editing](./src/packages/feature-editing/)     | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Ffeature-editing)](https://www.npmjs.com/package/@open-pioneer/feature-editing)     |
 | [@open-pioneer/geolocation](./src/packages/geolocation/)             | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fgeolocation)](https://www.npmjs.com/package/@open-pioneer/geolocation)             |
 | [@open-pioneer/legend](./src/packages/legend/)                       | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Flegend)](https://www.npmjs.com/package/@open-pioneer/legend)                       |
 | [@open-pioneer/map](./src/packages/map/)                             | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fmap)](https://www.npmjs.com/package/@open-pioneer/map)                             |

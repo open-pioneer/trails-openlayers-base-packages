@@ -22,7 +22,7 @@ import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import classNames from "classnames";
+import { classNames } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { LuMap, LuTrash } from "react-icons/lu";
@@ -174,7 +174,7 @@ function createList(
     bookmarks: Bookmark[],
     viewModel: SpatialBookmarkViewModel,
     intl: PackageIntl,
-    listRef: React.MutableRefObject<HTMLElement[]>
+    listRef: React.RefObject<HTMLElement[]>
 ) {
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem

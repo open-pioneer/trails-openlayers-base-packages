@@ -7,13 +7,14 @@ import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 import { Interaction, Modify } from "ol/interaction";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import VectorSource from "ol/source/Vector";
+import { constant } from "@conterra/reactivity-core";
 
 // Flat style parsing doesn't work in tests (node, happy-dom, etc.)
 vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
@@ -246,9 +247,9 @@ describe("when update editing workflow complete", () => {
         }
 
         workflow.triggerSave();
-
-        await sleep(DEFAULT_SLEEP);
-
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBe("test_id");
     });
@@ -268,7 +269,9 @@ describe("when update editing workflow complete", () => {
 
         workflow.stop();
 
-        await sleep(DEFAULT_SLEEP);
+        await act(async () => {
+            await sleep(DEFAULT_SLEEP);
+        });
         const featureData = await workflow.whenComplete();
         expect(featureData?.featureId).toBeUndefined();
     });
@@ -318,7 +321,11 @@ async function renderMap() {
     return { map, layerFactory };
 }
 
-async function setupUpdateWorkflow(map: MapModel, layerFactory: LayerFactory, httpService: HttpService = HTTP_SERVICE) {
+async function setupUpdateWorkflow(
+    map: MapModel,
+    layerFactory: LayerFactory,
+    httpService: HttpService = HTTP_SERVICE
+) {
     const intl = {
         formatMessage(props: any) {
             return props.id;
@@ -350,7 +357,7 @@ async function setupUpdateWorkflow(map: MapModel, layerFactory: LayerFactory, ht
         polygonStyle,
         vertexStyle,
         httpService,
-        intl,
+        intl: constant(intl),
         feature,
         layerFactory
     });

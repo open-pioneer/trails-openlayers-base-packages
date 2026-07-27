@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
-import type { Resource } from "@open-pioneer/core";
 import {
     createAbortError,
     createLogger,
     createManualPromise,
+    deprecated,
     isAbortError,
     ManualPromise
 } from "@open-pioneer/core";
@@ -16,40 +16,52 @@ import { unByKey } from "ol/Observable";
 import OlView from "ol/View";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
-import { getCenter } from "ol/extent";
-import { Geometry } from "ol/geom";
+import { createEmpty, extend, getArea, getCenter } from "ol/extent";
 import { getPointResolution, Projection } from "ol/proj";
-import type { StyleLike } from "ol/style/Style";
-import type { BaseFeature } from "../utils/BaseFeature";
+import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../utils/InternalConstructorTag";
-import { Highlights } from "./Highlights";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
+import {
+    DESTROY_HIGHLIGHTS,
+    Highlight,
+    HighlightOptions,
+    Highlights,
+    HighlightZoomOptions
+} from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
+import { Overlays } from "./Overlays";
+import { getGeometries } from "./getGeometries";
+import { BaseFeature } from "../utils/BaseFeature";
+import { Geometry } from "ol/geom";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { MapAttributions } from "./MapAttributions";
 
-const LOG = createLogger("map:MapModel");
+const LOG = createLogger(sourceId);
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
-/**
- * Style options supported when creating a new {@link Highlight}.
- *
- * @group Map Model
- **/
-export interface HighlightOptions {
-    /**
-     * Optional styles to override the default styles.
-     */
-    highlightStyle?: HighlightStyle;
-}
+const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
+const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
+const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
+
+export const DISPLAY_STATUS = Symbol("DISPLAY_STATUS");
+
+const deprecatedHighlights = deprecated({
+    name: "MapModel highlight function called",
+    packageName: "@open-pioneer/map",
+    since: "v1.3.0",
+    alternative: "call methods of myMapModel.highlights instead"
+});
 
 /**
- * Zoom options supported when creating a new {@link Highlight}.
+ * Options supported when calling {@link MapModel.zoom}.
  *
  * @group Map Model
  **/
@@ -77,25 +89,11 @@ export interface ZoomOptions {
 }
 
 /**
- * Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method.
- *
- * @group Map Model
- **/
-export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
-
-/**
- * Custom styles when creating a new {@link Highlight}.
+ * Represents an object in the map.
  *
  * @group Map Model
  */
-export type HighlightStyle = {
-    Point?: StyleLike;
-    LineString?: StyleLike;
-    Polygon?: StyleLike;
-    MultiPolygon?: StyleLike;
-    MultiPoint?: StyleLike;
-    MultiLineString?: StyleLike;
-};
+export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Map padding, all values are pixels.
@@ -112,22 +110,21 @@ export interface MapPadding {
 }
 
 /**
- * Represents the additional graphical representations of objects.
+ * An item that should be displayed as part of the attributions for the map.
  *
- * See also {@link MapModel.highlight}.
- *
- * @group Map Model
+ * @group MapModel
  */
-export interface Highlight extends Resource {
-    readonly isActive: boolean;
+export interface AttributionItem {
+    /**
+     * The attribution's text.
+     *
+     * Note that this property contains raw HTML tags.
+     * The HTML content has been sanitized, so it is safe to display in the user interface.
+     */
+    text: string;
 }
 
-/**
- * Represents an object in the map.
- *
- * @group Map Model
- */
-export type DisplayTarget = BaseFeature | Geometry;
+type DisplayStatus = "waiting" | "ready" | "error";
 
 /**
  * Represents a map.
@@ -138,36 +135,51 @@ export class MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #olView: ReadonlyReactive<OlView>;
+    readonly #attributions: MapAttributions;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
+    readonly #tooltips: Overlays;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
+    #loadStartEventHandler: EventsKey | undefined;
+    #loadEndEventHandler: EventsKey | undefined;
+    readonly #olLoading = reactive(false);
+
     #isDestroyed = false;
-    #container: ReadonlyReactive<HTMLElement | undefined>;
-    #initialExtent = reactive<ExtentConfig>();
-    #viewBindings: ReadonlyReactive<ViewBindings>;
-    #scale: ReadonlyReactive<number | undefined>;
+    readonly #container: ReadonlyReactive<HTMLElement | undefined>;
+    readonly #initialExtent = reactive<ExtentConfig>();
+    readonly #viewBindings: ReadonlyReactive<ViewBindings>;
+    readonly #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
-    #displayStatus: "waiting" | "ready" | "error";
+    #displayStatus: DisplayStatus;
     #displayWaiter: ManualPromise<void> | undefined;
 
     /**
      * @internal
      */
     constructor(
-        properties: {
+        options: {
             id: string;
             olMap: OlMap;
             initialExtent: ExtentConfig | undefined;
+            showDefaultAttributions: boolean;
+            currentIntl: ReadonlyReactive<PackageIntl>;
             httpService: HttpService;
         },
         tag: InternalConstructorTag
     ) {
         assertInternalConstructor(tag);
-        this.#id = properties.id;
-        this.#olMap = properties.olMap;
+
+        this.#id = options.id;
+        this.#olMap = options.olMap;
+        this.#attributions = new MapAttributions({
+            intl: options.currentIntl,
+            olMap: this.#olMap,
+            showControl: options.showDefaultAttributions
+        });
+
         this.#olView = synchronized(
             () => this.#olMap.getView(),
             (cb) => {
@@ -175,9 +187,13 @@ export class MapModel {
                 return () => unByKey(key);
             }
         );
-        this.#initialExtent.value = properties.initialExtent;
+
+        // NOTE: As early as possible (before any async actions) so we don't miss any events.
+        this.#watchLoadingState();
+
+        this.#initialExtent.value = options.initialExtent;
         this.#layerDeps = {
-            httpService: properties.httpService
+            httpService: options.httpService
         };
 
         this.#displayStatus = "waiting";
@@ -224,6 +240,7 @@ export class MapModel {
 
         // expects fully constructed mapModel
         this.#highlights = new Highlights(this, this.#layerDeps);
+        this.#tooltips = new Overlays(this);
     }
 
     /**
@@ -241,10 +258,16 @@ export class MapModel {
             LOG.warn(`Unexpected error from event listener during map model destruction:`, e);
         }
 
+        this.#loadStartEventHandler && unByKey(this.#loadStartEventHandler);
+        this.#loadStartEventHandler = undefined;
+        this.#loadEndEventHandler && unByKey(this.#loadEndEventHandler);
+        this.#loadEndEventHandler = undefined;
+
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
-        this.#highlights.destroy();
+        this.#highlights[DESTROY_HIGHLIGHTS]();
+        this.#attributions.destroy();
         this.#olMap.dispose();
     }
 
@@ -253,6 +276,16 @@ export class MapModel {
      */
     get destroyed(): EventSource<void> {
         return this.#destroyed;
+    }
+
+    /**
+     * Returns the map's current display status.
+     * This is `waiting` during initialization and `error` or `ready` when done.
+     *
+     * @internal
+     */
+    get [DISPLAY_STATUS](): DisplayStatus {
+        return this.#displayStatus;
     }
 
     /**
@@ -304,6 +337,14 @@ export class MapModel {
     }
 
     /**
+     * Returns the current rotation of the map.
+     * Same as `olView.getRotation()`, but reactive.
+     */
+    get rotation(): number | undefined {
+        return this.#viewBindings.value.rotation.value;
+    }
+
+    /**
      * Returns the current scale of the map.
      *
      * The scale is a value derived from the current `center`, `resolution` and `projection` of the map.
@@ -315,6 +356,16 @@ export class MapModel {
      */
     get scale(): number | undefined {
         return this.#scale.value;
+    }
+
+    /**
+     * Returns true if the map is currently loading.
+     *
+     * This is based on the OpenLayers events `loadstart` and `loadend`,
+     * see [Documentation](https://openlayers.org/en/latest/apidoc/module-ol_MapEvent-MapEvent.html#event:loadstart).
+     */
+    get loading(): boolean {
+        return this.#olLoading.value;
     }
 
     /**
@@ -336,6 +387,13 @@ export class MapModel {
      */
     get container(): HTMLElement | undefined {
         return this.#container.value;
+    }
+
+    /**
+     * Returns attributions for the current content of the map.
+     */
+    get attributionItems(): AttributionItem[] {
+        return this.#attributions.attributionItems;
     }
 
     /**
@@ -362,6 +420,20 @@ export class MapModel {
     }
 
     /**
+     * Create and receive map overlays
+     */
+    get overlays(): Overlays {
+        return this.#tooltips;
+    }
+
+    /**
+     * Create, receive and zoom to map highlights
+     */
+    get highlights(): Highlights {
+        return this.#highlights;
+    }
+
+    /**
      * Changes the current scale of the map to the given value.
      *
      * Internally, this computes a new zoom level / resolution based on the scale
@@ -385,37 +457,83 @@ export class MapModel {
     }
 
     /**
+     * Zooms to the given targets.
+     */
+    zoom(displayTargets: DisplayTarget[], options?: ZoomOptions | undefined): void {
+        const olView = this.olView;
+        const geometries = getGeometries(displayTargets);
+        if (geometries.length === 0) {
+            return;
+        }
+
+        let extent = createEmpty();
+        for (const geometry of geometries) {
+            extent = extend(extent, geometry.getExtent());
+        }
+
+        const bufferParameter = options?.buffer;
+        if (typeof bufferParameter === "number") {
+            extent = calculateBufferedExtent(extent, bufferParameter);
+        }
+
+        const center = getCenter(extent);
+        const isPoint = getArea(extent) === 0;
+        const zoomLevel = isPoint
+            ? (options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL)
+            : (options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL);
+        if (center && center.length) {
+            olView.setCenter(center);
+        }
+
+        const {
+            top = 0,
+            right = 0,
+            bottom = 0,
+            left = 0
+        } = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
+        const padding = [top, right, bottom, left];
+
+        if (extent) {
+            olView.fit(extent, { maxZoom: zoomLevel, padding });
+        } else if (zoomLevel) {
+            olView.setZoom(zoomLevel);
+        }
+    }
+
+    /**
      * Creates a highlight at the given targets.
      *
      * A highlight is a temporary graphic on the map that calls attention to a point or an area.
      *
-     * Call `destroy()` on the returned highlight object to remove the highlight again.
+     * Call `destroy()` on the returned highlight object to remove the highlight.
+     *
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.add} instead.
      */
     highlight(geometries: DisplayTarget[], options?: HighlightOptions | undefined): Highlight {
-        return this.#highlights.addHighlight(geometries, options);
-    }
-
-    /**
-     * Zooms to the given targets.
-     */
-    zoom(geometries: DisplayTarget[], options?: ZoomOptions | undefined): void {
-        this.#highlights.zoomToHighlight(geometries, options);
+        deprecatedHighlights();
+        return this.#highlights.add(geometries, options);
     }
 
     /**
      * Creates a highlight and zooms to the given targets.
      *
      * See also {@link highlight} and {@link zoom}.
+     *
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.addAndZoom} instead.
      */
-    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions) {
-        return this.#highlights.addHighlightAndZoom(geometries, options ?? {});
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight {
+        deprecatedHighlights();
+        return this.#highlights.addAndZoom(geometries, options ?? {});
     }
 
     /**
      * Removes any existing highlights from the map.
+     *
+     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead.
      */
-    removeHighlights() {
-        this.#highlights.clearHighlight();
+    removeHighlights(): void {
+        deprecatedHighlights();
+        this.#highlights.clear();
     }
 
     /**
@@ -482,12 +600,25 @@ export class MapModel {
             throw new Error(`Failed to apply the initial extent.`, { cause: e });
         }
     }
+
+    /**
+     * Subscribes to the OpenLayers loading state.
+     */
+    #watchLoadingState() {
+        this.#loadStartEventHandler = this.#olMap.on("loadstart", () => {
+            this.#olLoading.value = true;
+        });
+        this.#loadEndEventHandler = this.#olMap.on("loadend", () => {
+            this.#olLoading.value = false;
+        });
+    }
 }
 
 interface ViewBindings {
     resolution: ReadonlyReactive<number | undefined>;
     center: ReadonlyReactive<Coordinate | undefined>;
     zoom: ReadonlyReactive<number | undefined>;
+    rotation: ReadonlyReactive<number | undefined>;
     projection: Projection; // not reactive (change view to change projection)
 }
 
@@ -511,6 +642,13 @@ function createViewBindings(view: OlView): ViewBindings {
             () => view.getZoom(),
             (cb) => {
                 const key = view.on("change:resolution", cb);
+                return () => unByKey(key);
+            }
+        ),
+        rotation: synchronized(
+            () => view.getRotation(),
+            (cb) => {
+                const key = view.on("change:rotation", cb);
                 return () => unByKey(key);
             }
         ),

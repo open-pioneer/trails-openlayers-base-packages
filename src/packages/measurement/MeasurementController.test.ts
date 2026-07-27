@@ -11,10 +11,14 @@ import VectorLayer from "ol/layer/Vector";
 import { Fill, Style } from "ol/style";
 import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
-import { Feature, View } from "ol";
+import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/react";
+import { createElement } from "react";
+import { MapContainer } from "@open-pioneer/map";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const { olMap, controller } = await setup();
@@ -74,12 +78,7 @@ it("should measure a polygon / area", async () => {
 });
 
 it("should respect the map's current projection (EPSG:3857)", async () => {
-    const { olMap, controller } = await setup();
-    olMap.setView(
-        new View({
-            projection: "EPSG:3857"
-        })
-    );
+    const { olMap, controller } = await setup("EPSG:3857");
 
     const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
@@ -92,18 +91,13 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>68.45 m</span>"`);
+    await waitFor(() => expect(finishedTooltip.innerHTML).toBe("<span>68.45 m</span>"));
 
     controller.stopMeasurement();
 });
 
 it("should respect the map's current projection (EPSG:4326)", async () => {
-    const { olMap, controller } = await setup();
-    olMap.setView(
-        new View({
-            projection: "EPSG:4326"
-        })
-    );
+    const { olMap, controller } = await setup("EPSG:4326");
 
     const layer = controller.getOlVectorLayer();
     controller.startMeasurement("distance");
@@ -114,7 +108,7 @@ it("should respect the map's current projection (EPSG:4326)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>100.13 m</span>"`);
+    await waitFor(() => expect(finishedTooltip.innerHTML).toEqual("<span>100.13 m</span>"));
 
     controller.stopMeasurement();
 });
@@ -130,16 +124,16 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 
     // Tooltip is created
     const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0 m</span>"`);
+    await waitFor(() => expect(activeTooltip.innerHTML).toEqual("<span>0 m</span>"));
 
     // Append another coordinate, expect distance to be computed
     draw.appendCoordinates([[851873.959638, 6788406.97408]]);
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
+    await waitFor(() => expect(activeTooltip.innerHTML).toEqual("<span>0.37 m</span>"));
 
     // Finish drawing: tooltip should have a different class but same content
     draw.finishDrawing();
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
+    await waitFor(() => expect(finishedTooltip.innerHTML).toEqual("<span>0.37 m</span>"));
 
     controller.stopMeasurement();
 });
@@ -360,8 +354,17 @@ function getFirstFeature(layer: VectorLayer<VectorSource, Feature>) {
     return layer.getSource()?.getFeatures()[0]?.getGeometry();
 }
 
-async function setup() {
-    const { map, layerFactory } = await setupMap();
+async function setup(projection: string | undefined = undefined) {
+    const { map, layerFactory } = await setupMap({ projection: projection });
+
+    render(
+        createElement(
+            PackageContextProvider,
+            {},
+            createElement(MapContainer, { map, "data-testid": "base" })
+        )
+    );
+    await waitForMapMount();
 
     const olMap = map.olMap;
 

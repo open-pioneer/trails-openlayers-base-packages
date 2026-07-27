@@ -13,20 +13,21 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expect, it, vi } from "vitest";
+import TileLayer from "ol/layer/Tile";
+import { ReactNode } from "react";
+import { disableReactActWarnings } from "test-utils";
+import { beforeEach, expect, it, vi } from "vitest";
 import { Legend, LegendItemAttributes, LegendItemComponentProps } from "./Legend";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xml"), "utf-8");
 
-// Happy dom does not have an XML parser
-import jsdom from "jsdom";
-import { ReactNode } from "react";
-import TileLayer from "ol/layer/Tile";
-window.DOMParser = new jsdom.JSDOM().window.DOMParser;
-
 const LEGEND_ITEM_CLASS = ".legend-item";
 const LEGEND_IMAGE_CLASS = ".legend-item__image";
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 it("should successfully create a legend component", async () => {
     const { map, Wrapper } = await setup({
@@ -878,12 +879,39 @@ it("renders legend item if list mode is `show` even if layer is internal", async
     expect(nextImages.length).toBe(1);
 });
 
+it("should successfully create a legend component", async () => {
+    const { map, Wrapper } = await setup({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: createTestOlLayer(),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                }
+            }
+        ]
+    });
+
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
+
+    const item = await screen.findByText("Layer 1");
+    expect(item.textContent).toBe("Layer 1");
+
+    map.layers.getLayerById("layer-1")!.setTitle("Layer 2");
+    await vi.waitFor(() => {
+        expect(item.textContent).toBe("Layer 2");
+    });
+});
+
 async function findLegend() {
     const legendDiv = await screen.findByTestId("legend");
 
     // Wait until the <ul> is rendered
     await waitFor(() => {
-        const legendList = legendDiv.querySelector("> .legend-layer-list");
+        const legendList = legendDiv.querySelector(".legend-layer-list");
         if (!legendList) {
             throw new Error("legend list not mounted");
         }

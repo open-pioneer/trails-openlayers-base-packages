@@ -10,7 +10,7 @@ To use a map in your app, follow these steps:
 - Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
 - Create a map and set a configuration (see [Map configuration](#map-configuration)).
 
-There are two different ways to create a map ( see [Map creation](#map-creation) )
+There are two different ways to create a map (see [Map creation](#map-creation) )
 
 - Implement a `MapConfigProvider` (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)).
 - Directly create a `MapModel` instance (see [Direct mapModel](#create-a-mapmodel-instance-directly))
@@ -100,16 +100,6 @@ If no `verticalGap` is configured, a default vertical gap of `30px` is used.
 
 > NOTE: To get the correct tab order, add the container anchor-points before other components.
 
-By default, certain pointer events from map anchor children (such as `pointer-down`) are stopped from bubbling up towards the map.
-This is done to "hide" those events from map interactions (such as drawing): this makes it possible to click into text or controls within a map anchor without interacting with the map.
-This behavior can be disabled by setting the `stopEvents` property to `false`:
-
-```jsx
-<MapAnchor position="top-right" stopEvents={false}>
-    {/* Click events etc. will be seen by the map. This could be appropriate for non-interactive text-only overlays, for example. */}
-</MapAnchor>
-```
-
 ### Using the DefaultMapProvider
 
 You can use the `DefaultMapProvider` to globally specify the `map` in your application's UI.
@@ -159,13 +149,9 @@ export class AppModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
     constructor({ references }: ServiceOptions<References>) {
         this._mapRegistry = references.mapRegistry;
-        this._mapRegistry
-            .createMapModel("myMapModelId", {
-                /* map config */
-            })
-            .then((map) => {
-                // use the map model instance
-            });
+        this._mapRegistry.createMapModel("myMapModelId", {/* map config */}).then((map) => {
+            // use the map model instance
+        });
     }
 }
 ```
@@ -203,9 +189,7 @@ import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
-        return {
-            /* map config */
-        };
+        return {/* map config */};
     }
 }
 ```
@@ -627,7 +611,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: createWMTSSource("web")
                     })
                 })
@@ -728,7 +712,7 @@ if (wmtsOptions) {
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
-        layer: new TileLayer({
+        olLayer: new TileLayer({
             source: new WMTS(wmtsOptions)
         })
     }));
@@ -1005,19 +989,19 @@ interface References {
 }
 
 export class TestService {
-    private registry: MapRegistry;
+    #registry: MapRegistry;
 
     constructor(options: ServiceOptions<References>) {
-        this.registry = options.references.mapRegistry;
+        this.#registry = options.references.mapRegistry;
     }
 
     async centerBerlin() {
-        const model = await this.registry.getMapModel(MAP_ID);
+        const model = await this.#registry.getMapModel(MAP_ID);
         model?.olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
     }
 
     async setLayerVisible() {
-        const model = await this.registry.getMapModel(MAP_ID);
+        const model = await this.#registry.getMapModel(MAP_ID);
         const layer = model?.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
         layer?.setVisible(true);
     }
@@ -1059,6 +1043,68 @@ To access the map model instance, use the React hooks `useMapModel` or `useMapMo
         };
     }
     ```
+
+#### Map overlays
+
+Use the `mapModel.overlays` API to create overlays on the map.
+
+An overlay is a UI element that is displayed over the map.
+Overlays are tied to coordinates on the map and not to a position on the screen.
+The rendered content of an overlay is a `ReactNode`: you can use either simple text or arbitrarily rich React components.
+
+The new overlays API is implemented on top of the raw OpenLayers overlays and should be preferred for in most cases.
+You can access the raw `olOverlay` in advanced scenarios.
+
+Example:
+
+```tsx
+import { Span } from "@chakra-ui/react";
+import { MapModel } from "@open-pioneer/map";
+
+const map: MapModel = ... // the map model
+
+// Add a new overlay to map and get overlay instance
+const myOverlay = map.overlays.add({
+    content: <MyOverlayContent innerText="Initial Content!"></MyOverlayContent>, // initially rendered content
+    tag: "my-overlay", // custom identifier
+    position: [7.6, 52.0], // coordinates in map projection, or `follow-pointer` to make overlay automatically follow cursor position
+    className: "overlay-css-class",
+    positioning: "bottom-center"
+});
+
+// Get all current overlays
+let currentOverlaysList = map.overlays.getAll();
+console.log(currentOverlaysList.length) // prints 1
+
+myOverlay.setPosition([7.75, 52.25]); // manually change position
+myOverlay.setContent(<MyOverlayContent innerText="New Content!"></MyOverlayContent>); // render new content
+
+// Remove and destroy overlay.
+// Destroyed overlays cannot be reused.
+myOverlay.destroy();
+
+currentOverlaysList = map.overlays.getAll();
+console.log(currentOverlaysList.length) //prints 0
+
+// React component that is rendered as overlay content
+function MyOverlayContent(props: { innerText: string }) {
+    const { innerText } = props;
+    return <Span>{innerText}</Span>;
+}
+```
+
+When within a plain TypeScript file, use React's `createElement` function instead of JSX:
+
+```ts
+import { createElement } from "react";
+
+const myOverlay = map.overlays.add({
+    content: createElement(MyOverlayContent, {
+        // props ...
+    })
+    // ...
+});
+```
 
 ## License
 

@@ -2,11 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, BoxProps } from "@chakra-ui/react";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    mergeChakraProps,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import OlBaseLayer from "ol/layer/Base";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 
 /**
  * These are properties supported by the {@link OverviewMap}.
@@ -61,18 +65,21 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
         }
     }, [map, olLayer]);
 
-    return (
-        // aria-description is still in draft state
-        // eslint-disable-next-line jsx-a11y/role-supports-aria-props
-        <Box
-            height={height}
-            width={width}
-            ref={overviewMapControlElem}
-            {...containerProps}
-            tabIndex={0}
-            role="region"
-            aria-label={intl.formatMessage({ id: "ariaLabel" })}
-            aria-description={intl.formatMessage({ id: "ariaDescription" })}
-        />
+    const mergedBoxProps = useMemo(
+        () =>
+            mergeChakraProps<BoxProps>(
+                {
+                    height,
+                    width,
+                    role: "region",
+                    "aria-label": intl.formatMessage({ id: "ariaLabel" }),
+                    "aria-description": intl.formatMessage({ id: "ariaDescription" }),
+                    tabIndex: 0
+                },
+                containerProps
+            ),
+        [height, width, intl, containerProps]
     );
+
+    return <Box ref={overviewMapControlElem} {...mergedBoxProps} />;
 };

@@ -62,6 +62,7 @@ exports[`should successfully create a selection component and select the first s
             >
               <span
                 class="chakra-tooltip__trigger"
+                data-ownedby="_r_1_"
                 data-part="trigger"
                 data-scope="tooltip"
                 data-state="closed"

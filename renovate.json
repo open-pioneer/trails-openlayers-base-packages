@@ -1,4 +1,11 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["github>open-pioneer/trails-repo-automation//renovate/base.json"]
+    "extends": ["github>open-pioneer/trails-repo-automation//renovate/base.json"],
+    "packageRules": [
+        {
+            "matchPackageNames": ["@chakra-ui/**", "@ark-ui/**"],
+            "description": "chakra dependencies must be updated manually",
+            "enabled": false
+        }
+    ]
 }

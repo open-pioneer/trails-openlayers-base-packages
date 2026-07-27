@@ -43,6 +43,7 @@ exports[`should successfully create a toc component 1`] = `
             data-part="trigger"
             data-placement="bottom-start"
             data-scope="select"
+            data-side="bottom"
             data-state="open"
             dir="ltr"
             id="select:_r_1_:trigger"

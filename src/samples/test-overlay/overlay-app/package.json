@@ -1,0 +1,17 @@
+{
+    "name": "overlay-map",
+    "private": true,
+    "dependencies": {
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:"
+    },
+    "version": "0.0.10"
+}

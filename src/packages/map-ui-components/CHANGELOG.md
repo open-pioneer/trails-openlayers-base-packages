@@ -1,5 +1,25 @@
 # @open-pioneer/map-ui-components
 
+## 1.3.0
+
+### Minor Changes
+
+- 9b5d5f3: Support for new common container props (role, aria-\*, data-\* and css)
+- d54ccfd: Update to Chakra UI 3.35.0
+- 206b397: Update to trails core packages 4.6.0
+
+### Patch Changes
+
+- 0704cd6: Use `classnames` from `@open-pioneer/react-utils` instead of `classnames` package.
+
+## 1.2.0
+
+### Patch Changes
+
+- 9c29256: Update to core packages 4.4.0
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
 ## 1.1.0
 
 ### Minor Changes

@@ -7,6 +7,7 @@ exports[`should successfully create a coordinate search component 1`] = `
 >
   <div
     class="chakra-group chakra-tooltip__trigger coordinate-input-group css-r8l1zn"
+    data-ownedby="_r_0_"
     data-part="trigger"
     data-scope="tooltip"
     data-state="closed"

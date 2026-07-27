@@ -85,7 +85,7 @@ exports[`should successfully create a printing component 1`] = `
       </div>
     </div>
     <button
-      class="chakra-button printing-export-button css-1wkoptu"
+      class="chakra-button printing-export-button css-10si0hy"
       type="submit"
     >
       export

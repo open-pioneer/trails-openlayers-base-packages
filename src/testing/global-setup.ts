@@ -15,6 +15,10 @@ if (typeof window !== "undefined") {
         globalThis.ResizeObserver = ResizeObserver;
     }
 
+    // happy dom does not implement a good XML parser, use the one from jsdom instead.
+    const { JSDOM } = await import("jsdom");
+    window.DOMParser = new JSDOM().window.DOMParser;
+
     // These are used by OpenLayers to create a web worker (as a side effect during import...).
     // This is just the bare minimum to get the code running.
     (globalThis as any).Worker ??= function () {

@@ -67,7 +67,7 @@ it("should center to user's position", async () => {
     };
     const injectedServices = {
         "notifier.NotificationService": notifier,
-         "map.LayerFactory": layerFactory
+        "map.LayerFactory": layerFactory
     };
 
     render(
@@ -112,7 +112,7 @@ it("should zoom to user's position accuracy", async () => {
     };
     const injectedServices = {
         "notifier.NotificationService": notifier,
-         "map.LayerFactory": layerFactory
+        "map.LayerFactory": layerFactory
     };
 
     render(
@@ -161,7 +161,7 @@ it("should successfully create an error with notifier message", async () => {
 
     const injectedServices = {
         "notifier.NotificationService": notifier,
-         "map.LayerFactory": layerFactory
+        "map.LayerFactory": layerFactory
     };
 
     render(

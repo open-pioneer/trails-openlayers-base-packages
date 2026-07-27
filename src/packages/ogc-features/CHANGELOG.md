@@ -1,5 +1,29 @@
 # @open-pioneer/ogc-features
 
+## 1.3.0
+
+### Minor Changes
+
+- 91cf8f1: Derive request CRS from map CRS.
+  The `crs` property of the layer configuration for OGC API Features layers is now _optional_.
+- 6f73670: Changes the behavior when no 'attributions' properties is set for OGC API Features layers. In that case, the 'attribution' value provided by the collection metadata is used, if available.
+- d54ccfd: Update to Chakra UI 3.35.0
+- 206b397: Update to trails core packages 4.6.0
+
+### Patch Changes
+
+- a96d004: VectorSource: trigger change events on error if no features were added. This should resolve an error where the map was permanently loading if the capabilities failed to load.
+- eb120a2: OgcFeaturesVectorSource: use promise based `loader` function (see <https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html> and the [PR](https://github.com/openlayers/openlayers/pull/17403) that introduced the API).
+
+## 1.2.0
+
+### Patch Changes
+
+- 9c29256: Update to core packages 4.4.0
+- 279ca67: Use `workspace:*` instead of `workspace:^` for local package references as default. This ensures that trails packages from this repository are always referenced with their exact version to avoid potential issues with version mismatches. If a project specifically wants to use other versions for some trails packages, a pnpm override can be used to force other versions.
+- 9580bb4: Update various dependencies.
+- 9580bb4: Update to Chakra 3.31.0
+
 ## 1.1.0
 
 ### Minor Changes
@@ -76,17 +100,12 @@
 ### Patch Changes
 
 - b152428: Update trails dependencies
-- Updated dependencies [b152428]
-    - @open-pioneer/search@0.4.4
 
 ## 0.4.3
 
 ### Patch Changes
 
 - 28e092a: Update dependencies
-- Updated dependencies [7f5e58a]
-- Updated dependencies [28e092a]
-    - @open-pioneer/search@0.4.3
 
 ## 0.4.2
 
@@ -97,11 +116,6 @@
 - 6977f0b: Added `strategy` and `rewriteUrl` options to the vector source factory.
 - 81bc7da: Update trails dependencies
 - 2c092dc: Update dependencies
-- Updated dependencies [4140646]
-- Updated dependencies [4140646]
-- Updated dependencies [81bc7da]
-- Updated dependencies [2c092dc]
-    - @open-pioneer/search@0.4.2
 
 ## 0.4.1
 
@@ -119,18 +133,8 @@
 
 - 1a8ad89: Update package.json metadata
 - 6162979: Update versions of core packages
-- Updated dependencies [1a8ad89]
-- Updated dependencies [a0d8882]
-- Updated dependencies [6162979]
-- Updated dependencies [9334e81]
-    - @open-pioneer/search@0.4.0
 
 ## 0.3.1
-
-### Patch Changes
-
-- Updated dependencies [611ddb9]
-    - @open-pioneer/search@0.3.1
 
 ## 0.3.0
 
@@ -138,32 +142,17 @@
 
 - ee7c2d4: Update runtime version.
 
-### Patch Changes
-
-- Updated dependencies [0883bbd]
-- Updated dependencies [ee7c2d4]
-- Updated dependencies [0456500]
-    - @open-pioneer/search@0.3.0
-
 ## 0.2.0
 
 ### Minor Changes
 
 - 70349a8: Update to new core packages major versions
 
-### Patch Changes
-
-- Updated dependencies [70349a8]
-    - @open-pioneer/search@0.2.0
-
 ## 0.1.1
 
 ### Patch Changes
 
 - dfc0896: Add OGC API Features search source
-- Updated dependencies [6209d6c]
-- Updated dependencies [565bd8b]
-    - @open-pioneer/search@0.1.0
 
 ## 0.1.0
 

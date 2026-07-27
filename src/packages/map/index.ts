@@ -87,14 +87,28 @@ export {
 export {
     type MapModel,
     type DisplayTarget,
+    type MapPadding,
+    type ZoomOptions,
+    type AttributionItem
+} from "./model/MapModel";
+export {
     type Highlight,
+    type Highlights,
     type HighlightOptions,
     type HighlightStyle,
-    type HighlightZoomOptions,
-    type MapPadding,
-    type ZoomOptions
-} from "./model/MapModel";
+    type HighlightZoomOptions
+} from "./model/Highlights";
 export { type LayerCollection } from "./model/LayerCollection";
+export {
+    type Overlay,
+    type OverlayOptions,
+    type OlOverlayOptions,
+    type OverlayPositioning,
+    type Overlays,
+    type OverlayPosition,
+    type OverlayPositionCoordinate,
+    type OverlayPositionFollowPointer
+} from "./model/Overlays";
 
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";
