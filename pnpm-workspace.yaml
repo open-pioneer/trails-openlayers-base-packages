@@ -73,7 +73,7 @@ catalog:
   handlebars: ^4.7.9
   happy-dom: ^20.11.1
   husky: ^9.1.7
-  js-yaml: ^4.3.0
+  js-yaml: ^5.2.2
   jsdom: ^29.1.1
   lint-staged: ^17.2.0
   prettier: ^3.9.6
