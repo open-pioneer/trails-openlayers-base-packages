@@ -441,9 +441,7 @@ function getFittingScale(map: MapModel, scales: number[]): number {
 
     const maxFittingScale = Math.min(scaleHeight, scaleWidth);
 
-    // TODO use toSorted() with es2023+
-    const sortedScales = [...scales];
-    sortedScales.sort((a, b) => b - a); // sort descending
+    const sortedScales = scales.toSorted((a, b) => b - a); // sort descending
     return sortedScales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
 }
 
