@@ -175,7 +175,7 @@ export class PrintingController {
 
     async handleMapExport(options: ExportOptions) {
         if (!this.#size || !this.#orientation || !this.#scale) {
-            return;
+            throw new Error("Printing params undefined");
         }
 
         try {
