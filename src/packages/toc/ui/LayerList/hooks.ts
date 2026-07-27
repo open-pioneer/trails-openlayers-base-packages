@@ -108,8 +108,7 @@ function sublayerErrorsEqual(
 /**
  * The layer load state.
  *
- * For sublayers this combines the parent layer's load state (e.g. a failed source or
- * capabilities request affects all sublayers) with the sublayer's own state.
+ * Sublayer combines the parent layer's load state with their own state.
  */
 function ownLoadState(layer: AnyLayer): LayerLoadState {
     if (isSublayer(layer)) {

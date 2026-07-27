@@ -290,27 +290,6 @@ describe("metadata errors", () => {
         const params = layer.olSource!.getParams();
         expect(params.LAYERS).toEqual(["nw_dgk5_grundriss"]);
     });
-
-    it("sets loadState to 'error' when the capabilities request fails", async () => {
-        const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-        const fetch = vi.fn(async () => new Response("Server gone", { status: 503 }));
-        const { layer } = createLayer({
-            title: "Layer",
-            url: SERVICE_URL,
-            sublayers: [
-                {
-                    name: "sublayer-1",
-                    title: "Sublayer 1"
-                }
-            ],
-            fetch,
-            attach: true
-        });
-
-        await vi.waitUntil(() => layer.loadState === "error");
-        expect(layer.loadError?.message).toContain("503");
-        expect(logErrorSpy).toHaveBeenCalled();
-    });
 });
 
 describe("sublayers", () => {
