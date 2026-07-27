@@ -137,11 +137,12 @@ export interface SelectionSource {
 }
 
 export interface VectorLayerSelectionSourceOptions {
+    id?: string;
     vectorLayer: VectorLayer<VectorSource, Feature>;
     label: string;
 }
 
-export interface VectorLayerSelectionSource extends Required<SelectionSource>, Resource {}
+export interface VectorLayerSelectionSource extends SelectionSource, Resource {}
 
 /**
  * A factory that creates {@link VectorLayerSelectionSource | selection sources} to be used on an

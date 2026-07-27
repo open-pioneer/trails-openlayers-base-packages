@@ -73,9 +73,6 @@ export class FakePointSelectionSource implements SelectionSource {
     }
 }
 
-/**
- * For testing purposes only
- */
 export class NoStatusSelectionSource implements SelectionSource {
     readonly label: string = "Testlabel";
 

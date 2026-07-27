@@ -1,20 +1,20 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    SelectionResult,
-    SelectionOptions,
-    SelectionKind,
-    VectorLayerSelectionSource,
-    SelectionSourceStatusObject
-} from "./api";
-import VectorLayer from "ol/layer/Vector";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
-import { v4 as uuid4v } from "uuid";
-import Feature from "ol/Feature";
 import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
-import VectorSource from "ol/source/Vector";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
+import VectorLayer from "ol/layer/Vector";
+import { unByKey } from "ol/Observable";
+import VectorSource from "ol/source/Vector";
+import { v4 as uuid4v } from "uuid";
+import {
+    SelectionKind,
+    SelectionOptions,
+    SelectionResult,
+    SelectionSourceStatusObject,
+    VectorLayerSelectionSource
+} from "../api";
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
@@ -25,6 +25,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
  * -   throwing an event `changed:status` when the status updates
  */
 export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSource {
+    readonly id: string | undefined;
     readonly label: string;
     #vectorLayer: VectorLayer<VectorSource, Feature>;
     #eventHandler: EventsKey;
@@ -33,6 +34,7 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
     #status: ReadonlyReactive<SelectionSourceStatusObject>;
 
     constructor(
+        id: string | undefined,
         vectorLayer: VectorLayer<VectorSource, Feature>,
         label: string,
         currentIntl: ReadonlyReactive<PackageIntl>

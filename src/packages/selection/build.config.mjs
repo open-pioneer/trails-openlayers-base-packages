@@ -3,7 +3,6 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-    styles: "./selection.css",
     entryPoints: ["index"],
     i18n: ["en", "de"],
     services: {
@@ -13,5 +12,6 @@ export default defineBuildConfig({
     },
     ui: {
         references: ["notifier.NotificationService"]
-    }
+    },
+    styles: "./ui/selection.css"
 });
