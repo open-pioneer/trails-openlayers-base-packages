@@ -52,10 +52,10 @@ export class SelectionViewModel {
             sources: SelectionSource[],
             previousSource: SelectionSource | undefined
         ): SelectionSource | undefined => {
-            if (previousSource && sources.includes(previousSource)) {
-                return previousSource;
+            if (previousSource) {
+                return sources.includes(previousSource) ? previousSource : undefined;
             }
-            return undefined;
+            return sources[0];
         }
     );
     #active = computed(() => {

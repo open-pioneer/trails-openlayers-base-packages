@@ -71,7 +71,9 @@ export function useSelectionViewModel(
             return;
         }
 
-        const handle = watchValue(() => viewModel.currentSource, onChange);
+        const handle = watchValue(() => viewModel.currentSource, onChange, {
+            immediate: true
+        });
         return () => handle.destroy();
     }, [viewModel]);
 
