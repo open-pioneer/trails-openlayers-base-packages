@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { computed, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { EventsKey } from "ol/events";
 import Feature from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
 import { unByKey } from "ol/Observable";
@@ -28,9 +27,8 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
     readonly id: string | undefined;
     readonly label: string;
     #vectorLayer: VectorLayer<VectorSource, Feature>;
-    #eventHandler: EventsKey;
     #currentIntl: ReadonlyReactive<PackageIntl>;
-    #layerVisible = reactive<boolean>(true);
+    #layerVisible: ReadonlyReactive<boolean>;
     #status: ReadonlyReactive<SelectionSourceStatusObject>;
 
     constructor(
@@ -39,10 +37,17 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
         label: string,
         currentIntl: ReadonlyReactive<PackageIntl>
     ) {
+        this.id = id;
         this.label = label;
         this.#vectorLayer = vectorLayer;
         this.#currentIntl = currentIntl;
-        this.#layerVisible.value = vectorLayer.getVisible();
+        this.#layerVisible = synchronized(
+            () => vectorLayer.getVisible(),
+            (cb) => {
+                const key = vectorLayer.on("change:visible", cb);
+                return () => unByKey(key);
+            }
+        );
         this.#status = computed<SelectionSourceStatusObject>(() =>
             this.#layerVisible.value
                 ? { kind: "available" }
@@ -51,14 +56,9 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
                       reason: this.#currentIntl.value.formatMessage({ id: "layerNotVisibleReason" })
                   }
         );
-        this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
-            this.#layerVisible.value = this.#vectorLayer.getVisible();
-        });
     }
 
-    destroy() {
-        unByKey(this.#eventHandler);
-    }
+    destroy() {}
 
     get status() {
         return this.#status.value;
