@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { batch, computed, ReadonlyReactive, watch } from "@conterra/reactivity-core";
 import {
     createLogger,
@@ -15,6 +16,7 @@ import type ImageSource from "ol/source/Image";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import ImageWMS from "ol/source/ImageWMS";
 import { sourceId } from "open-pioneer:source-info";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
@@ -88,7 +90,7 @@ export class WMSLayer extends AbstractLayer {
     #fetchCapabilities: boolean;
 
     #loadStarted = false;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     readonly #abortController = new AbortController();
 
@@ -361,7 +363,7 @@ function* walkLeaves(
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
-// eslint-disable-next-line no-constant-condition
+// oxlint-disable-next-line no-constant-condition
 if (false) {
     const check: LayerConstructor<WMSLayerConfig, WMSLayer> = WMSLayer;
     void check;

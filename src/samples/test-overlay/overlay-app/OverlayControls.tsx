@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Checkbox, Flex, Link, Span, Text } from "@chakra-ui/react";
 import { useMapModelValue } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
@@ -119,11 +120,10 @@ function MovableOverlayControl() {
         [movingOverlay]
     );
     const setChecked = useEvent((newChecked: boolean) => {
+        movingOverlay?.overlay.destroy();
         if (newChecked) {
-            movingOverlay?.overlay.destroy();
             setMovingOverlay(createMovingOverlay(map));
         } else {
-            movingOverlay?.overlay.destroy();
             setMovingOverlay(undefined);
         }
     });

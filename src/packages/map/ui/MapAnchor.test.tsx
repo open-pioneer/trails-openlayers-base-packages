@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -61,6 +62,7 @@ it("should successfully create a map anchor component with additional css classe
     expect(mapAnchor.classList.contains("test3")).not.toBe(true);
 });
 
+// TODO(browser-test) check actual position
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
     const { map } = await setupMap();
 
@@ -77,11 +79,10 @@ it('should successfully create a map anchor component with prop `position="top-l
 
     // check map anchor component box is available with style for prop `position`
     const mapAnchor = container.querySelector(".map-anchor");
-    if (!mapAnchor) {
-        throw new Error("map anchor component not rendered");
-    }
+    expect(mapAnchor).toBeInTheDocument();
 });
 
+// TODO(browser-test) check actual position
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
     const { map } = await setupMap();
 
@@ -98,11 +99,10 @@ it('should successfully create a map anchor component with prop `position="botto
 
     // check map anchor component box is available with style for prop `position`
     const mapAnchor = container.querySelector(".map-anchor");
-    if (!mapAnchor) {
-        throw new Error("map anchor component not rendered");
-    }
+    expect(mapAnchor).toBeInTheDocument();
 });
 
+// TODO(browser-test) check actual position
 it('should successfully create a map anchor component with prop `position="v-center-h-center"`', async () => {
     const { map } = await setupMap();
 
@@ -119,9 +119,7 @@ it('should successfully create a map anchor component with prop `position="v-cen
 
     // check map anchor component box is available with style for prop `position`
     const mapAnchor = container.querySelector(".map-anchor");
-    if (!mapAnchor) {
-        throw new Error("map anchor component not rendered");
-    }
+    expect(mapAnchor).toBeInTheDocument();
 });
 
 it("should successfully create a map anchor component with ReactNode as children", async () => {

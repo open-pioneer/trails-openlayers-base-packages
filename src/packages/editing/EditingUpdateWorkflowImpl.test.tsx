@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
 import { FlatStyle } from "ol/style/flat";
@@ -164,11 +165,11 @@ describe("during update editing workflow", () => {
 
         expect(geometry).not.toBeUndefined();
 
-        if (geometry instanceof Point) {
-            expect(geometry.getCoordinates()).toStrictEqual([10, 51]);
-        } else {
+        if (!(geometry instanceof Point)) {
             throw new Error("geometry type wrong");
         }
+
+        expect(geometry.getCoordinates()).toStrictEqual([10, 51]);
 
         workflow.stop();
     });

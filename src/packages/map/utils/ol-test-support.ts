@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { equals as extentEquals } from "ol/extent";
 import OlMap from "ol/Map";
 
@@ -22,7 +23,7 @@ export function patchOpenLayersClassesForTesting() {
         const oldSize = this.getSize();
         if (size && (!oldSize || !extentEquals(size, oldSize))) {
             this.setSize(size);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // oxlint-disable-next-line @typescript-eslint/no-explicit-any
             (this as any).updateViewportSize_();
         }
     };

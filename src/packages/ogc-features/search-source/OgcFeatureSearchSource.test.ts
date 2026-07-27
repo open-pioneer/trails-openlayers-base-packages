@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { MapModel } from "@open-pioneer/map";
 import { get as getProjection } from "ol/proj";
 import { afterEach, expect, it, vi } from "vitest";
@@ -103,10 +104,7 @@ it("expect search source performs http requests to search", async () => {
 
     const simpleResults = results.map((result) => {
         const { geometry, ...rest } = result;
-        return {
-            ...rest,
-            geometry: geometry?.getType() + "..."
-        };
+        return Object.assign(rest, { geometry: geometry?.getType() + "..." });
     });
 
     expect(simpleResults).toMatchInlineSnapshot(`

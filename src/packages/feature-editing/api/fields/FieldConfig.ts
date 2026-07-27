@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import type { CustomFieldConfig } from "./CustomFieldConfig";
 import type { ComboBoxConfig, RadioGroupConfig, SelectConfig } from "./optionFieldConfigs";
 
@@ -12,7 +13,7 @@ import type {
     TextAreaConfig,
     TextFieldConfig
 } from "./standardFieldConfigs";
-
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DeclarativeFormTemplate } from "../model/FeatureTemplate";
 
 /**

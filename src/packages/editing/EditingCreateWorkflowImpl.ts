@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { effect, Reactive, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
 import { createLogger, createManualPromise, ManualPromise, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
@@ -160,7 +161,8 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         this.#olMap.removeInteraction(this.#drawInteraction);
         this.#tooltip.destroy();
 
-        saveCreatedFeature(this.#httpService, layerUrl, geoJSONGeometry, projection)
+        const httpService = this.#httpService;
+        saveCreatedFeature({ httpService, url: layerUrl, geometry: geoJSONGeometry, projection })
             .then((featureId) => {
                 this.#featureId = featureId;
                 this.#destroy();

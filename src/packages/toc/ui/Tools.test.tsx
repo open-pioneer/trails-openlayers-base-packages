@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
@@ -32,10 +33,10 @@ it("Should successfully create a toc with default tool component", async () => {
     );
 
     const toolsDiv = await findTools();
-    expect(toolsDiv).toMatchSnapshot();
+    expect(toolsDiv).toMatchSnapshot("find-tools");
 
     const toolsMenu = await findMenu(toolsDiv.tools);
-    expect(toolsMenu).toMatchSnapshot();
+    expect(toolsMenu).toMatchSnapshot("find-tools-menu");
 });
 
 it("Should successfully hide all layers in toc", async () => {

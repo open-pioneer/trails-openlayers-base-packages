@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { batch, reactive } from "@conterra/reactivity-core";
 import { createLogger, deprecated, isAbortError } from "@open-pioneer/core";
 import { ImageTile } from "ol";
@@ -10,6 +11,7 @@ import TileLayer from "ol/layer/Tile";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities, Options as WMTSSourceOptions } from "ol/source/WMTS";
 import { sourceId } from "open-pioneer:source-info";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -264,7 +266,7 @@ export class WMTSLayer extends AbstractLayer {
         }
     }
 
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    /* oxlint-disable @typescript-eslint/no-explicit-any */
     #existsStyleInCapabilities(capabilities: any, styleToUse: string): boolean {
         // NOTE: we have a style override, check if the style exists in the capabilities
         // the helper optionsFromCapabilities, supports style, too, but uses the Title instead of the Identifier, to find a match in the capabilities
@@ -277,7 +279,7 @@ export class WMTSLayer extends AbstractLayer {
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
-// eslint-disable-next-line no-constant-condition
+// oxlint-disable-next-line no-constant-condition
 if (false) {
     const check: LayerConstructor<WMTSLayerConfig, WMTSLayer> = WMTSLayer;
     void check;

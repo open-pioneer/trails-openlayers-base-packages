@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { nextTick } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer } from "@open-pioneer/map-test-utils";
@@ -269,7 +270,7 @@ describe("sublayers", () => {
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
 
-    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop ", () => {
+    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop", () => {
         const { layer } = createLayer({
             title: "Layer",
             url: SERVICE_URL,

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger } from "@open-pioneer/core";
 import type { MapModel } from "@open-pioneer/map";
 import type { NotificationService } from "@open-pioneer/notifier";
@@ -21,6 +22,7 @@ export interface EditingCallbacks {
     readonly onCancel: () => void;
 }
 
+// oxlint-disable-next-line max-params
 export function useEditingCallbacks(
     mapModel: MapModel,
     editingStep: EditingStep,

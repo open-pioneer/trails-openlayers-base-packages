@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { destroyResource, Resource } from "@open-pioneer/core";
 import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
 import Feature from "ol/Feature";

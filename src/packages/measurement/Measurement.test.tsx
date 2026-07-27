@@ -17,7 +17,7 @@ it("should successfully create a measurement component", async () => {
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} data-testid="measurement"></Measurement>
+            <Measurement map={map} data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -36,7 +36,7 @@ it("should successfully create a measurement component with additional css class
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -53,7 +53,7 @@ it("should successfully select a measurement from the select dropdown", async ()
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -78,7 +78,7 @@ it("should successfully add tooltip overlays to the map", async () => {
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -107,7 +107,7 @@ it("should successfully activate draw interaction for the right geometry type", 
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 

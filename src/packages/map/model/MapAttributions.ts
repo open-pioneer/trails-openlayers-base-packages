@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { computed, effect, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
 import { destroyResources, Resource, shallowEqual } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -54,7 +55,7 @@ export class MapAttributions {
             }
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const element = (control as any).element as HTMLElement | undefined;
         if (element) {
             element.role = "region";
@@ -82,13 +83,13 @@ export class MapAttributions {
 // Overrides the OpenLayers widget to sanitize HTML attributions and to intercept the computed array of strings.
 // Note that this depends on OpenLayers internals that may change between versions.
 function interceptAttributions(attr: Attribution, onUpdate: (attributions: string[]) => void) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-function-type
     const originalCollectSourceAttributions = (attr as any).collectSourceAttributions_ as Function;
     if (!originalCollectSourceAttributions) {
         throw new Error("Internal error: failed to override attributions widget");
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     (attr as any).collectSourceAttributions_ = (frameState: FrameState) => {
         const rawAttributions = originalCollectSourceAttributions.call(
             attr,

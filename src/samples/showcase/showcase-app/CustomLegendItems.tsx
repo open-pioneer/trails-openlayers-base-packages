@@ -17,7 +17,7 @@ export function CustomLegendItem(props: LegendItemComponentProps) {
     return (
         <Box>
             <Text>{props.layer.title}</Text>
-            <Box style={dotStyle}></Box>
+            <Box style={dotStyle} />
         </Box>
     );
 }

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { chakra } from "@chakra-ui/react";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -74,7 +75,7 @@ function createColumn(options: CreateColumnOptions) {
 
     return columnHelper.accessor(
         (feature: BaseFeature) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getPropertyValue?.(feature) ?? feature.properties?.[propertyName!];
         },
         {

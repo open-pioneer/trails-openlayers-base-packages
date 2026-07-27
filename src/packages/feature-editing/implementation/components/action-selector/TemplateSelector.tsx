@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Table } from "@chakra-ui/react";
 import type { ReactElement } from "react";
 import { TemplateItem } from "./TemplateItem";
@@ -26,6 +27,7 @@ export function TemplateSelector({
             <Table.Body role={"listbox"}>
                 {templates.map((template, index) => (
                     <TemplateItem
+                        // oxlint-disable-next-line react/no-array-index-key
                         key={index}
                         template={template}
                         isSelected={selectedTemplate === template}

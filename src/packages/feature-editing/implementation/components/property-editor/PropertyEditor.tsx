@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -55,10 +56,11 @@ export function PropertyEditor(props: {
                         {formTemplate.kind === "dynamic"
                             ? formTemplate.renderForm()
                             : formTemplate.fields.map((field, index) => (
+                                  // oxlint-disable-next-line react/no-array-index-key
                                   <PropertyField key={index} field={field} />
                               ))}
                     </PropertyForm>
-                    <EditorControls></EditorControls>
+                    <EditorControls />
                 </Flex>
             </FormContext>
         )

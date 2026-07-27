@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { constant, effect, watch } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { throwAbortError } from "@open-pioneer/core";
@@ -196,7 +197,9 @@ it("generates automatic unique ids for layers", async () => {
 
     const ids = model.layers.getLayers().map((l) => l.id);
     const verifyId = (id: unknown, message: string) => {
+        // oxlint-disable-next-line vitest/valid-expect : message is allowed
         expect(id, message).toBeTypeOf("string");
+        // oxlint-disable-next-line vitest/valid-expect : message is allowed
         expect((id as string).length, message).toBeGreaterThan(0);
     };
 
@@ -649,7 +652,7 @@ describe("adding and removing layers", () => {
         expectLayerOrder(layers);
     });
 
-    it("it throws error if reference layer is not a top level operational layer", async () => {
+    it("throws error if reference layer is not a top level operational layer", async () => {
         model = await create("foo", {
             layers: [
                 createTestLayer({
@@ -963,7 +966,7 @@ describe("base layers", () => {
 });
 
 describe("child access", () => {
-    it("it should return all layers including children", async () => {
+    it("should return all layers including children", async () => {
         const base = createTestLayer({
             type: SimpleLayer,
             id: "base",
@@ -1001,7 +1004,7 @@ describe("child access", () => {
     `);
     });
 
-    it("it should return all operational layers including children", async () => {
+    it("should return all operational layers including children", async () => {
         const base = createTestLayer({
             type: SimpleLayer,
             id: "base",
@@ -1041,7 +1044,7 @@ describe("child access", () => {
         expect(allOperationalLayers.length).toBe(2);
     });
 
-    it("it should return all layers including children ordered by display order (asc)", async () => {
+    it("should return all layers including children ordered by display order (asc)", async () => {
         const base = createTestLayer({
             type: SimpleLayer,
             id: "base",
@@ -1076,7 +1079,7 @@ describe("child access", () => {
         expect(allLayers[2]).toBe(group);
     });
 
-    it("it should return internal layer only if explicitly specified ", async () => {
+    it("should return internal layer only if explicitly specified", async () => {
         const base = createTestLayer({
             id: "base",
             title: "baselayer",
@@ -1116,6 +1119,7 @@ describe("child access", () => {
     });
 });
 
+// oxlint-disable-next-line vitest/expect-expect
 it("supports connecting and disconnecting layers", async () => {
     const simple = createTestLayer({
         type: SimpleLayer,
@@ -1198,6 +1202,7 @@ function expectNoMap(layers: AnyLayer[] | undefined) {
     }
 
     for (const layer of layers) {
+        // oxlint-disable-next-line vitest/require-to-throw-message
         expect(() => layer.map, `layer should not have a map: ${layer.title}`).toThrow();
         expectNoMap(layer.children?.getItems());
     }

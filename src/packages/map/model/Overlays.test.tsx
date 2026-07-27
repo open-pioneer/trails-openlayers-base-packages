@@ -93,7 +93,7 @@ it("render an Overlay with react component as content", async () => {
     const testClassName = "overlay-test";
 
     overlays.add({
-        content: <DummyOverlayContent innerText={overlayTextContent}></DummyOverlayContent>,
+        content: <DummyOverlayContent innerText={overlayTextContent} />,
         className: testClassName
     });
     const element = getOverlayDivElement(overlays, testClassName);
@@ -249,7 +249,7 @@ async function setup() {
 
     render(
         <PackageContextProvider>
-            <MapContainer map={map} data-testid="base"></MapContainer>
+            <MapContainer map={map} data-testid="base" />
         </PackageContextProvider>
     );
 

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
@@ -195,7 +196,7 @@ describe("during create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should contain a geometry after starting create editing workflow ", async () => {
+    it("should contain a geometry after starting create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const draw = workflow.getDrawInteraction();

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import {
     Resource,
@@ -86,14 +87,14 @@ function useEditingViewModel(kind: EditingKind): EditingViewModel | undefined {
 
     const [viewModel, setViewModel] = useState<EditingViewModel>();
     useEffect(() => {
-        const vm = new EditingViewModel(
+        const vm = new EditingViewModel({
             notificationService,
             editingService,
             map,
             intl,
             appModel,
             kind
-        );
+        });
         setViewModel(vm);
         return () => {
             vm.destroy();
@@ -110,6 +111,15 @@ interface EditingJob {
     run(): Promise<void>;
 }
 
+interface EditingViewModelParams {
+    notificationService: NotificationService;
+    editingService: EditingService;
+    map: MapModel;
+    intl: PackageIntl;
+    appModel: AppModel;
+    kind: EditingKind;
+}
+
 /**
  * The view model manages a single update/create workflow.
  */
@@ -123,14 +133,14 @@ class EditingViewModel {
 
     #job: EditingJob | undefined;
 
-    constructor(
-        notificationService: NotificationService,
-        editingService: EditingService,
-        map: MapModel,
-        intl: PackageIntl,
-        appModel: AppModel,
-        kind: EditingKind
-    ) {
+    constructor({
+        notificationService,
+        editingService,
+        map,
+        intl,
+        appModel,
+        kind
+    }: EditingViewModelParams) {
         this.#notificationService = notificationService;
         this.#editingService = editingService;
         this.#map = map;
@@ -267,8 +277,9 @@ class EditingViewModel {
                 tooltip.overlay.element.classList.remove("editing-tooltip-hidden");
 
                 let feature: Feature<Geometry> | undefined;
-                // eslint-disable-next-line no-constant-condition
+                // oxlint-disable-next-line no-constant-condition
                 while (1) {
+                    // oxlint-disable-next-line no-await-in-loop
                     const { selected, deselected } = await waitForSelection(
                         selectInteraction,
                         signal

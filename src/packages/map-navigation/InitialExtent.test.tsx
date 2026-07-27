@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { MapContainer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -60,7 +61,7 @@ it("should successfully click the home button and go to initial extent", async (
     render(
         <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
-            <InitialExtent map={map} data-testid="initial-extent"></InitialExtent>
+            <InitialExtent map={map} data-testid="initial-extent" />
         </PackageContextProvider>
     );
     await waitForMapMount("map");

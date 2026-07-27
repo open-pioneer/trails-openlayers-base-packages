@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { batch, ReadonlyReactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
@@ -207,7 +208,7 @@ class MapModelFactory {
 
     #initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
         }
 

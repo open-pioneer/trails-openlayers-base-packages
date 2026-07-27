@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { BoxProps, chakra, SystemStyleObject } from "@chakra-ui/react";
 import { createLogger, Resource } from "@open-pioneer/core";
 import {
@@ -159,7 +160,7 @@ export function MapContainer(props: MapContainerProps) {
                 {ready && map && (
                     <MapContainerReady
                         map={map}
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
                         viewPaddingChangeBehavior={viewPaddingChangeBehavior}
@@ -366,7 +367,7 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
         );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     (olMap as any).keyboardEventTarget_ = target;
     olMap.setTarget(target);
 
@@ -375,7 +376,7 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
         destroy() {
             if (!unregistered) {
                 LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                // oxlint-disable-next-line @typescript-eslint/no-explicit-any
                 (olMap as any).keyboardEventTarget_ = undefined;
                 olMap.setTarget(undefined);
                 unregistered = true;

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { ButtonProps } from "@chakra-ui/react";
 import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
@@ -107,6 +108,7 @@ const GeolocationImpl = function GeolocationImpl(
     );
 };
 
+// oxlint-disable-next-line max-params
 function useController(
     map: MapModel,
     maxZoom: number | undefined,

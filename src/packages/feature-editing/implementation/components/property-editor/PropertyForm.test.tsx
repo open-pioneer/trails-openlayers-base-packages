@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
@@ -764,6 +765,7 @@ function renderForm(options?: {
         options ?? {};
     const context = new DeclarativeFormContext(editingStep, DUMMY_CALLBACKS, template);
     const children = template.fields.map((field, index) => (
+        // oxlint-disable-next-line react/no-array-index-key
         <PropertyField key={index} field={field} />
     ));
     const renderResult = render(

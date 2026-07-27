@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen } from "@testing-library/react";
@@ -24,8 +25,8 @@ it("should successfully create an view history navigation component", async () =
     // Parent elements
     expect(historyDivForward.tagName).toBe("BUTTON");
     expect(historyDivBackward.tagName).toBe("BUTTON");
-    expect(historyDivForward).toMatchSnapshot();
-    expect(historyDivBackward).toMatchSnapshot();
+    expect(historyDivForward).toMatchSnapshot("history-div-forward");
+    expect(historyDivBackward).toMatchSnapshot("history-div-backward");
 });
 
 it("should successfully disable/enable buttons", async () => {

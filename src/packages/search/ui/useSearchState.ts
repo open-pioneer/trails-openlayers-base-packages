@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
@@ -68,6 +69,7 @@ export type SearchResultsState = SearchResultsReady | SearchResultsLoading;
  * NOTE: it would be great to merge this state handling with the search controller
  * in a future revision.
  */
+// oxlint-disable-next-line max-params
 export function useSearchState(
     sources: SearchSource[],
     searchTypingDelay: number | undefined,
@@ -307,12 +309,12 @@ function useSearchSourceId(): GetSearchSourceId {
     }
 
     return useCallback((searchSource: SearchSource) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         const ids = sourceIds.current!;
         if (!ids.has(searchSource)) {
             ids.set(searchSource, `source-${counter.current++}`);
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         return ids.get(searchSource)!;
     }, []);
 }

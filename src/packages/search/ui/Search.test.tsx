@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -275,7 +276,7 @@ async function createSearch(
                 onClear={clearHandlerFunction}
                 onReady={readyHandlerFunction}
                 onDisposed={disposeHandlerFunction}
-            ></Search>
+             />
         </PackageContextProvider>
     );
 

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     computed,
     reactive,
@@ -26,6 +27,7 @@ import {
     SET_VISIBLE
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
 

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Box,
     Button,
@@ -74,6 +75,7 @@ export function AppUI() {
 
     function handleClick(map: MapModel | undefined, resultGeometries: Geometry[], id: string) {
         if (map && !highlightMap.current.has(id)) {
+            // oxlint-disable-next-line oxc/branches-sharing-code
             if (ownStyle) {
                 const highlight = map.highlights.addAndZoom(resultGeometries, {
                     highlightStyle: ownHighlightStyle,
