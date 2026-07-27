@@ -7,20 +7,20 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.7.0-dev.20260624141040
-  "@open-pioneer/core": 4.7.0-dev.20260624141040
-  "@open-pioneer/http": 4.7.0-dev.20260624141040
-  "@open-pioneer/integration": 4.7.0-dev.20260624141040
-  "@open-pioneer/local-storage": 4.7.0-dev.20260624141040
-  "@open-pioneer/notifier": 4.7.0-dev.20260624141040
-  "@open-pioneer/react-utils": 4.7.0-dev.20260624141040
-  "@open-pioneer/reactivity": 4.7.0-dev.20260624141040
-  "@open-pioneer/runtime": 4.7.0-dev.20260624141040
-  "@open-pioneer/test-utils": 4.7.0-dev.20260624141040
-  "@open-pioneer/chakra-snippets": 4.7.0-dev.20260624141040
+  "@open-pioneer/base-theme": 4.7.0-dev.20260727091735
+  "@open-pioneer/core": 4.7.0-dev.20260727091735
+  "@open-pioneer/http": 4.7.0-dev.20260727091735
+  "@open-pioneer/integration": 4.7.0-dev.20260727091735
+  "@open-pioneer/local-storage": 4.7.0-dev.20260727091735
+  "@open-pioneer/notifier": 4.7.0-dev.20260727091735
+  "@open-pioneer/react-utils": 4.7.0-dev.20260727091735
+  "@open-pioneer/reactivity": 4.7.0-dev.20260727091735
+  "@open-pioneer/runtime": 4.7.0-dev.20260727091735
+  "@open-pioneer/test-utils": 4.7.0-dev.20260727091735
+  "@open-pioneer/chakra-snippets": 4.7.0-dev.20260727091735
 
   # Frontend dependencies
-  "@chakra-ui/react": ^3.36.0
+  "@chakra-ui/react": ^3.36.1
   "@conterra/reactivity-core": ^0.8.6
   "@conterra/reactivity-events": ^0.8.6
   "@emotion/cache": ^11.14.0
@@ -42,11 +42,11 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.31.1
-  "@open-pioneer/build-package-cli": ^3.1.1-dev.20260623134110
-  "@open-pioneer/build-support": ^3.1.1-dev.20260623134110
-  "@open-pioneer/changesets-release-line": ^0.1.1-dev.20260623134110
-  "@open-pioneer/check-pnpm-duplicates": ^0.3.3-dev.20260623134110
-  "@open-pioneer/vite-plugin-pioneer": ^6.0.1-dev.20260623134110
+  "@open-pioneer/build-package-cli": ^3.2.1
+  "@open-pioneer/build-support": ^3.1.2
+  "@open-pioneer/changesets-release-line": ^0.1.2
+  "@open-pioneer/check-pnpm-duplicates": ^0.3.4
+  "@open-pioneer/vite-plugin-pioneer": ^6.0.2
   "@testing-library/dom": ^10.4.1
   "@testing-library/jest-dom": ^7.0.0
   "@testing-library/react": ^16.3.2
@@ -103,7 +103,7 @@ overrides:
   "csstype@<3.2.3": ">=3.2.3"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
-  "@chakra-ui/react": "3.36.0"
+  "@chakra-ui/react": "3.36.1"
   "@ark-ui/react": "5.37.2"
   "@zag-js/interact-outside": "1.41.2"
 
