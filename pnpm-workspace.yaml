@@ -115,8 +115,12 @@ overrides:
   "js-yaml@>=3.0.0 <3.15.0": "^3.15.0"
 
   # https://github.com/advisories/GHSA-3jxr-9vmj-r5cp, CVE-2026-13149
+  # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
   "brace-expansion@<1.1.16": "^1.1.16"
-  "brace-expansion@>=3.0.0 <5.0.7": "^5.0.7"
+  "brace-expansion@>=3.0.0 <5.0.8": "^5.0.8"
+
+  # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
+  "immutable@>=5.0.0 <5.1.8": "^5.1.8"
 
 allowUnusedPatches: true
 patchedDependencies:
@@ -137,6 +141,9 @@ auditConfig:
   ignoreGhsas:
     # https://github.com/advisories/GHSA-h67p-54hq-rp68, CVE-2026-53550
     - GHSA-h67p-54hq-rp68
+
+    # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
+    - GHSA-mh99-v99m-4gvg
 
 allowBuilds:
   "@parcel/watcher": true
