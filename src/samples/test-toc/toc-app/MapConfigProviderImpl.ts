@@ -8,7 +8,7 @@ import {
     MapConfigProviderOptions,
     SimpleLayer,
     WMSLayer,
-    WMTSLayer
+    WMTSLayer,
 } from "@open-pioneer/map";
 import { LayerTocAttributes } from "@open-pioneer/toc";
 import GeoJSON from "ol/format/GeoJSON";
@@ -29,7 +29,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             initialView: {
                 kind: "position",
                 center: { x: 404747, y: 5757920 },
-                zoom: 14
+                zoom: 14,
             },
             projection: "EPSG:25832",
             layers: [
@@ -42,7 +42,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     // broken URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
-                    olLayer: createTopPlusOpenLayer("web")
+                    olLayer: createTopPlusOpenLayer("web"),
                 }),
                 layerFactory.create({
                     type: WMTSLayer,
@@ -54,8 +54,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     maxZoom: 16,
                     matrixSet: "EPSG_3857_16",
                     sourceOptions: {
-                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt, siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf">Nutzungsbedingungen</a>.`
-                    }
+                        attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt, siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf">Nutzungsbedingungen</a>.`,
+                    },
                 }),
                 layerFactory.create({
                     type: SimpleLayer,
@@ -72,7 +72,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         await wait(2000);
                         return "error";
                     },
-                    olLayer: createTopPlusOpenLayer("web_grau")
+                    olLayer: createTopPlusOpenLayer("web_grau"),
                 }),
                 layerFactory.create({
                     type: SimpleLayer,
@@ -85,7 +85,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     // valid URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                    olLayer: createTopPlusOpenLayer("web_light")
+                    olLayer: createTopPlusOpenLayer("web_light"),
                 }),
                 layerFactory.create({
                     type: SimpleLayer,
@@ -93,8 +93,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     visible: false,
                     isBaseLayer: true,
                     olLayer: new TileLayer({
-                        source: new OSM()
-                    })
+                        source: new OSM(),
+                    }),
                 }),
                 layerFactory.create({
                     type: SimpleLayer,
@@ -104,9 +104,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     description:
                         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     olLayer: createHaltestellenLayer(),
-                    isBaseLayer: true,
+                    isBaseLayer: false,
                     internal: false,
-                    isTopMostLayer: true
+                    isTopMostLayer: true,
                 }),
                 layerFactory.create({
                     type: GroupLayer,
@@ -122,10 +122,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             visible: true,
                             healthCheck:
                                 "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                            olLayer: createKitasLayer()
+                            olLayer: createKitasLayer(),
                         }),
-                        createSchulenLayer(layerFactory)
-                    ]
+                        createSchulenLayer(layerFactory),
+                    ],
                 }),
                 layerFactory.create({
                     type: GroupLayer,
@@ -143,12 +143,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
                             isBaseLayer: false,
-                            internal: false
+                            internal: false,
                         }),
-                        createStrassenLayer(layerFactory)
-                    ]
-                })
-            ]
+                        createStrassenLayer(layerFactory),
+                    ],
+                }),
+            ],
         };
     }
 }
@@ -180,7 +180,7 @@ function createTopPlusOpenLayer(layer: "web" | "web_grau" | "web_light") {
         4.77731426782352, // AdV-Level 10 (1:17061,8366707983)
         2.38865713391176, // AdV-Level 11 (1:8530,91833539914)
         1.19432856695588, // AdV-Level 12 (1:4265,45916769957)
-        0.59716428347794 // AdV-Level 13 (1:2132,72958384978)
+        0.59716428347794, // AdV-Level 13 (1:2132,72958384978)
     ];
 
     /**
@@ -202,13 +202,13 @@ function createTopPlusOpenLayer(layer: "web" | "web_grau" | "web_light") {
         tileGrid: new WMTSTileGrid({
             origin: topLeftCorner,
             resolutions: resolutions,
-            matrixIds: matrixIds
+            matrixIds: matrixIds,
         }),
         style: "default",
-        attributions: `Kartendarstellung und Präsentationsgraphiken: © Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html" target="_blank">Datenquellen</a>`
+        attributions: `Kartendarstellung und Präsentationsgraphiken: © Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html" target="_blank">Datenquellen</a>`,
     });
     return new TileLayer({
-        source: wmts
+        source: wmts,
     });
 }
 
@@ -216,11 +216,11 @@ function createHaltestellenLayer() {
     const geojsonSource = new VectorSource({
         url: "https://geo.sv.rostock.de/download/opendata/haltestellen/haltestellen.json",
         format: new GeoJSON(), //assign GeoJson parser
-        attributions: "Haltestellen Stadt Rostock, Creative Commons CC Zero License (cc-zero)"
+        attributions: "Haltestellen Stadt Rostock, Creative Commons CC Zero License (cc-zero)",
     });
 
     return new VectorLayer({
-        source: geojsonSource
+        source: geojsonSource,
     });
 }
 
@@ -229,11 +229,11 @@ function createKitasLayer() {
         url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
         format: new GeoJSON(), //assign GeoJson parser
         attributions:
-            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>',
     });
 
     return new VectorLayer({
-        source: geojsonSource
+        source: geojsonSource,
     });
 }
 
@@ -257,12 +257,12 @@ function createSchulenLayer(layerFactory: LayerFactory) {
         sublayers: [
             {
                 name: "US.education",
-                title: "INSPIRE - WMS Schulstandorte NRW"
-            }
+                title: "INSPIRE - WMS Schulstandorte NRW",
+            },
         ],
         sourceOptions: {
-            ratio: 1
-        }
+            ratio: 1,
+        },
     });
 }
 
@@ -276,22 +276,22 @@ function createStrassenLayer(layerFactory: LayerFactory) {
         maxZoom: 13,
         attributes: {
             toc: {
-                listMode: "show"
-            } satisfies LayerTocAttributes
+                listMode: "show",
+            } satisfies LayerTocAttributes,
         },
         sublayers: [
             {
                 name: "1",
-                title: "Verwaltungen"
+                title: "Verwaltungen",
             },
             {
                 name: "4",
-                title: "Abschnitte und Äste"
+                title: "Abschnitte und Äste",
             },
             {
                 name: "6",
-                title: "Unfälle"
-            }
-        ]
+                title: "Unfälle",
+            },
+        ],
     });
 }
