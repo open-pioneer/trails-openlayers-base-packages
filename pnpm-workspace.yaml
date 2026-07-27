@@ -122,6 +122,9 @@ overrides:
   # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
   "immutable@>=5.0.0 <5.1.8": "^5.1.8"
 
+  # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
+  "dompurify@<=3.4.11": "^3.4.12"
+
 allowUnusedPatches: true
 patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
