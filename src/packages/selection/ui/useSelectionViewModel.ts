@@ -1,15 +1,20 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useEffect, useState } from "react";
-import { SelectionResult, SelectionSource } from "../api";
-import { SelectionCompleteEvent, SelectionSourceChangedEvent } from "../Selection";
-import { SelectionViewModel } from "./SelectionViewModel";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { NotificationService } from "@open-pioneer/notifier";
-import { useEvent } from "@open-pioneer/react-utils";
-import { MapModel } from "@open-pioneer/map";
 import { watchValue } from "@conterra/reactivity-core";
+import { MapModel } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { useEffect, useEffectEvent, useState } from "react";
+import { SelectionResult, SelectionSource } from "../api";
+import { SelectionViewModel } from "../view-model";
+import { SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
 
+/**
+ * Initializes the (internal) view model used by the selection component.
+ *
+ * The view model contains the primary widget state.
+ * It is a long lived instance that is updated in place when relevant react props are changed.
+ */
 export function useSelectionViewModel(
     map: MapModel,
     sources: SelectionSource[],
@@ -18,10 +23,10 @@ export function useSelectionViewModel(
 ): SelectionViewModel | undefined {
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
-    const onComplete = useEvent((source: SelectionSource, results: SelectionResult[]) => {
+    const onComplete = useEffectEvent((source: SelectionSource, results: SelectionResult[]) => {
         onSelectionComplete?.({ source, results });
     });
-    const onChange = useEvent((source: SelectionSource | undefined) => {
+    const onChange = useEffectEvent((source: SelectionSource | undefined) => {
         onSelectionSourceChanged?.({ source });
     });
 
@@ -43,12 +48,15 @@ export function useSelectionViewModel(
                 noSource: intl.formatMessage({ id: "noSourceTooltip" })
             }
         });
+
+        // TODO: intl reactive
+
         setViewModel(vm);
         return () => {
             setViewModel(undefined);
             vm.destroy();
         };
-    }, [map, intl, notifier, onComplete]);
+    }, [map, intl, notifier]);
 
     // Sync sources --> view model
     useEffect(() => {
@@ -65,7 +73,7 @@ export function useSelectionViewModel(
 
         const handle = watchValue(() => viewModel.currentSource, onChange);
         return () => handle.destroy();
-    }, [viewModel, onChange]);
+    }, [viewModel]);
 
     return viewModel;
 }

@@ -101,6 +101,13 @@ export type SelectionKind = ExtentSelection;
  */
 export interface SelectionSource {
     /**
+     * The id of this source.
+     *
+     * Must be unique across all selection sources used within the same selection component.
+     */
+    readonly id?: string;
+
+    /**
      * The label of this source.
      *
      * This will be displayed by the user interface during selection source selection.

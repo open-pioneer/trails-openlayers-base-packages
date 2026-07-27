@@ -3,7 +3,7 @@
 export * from "./api";
 export {
     Selection,
-    type SelectionProps,
     type SelectionCompleteEvent,
+    type SelectionProps,
     type SelectionSourceChangedEvent
-} from "./Selection";
+} from "./ui/Selection";

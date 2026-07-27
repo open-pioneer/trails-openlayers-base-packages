@@ -15,10 +15,12 @@ import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useMemo, useRef } from "react";
+import { FC, useMemo } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
-import { SelectionResult, SelectionSource } from "./api";
-import { getSourceStatus, SelectionViewModel, useSelectionViewModel } from "./view-model";
+import { SelectionResult, SelectionSource } from "../api";
+import { getSourceStatus, SelectionViewModel } from "../view-model";
+import { useSelectionSourceId } from "./useSelectionSourceId";
+import { useSelectionViewModel } from "./useSelectionViewModel";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -228,27 +230,4 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
         };
     }, [source, intl]);
     return sourceStatus;
-}
-
-type GetSelectionSourceId = (selectionSource: SelectionSource) => string;
-
-/**
- * Assigns unique IDs to selection sources.
- */
-function useSelectionSourceId(): GetSelectionSourceId {
-    const sourceIds = useRef<WeakMap<SelectionSource, string>>(undefined);
-    const counter = useRef(0);
-    if (!sourceIds.current) {
-        sourceIds.current = new WeakMap();
-    }
-
-    return useCallback((selectionSource: SelectionSource) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const ids = sourceIds.current!;
-        if (!ids.has(selectionSource)) {
-            ids.set(selectionSource, `source-${counter.current++}`);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return ids.get(selectionSource)!;
-    }, []);
 }

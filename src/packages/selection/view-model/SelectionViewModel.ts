@@ -1,13 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { computed, effect, reactive, watchValue } from "@conterra/reactivity-core";
-import { createLogger, destroyResources, isAbortError, Resource } from "@open-pioneer/core";
+import { computed, effect, linked, reactive, watchValue } from "@conterra/reactivity-core";
+import {
+    createLogger,
+    destroyResources,
+    isAbortError,
+    Resource,
+    shallowEqual
+} from "@open-pioneer/core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { Extent } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { createElement } from "react";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
-import { SelectionTooltipContent } from "../SelectionTooltipContent";
+import { SelectionTooltipContent } from "../ui/SelectionTooltipContent";
 import { ExtentSelection } from "./ExtentSelection";
 
 const LOG = createLogger("selection:SelectionViewModel");
@@ -37,10 +43,21 @@ export class SelectionViewModel {
     #onError: () => void;
 
     /** The set of available selection sources. */
-    #sources = reactive<SelectionSource[]>([]);
+    #sources = reactive<SelectionSource[]>([], { equal: shallowEqual });
 
     /** The currently selected selection source (free choice within this.#sources). */
-    #currentSource = reactive<SelectionSource>();
+    #currentSource = linked(
+        () => this.#sources.value,
+        (
+            sources: SelectionSource[],
+            previousSource: SelectionSource | undefined
+        ): SelectionSource | undefined => {
+            if (previousSource && sources.includes(previousSource)) {
+                return previousSource;
+            }
+            return undefined;
+        }
+    );
     #active = computed(() => {
         const source = this.#currentSource.value;
         return !!source && getSourceStatus(source).kind === "available";
@@ -90,17 +107,6 @@ export class SelectionViewModel {
 
     set sources(newSources: SelectionSource[]) {
         this.#sources.value = newSources;
-
-        // Reset current source if necessary
-        const oldSource = this.#currentSource.value;
-        if (oldSource) {
-            if (!newSources.includes(oldSource)) {
-                // Reset to undefined if the current source is not in the list of sources
-                this.#currentSource.value = undefined;
-            }
-        } else {
-            this.#currentSource.value = newSources[0];
-        }
     }
 
     get currentSource(): SelectionSource | undefined {
