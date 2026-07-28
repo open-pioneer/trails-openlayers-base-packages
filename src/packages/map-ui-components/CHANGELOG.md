@@ -1,5 +1,16 @@
 # @open-pioneer/map-ui-components
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -46,6 +57,7 @@
 
 - 66179bc: Update to core-packages v4.0.0
 - 738390e: **Breaking:** Rename `<ToolButton />` props for consistency with Chakra naming conventions:
+
     - `isLoading` (old) --> `loading` (new)
     - `isActive` (old) --> `active` (new)
     - `isDisabled` (old) --> `disabled` (new)

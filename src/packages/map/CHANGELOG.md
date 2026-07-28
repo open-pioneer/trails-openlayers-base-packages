@@ -1,5 +1,33 @@
 # @open-pioneer/map
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- 690a892: A layer's loadState is now a derived from three different channels:
+
+    - source — the OpenLayers source state (undefined/loading/ready/error).
+    - health — the result of the optional healthCheck (run once on attach).
+    - metadata — the result of a layer's own capabilities request (if any).
+
+    Additionally, a new property `loadError` has been added to the layer class.
+
+- e4b47f1: `useMapModel` now prints an error message if the map model could not be created.
+  This error was previously returned and was easy to silently ignore.
+
+    Use the option `quiet: true` to suppress this error message.
+
+- c9b3ced: Provide reactive rotation in MapModel
+- 690a892: WMS Layer: add validation that configured sublayers actually exist in the service's capabilities.
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- 078bef5: Use private JavaScript properties (#) instead of TypeScript keyword.
+- b58a50f: Use new `shallowEqual` function to compare attribution arrays.
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -16,6 +44,7 @@
 - 73453af: Update OpenLayers to 10.9.0
 - fcbd505: Sanitize HTML used for layer attributions.
 - 33ab02f: Move highlight methods to `mapModel.highlights`.
+
     - `mapModel.highlight()` -> `mapModel.highlights.add()`
     - `mapModel.highlightAndZoom()` -> `mapModel.highlights.addAndZoom()`
     - `mapModel.removeHighlights()` -> `mapModel.highlights.clear()`
@@ -336,6 +365,7 @@
 - 138d85b: Update core packages to 4.2.0
 - 4f1e7bd: The internal constant `TOPMOST_LAYER_Z` has been removed.
   To configure a layer that is always on top:
+
     - Create a layer using the `LayerFactory`
     - Add it to the map model and specify the `at: "topmost"` option
 
@@ -351,6 +381,7 @@
 
 - 66179bc: Update to core-packages v4.0.0
 - acd5115: **Breaking:** Remove the following hooks, which were deprecated since version 0.8.0:
+
     - useView
     - useProjection
     - useResolution
@@ -603,6 +634,7 @@
     `layer.children` is either an alias of `layer.sublayers` (if the layer has sublayers), `layer.layers` (if it's a `GroupLayer`) or undefined, if the layer does not have any children.
 
 - d8337a6: The following hooks are deprecated and will be removed in a future release:
+
     - `useView`
     - `useProjection`
     - `useResolution`
@@ -620,6 +652,7 @@
     ```
 
 - 2fa8020: Update trails core package dependencies.
+
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
@@ -632,34 +665,34 @@
 
     ```js
     const olLayer1 = new TileLayer({
-        source: new OSM()
+      source: new OSM(),
     });
     const olLayer2 = new TileLayer({
-        source: new BkgTopPlusOpen()
+      source: new BkgTopPlusOpen(),
     });
 
     // Create group layer with nested sub group
     const group = new GroupLayer({
-        id: "group",
-        title: "a group layer",
-        layers: [
+      id: "group",
+      title: "a group layer",
+      layers: [
+        new SimpleLayer({
+          id: "member",
+          title: "group member",
+          olLayer: olLayer1,
+        }),
+        new GroupLayer({
+          id: "subgroup",
+          title: "a nested group layer",
+          layers: [
             new SimpleLayer({
-                id: "member",
-                title: "group member",
-                olLayer: olLayer1
+              id: "submember",
+              title: "subgroup member",
+              olLayer: olLayer2,
             }),
-            new GroupLayer({
-                id: "subgroup",
-                title: "a nested group layer",
-                layers: [
-                    new SimpleLayer({
-                        id: "submember",
-                        title: "subgroup member",
-                        olLayer: olLayer2
-                    })
-                ]
-            })
-        ]
+          ],
+        }),
+      ],
     });
 
     const childLayers: GroupLayerCollection = group.layers; // Access child layers
@@ -669,6 +702,7 @@
     Sublayers (e.g. `WMSSublayer`) cannot be added to a group directly.
 
 - d8337a6: Provide new reactive properties on the `MapModel` type.
+
     - `olView` (-> `olMap.getView()`)
     - `projection` (-> `olMap.getView().getProjection()`)
     - `resolution` (-> `olMap.getView().getResolution()`)
@@ -700,6 +734,7 @@
     Two type guards have been implemented that allow to check if a layer instance is a `Layer` or `Sublayer`: `isLayer()`and `isSublayer()` (see example below).
 
     The following `type` attribute values have been implemented at the layers:
+
     - SimpleLayer: `simple`
     - WMSLayer: `wms`
     - WMSSubLayer: `wms-sublayer`

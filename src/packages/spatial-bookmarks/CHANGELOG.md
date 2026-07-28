@@ -1,5 +1,17 @@
 # @open-pioneer/spatial-bookmarks
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- 078bef5: Use private JavaScript properties (#) instead of TypeScript keyword.
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -71,10 +83,12 @@
 - 0137b05: Fix a11y issues.
 
     **Improvements:**
+
     - add descriptive `aria-label` to each list item to make it clearer for screen reader users that list item is an interactive element
     - use title in `aria-label` of deleteOne button to provide more context for screen reader users
 
     **Known issues:**
+
     - screen readers read both tooltip content and aria label of deleteOne Button
     - descriptive `aria-label` for list items is a workaround
     - ideally interactive elements should not be nested (deleteOne Button is currently a child of list item)
