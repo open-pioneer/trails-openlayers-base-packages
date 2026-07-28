@@ -24,4 +24,4 @@
 "@open-pioneer/toc": patch
 ---
 
-Migrated from eslint to oxlint.
+Migrated from eslint to oxlint and from prettier to oxfmt.
