@@ -19,6 +19,7 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { MapModel } from "@open-pioneer/map/model/MapModel";
 import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
+import { Pixel } from "ol/pixel";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -104,19 +105,13 @@ export class PrintingController {
     }
 
     #drawPrintArea(renderEvent: RenderEvent) {
-        const rectangle = this.#getPixelBounds();
-        if (!rectangle) return;
+        const printArea = this.#getPixelBounds();
+        if (!printArea) return;
 
         const context = renderEvent.context;
         if (!context || !(context instanceof CanvasRenderingContext2D)) return;
 
         context.reset();
-
-        const minx = rectangle[0];
-        const miny = rectangle[1];
-        const maxx = rectangle[2];
-        const maxy = rectangle[3];
-        if (!minx || !miny || !maxx || !maxy) return;
 
         const mapSize = this.#olMap.getSize();
         if (!mapSize || !mapSize[0] || !mapSize[1]) return;
@@ -129,16 +124,11 @@ export class PrintingController {
         context.beginPath();
 
         // outside polygon, clockwise
-        context.moveTo(...(getRenderPixel(renderEvent, [0, 0]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [mapWidth, 0]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [mapWidth, mapHeight]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [0, mapHeight]) as [number, number]));
+        const outer = [0, 0, mapWidth, mapHeight];
+        this.#drawCanvasRectangle(context, renderEvent, outer);
 
         // inner polygon, counter-clockwise
-        context.moveTo(...(getRenderPixel(renderEvent, [minx, miny]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [minx, maxy]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [maxx, maxy]) as [number, number]));
-        context.lineTo(...(getRenderPixel(renderEvent, [maxx, miny]) as [number, number]));
+        this.#drawCanvasRectangle(context, renderEvent, printArea, true);
 
         context.closePath();
 
@@ -146,6 +136,29 @@ export class PrintingController {
         context.fill();
 
         context.restore();
+    }
+
+    #drawCanvasRectangle(context: CanvasRenderingContext2D, renderEvent: RenderEvent, pixelExtent: number[], reverse: boolean = false) {
+        // start in top left edge
+        context.moveTo(
+            ...(getRenderPixel(renderEvent, [pixelExtent[0], pixelExtent[1]] as Pixel) as [
+                number,
+                number
+            ])
+        );
+
+        const points = [
+            [pixelExtent[2], pixelExtent[1]],
+            [pixelExtent[2], pixelExtent[3]],
+            [pixelExtent[0], pixelExtent[3]]
+        ];
+        if (reverse) points.reverse(); // anti-clockwise drawing
+
+        for (const point of points) {
+            context.lineTo(
+                ...(getRenderPixel(renderEvent, point as Pixel) as [number, number])
+            );
+        }
     }
 
     #getPixelBounds() {
