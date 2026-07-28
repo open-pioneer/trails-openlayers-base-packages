@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Box,
     Collapsible,
@@ -13,20 +14,20 @@ import {
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
+import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
+import type { IconType } from "react-icons/lib";
+import { LuChevronDown, LuChevronRight, LuInfo, LuTriangleAlert } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
+import { displayItemForLayer } from "../../utils/displayLayer";
 import { slug } from "../../utils/slug";
+import { LayerTocAttributes, ListMode } from "../Toc";
 import { useChildLayers, useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { LayerTocAttributes, ListMode } from "../Toc";
-import { displayItemForLayer } from "../../utils/displayLayer";
-import type { IconType } from "react-icons/lib";
 
 /**
  * Renders a single layer as a list item.

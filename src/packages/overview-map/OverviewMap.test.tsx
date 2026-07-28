@@ -4,9 +4,9 @@
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import OlMap from "ol/Map";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import TileLayer from "ol/layer/Tile";
+import OlMap from "ol/Map";
 import OSM from "ol/source/OSM";
 import { expect, it } from "vitest";
 import { OverviewMap } from "./OverviewMap";
@@ -105,7 +105,8 @@ async function waitForOverviewMap() {
 function getControl(olMap: OlMap) {
     const controls = olMap.getControls().getArray();
     return controls.find((control) => control instanceof OlOverviewMap) as
-        OlOverviewMap | undefined;
+        | OlOverviewMap
+        | undefined;
 }
 
 function getTileLayer() {

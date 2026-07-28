@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
@@ -224,7 +225,7 @@ function useTocModel(props: TocProps): TocModel {
 
     // Sync props to model
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         tocModelRef.current!.updateOptions(
             createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
         );

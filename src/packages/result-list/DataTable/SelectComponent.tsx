@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { chakra, Checkbox } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";

@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import Feature from "ol/Feature";
 import FeatureFormat from "ol/format/Feature";
 import { sourceId } from "open-pioneer:source-info";
+// oxlint-disable-next-line no-unused-vars
 import { type NextStrategy } from "./NextStrategy";
 import { FeatureResponse, getNextLink, queryFeatures } from "./requestUtils";
 
@@ -70,6 +72,7 @@ export class OffsetStrategy {
                 startOffset += pageSize;
             }
 
+            // oxlint-disable-next-line no-await-in-loop
             const { features, numberMatched, nextLink } = await this.#loadPages(urls);
             featureChunks.push(features);
             currentUrl = nextLink ? new URL(nextLink) : undefined;

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
 import GeoJSON from "ol/format/GeoJSON";
 import { afterEach, assert, describe, expect, it, vi } from "vitest";
@@ -80,8 +81,8 @@ describe("query features", () => {
         const testUrl = new URL("https://url-to-service.de/items?f=json");
 
         const featureResponse = await queryFeatures(testUrl, new GeoJSON(), httpService, undefined);
-        expect(httpService.fetch).toHaveBeenCalledWith!(testUrl, requestInit);
-        const respondedCoordinates = (featureResponse.features[0]?.getGeometry() as any)
+        expect(httpService.fetch).toHaveBeenCalledWith(testUrl, requestInit);
+        const respondedCoordinates = (featureResponse.features[0]!.getGeometry() as any)
             .flatCoordinates;
         expect(respondedCoordinates).toStrictEqual([5752928, 395388]);
         expect(featureResponse.nextLink).toStrictEqual(undefined);

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { approximatelyEquals, containsExtent } from "ol/extent";
 import { expect, it } from "vitest";
 import { calculateBufferedExtent } from "./geometry-utils";

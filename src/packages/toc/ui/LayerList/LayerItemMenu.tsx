@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { CloseButton, Icon, IconButton, Popover, Portal, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
@@ -36,7 +37,7 @@ export function LayerItemMenu(props: {
                             overflowY="auto"
                             maxHeight="400"
                         >
-                            <Popover.Arrow></Popover.Arrow>
+                            <Popover.Arrow />
                             <Popover.Body>
                                 <Popover.Title className="toc-layer-item-details-title">
                                     {title}

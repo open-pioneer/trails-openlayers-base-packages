@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import type { HighlightOptions } from "@open-pioneer/map";
 import type { Options as OlDrawOptions } from "ol/interaction/Draw";
-import type { Options as OlSelectOptions } from "ol/interaction/Select";
 import type { Options as OlModifyOptions } from "ol/interaction/Modify";
+import type { Options as OlSelectOptions } from "ol/interaction/Select";
 import type { Options as OlSnapOptions } from "ol/interaction/Snap";
 
 /**

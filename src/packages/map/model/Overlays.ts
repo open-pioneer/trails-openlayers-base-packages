@@ -1,10 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { Map as OlMap, Overlay as OlOverlay } from "ol";
-import { MapModel } from "./MapModel";
-import { Coordinate } from "ol/coordinate";
-import { ReactNode } from "react";
 import {
     batch,
     reactive,
@@ -13,13 +9,17 @@ import {
     synchronized,
     watchValue
 } from "@conterra/reactivity-core";
-import { v4 as uuid4v } from "uuid";
 import { createLogger, destroyResources, Resource } from "@open-pioneer/core";
+import { Map as OlMap, Overlay as OlOverlay } from "ol";
+import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { Options } from "ol/Overlay";
 import { sourceId } from "open-pioneer:source-info";
+import { ReactNode } from "react";
+import { v4 as uuid4v } from "uuid";
 import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
+import { MapModel } from "./MapModel";
 
 export const REGISTER_OVERLAY = Symbol("REGISTER_OVERLAY");
 export const UNREGISTER_OVERLAY = Symbol("UNREGISTER_OVERLAY");

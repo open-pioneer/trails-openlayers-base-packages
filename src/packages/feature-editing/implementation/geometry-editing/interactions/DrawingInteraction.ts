@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { destroyResource } from "@open-pioneer/core";
+import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
+import type { Feature } from "ol";
+import type { EventsKey } from "ol/events";
+import type { Type as GeometryType } from "ol/geom/Geometry";
 import { Draw } from "ol/interaction";
 import { Vector as VectorLayer } from "ol/layer";
 import { unByKey } from "ol/Observable";
 import { Vector as VectorSource } from "ol/source";
-import type { Feature } from "ol";
-import type { EventsKey } from "ol/events";
-import type { Type as GeometryType } from "ol/geom/Geometry";
-import { BaseInteraction } from "./BaseInteraction";
-import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
-import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
+import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import { TooltipMessages } from "../controller/EditingController";
-import { destroyResource } from "@open-pioneer/core";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface DrawingParameters {
     readonly geometryType: GeometryType;

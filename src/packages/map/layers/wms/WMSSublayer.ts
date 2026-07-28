@@ -1,7 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModel } from "../../model/MapModel";
+import {
+    assertInternalConstructor,
+    INTERNAL_CONSTRUCTOR_TAG,
+    InternalConstructorTag
+} from "../../utils/InternalConstructorTag";
 import type { LayerLoadInfo, LayerLoadState } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
@@ -11,11 +17,6 @@ import {
     GET_RAW_SUBLAYERS,
     SET_LEGEND
 } from "../shared/internals";
-import {
-    assertInternalConstructor,
-    INTERNAL_CONSTRUCTOR_TAG,
-    InternalConstructorTag
-} from "../../utils/InternalConstructorTag";
 import { LayerBaseConfig } from "../shared/LayerConfig";
 import { SublayerBaseType } from "../shared/SublayerBaseType";
 import { SublayersCollection } from "../shared/SublayersCollection";

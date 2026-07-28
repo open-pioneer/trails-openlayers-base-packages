@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Box,
     Button,
@@ -16,10 +17,10 @@ import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
-import { MAP_ID } from "./MapConfigProviderImpl";
 import { Fill, Icon, Stroke, Style } from "ol/style";
-import mapMarkerUrl2 from "./mapMarker2.png?url";
 import { useRef, useState } from "react";
+import { MAP_ID } from "./MapConfigProviderImpl";
+import mapMarkerUrl2 from "./mapMarker2.png?url";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
@@ -74,6 +75,7 @@ export function AppUI() {
 
     function handleClick(map: MapModel | undefined, resultGeometries: Geometry[], id: string) {
         if (map && !highlightMap.current.has(id)) {
+            // oxlint-disable-next-line oxc/branches-sharing-code
             if (ownStyle) {
                 const highlight = map.highlights.addAndZoom(resultGeometries, {
                     highlightStyle: ownHighlightStyle,

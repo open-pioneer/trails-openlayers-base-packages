@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     computed,
     constant,
@@ -10,9 +11,9 @@ import {
 } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import OlSource from "ol/source/Source";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
+import OlSource from "ol/source/Source";
 import { sourceId } from "open-pioneer:source-info";
 import { MapModel } from "../model/MapModel";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
@@ -27,6 +28,7 @@ import {
     SET_VISIBLE
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
 

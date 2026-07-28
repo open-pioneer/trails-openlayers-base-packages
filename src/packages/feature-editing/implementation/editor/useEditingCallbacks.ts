@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger } from "@open-pioneer/core";
 import type { MapModel } from "@open-pioneer/map";
 import type { NotificationService } from "@open-pioneer/notifier";
+import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useMemo } from "react";
-import type { FeatureWriter, StorageResult } from "../../api/model/FeatureWriter";
 import type { EditingStep, InitialStep } from "../../api/model/EditingStep";
-import { useEvent } from "@open-pioneer/react-utils";
+import type { FeatureWriter, StorageResult } from "../../api/model/FeatureWriter";
 
 const LOG = createLogger(sourceId);
 
@@ -21,6 +22,7 @@ export interface EditingCallbacks {
     readonly onCancel: () => void;
 }
 
+// oxlint-disable-next-line max-params
 export function useEditingCallbacks(
     mapModel: MapModel,
     editingStep: EditingStep,

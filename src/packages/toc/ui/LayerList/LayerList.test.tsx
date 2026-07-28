@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer } from "@open-pioneer/map";
 import {
@@ -327,7 +328,9 @@ it("changes the description popover's visibility when toggling the button", asyn
     }
 
     //initially not there because of lazy mounting of popover
-    expect(() => screen.getByText(layer.description)).toThrow();
+    expect(() => screen.getByText(layer.description)).toThrow(
+        "Unable to find an element with the text: Description 1. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible."
+    );
 
     // open the popover
     fireEvent.click(button);
@@ -586,7 +589,7 @@ it("should collapse and expand list items", async () => {
     expect(collapsibleList.getAttribute("data-state")).toBe("open");
 });
 
-it("it renders collapse buttons (only) for groups", async () => {
+it("renders collapse buttons (only) for groups", async () => {
     const { group } = createGroupHierarchy();
     const { map, Wrapper } = await setup({
         layers: [

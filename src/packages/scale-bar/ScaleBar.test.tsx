@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
+import { ScaleLine } from "ol/control";
 import { expect, it } from "vitest";
 import { ScaleBar } from "./ScaleBar";
-import { setupMap } from "@open-pioneer/map-test-utils";
-import { ScaleLine } from "ol/control";
 
 it("should successfully create a scale bar component", async () => {
     const { map } = await setupMap();

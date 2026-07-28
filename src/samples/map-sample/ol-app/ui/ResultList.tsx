@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
-import { ResultList } from "@open-pioneer/result-list";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { AppModel } from "../AppModel";
 import { BaseFeature } from "@open-pioneer/map";
-import { useState, useCallback, useEffect } from "react";
-import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { ResultList, ResultListSelectionChangeEvent } from "@open-pioneer/result-list";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { useState, useCallback, useEffect } from "react";
+import { AppModel } from "../AppModel";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { computed } from "@conterra/reactivity-core";
 import { AnyLayer, isLayer, isSublayer, Layer, LayerLoadState, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { computed } from "@conterra/reactivity-core";
 import { useMemo } from "react";
 
 /** Returns the top level operational layers in render order (topmost layer first). */

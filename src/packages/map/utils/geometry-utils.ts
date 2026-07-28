@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Extent, getHeight, getWidth } from "ol/extent";
 
 const DEFAULT_BUFFER_FACTOR = 1.2;

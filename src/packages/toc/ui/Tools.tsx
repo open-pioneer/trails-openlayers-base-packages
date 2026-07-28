@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, IconButton, Menu, Portal, Icon } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo, useId } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
 import { TocModel, useTocModel } from "../model";
 import { ToolsConfig } from "./Toc";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 
 export interface ToolsProps extends ToolsConfig {
     map: MapModel;

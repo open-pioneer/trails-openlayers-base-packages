@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { $, ProcessOutput } from "zx";
+
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { $, ProcessOutput } from "zx";
 
 const RELEASE_PACKAGE_NAME = "@open-pioneer/map"; // candidate for checking the new package version for root
 const ROOT_PACKAGE_JSON_PATH = resolve("package.json");
@@ -35,7 +36,8 @@ async function writeRootVersion(version: string): Promise<void> {
         rootPackageJson = JSON.parse(rawRootPackageJson) as Record<string, unknown>;
     } catch (error) {
         throw new Error(
-            `Root package.json parsing error: ${error instanceof Error ? error.message : String(error)}`
+            `Root package.json parsing error: ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error }
         );
     }
 

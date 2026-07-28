@@ -1,21 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it, vi } from "vitest";
-import VectorLayer from "ol/layer/Vector";
-import OlMap from "ol/Map";
-import Draw from "ol/interaction/Draw";
-import { FlatStyle } from "ol/style/flat";
+
+import { constant } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, waitFor } from "@testing-library/react";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
-import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
+import { Interaction } from "ol/interaction";
+import Draw from "ol/interaction/Draw";
+import VectorLayer from "ol/layer/Vector";
+import OlMap from "ol/Map";
 import VectorSource from "ol/source/Vector";
-import { constant } from "@conterra/reactivity-core";
+import { FlatStyle } from "ol/style/flat";
+import { describe, expect, it, vi } from "vitest";
+import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 
 // Flat style parsing doesn't work in tests (node, happy-dom, etc.)
 vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
@@ -195,7 +196,7 @@ describe("during create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should contain a geometry after starting create editing workflow ", async () => {
+    it("should contain a geometry after starting create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const draw = workflow.getDrawInteraction();

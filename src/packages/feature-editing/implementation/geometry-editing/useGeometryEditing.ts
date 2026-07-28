@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { MapModelProps } from "@open-pioneer/map";
-import { useMapModelValue, type LayerFactory, type MapModel } from "@open-pioneer/map";
+
+import {
+    useMapModelValue,
+    type LayerFactory,
+    type MapModel,
+    type MapModelProps
+} from "@open-pioneer/map";
 import type { Vector as VectorSource } from "ol/source";
 import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useMemo } from "react";

@@ -1,20 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { nextTick } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer } from "@open-pioneer/map-test-utils";
 import ImageLayer from "ol/layer/Image";
 import { get as getProjection } from "ol/proj";
+import { Source } from "ol/source";
 import ImageWMS from "ol/source/ImageWMS";
+import { ViewStateLayerStateExtent } from "ol/View";
 import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
-import { ViewStateLayerStateExtent } from "ol/View";
-import { Source } from "ol/source";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
 
 const WMS_NW_DGK5_CAPAS = readFileSync(
     resolve(import.meta.dirname, "./wms/test-data/wms_nw_dgk5.xml"),
@@ -325,7 +326,7 @@ describe("sublayers", () => {
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
 
-    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop ", () => {
+    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop", () => {
         const { layer } = createLayer({
             title: "Layer",
             url: SERVICE_URL,

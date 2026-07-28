@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { SearchSource, SearchResult } from "./api";
 
 interface Feature {
@@ -85,7 +86,7 @@ const request = async (url: string, signal?: AbortSignal | undefined): Promise<F
         return result.features;
     } catch (error) {
         // return [];
-        throw new Error("Request failed: " + error);
+        throw new Error("Request failed: " + error, { cause: error });
     }
 };
 export class GeoSearchSource implements SearchSource {

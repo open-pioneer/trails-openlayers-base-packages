@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     ColorPicker,
     HStack,
@@ -8,8 +9,8 @@ import {
     type ColorPickerValueChangeDetails
 } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
-import { LuCheck } from "react-icons/lu";
 import { useMemo, type ReactElement } from "react";
+import { LuCheck } from "react-icons/lu";
 import type { ColorPickerConfig } from "../../../api/fields/standardFieldConfigs";
 
 interface ColorPickerControlProps {
