@@ -15,6 +15,8 @@ jobs:
     name: Wait for checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Skip PRs with merge conflicts.
+    if: github.event.pull_request.mergeable != false
     steps:
       # This job simply waits for the test-and-build checks to complete.
       # test-and-build runs on the pull_request event (for both same-repo and fork PRs);

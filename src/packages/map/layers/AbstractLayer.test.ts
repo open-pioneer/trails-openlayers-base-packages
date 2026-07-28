@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { watch, watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
+import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import Layer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
+import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { MapModel } from "../model/MapModel";
-import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
-import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
 

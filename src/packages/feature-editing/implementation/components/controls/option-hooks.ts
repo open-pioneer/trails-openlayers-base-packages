@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     useListCollection,
     useFilter,
@@ -19,7 +20,9 @@ export interface OptionControlProps<T = SelectConfig | ComboBoxConfig> {
 }
 
 type ValueChangeDetails =
-    SelectValueChangeDetails | ComboboxValueChangeDetails | RadioGroupValueChangeDetails;
+    | SelectValueChangeDetails
+    | ComboboxValueChangeDetails
+    | RadioGroupValueChangeDetails;
 
 export function useOptionProps({ value, field, onChange }: OptionControlProps) {
     const selectedValue = useMemo(() => (value != undefined ? [value.toString()] : []), [value]);

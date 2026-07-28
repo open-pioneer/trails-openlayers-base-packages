@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Combobox, Highlight, HStack, ListCollection, Span } from "@chakra-ui/react";
+import { useIntl } from "open-pioneer:react-hooks";
 import { memo } from "react";
 import { SearchOption, SearchResultsState } from "./useSearchState";
-import { useIntl } from "open-pioneer:react-hooks";
 
 export interface SearchResultsProps {
     collection: ListCollection<SearchOption>;
@@ -30,9 +31,9 @@ export const SearchResults = memo(function SearchResults(props: SearchResultsPro
 
 const SearchResultList = memo(function SearchResults(props: SearchResultsProps) {
     const { collection, input, results } = props;
-    return collection.group().map(([groupId, groupOptions], key) => {
+    return collection.group().map(([groupId, groupOptions]) => {
         return (
-            <Combobox.ItemGroup key={key}>
+            <Combobox.ItemGroup key={groupId}>
                 <Combobox.ItemGroupLabel
                     key={groupId}
                     backgroundColor="colorPalette.100"
@@ -40,11 +41,11 @@ const SearchResultList = memo(function SearchResults(props: SearchResultsProps) 
                 >
                     {groupOptions[0]?.group.label}
                 </Combobox.ItemGroupLabel>
-                {groupOptions.map((searchResult, key) => {
+                {groupOptions.map((option) => {
                     return (
                         <Combobox.Item
-                            key={key}
-                            item={searchResult}
+                            key={option.result.id}
+                            item={option}
                             css={{
                                 _checked: {
                                     backgroundColor: "colorPalette.500",
@@ -57,7 +58,7 @@ const SearchResultList = memo(function SearchResults(props: SearchResultsProps) 
                         >
                             <Combobox.ItemText>
                                 <Highlight ignoreCase query={input} styles={{ fontWeight: "bold" }}>
-                                    {searchResult.label}
+                                    {option.label}
                                 </Highlight>
                             </Combobox.ItemText>
                         </Combobox.Item>

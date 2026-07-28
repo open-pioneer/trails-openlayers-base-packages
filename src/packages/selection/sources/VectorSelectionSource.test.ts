@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { effect, reactive } from "@conterra/reactivity-core";
 import { MapModel } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { Feature } from "ol";
 import { Coordinate } from "ol/coordinate";
 import { Extent } from "ol/extent";
@@ -13,7 +15,6 @@ import VectorSource from "ol/source/Vector";
 import { describe, expect, it } from "vitest";
 import { SelectionOptions, SelectionResult } from "../api";
 import { VectorLayerSelectionSourceImpl } from "./VectorSelectionSource";
-import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 const NOT_VISIBLE_REASON = "Layer not visible";
 

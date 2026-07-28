@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, DataList, Flex, Image, Link, Tabs, Text } from "@chakra-ui/react";
 import { MapModel } from "@open-pioneer/map";
 import { fromLonLat } from "ol/proj";

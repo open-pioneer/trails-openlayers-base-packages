@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
 import { Projection } from "ol/proj";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { OgcFeatureVectorSourceOptions } from "../api";
 import { CollectionMetadata } from "./Metadata";
 import { OgcFeaturesVectorSource } from "./OgcFeaturesVectorSource";
-import { OgcFeatureVectorSourceOptions } from "../api";
 
 const BASE_URL = "https://ogc-api.example.com";
 const COLLECTION_ID = "test-collection";

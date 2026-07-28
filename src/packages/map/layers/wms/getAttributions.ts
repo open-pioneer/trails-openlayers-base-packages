@@ -6,7 +6,7 @@
  *
  * @param capabilities Parsed service capabilities
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable @typescript-eslint/no-explicit-any */
 export function getAttributions(capabilities: Record<string, any>): string | undefined {
     const service = capabilities?.Service;
     if (!service) {

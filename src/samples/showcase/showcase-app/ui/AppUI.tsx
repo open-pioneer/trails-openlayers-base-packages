@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { ApplicationContext } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode, useEffect, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
-import { ApplicationContext } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");

@@ -1,12 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { deprecated } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayerFactory } from "../LayerFactory";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/LayerConfig";
 import { LayerConstructor, LayerDependencies } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 
 /**
  * Options to construct a simple layer.
@@ -82,7 +84,7 @@ export class SimpleLayer extends AbstractLayer {
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
-// eslint-disable-next-line no-constant-condition
+// oxlint-disable-next-line no-constant-condition
 if (false) {
     const check: LayerConstructor<SimpleLayerConfig, SimpleLayer> = SimpleLayer;
     void check;

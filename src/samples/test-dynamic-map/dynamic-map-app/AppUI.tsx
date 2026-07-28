@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import {
     DefaultMapProvider,
@@ -11,10 +12,10 @@ import {
     useMapModelValue
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Toc } from "@open-pioneer/toc";
-import { MAP_ID } from "./MapConfigProviderImpl";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { Toc } from "@open-pioneer/toc";
 import { useEffect, useState } from "react";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
@@ -56,9 +57,9 @@ function AppReady() {
                                     following buttons:
                                 </Text>
                                 <VStack>
-                                    <LayerToggleButton layerId="kitas"></LayerToggleButton>
-                                    <LayerToggleButton layerId="schools"></LayerToggleButton>
-                                    <LayerToggleButton layerId="transport"></LayerToggleButton>
+                                    <LayerToggleButton layerId="kitas" />
+                                    <LayerToggleButton layerId="schools" />
+                                    <LayerToggleButton layerId="transport" />
                                 </VStack>
                             </VStack>
                         </MapAnchor>
@@ -87,7 +88,7 @@ function AppReady() {
                             </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
-                            <Flex role="toolbar" direction="column" gap={1} padding={1}></Flex>
+                            <Flex role="toolbar" direction="column" gap={1} padding={1} />
                         </MapAnchor>
                     </MapContainer>
                 </Flex>

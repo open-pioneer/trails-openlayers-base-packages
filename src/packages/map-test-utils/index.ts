@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { constant, watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
@@ -230,7 +231,7 @@ export function createTestLayer(
     mapOptions?: Pick<SimpleMapOptions, "fetch">
 ): SimpleLayer;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 export function createTestLayer(config?: any, mapOptions?: Pick<SimpleMapOptions, "fetch">): Layer {
     // Basic case: If no config is given, use SimpleLayer
     if (!config) {

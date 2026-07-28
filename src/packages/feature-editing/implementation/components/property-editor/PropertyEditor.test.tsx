@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import type { Layer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
+import { disableReactActWarnings } from "test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FormTemplateContext } from "../../../api/editor/editor";
 import type { ModificationStep } from "../../../api/model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
-import { disableReactActWarnings } from "test-utils";
 
 type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
 
@@ -485,7 +486,7 @@ function renderEditor(options: {
                 callbacks={createCallbacks(callbacks)}
                 templates={templates}
                 resolveFormTemplate={resolveFormTemplate}
-            ></PropertyEditor>
+            />
         </PackageContextProvider>
     );
 }
@@ -520,10 +521,7 @@ function createTemplateWithoutRequiredField(): DeclarativeFeatureTemplate {
         ...template,
         fields: template.fields.map((field) => {
             if (field.propertyName === "name") {
-                return {
-                    ...field,
-                    isRequired: false
-                };
+                return Object.assign(field, { isRequired: false });
             }
 
             return field;

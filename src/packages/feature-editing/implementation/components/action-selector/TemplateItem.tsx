@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HStack, Span, Table, Text } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useId, type KeyboardEvent, type ReactElement, type ReactNode } from "react";

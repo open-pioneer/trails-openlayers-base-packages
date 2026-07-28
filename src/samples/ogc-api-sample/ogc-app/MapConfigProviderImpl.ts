@@ -1,21 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     MapConfig,
     MapConfigProvider,
     MapConfigProviderOptions,
     SimpleLayer
 } from "@open-pioneer/map";
-import TileLayer from "ol/layer/Tile";
-import VectorLayer from "ol/layer/Vector";
-import OSM from "ol/source/OSM";
-import { Circle, Fill, Stroke, Style } from "ol/style";
-import { MapboxVectorLayer } from "ol-mapbox-style";
-import { MVT } from "ol/format";
-import VectorTileLayer from "ol/layer/VectorTile";
-import VectorTileSource from "ol/source/VectorTile";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { ServiceOptions } from "@open-pioneer/runtime";
+import { MapboxVectorLayer } from "ol-mapbox-style";
+import { MVT } from "ol/format";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import VectorTileLayer from "ol/layer/VectorTile";
+import OSM from "ol/source/OSM";
+import VectorTileSource from "ol/source/VectorTile";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 
 export const MAP_ID = "main";
 

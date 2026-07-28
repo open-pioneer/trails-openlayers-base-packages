@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, it, expect, vi, beforeEach } from "vitest";
+
+import { nextTick } from "@conterra/reactivity-core";
 import { Feature } from "ol";
 import { LineString, Polygon, Point } from "ol/geom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { DrawingSession, type DrawingActionHandler } from "./DrawingSession";
-import { nextTick } from "@conterra/reactivity-core";
 
 // NOTE: The last coordinate is the "active" coordinate that is being placed by the user.
 let session: DrawingSession;

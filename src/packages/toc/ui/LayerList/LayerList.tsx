@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { List, ListRootProps, Text } from "@chakra-ui/react";
 import { AnyLayer, MapModel, Layer } from "@open-pioneer/map";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useMemo } from "react";
-import { LayerItem } from "./LayerItem";
-import { useLayers } from "./hooks";
 import { displayItemForLayer } from "../../utils/displayLayer";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { useLayers } from "./hooks";
+import { LayerItem } from "./LayerItem";
 
 interface TopLevelLayerListProps {
     map: MapModel;

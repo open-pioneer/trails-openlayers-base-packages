@@ -1,12 +1,13 @@
 {
     "name": "editing-app",
+    "version": "0.0.1",
     "private": true,
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/feature-editing": "workspace:^",
-        "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/scale-bar": "workspace:^",
@@ -15,6 +16,5 @@
         "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"
-    },
-    "version": "0.0.1"
+    }
 }

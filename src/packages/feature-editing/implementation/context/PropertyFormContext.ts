@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     computed,
     reactive,
@@ -134,11 +135,11 @@ export class DeclarativeFormContext extends BaseFormContext {
         // Fallback/default validation for builtin rules.
         if (field.type === "number-field") {
             const value = props[field.propertyName] as number | undefined;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (field.min != null && (!isPresent || value! < field.min)) {
                 return false;
             }
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (field.max != null && (!isPresent || value! > field.max)) {
                 return false;
             }

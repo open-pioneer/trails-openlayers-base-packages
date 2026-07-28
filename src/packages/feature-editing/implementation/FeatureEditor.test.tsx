@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { LayerFactory } from "@open-pioneer/map";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import type { NotificationService } from "@open-pioneer/notifier";

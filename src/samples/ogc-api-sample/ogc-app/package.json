@@ -1,9 +1,10 @@
 {
     "name": "ogc-api-app",
+    "version": "0.0.11",
     "private": true,
     "dependencies": {
-        "@open-pioneer/basemap-switcher": "workspace:*",
         "@chakra-ui/react": "catalog:",
+        "@open-pioneer/basemap-switcher": "workspace:*",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/map-navigation": "workspace:*",
@@ -14,6 +15,5 @@
         "ol": "catalog:",
         "ol-mapbox-style": "catalog:",
         "react": "catalog:"
-    },
-    "version": "0.0.11"
+    }
 }

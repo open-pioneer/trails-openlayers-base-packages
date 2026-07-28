@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { createManualPromise, Resource } from "@open-pioneer/core";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
@@ -11,7 +13,6 @@ import { FlatStyleLike } from "ol/style/flat";
 import { StyleLike } from "ol/style/Style";
 import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay, PRINTING_HIDE_CLASS } from "./utils";
-import { ReadonlyReactive } from "@conterra/reactivity-core";
 
 export class PrintingServiceImpl implements PrintingService {
     #intl: ReadonlyReactive<PackageIntl>;
@@ -123,7 +124,7 @@ export class PrintJob {
             minWidth: 125
         }));
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;
         if (!scaleLineElement) {
             throw new Error("Scale line does not have an element");

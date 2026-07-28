@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Button, Center, Flex, Image, List, Stack, Text, VStack } from "@chakra-ui/react";
 import { createLogger } from "@open-pioneer/core";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
@@ -141,7 +142,7 @@ function ImageOrCanvasRenderer(props: { input: string | HTMLCanvasElement }) {
     const imageContent = imageUrl && (
         <>
             <Text as="b">Image from data URL</Text>
-            <Image src={imageUrl}></Image>
+            <Image src={imageUrl} />
         </>
     );
     const canvasContent =
@@ -166,7 +167,7 @@ function RenderCanvas(props: { canvas: HTMLCanvasElement }) {
     return (
         <>
             <Text as="b">Image from canvas</Text>
-            <Box ref={container}></Box>
+            <Box ref={container} />
         </>
     );
 }
