@@ -21,6 +21,7 @@ import {
     ATTACH_TO_MAP,
     GET_DEPS,
     getLayerDependencies,
+    IS_TOPMOST_LAYER,
     LAYER_DEPS,
     LayerDependencies,
     SET_VISIBLE
@@ -194,10 +195,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#isBaseLayer;
     }
 
-    get isTopMostLayer(): boolean {
-        return this.#isTopMostLayer;
-    }
-
     /**
      * The load state of a layer.
      */
@@ -322,6 +319,11 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             `Layer '${this.id}' has not been attached to a map yet. "
             + "Use the LayerFactory to create an instance or add the layer to the map first.`
         );
+    }
+
+    /** @internal */
+    [IS_TOPMOST_LAYER](): boolean {
+        return this.#isTopMostLayer;
     }
 }
 

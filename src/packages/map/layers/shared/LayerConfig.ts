@@ -60,6 +60,12 @@ export interface LayerConfig extends LayerBaseConfig {
      */
     isBaseLayer?: boolean;
 
+    /**
+     * If `true` this layer is always displayed above all regular operational layers.
+     * A base layer cannot be a topmost layer.
+     *
+     * Defaults to `false`.
+     */
     isTopMostLayer?: boolean;
 
     /**
