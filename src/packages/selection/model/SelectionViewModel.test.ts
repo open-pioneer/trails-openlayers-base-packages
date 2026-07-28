@@ -334,7 +334,7 @@ describe("selection", () => {
         expect(onComplete).not.toHaveBeenCalled();
         expect(logSpy).toHaveBeenCalledOnce();
         expect(logSpy.mock.lastCall![0]).toMatchInlineSnapshot(
-            `"[ERROR] selection:SelectionViewModel: selection from source Broken failed"`
+            `"[ERROR] @open-pioneer/selection/model/SelectionViewModel: selection from source Broken failed"`
         );
     });
 });

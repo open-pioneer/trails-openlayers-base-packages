@@ -4,7 +4,7 @@
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { SelectionSource } from "../api";
-import { getSourceStatus } from "../view-model";
+import { getSourceStatus } from "../model";
 
 export type SimpleStatus =
     | {

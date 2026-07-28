@@ -7,7 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useMemo } from "react";
 import { SelectionResult, SelectionSource } from "../api";
-import { SelectionViewModel } from "../view-model";
+import { SelectionViewModel } from "../model";
 import { SelectionSourceItem } from "./SelectionSourceItem";
 import { useSelectionSourceId } from "./useSelectionSourceId";
 import { useSelectionViewModel } from "./useSelectionViewModel";

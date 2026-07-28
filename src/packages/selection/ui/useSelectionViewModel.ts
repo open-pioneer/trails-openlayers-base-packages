@@ -6,7 +6,7 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useEffect, useEffectEvent, useState } from "react";
 import { SelectionResult, SelectionSource } from "../api";
-import { SelectionViewModel } from "../view-model";
+import { SelectionViewModel } from "../model";
 import { SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
 
 /**

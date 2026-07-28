@@ -11,12 +11,13 @@ import {
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { Extent } from "ol/extent";
 import { Geometry } from "ol/geom";
+import { sourceId } from "open-pioneer:source-info";
 import { createElement } from "react";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
 import { SelectionTooltipContent } from "../ui/SelectionTooltipContent";
 import { ExtentSelection } from "./ExtentSelection";
 
-const LOG = createLogger("selection:SelectionViewModel");
+const LOG = createLogger(sourceId);
 
 const DEFAULT_MAX_RESULTS = 10000;
 
@@ -170,7 +171,7 @@ export class SelectionViewModel {
      */
     #initViewport(): Resource[] {
         const viewport = this.#map.olMap.getViewport();
-        const disableContextMenu = (e: PointerEvent) => {
+        const disableContextMenu = (e: MouseEvent) => {
             e.preventDefault();
             return false;
         };
@@ -226,10 +227,6 @@ export class SelectionViewModel {
             LOG.debug(`Starting selection on source '${source.label}'`);
 
             const extent = geometry.getExtent();
-            if (!extent) {
-                return undefined;
-            }
-
             const results = await this.#selectFromSource(source, extent);
             LOG.debug(`Found ${results.length} results on source '${source.label}'`);
             this.#onComplete(source, results);
