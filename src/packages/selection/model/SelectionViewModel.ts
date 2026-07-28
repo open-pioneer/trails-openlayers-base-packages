@@ -82,26 +82,29 @@ export class SelectionViewModel {
             return sources[0];
         }
     );
+
     #active = computed(() => {
         const source = this.currentSource;
         return !!source && getSourceStatus(source).kind === "available";
     });
+
     #ariaMessage = computed(() => {
+        const messages = this.#messages;
         if (!this.currentSource) {
-            return this.#messages.noSource;
+            return messages.noSource;
         }
         if (!this.isActive) {
-            return this.#messages.inactive;
+            return messages.inactive;
         }
-        return this.#messages.active;
+        return messages.active;
     });
 
     // For debugging
-    // eslint-disable-next-line no-unused-private-class-members
+    // oxlint-disable-next-line no-unused-private-class-members
     #currentSelection: ExtentSelection | undefined;
 
     // For debugging
-    // eslint-disable-next-line no-unused-private-class-members
+    // oxlint-disable-next-line no-unused-private-class-members
     #tooltip: Overlay | undefined;
 
     /** The selection request that is currently running (if any). */

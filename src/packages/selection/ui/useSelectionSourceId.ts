@@ -26,12 +26,12 @@ export function useSelectionSourceId(): GetSelectionSourceId {
             return source.id;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         const ids = sourceIds.current!;
         if (!ids.has(source)) {
             ids.set(source, `${GENERATED_ID_PREFIX}${counter.current++}`);
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         return ids.get(source)!;
     }, []);
 }

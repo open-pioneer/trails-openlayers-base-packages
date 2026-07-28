@@ -7,6 +7,7 @@ import { createTestLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { createService } from "@open-pioneer/test-utils/services";
 import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
 import { Feature } from "ol";
 import { Extent } from "ol/extent";
@@ -18,6 +19,7 @@ import { ReactNode, useState } from "react";
 import { disableReactActWarnings } from "test-utils";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { SelectionSource } from "../api";
+import { SelectionViewModelFactory } from "../model/SelectionViewModelFactory";
 import { VectorLayerSelectionSourceImpl } from "../sources/VectorSelectionSource";
 import { FakePointSelectionSource, NoStatusSelectionSource } from "../test-utils";
 import { Selection, SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
@@ -212,6 +214,9 @@ async function createSelection(options?: CreateSelectionOptions) {
             throw new Error("not implemented");
         }
     };
+    const viewModelFactory = await createService(SelectionViewModelFactory, {
+        references: { notifier }
+    });
 
     let setSources!: (sources: SelectionSource[]) => void;
     function TestParent(props: { children: (sources: SelectionSource[]) => ReactNode }) {
@@ -223,7 +228,7 @@ async function createSelection(options?: CreateSelectionOptions) {
     }
 
     render(
-        <PackageContextProvider services={{ "notifier.NotificationService": notifier }}>
+        <PackageContextProvider services={{ "selection.ViewModelFactory": viewModelFactory }}>
             <TestParent>
                 {(sources) => (
                     <Selection

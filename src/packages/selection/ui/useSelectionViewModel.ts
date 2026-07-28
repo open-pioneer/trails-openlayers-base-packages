@@ -3,11 +3,11 @@
 
 import { watchValue } from "@conterra/reactivity-core";
 import { MapModel } from "@open-pioneer/map";
-import { NotificationService } from "@open-pioneer/notifier";
-import { useIntl, useService } from "open-pioneer:react-hooks";
+import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useEffectEvent, useState } from "react";
 import { SelectionResult, SelectionSource } from "../api";
 import { SelectionViewModel } from "../model";
+import { SelectionViewModelFactory } from "../services";
 import { SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
 
 /**
@@ -22,8 +22,7 @@ export function useSelectionViewModel(
     onSelectionComplete: ((event: SelectionCompleteEvent) => void) | undefined,
     onSelectionSourceChanged: ((event: SelectionSourceChangedEvent) => void) | undefined
 ): SelectionViewModel | undefined {
-    const intl = useIntl();
-    const notifier = useService<NotificationService>("notifier.NotificationService");
+    const viewModelFactory = useService<SelectionViewModelFactory>("selection.ViewModelFactory");
     const onComplete = useEffectEvent((source: SelectionSource, results: SelectionResult[]) => {
         onSelectionComplete?.({ source, results });
     });
@@ -34,30 +33,17 @@ export function useSelectionViewModel(
     // Construct view model
     const [viewModel, setViewModel] = useState<SelectionViewModel>();
     useEffect(() => {
-        const vm = new SelectionViewModel({
+        const vm = viewModelFactory.createViewModel({
             map,
-            onComplete,
-            onError() {
-                notifier.notify({
-                    level: "error",
-                    message: intl.formatMessage({ id: "selectionFailed" })
-                });
-            },
-            messages: {
-                active: intl.formatMessage({ id: "tooltip" }),
-                inactive: intl.formatMessage({ id: "disabledTooltip" }),
-                noSource: intl.formatMessage({ id: "noSourceTooltip" })
-            }
+            onComplete
         });
-
-        // TODO: intl reactive
 
         setViewModel(vm);
         return () => {
             setViewModel(undefined);
             vm.destroy();
         };
-    }, [map, intl, notifier]);
+    }, [viewModelFactory, map]);
 
     // Sync sources --> view model
     useEffect(() => {

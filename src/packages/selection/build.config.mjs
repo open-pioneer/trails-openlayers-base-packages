@@ -7,12 +7,18 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
     services: {
+        SelectionViewModelFactory: {
+            provides: "selection.ViewModelFactory",
+            references: {
+                notifier: "notifier.NotificationService"
+            }
+        },
         VectorSelectionSourceFactory: {
             provides: "selection.VectorSelectionSourceFactory"
         }
     },
     ui: {
-        references: ["notifier.NotificationService"]
+        references: ["selection.ViewModelFactory"]
     },
     styles: "./ui/selection.css"
 });
