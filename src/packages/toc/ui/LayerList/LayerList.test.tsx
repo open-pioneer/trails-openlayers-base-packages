@@ -429,7 +429,10 @@ it("reacts to changes of the layer load state", async () => {
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
     // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
-    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot();
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot(`
+      "  Layer 1
+        layerNotAvailable"
+    `);
 
     // and back
     await act(async () => {
@@ -476,7 +479,10 @@ it("updates problem indicators when there are visibility issues", async () => {
     const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(icons).toHaveLength(1);
     // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
-    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot();
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot(`
+      "  Layer 1
+        layerNotVisible"
+    `);
 });
 
 it("supports a hierarchy of layers", async () => {
@@ -870,13 +876,19 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(groupIcon).not.toBeNull();
     expect(groupCheckbox.disabled).toBe(false);
-    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot();
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot(`
+      "  Group
+        childLayerNotAvailable"
+    `);
 
     // Child: indicator shown, checkbox disabled (direct error)
     const childIcon = childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(childIcon).not.toBeNull();
     expect(childCheckbox.disabled).toBe(true);
-    expect(getAccessibleLabel(childItem)).toMatchInlineSnapshot();
+    expect(getAccessibleLabel(childItem)).toMatchInlineSnapshot(`
+      "  Broken Child
+        layerNotAvailable"
+    `);
 
     // Recovery: both clear
     await act(async () => {
@@ -928,7 +940,11 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
 
     const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(groupIcon).not.toBeNull();
-    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot();
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot(`
+      "  Group
+          childLayerNotAvailableDetails
+            Source of layer 'child' is in error state"
+    `);
 
     await act(async () => {
         childSource.setState("ready");
@@ -944,24 +960,37 @@ function getCurrentItems(container: HTMLElement) {
 
 /** Returns only the (visible) titles of the layer list's current items. */
 function getCurrentLabels(container: HTMLElement) {
-    return getCurrentItems(container).map(
-        (item) => item.querySelector(".chakra-checkbox__label")?.textContent ?? null
-    );
+    return getCurrentItems(container).map((item) => getLabelNode(item)?.textContent);
 }
 
-/**
- * Returns the accessible label announced for the item's checkbox.
- *
- * The label is provided by a visually hidden element (referenced via `aria-labelledby`)
- * and combines the layer title with the current problem description (if any).
- */
 function getAccessibleLabel(item: HTMLElement) {
-    const checkbox = item.querySelector<HTMLInputElement>(
-        ".toc-layer-item-content input[type='checkbox']"
-    );
-    const labelId = checkbox?.getAttribute("aria-labelledby");
-    const labelElement = labelId ? item.ownerDocument.getElementById(labelId) : null;
-    return labelElement?.textContent ?? null;
+    const label = getLabelNode(item);
+    if (!label) {
+        return "";
+    }
+    return textTree(label);
+}
+
+function getLabelNode(item: HTMLElement) {
+    return item.querySelector(".chakra-checkbox__label") ?? null;
+}
+
+function textTree(node: Node, indent = ""): string {
+    const lines: string[] = [];
+    for (const child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+            const text = child.textContent?.trim();
+            if (text) {
+                lines.push(indent + text);
+            }
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+            const childTree = textTree(child, indent + "  ");
+            if (childTree) {
+                lines.push(childTree);
+            }
+        }
+    }
+    return lines.join("\n");
 }
 
 function findLayerItem(container: HTMLElement, id: string) {
