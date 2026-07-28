@@ -55,7 +55,7 @@ exports[`should successfully show legend for imageUrl configuration 1`] = `
         </p>
         <img
           alt="altLabel"
-          class="legend-item__image css-vn2kbv"
+          class="chakra-image legend-item__image css-vn2kbv"
           src="https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
         />
       </div>

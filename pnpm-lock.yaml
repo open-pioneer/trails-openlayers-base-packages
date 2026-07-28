@@ -28,47 +28,47 @@ catalogs:
       specifier: ^4.1.17
       version: 4.1.17
     '@open-pioneer/build-package-cli':
-      specifier: ^3.1.1-dev.20260623134110
-      version: 3.1.1-dev.20260623134110
+      specifier: ^3.2.1
+      version: 3.2.1
     '@open-pioneer/build-support':
-      specifier: ^3.1.1-dev.20260623134110
-      version: 3.1.1-dev.20260623134110
+      specifier: ^3.1.2
+      version: 3.1.2
     '@open-pioneer/chakra-snippets':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/changesets-release-line':
-      specifier: ^0.1.1-dev.20260623134110
-      version: 0.1.1-dev.20260623134110
+      specifier: ^0.1.2
+      version: 0.1.2
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: ^0.3.3-dev.20260623134110
-      version: 0.3.3-dev.20260623134110
+      specifier: ^0.3.4
+      version: 0.3.4
     '@open-pioneer/core':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/http':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/local-storage':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/notifier':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/react-utils':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/reactivity':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/runtime':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/test-utils':
-      specifier: 4.7.0-dev.20260624141040
-      version: 4.7.0-dev.20260624141040
+      specifier: 4.7.0-dev.20260727091735
+      version: 4.7.0-dev.20260727091735
     '@open-pioneer/vite-plugin-pioneer':
-      specifier: ^6.0.1-dev.20260623134110
-      version: 6.0.1-dev.20260623134110
+      specifier: ^6.0.2
+      version: 6.0.2
     '@tanstack/react-table':
       specifier: ^8.21.3
       version: 8.21.3
@@ -198,13 +198,15 @@ overrides:
   stylis@<4.3.5: '>= 4.3.5'
   regenerator-runtime@<=0.13.11: ^0.14.0
   csstype@<3.2.3: '>=3.2.3'
-  '@chakra-ui/react': 3.36.0
+  '@chakra-ui/react': 3.36.1
   '@ark-ui/react': 5.37.2
   '@zag-js/interact-outside': 1.41.2
   esbuild@<=0.28.0: ^0.28.1
   js-yaml@>=3.0.0 <3.15.0: ^3.15.0
   brace-expansion@<1.1.16: ^1.1.16
-  brace-expansion@>=3.0.0 <5.0.7: ^5.0.7
+  brace-expansion@>=3.0.0 <5.0.8: ^5.0.8
+  immutable@>=5.0.0 <5.1.8: ^5.1.8
+  dompurify@<=3.4.11: ^3.4.12
 
 patchedDependencies:
   '@ark-ui/react@*': cdcaff11f2f2c324a7d04d94bfaaa7d325234a04b33a49a4b2d2344fa73ec625
@@ -219,19 +221,19 @@ importers:
         version: 2.31.1(@types/node@20.19.43)
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
-        version: 3.1.1-dev.20260623134110(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
+        version: 3.2.1(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
-        version: 3.1.1-dev.20260623134110
+        version: 3.1.2
       '@open-pioneer/changesets-release-line':
         specifier: 'catalog:'
-        version: 0.1.1-dev.20260623134110
+        version: 0.1.2
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.3.3-dev.20260623134110
+        version: 0.3.4
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
-        version: 6.0.1-dev.20260623134110(@open-pioneer/runtime@4.7.0-dev.20260624141040(@types/react@19.2.17))(rollup@4.62.2)(sass@1.101.7)(supports-color@7.2.0)(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))
+        version: 6.0.2(@open-pioneer/runtime@4.7.0-dev.20260727091735(@types/react@19.2.17))(rollup@4.62.2)(sass@1.101.7)(supports-color@7.2.0)(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.1
@@ -323,26 +325,26 @@ importers:
   src/packages/basemap-switcher:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -358,7 +360,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -367,29 +369,29 @@ importers:
   src/packages/coordinate-search:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -405,7 +407,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -417,20 +419,20 @@ importers:
   src/packages/coordinate-viewer:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -443,7 +445,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -456,16 +458,16 @@ importers:
         version: 0.8.6
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -481,8 +483,8 @@ importers:
   src/packages/feature-editing:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -491,25 +493,25 @@ importers:
         version: 4.1.17
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -525,7 +527,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -537,14 +539,14 @@ importers:
   src/packages/geolocation:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
@@ -553,16 +555,16 @@ importers:
         version: link:../map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -578,7 +580,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -587,20 +589,20 @@ importers:
   src/packages/legend:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -616,7 +618,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -628,8 +630,8 @@ importers:
   src/packages/map:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -641,19 +643,19 @@ importers:
         version: 4.1.0
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -678,7 +680,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       '@types/jsdom':
         specifier: 'catalog:'
         version: 28.0.3
@@ -690,8 +692,8 @@ importers:
   src/packages/map-navigation:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -703,13 +705,13 @@ importers:
         version: link:../map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -725,7 +727,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -741,7 +743,7 @@ importers:
         version: link:../map
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -757,21 +759,21 @@ importers:
   src/packages/map-ui-components:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       react:
         specifier: 'catalog:'
         version: 19.2.8
     devDependencies:
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -783,23 +785,23 @@ importers:
   src/packages/measurement:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -812,7 +814,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -822,10 +824,10 @@ importers:
     dependencies:
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -841,7 +843,7 @@ importers:
         version: link:../search
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -850,17 +852,17 @@ importers:
   src/packages/overview-map:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -873,7 +875,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -882,26 +884,26 @@ importers:
   src/packages/printing:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       html2canvas:
         specifier: 'catalog:'
         version: 1.4.1
@@ -920,7 +922,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -932,29 +934,29 @@ importers:
   src/packages/result-list:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@tanstack/react-table':
         specifier: 'catalog:'
         version: 8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -979,7 +981,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -991,17 +993,17 @@ importers:
   src/packages/scale-bar:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1014,7 +1016,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1023,8 +1025,8 @@ importers:
   src/packages/scale-setter:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -1033,13 +1035,13 @@ importers:
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1055,7 +1057,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1064,20 +1066,20 @@ importers:
   src/packages/scale-viewer:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -1087,7 +1089,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1096,23 +1098,23 @@ importers:
   src/packages/search:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1128,7 +1130,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1140,32 +1142,32 @@ importers:
   src/packages/selection:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1184,7 +1186,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1196,32 +1198,32 @@ importers:
   src/packages/spatial-bookmarks:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/core':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/local-storage':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1240,7 +1242,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1249,8 +1251,8 @@ importers:
   src/packages/toc:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -1259,19 +1261,19 @@ importers:
         version: link:../basemap-switcher
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1287,7 +1289,7 @@ importers:
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1299,8 +1301,8 @@ importers:
   src/samples/feature-editing-sample/editing-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
@@ -1315,10 +1317,10 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/scale-bar':
         specifier: workspace:^
         version: link:../../../packages/scale-bar
@@ -1341,20 +1343,20 @@ importers:
   src/samples/map-anchors/map-anchors-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1365,8 +1367,8 @@ importers:
   src/samples/map-sample/ol-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -1384,7 +1386,7 @@ importers:
         version: link:../../../packages/editing
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1402,7 +1404,7 @@ importers:
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1411,16 +1413,16 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1455,14 +1457,14 @@ importers:
   src/samples/ogc-api-sample/ogc-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/basemap-switcher':
         specifier: workspace:*
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1474,10 +1476,10 @@ importers:
         version: link:../../../packages/ogc-features
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1494,8 +1496,8 @@ importers:
   src/samples/showcase/showcase-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -1507,7 +1509,7 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/coordinate-search':
         specifier: workspace:*
         version: link:../../../packages/coordinate-search
@@ -1525,7 +1527,7 @@ importers:
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/legend':
         specifier: workspace:*
         version: link:../../../packages/legend
@@ -1540,7 +1542,7 @@ importers:
         version: link:../../../packages/measurement
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/ogc-features':
         specifier: workspace:*
         version: link:../../../packages/ogc-features
@@ -1552,16 +1554,16 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/scale-bar':
         specifier: workspace:*
         version: link:../../../packages/scale-bar
@@ -1599,8 +1601,8 @@ importers:
   src/samples/test-dynamic-map/dynamic-map-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1609,13 +1611,13 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1635,20 +1637,20 @@ importers:
   src/samples/test-highlight-and-zoom/highlight-and-zoom-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -1656,8 +1658,8 @@ importers:
   src/samples/test-overlay/overlay-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
         version: 0.8.6
@@ -1669,13 +1671,13 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       ol:
         specifier: 'catalog:'
         version: 10.9.0
@@ -1689,8 +1691,8 @@ importers:
   src/samples/test-printing-api/printing-api-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
@@ -1699,10 +1701,10 @@ importers:
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -1710,23 +1712,23 @@ importers:
   src/samples/test-result-list/result-list-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../../../packages/map
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/result-list':
         specifier: workspace:*
         version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -1734,8 +1736,8 @@ importers:
   src/samples/test-search/search-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.17)(react@19.2.8)
@@ -1747,13 +1749,13 @@ importers:
         version: link:../../../packages/map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/search':
         specifier: workspace:*
         version: link:../../../packages/search
@@ -1773,8 +1775,8 @@ importers:
   src/samples/test-toc/toc-app:
     dependencies:
       '@chakra-ui/react':
-        specifier: 3.36.0
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.17)(react@19.2.8)
@@ -1789,13 +1791,13 @@ importers:
         version: link:../../../packages/map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/reactivity':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040
+        version: 4.7.0-dev.20260727091735
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260624141040(@types/react@19.2.17)
+        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@open-pioneer/toc':
         specifier: workspace:*
         version: link:../../../packages/toc
@@ -1877,8 +1879,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@chakra-ui/react@3.36.0':
-    resolution: {integrity: sha512-6AxUbJsC6yyTzPeYL8sxyAL07lflT0NA+S6tcPzEuwdMux+benRMFOpPktnkifWKl/Vq/JD7fhxDyMuDQ4M0gA==}
+  '@chakra-ui/react@3.36.1':
+    resolution: {integrity: sha512-8uPVBdkw9CfwDQSGGmNqx8jLygUanV9virh2dwbj3x02Cu5bmw12ZCRdD/RZ+00+KrklJZlVnmG20y7PwLhyqg==}
     peerDependencies:
       '@emotion/react': '>=11'
       react: '>=18'
@@ -1981,17 +1983,17 @@ packages:
     resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
     engines: {node: '>=20.19.0'}
 
-  '@emnapi/core@1.11.0':
-    resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
-
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
 
-  '@emnapi/runtime@1.11.0':
-    resolution: {integrity: sha512-55coeOFKHv1ywEcUXJtWU5f+Jr/W5tZDvZig8DLKSwUN1JpROQ4rk/SNOQiFWmaR/VKF4zuFyW1B8JduOSv6Pg==}
+  '@emnapi/core@1.11.2':
+    resolution: {integrity: sha512-TC8MkTuZUtcTSiFeuC0ksCh9QIJ5+F21MvZ4Wn4ORfYaFJ/0dsiudv5tVkejgwZlwQ39jL9WWDe2lz8x0WglOA==}
 
   '@emnapi/runtime@1.11.1':
     resolution: {integrity: sha512-vgj7R3y3Wgx24IQaGPA/R6YFXLHVMOZ0uVEyIQPaWs+rd1AzfEMXlAC22FYwO1XkKR6NPsq7mUandH8oIRdZFw==}
+
+  '@emnapi/runtime@1.11.2':
+    resolution: {integrity: sha512-kyOl3X0DuTiT1h2ft8r2fYO8JYtU9a9Xis/zBSiGArNaagCOWx90N1k2wxp18czFDH+OgcWGb5ZP/XMt3dcyPA==}
 
   '@emnapi/wasi-threads@1.2.2':
     resolution: {integrity: sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==}
@@ -2272,6 +2274,9 @@ packages:
   '@formatjs/icu-skeleton-parser@2.1.11':
     resolution: {integrity: sha512-j8cUmOJzVgkHuS0QiQ6ga76UIoLOFSAMWhs7aZJztH3aAdCOAE6vpC8KVvFB4cU10ON0y2/5oOVmPJ43s2lTwA==}
 
+  '@formatjs/intl-localematcher@0.8.13':
+    resolution: {integrity: sha512-kHEAFOkeJSPNi7c5PaKaRjxcBrJwzzt81ifUu+8uve1EDW/VJl83KsxmqgqNZLzcFEhSliZGvx3+pk/RH0IOmg==}
+
   '@formatjs/intl@4.1.17':
     resolution: {integrity: sha512-IxluRkzOZH8ahaDip5g8YH9kJi1munUZi9i1BJs1wVFQIY2pROoCSiOlybZegyiPsZlMaYfADkD99zP2xmBfjQ==}
 
@@ -2361,20 +2366,20 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@open-pioneer/base-theme@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-raFOPRHcPZ99/N941DqEqtdKKl439Q+ZtpEq7VqowbZ3YUaWkuijYBrDpMUuswbJDZIH1pyuakEFYTWO3wdQQw==}
+  '@open-pioneer/base-theme@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-0aVX9QAUvo81dbFd9ocbDee3s7gW2sNnmbyLSD1PkLkAtqn4Oc+NCIA1rZhdnS4ET5VkkmYV66tnPycEmXrjmQ==}
 
-  '@open-pioneer/build-common@4.0.1-dev.20260623134110':
-    resolution: {integrity: sha512-Xl3weOQEoLTZT5ob3WU5se5/LR8bEMVlYIFb+b0rJzgaOEFRVRvv53hyNEW9k4QieWgXtHwDzWfNppDEFocf3g==}
+  '@open-pioneer/build-common@4.0.2':
+    resolution: {integrity: sha512-GL9Rpc0ae/0P/OS4KH5HjdqT5Ahnb2FWATuBpA4ogLc+WabLJZHPRpzpL2SCS4V3S7H6Ay+FkqZFkyQw3HxXDg==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/build-package-cli@3.1.1-dev.20260623134110':
-    resolution: {integrity: sha512-0rK19mXMt4WJhTZyW9olIzzgrcvSY91BQUHyEesUN2U3eE8SRH4ltKSkxOlBU4Sbhi27SXO0651YJ/dTYhSWdg==}
+  '@open-pioneer/build-package-cli@3.2.1':
+    resolution: {integrity: sha512-Hti9IhFKaVElld8PG4Rs+nMGxgpE3uczVVWnAJERWCEntilwbL1rbQQjoEXkvhTnp162Kp9D6VNtd7xr+3zK/g==}
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/build-package@4.2.1-dev.20260623134110':
-    resolution: {integrity: sha512-BkIE7C2U5dXGZqzX4Z3AskAVopmMCYa4LQq+FRCVaUTMP6Y4iBKaEqkYDYj0ANK4jaPsk3VqKETJhJMqqnRxeQ==}
+  '@open-pioneer/build-package@4.3.1':
+    resolution: {integrity: sha512-TwMYm/4PMV5lCSQyG+4gNagXYvcT5ZYi4O4xt6qlUdfw77fU+I9LPCzoa1uG7S4/zB4BqFoe6yqLHgEk75C7ig==}
     engines: {node: '>= 20'}
     peerDependencies:
       sass: '*'
@@ -2385,48 +2390,48 @@ packages:
       typescript:
         optional: true
 
-  '@open-pioneer/build-support@3.1.1-dev.20260623134110':
-    resolution: {integrity: sha512-w8GvZ+n39FvIdMhmDQn+N6FSKw9oNMjnLIy3i+gnkR22EYU8UntMAZx4QvkboIw9uLTTUrD6Q1b9AL2lHcPzPg==}
+  '@open-pioneer/build-support@3.1.2':
+    resolution: {integrity: sha512-rC9o2gfWWfh4YnUQnV727k+bQsc7ps/hPaJEuBcV5Y6U4W+rtx/iDRZ2GCYGe5Thny0hUHYQ/VDyZMtYhqMoEA==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/chakra-snippets@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-xFuDwO8FmdLEozTS7xkcOczzSsTEDi2EsZYRYNnjc3sQM9nBLaj531gsoYiBirR/UzBzYdtthb1ha03FR9LjeQ==}
+  '@open-pioneer/chakra-snippets@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-QRHyGiShYKm0E5fFQnTL3DGOD1vzmiXmLS7asZ9o2MmM3X/0dli6E2+Qlk0zSHrdyF8WoDhIok6JsRulg0ZkdA==}
 
-  '@open-pioneer/changesets-release-line@0.1.1-dev.20260623134110':
-    resolution: {integrity: sha512-HJzqEE+OZY3G6XSn7Y4Vwr2UpYZ4MY/vZAXJ/qn9Vky+5ee/CxLfDKaPkZnYASBWY9gFAHk24pMDIJ5u6AHriA==}
+  '@open-pioneer/changesets-release-line@0.1.2':
+    resolution: {integrity: sha512-qk3cGwD+B9nhEzfmTguDxZsBi2wTNPcXZyZ0U6l4PNCmPoJNTagLwqKLY9loBQ1fW71S0aJj4dbbcL0jKvT/rA==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/check-pnpm-duplicates@0.3.3-dev.20260623134110':
-    resolution: {integrity: sha512-8HsmHPb5mDlQRgqXvLRIzIPDF+854ivsKfibFYLAMV5LI4SJ1Sz1GM1wtFeSzVQ49kwCZoDM1vZdi8qk4N6Nog==}
+  '@open-pioneer/check-pnpm-duplicates@0.3.4':
+    resolution: {integrity: sha512-ZLWDiOchLcfL6A5iUTsXS+bjdPoeQYSyIx7idAy1v2dwkzg4acMZxX7/35JQLSbntWLRCIMjAUOTPWD1fpx9lA==}
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/core@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-N+G/o1yNEMuelY8hSGH2TZ4Nf5fnw0c0Rc44+TLI2YGn5Bc1n8lYLzLHFl642AvcyUD1xaswFo5b9JDi70ptrw==}
+  '@open-pioneer/core@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-3lzAEAVIjUhU2MVmQM25gJCktbeFIWcNqpR4dDmGSAb7qlHU5zVOTPBrOsx49fW3amznMmV1NVrQGFxU/2r5Zg==}
 
-  '@open-pioneer/http@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-GjMqawnVnAIRPMmgKYVJOScuJwmUr+kWFlybMuSA4WE5Ie1NKGBDe7ce2BywA3Zzyh09IJPScseqpOibydKNoA==}
+  '@open-pioneer/http@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-x4OR3p2Dk6Q2lWCGmvC9tXF5eFGi33zTqJcNbgNgiRKBepmqR1JecjUTP6hxSUxF9f7l30ocv7IGagXfWg+8Lg==}
 
-  '@open-pioneer/local-storage@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-6jmfU2Kcdk2lLJRQgTtw/Xv7SDhitlyuUyhmQ3SLdiQpFvlrQPlYjKwMxUPynJf7Y5sEJN3fVoUpRk0gmm7WHQ==}
+  '@open-pioneer/local-storage@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-/sNRt+xmpcIssrEE9mIKYJ3aL3q8Aqn1A6sc9Qal9kXBVs/rpIOTympol+0QmgB+jR0S120GGhU6yP+aLu6k6g==}
 
-  '@open-pioneer/notifier@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-cNeT6J+lnnzD1FTIvGyViQoj0uJA4fC0MA9KBjQ//uwdnwt1QpEcmOiwtoXvNMB0zRuuxHuVkGUwTqCb8tplvw==}
+  '@open-pioneer/notifier@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-nOpc8G2k9BQWUi4g8I5kdHSCuAfBYUD2Kjv5T2NmVWiKdYFab9AOdeVv+sT9kLESCtNeWZivsAlbUdhZPDcoHA==}
 
-  '@open-pioneer/react-utils@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-prE46WjziNUJwI3zx1DXDq2hfkg2db4CkhuXP7CeikPdWZGsPkhkGVDx00Meh7elU6H1aAXvPg6DE8q8Z/YJHg==}
+  '@open-pioneer/react-utils@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-jrgRfQDtjp76VLVlRFVp1dxeAQ4is278VL5g45SSfywK/d6JtDp3VB6HzUTJG0lVjqxjq23nboIc7DFvtRIhGw==}
 
-  '@open-pioneer/reactivity@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-t6AzlVmJ5f53cKAkvvkjmaFU5VSHSP1YI7bBo/kybyGT7FcDz1If5luwP8o0SCEF5DKy2cgtQFX4RzcF54Dodg==}
+  '@open-pioneer/reactivity@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-lQ05UKcbmOxmvEYFK5tKzy0c/zsNIiNUnWa9bOhUzfYeSs+mjknUM1vRsvKkmMYgMamFqz1NawkMZGxt5mhELw==}
 
-  '@open-pioneer/runtime@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-HxkjS8yktHvWd+keNfCCljB0gECIjJHvIHxelF/+6BW0IPnPiDgC6vbuIuzzTTZHiTRKfHypRRFXR2AwBmeomw==}
+  '@open-pioneer/runtime@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-15Pa5u1wzSHjvq2AiDqSQVh37tPSoE2e5TdH0fF7B/WSZuxyOc722F/8IP4usuMZAc+v+H9FMSr7Ix3OmCiqrQ==}
 
-  '@open-pioneer/test-utils@4.7.0-dev.20260624141040':
-    resolution: {integrity: sha512-JJmOPhAbk2sYnq+7v/cT0aiT4pFfSkMlrsFP5Yl6qAvc3h1sZEFlBACVVcYH7G+PlIQ/9xMupNb7qaepzWbq0w==}
+  '@open-pioneer/test-utils@4.7.0-dev.20260727091735':
+    resolution: {integrity: sha512-gfrbmIHF/44soYr6ov9ULYue+Pmp0BKvJ7wszvecyoFdGz2eTfwrta15N1iZqLStPiNDwjjZ9B2Dff5xFYxBKg==}
 
-  '@open-pioneer/vite-plugin-pioneer@6.0.1-dev.20260623134110':
-    resolution: {integrity: sha512-i5AEDaevVzdm6cCLC4AAuSep7Kd09u8ev3d72D1MKwyfcQ6Xg0sr2Ujaufwlf5FVGI0lyJnvKnbSclgfClasHg==}
+  '@open-pioneer/vite-plugin-pioneer@6.0.2':
+    resolution: {integrity: sha512-Pz3aA0oArmZCA1e+ZCuu8bo5OC3Rccojx4ZBLebdDol6fvTo+8mmw03OmQABRqBvXraB5wl1ycikqucKFPDiOA==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@open-pioneer/runtime': '*'
@@ -2436,106 +2441,106 @@ packages:
   '@oxc-project/types@0.139.0':
     resolution: {integrity: sha512-r9gHphtCs+1M7J0pw6Sn/hh/Wpa/iQrOOkrNAlVLF/gHq+/CJmHIWKKUUhdWjcD6CIa8idarspCsASiXCXvFUw==}
 
-  '@oxc-resolver/binding-android-arm-eabi@11.21.3':
-    resolution: {integrity: sha512-eNU11A2WNizh04v3uyaJCootrHIaS0B9aHYXvAvVnPNk4xYSjMUjHnhQ6dewPN2MRYDskV85d1N0Aw0WNWhcyg==}
+  '@oxc-resolver/binding-android-arm-eabi@11.24.2':
+    resolution: {integrity: sha512-y09e0L0SRI2OA2tUIrjBgoV3eH5hvUKXNkJqXmNo5V2WxIjyC7I7aJfRLMEVpA8yi95f90gFDvO0VMgrDw+vwA==}
     cpu: [arm]
     os: [android]
 
-  '@oxc-resolver/binding-android-arm64@11.21.3':
-    resolution: {integrity: sha512-8Q+ZjTLvn2dIcWsrmhdrEihm7q+ag/k+mkry7Z+t0QbbHaVxXQfvH9AewyVMh/WrpEKhQ3DDgx9fYbqeCpeOEw==}
+  '@oxc-resolver/binding-android-arm64@11.24.2':
+    resolution: {integrity: sha512-cl4icWaZFnLdg8m6qtnh5rBMuGbxc/ptStFHLeCNwr+2cZjkjNwQu/jYRS0CHlnPecOJMpuS5M6/BH+0J/YkEg==}
     cpu: [arm64]
     os: [android]
 
-  '@oxc-resolver/binding-darwin-arm64@11.21.3':
-    resolution: {integrity: sha512-wkh0qKZGHXVUDxFw3oA1TXnU2BDYY/r775oJflGeIr8uDPPoN2pk8gijQIzYRT6hoql/lg3+Tx/SaTn9e2/aGg==}
+  '@oxc-resolver/binding-darwin-arm64@11.24.2':
+    resolution: {integrity: sha512-At29QEMF6HajbQvgY8K6OXnHD1x9rad74xBEfmCB6ZqCGsdq75aK7tOYcTbOanMy8qdIBrfL3SMr3p/lfSlb9w==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxc-resolver/binding-darwin-x64@11.21.3':
-    resolution: {integrity: sha512-HbNc23FAQYbuyDV2vBWMez4u4mrsm5RAkniGZAWqr6lYZ3N4beeqIb776jzwRl8qL2zRhHVXpUj97X0QgogVzg==}
+  '@oxc-resolver/binding-darwin-x64@11.24.2':
+    resolution: {integrity: sha512-A5Kqr1EUj4oIL5CF4WRssq/o5P0Y11cwoFouMRmQ7YnC/A8V93nv1nb7aSU8HwcgmXropjLNkVTl4MN87cu28Q==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxc-resolver/binding-freebsd-x64@11.21.3':
-    resolution: {integrity: sha512-K6xNsTUPEUdfrn0+kbMq5nOUB5w1C5pavPQngt4TM2FpN91lP0PBe2srSpamb4d69O7h86oAi/qWX/kZNRSjkw==}
+  '@oxc-resolver/binding-freebsd-x64@11.24.2':
+    resolution: {integrity: sha512-R5xkRBRRz7ceH/P5Jrc6G7FmdUdgpLYyESFAUDVTNQ9K0sGPxcp4ljiwEwEqsvNcQ4sYbMRrWcHHBCu7ksAJVw==}
     cpu: [x64]
     os: [freebsd]
 
-  '@oxc-resolver/binding-linux-arm-gnueabihf@11.21.3':
-    resolution: {integrity: sha512-VcFmOpcpWX1zoEy8M58tR2M9YxM+Z9RuQhqAx5q0CTmrruaP7Gveejg75hzd/5sg5nk9G3aLALEa3hE2FsmmTQ==}
+  '@oxc-resolver/binding-linux-arm-gnueabihf@11.24.2':
+    resolution: {integrity: sha512-k/RuYL4L/R58IBn3wT5ma3Wh4k62bp1eYCFRWCmMsasUOqL+H6sW0VGFadEzKWXFFlz+2uIMoeMk9ySSZJHgbg==}
     cpu: [arm]
     os: [linux]
 
-  '@oxc-resolver/binding-linux-arm-musleabihf@11.21.3':
-    resolution: {integrity: sha512-quVoxFLBy43hWaQbbDtQNRwAX5vX76mv7n64icAtQcJ3eNgVeblqmkupF/hAneNthdqSlnd1sTjb3aQSaDPaCQ==}
+  '@oxc-resolver/binding-linux-arm-musleabihf@11.24.2':
+    resolution: {integrity: sha512-bnHAak3ujYfH5pKk4NieFNbvYvernfoQDgwLddbZ3OtMYrem87/qjlA+u+aKG0oZcqSLGCful/6/CEA+aeAgaA==}
     cpu: [arm]
     os: [linux]
 
-  '@oxc-resolver/binding-linux-arm64-gnu@11.21.3':
-    resolution: {integrity: sha512-X0AqNZgcD07Q4V3RDK18/vYOj/HQT/FnmEFGYS2jTWqY7JO13ryE3TEs3eAIgUJhBnNkpEaiXqz3VK8M7qQhWQ==}
+  '@oxc-resolver/binding-linux-arm64-gnu@11.24.2':
+    resolution: {integrity: sha512-vDT3KHgzYp47gmtNOqL2VNhCyl5Zv643eyxm//A68J8DeUGXrvD1pZFiaT4jSfe+RInfnn1R2yVHye4enx6RnA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-arm64-musl@11.21.3':
-    resolution: {integrity: sha512-YkaQnaKYdbuaXvRt5Qd0GpbihzVnyfR6z1SpYfIUC6RTu4NF7lDKPjVkYb+jRI2gedVO2rVpN35Y6akG6ud4Lw==}
+  '@oxc-resolver/binding-linux-arm64-musl@11.24.2':
+    resolution: {integrity: sha512-+kMlQvbzfyEYtu5FcjE4p+ttBLpKW4d/AsAsuE69BxV6V4twZJeIQZFfD8gh/wqglY0MkPSezWXQH0jBV13MUw==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-linux-ppc64-gnu@11.21.3':
-    resolution: {integrity: sha512-gB9HwhrPiFqUzDeEq+y/CgAijz1YdI6BnXz5GaH2Pa9cWdutchlkGFAiAuGb/PjVQpiK6NFKzFuztxrweoit7A==}
+  '@oxc-resolver/binding-linux-ppc64-gnu@11.24.2':
+    resolution: {integrity: sha512-shjfMhmZ3gq9fv/w7bi3PnZlgOPG+2QAOFf0BJF0EgBSIGZ6PMLN2zbGEblTUYB/NKVDRyYhE2ff3dJ1QqNPkA==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-riscv64-gnu@11.21.3':
-    resolution: {integrity: sha512-zjDWBlYk8QGv0H8dsPUWqkfjYIIjG2TvspGkzXL0eImbgxtZorA/klKeHyolevoT3Kvbi+1iMr9Lhrh7jf54Og==}
+  '@oxc-resolver/binding-linux-riscv64-gnu@11.24.2':
+    resolution: {integrity: sha512-zGelwFR5oRo+b69k8Lrzun86DyUHzfKN6cnjbR9l7Z7NIRznOE/2ZvPa1IUKqAL2PzAXOdwkfVqNvO1H2RlpAw==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-riscv64-musl@11.21.3':
-    resolution: {integrity: sha512-4UfsQvacV388y1zpXL7C1x1FNYaV52JtuNRiuzrfQA2z1z6ElVrsidkGsrvQ5EgeSq1Pj7kaKqrgGkvFuxJ/tw==}
+  '@oxc-resolver/binding-linux-riscv64-musl@11.24.2':
+    resolution: {integrity: sha512-qxZ1SWCXJY0eyhAlP6Lmo9F2Nrtx7EkYj9oCgL8apDPCwXwCEDA2U697bbT81JIc2IrVjxO4KX6WU2N+oN9Z4w==}
     cpu: [riscv64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-linux-s390x-gnu@11.21.3':
-    resolution: {integrity: sha512-b5uH+HKH0MP5mNBYaK75SKsJbw52URqrx2LavYdq6wb0l3ExAG5niYRP9DWUNHdKilpaBVM2bXk9HNWrH3ew7Q==}
+  '@oxc-resolver/binding-linux-s390x-gnu@11.24.2':
+    resolution: {integrity: sha512-sGCecF3cx2DFlH4t/z7ApnOnXqN48p5p5mlHDEnHTAukQa2P+qMVE4CwyWE9W+q/m3QJ7kKfGrIjax31f44oFQ==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-x64-gnu@11.21.3':
-    resolution: {integrity: sha512-PjYlmilBpNRh2ntXNYAK3Am5w/nPfEpnU/96iNx7CI8EzAn12J4JRiec63wHJTH31nLoCNxBg/829pN+3CfG3Q==}
+  '@oxc-resolver/binding-linux-x64-gnu@11.24.2':
+    resolution: {integrity: sha512-k/VlMMcSzMlahb3/fENM4rTlsJ0s3fFROA0KXPBmKggqmTSaE383sl8F3KCOXPLmVsYfW6hCitMhXCEtNeZxxg==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-x64-musl@11.21.3':
-    resolution: {integrity: sha512-QTBAb7JuHlZ7JUEyM8UiQi2f7m/L4swBhP2TNpYIDc9Wp/wRw1G/8sl6i13aIzQAXH7LKIm294LeOHd0lQR8zA==}
+  '@oxc-resolver/binding-linux-x64-musl@11.24.2':
+    resolution: {integrity: sha512-8hbnZyNi97b/8wapYaIF9+t9GmZKBW2vunaOc3h9HGJptH7b7XpvZqOTBSm/MpTjr7H497BlgOaSfLUdhmy2bw==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-openharmony-arm64@11.21.3':
-    resolution: {integrity: sha512-4j1DFwjwv36ec9kds0jU/ucQ5Ha4ERO/H95BxR5JFf0kqUUAJ1kwII7XhTc1vZrkdJkvLGC9Q2MbpObpum8RBg==}
+  '@oxc-resolver/binding-openharmony-arm64@11.24.2':
+    resolution: {integrity: sha512-MvyGik3a6pVgZ0t/kWlbmFxFLmXQJwgLsY2eYFHLpy0wGwRbfzeIGgDwQ3kXqE30z+kSXennRkCrT7TUvkptNg==}
     cpu: [arm64]
     os: [openharmony]
 
-  '@oxc-resolver/binding-wasm32-wasi@11.21.3':
-    resolution: {integrity: sha512-i8oluoel5kru/j1WNrjmQSiA3GQ7wvIYVR1IwIoZtKogAhya2iub+ZKIeSIkcJOrnzQ18Tzl/F+kL3fYOxZLvA==}
+  '@oxc-resolver/binding-wasm32-wasi@11.24.2':
+    resolution: {integrity: sha512-vHcssMPwO08RTvj/c0iOBz90attxyG3wQJ0dTcyEQK43LRpcdLWZlV5feBhv6Isn6ahbQIzHbCgfa81+RiML0Q==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
 
-  '@oxc-resolver/binding-win32-arm64-msvc@11.21.3':
-    resolution: {integrity: sha512-M/8dw8dD6aOs+NlPJax401CZB9I7Aut84isQLgALGGwke4Afvw+/7yYhZb94yXf6t2sPLhQLmSmtSV+2FhsOWg==}
+  '@oxc-resolver/binding-win32-arm64-msvc@11.24.2':
+    resolution: {integrity: sha512-uokJqro2iBqkFvJdKQLP7d8/BUmFwESQFVmIJUQKj1Xn1a/LysJoe1vmeECLF5b3jsV8CAL5sEMJXX6SdK9Nhg==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxc-resolver/binding-win32-x64-msvc@11.21.3':
-    resolution: {integrity: sha512-H7BCt/VnS9hnmMp42eGhZ99izSCRvlnWwy/N71K1/J8QoExwY4262Z8QiEkMDtduRJrztayDxETTckmUuAVL9Q==}
+  '@oxc-resolver/binding-win32-x64-msvc@11.24.2':
+    resolution: {integrity: sha512-UqGPmo56KDfLlfXFAFIrNflHT8tFxWGEivWg3Zeyp4Uy2NlKN1FGPr6/BxcLGG3+kZ6Wp14g5Uj+n71boqZfiw==}
     cpu: [x64]
     os: [win32]
 
@@ -2760,50 +2765,86 @@ packages:
     resolution: {integrity: sha512-CSJ5fKSUgqXrON5J2zQd1LwttU4gdqffJ3zYyHGAEhZ8u22fhQEVfCnc4+3aczDHbBNU0pNRX2ajiioPj46YtA==}
     engines: {node: '>=22.13'}
 
+  '@pnpm/constants@1100.0.1':
+    resolution: {integrity: sha512-0CqK4HTdfON1IiBIg1ib06hGJv2sDWovOZ8tP/S8BOkhVYXoter1wia1OtgUeSIabDgyeWgL8LRHG4PhkuIAPw==}
+    engines: {node: '>=22.13'}
+
   '@pnpm/crypto.hash@1100.0.1':
     resolution: {integrity: sha512-Zq7m0/2wT/9BgXtk0ue5OC6MeHk+KpbDICmSKybeSy7NQ7sWreiDXhRBnipRLDo21vY7nLuXRsRLopk+3cCmoQ==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/deps.path@1100.0.8':
-    resolution: {integrity: sha512-rW5a0TPcITHS+DF/SsGmFGKnUvmuSimTjeUGVXWZb2zbJ1kllSa67HSarM+Kg9UHD08rGYLt2EShoiOPl3lfig==}
+  '@pnpm/crypto.hash@1100.0.2':
+    resolution: {integrity: sha512-7MNukALUyiFMwOYQongnRWZnpjs4R5lBZgKcycnWjBhN4LxavPciczrz7XK0GuFrw3QS1V5wMV02lPYLF/bA4w==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/error@1100.0.0':
-    resolution: {integrity: sha512-Pe+UcOhBwBBM38GPavnPJllik4/DZ8Fawt9+D2JLoWSo6FNZBJWQbaDMuwba3W0Ej0v43etKmyCT+MOvwt95Gg==}
+  '@pnpm/deps.path@1100.0.11':
+    resolution: {integrity: sha512-S8pzX84ehSAjWxxUQuqnKH040u6iu56pZOPhjIQ8KTKzKHCL/50XDBZCgIdANRi9TPGt7+lj+MUY148NtWUWqw==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/fetching.fetcher-base@1100.1.9':
-    resolution: {integrity: sha512-yhhzMBQCVYRWn/JDoK6QOxfmma0S8T332FTqmTFbCWgs84VmmfYLZPNumXNZkCls7TMGbLAglyuYozPD4188XA==}
+  '@pnpm/deps.path@1100.0.9':
+    resolution: {integrity: sha512-L54Bwh8kmdnRKJWylvotMJhiJjfGPCmpg9HAqTZFBg5hcOzuwseP5kxmo1kCGd8DALNgsCLphm/GOUyvfA2+0g==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/error@1100.0.1':
+    resolution: {integrity: sha512-+SRTHRx9/etv+6AYMv6RX/uGW6CEQbV/o2Ojtjk4aHkmdVMe1Q9LekOV6gKmlEmeWOzv6zTzH/soFcuOWxIxTA==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/error@1100.1.0':
+    resolution: {integrity: sha512-ZpinzFJNeHEvNxm3lWvZ1jqZ78DTNoClPrNSvZH83JNEWmyDAdw2QDNmiYjpG5nIYarZjahEGKz+oQlgKrvnNg==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/fetching.fetcher-base@1100.2.2':
+    resolution: {integrity: sha512-Rvi0H4/q//6A37Fb2dwm2gn9Xm+0F5agAzYgVZtXm4cw6x3/mhypejMY/GVBLHNO8gmLL3JRvhneUIRb/HMHdw==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/fetching.fetcher-base@1100.2.4':
+    resolution: {integrity: sha512-bFW26vz21aBycPaDnPwE9MYCHbP9Sfuea8K13iv8v/W8ICsnMN70kEIxLb4Rp2MWvUJNlUwOFABHDHJ4+x4c2Q==}
     engines: {node: '>=22.13'}
 
   '@pnpm/fs.graceful-fs@1100.1.0':
     resolution: {integrity: sha512-sqz/s9GmCpMdTL1CP7lteu6EzV2FpAB2xBTztWh7ZCZUoM2MFQZlQI1OuCqdkn6VI3WRnhkUgV0pIOlbqFTCSw==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/hooks.types@1100.0.12':
-    resolution: {integrity: sha512-exdlDvPNdV7cbVvclzoZLGK72zBj+Z14orTkgIpDOy55/JNtx5bZ8vYAb51GdiWhcji90p+316YLiL5fE1/NUA==}
+  '@pnpm/fs.graceful-fs@1100.1.1':
+    resolution: {integrity: sha512-knCLxjy9vx18Z1cwzzqD251jxrJhQpJ09Gch+AecX0rOWj/sygjk0UXSWZPaHPwVtK5Je7i2CIAoyYwsb8wZTg==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/lockfile.fs@1100.1.6':
-    resolution: {integrity: sha512-ooZXS/yMGcrcHGSb7MNXR1pLG4UaGTO/7m/NJ3+sr6ScwdbdWduilrF9JoOMyKjMIfiOhygXrazYIE8ChjELfg==}
+  '@pnpm/hooks.types@1100.2.1':
+    resolution: {integrity: sha512-fRIjtaCw8mKuZsnEd0iH/hgjsssTHRRcScm5PZZA9bNK5vqptr64MNAWojeCTXr20JhN88l/SYfCBhgCFl+N/A==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/hooks.types@1100.2.3':
+    resolution: {integrity: sha512-C3NClGr4q2L3F8l3u2lpTDlkDp9dxrqif/cBXTTdF4+/H58G98o2Qr5zt2Emtyh1fvs66dRaEUnCJRH8ugbXoA==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/lockfile.fs@1100.1.11':
+    resolution: {integrity: sha512-R2MWjfIAfH8DIMBqyoH5ZdtfMHdAgV6h9NZwFRK6q8hj+mde/DPeqqeXUbww/1QSV9HaOeeWKLaO/td8AQCOOw==}
     engines: {node: '>=22.13'}
     peerDependencies:
       '@pnpm/logger': ^1100.0.0
 
-  '@pnpm/lockfile.merger@1100.0.11':
-    resolution: {integrity: sha512-P/OuZtsRv0/IFE0wq1XqDiEGz31AiNJzsBvDOq6eDl/upx5g01MYe1SHzGDCR0Yy91jopfeEocIyhSwSzoyiUA==}
+  '@pnpm/lockfile.merger@1100.0.14':
+    resolution: {integrity: sha512-hbKYORlq2CLlr8cRA3nJ5aQqda05rryOpgRKYyP0n7a89VY1iC9SAopzLe/goGyCnI3DHF6uKDagekXHJrjGFA==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/lockfile.types@1100.0.11':
-    resolution: {integrity: sha512-WiGzV9/q0rpyQzAxV9jnqra5cZ2JNGSKocC2rhzmKKfXuuVo8XAXW5o9BzVl8kCuIYqqR/ei11AH5WTuTaXcIw==}
+  '@pnpm/lockfile.types@1100.0.14':
+    resolution: {integrity: sha512-LiSztgCMx6yBM26YA+xFnrW/7Hnd1etdZv6wXF+QoQlbevmLNAF47ynm2Z8xBq0xSxJwmWuTWEbshZ+6YnopkA==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/lockfile.utils@1100.0.13':
-    resolution: {integrity: sha512-EMHJN+BZRDHLZV2Xl17f7qFtqS+UDgiz6k6EzuUdIsOARmLRS+rDEw7GmmTum2fkHQNosg3M84HeL1W+3a4OWw==}
+  '@pnpm/lockfile.types@1100.0.16':
+    resolution: {integrity: sha512-sdHgUlwGgmtyM5BiYA91+WiVAkbyfFK3gELQtHuAMjXymoWyQsXcdeoRDWef90901pN7q+msyarw1oicZnQUwQ==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/lockfile.walker@1100.0.11':
-    resolution: {integrity: sha512-4Q0LThJ4moFMJuh10jbyyj8G1UfLUf3fTx56vqaJ/TEGyyV2K/uyUFpzyREiOwkga0JF7asLaTru5v35q2Pm+w==}
+  '@pnpm/lockfile.utils@1100.1.3':
+    resolution: {integrity: sha512-i3G0lmYXy5jWA447WOTaaR43Z8eXL6hPsOI/LUlU1OmuQK3gCUnlaGcQDnKWIUlfzucLkqZ6qFsaS8T+pJSZDw==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/lockfile.utils@1100.1.5':
+    resolution: {integrity: sha512-cOd0RRRhpernfmpN6SDJb18FOpzH/LepRC5Ys9HqOUYZCULLnCnOA2hnOmbg1kIHhby6mcQ3+/rMFN4YkQffjA==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/lockfile.walker@1100.0.16':
+    resolution: {integrity: sha512-u/IoCSA26MqvvLX+283bF9ktKceuu+NceVgisSFTuocLvej2KwtBZAp/3aJsH0Hpy1MMxmXKxiAPORvFI2xzhg==}
     engines: {node: '>=22.13'}
 
   '@pnpm/logger@1100.0.0':
@@ -2822,19 +2863,43 @@ packages:
     resolution: {integrity: sha512-trrr0UIaIEIDagZhuxjO83z+/aCvyKib+g5zXQQ7d2H3bj8GN2sHPPi/5/i8C1eMiBGNZut/8cl8ipNRbFwIow==}
     engines: {node: '>=22.13'}
 
+  '@pnpm/patching.types@1100.0.1':
+    resolution: {integrity: sha512-79os2WyGOHYnwrGeWNDNfrve12LSon6ovtDQDRktP+aW990pZY8TJ2S8X2lmkcjasi9QdsY5jiBuXvXryfE5xQ==}
+    engines: {node: '>=22.13'}
+
   '@pnpm/ramda@0.28.1':
     resolution: {integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==}
 
-  '@pnpm/resolving.resolver-base@1100.4.2':
-    resolution: {integrity: sha512-EJUOio/kQsDJGNCFj7jMjGdkCiz/NIOLu4H4ueosLMD5Wq1hLEvqCSTVCE8h68vShUlJ3XSkFdXSpihVdbzL8g==}
+  '@pnpm/resolving.resolver-base@1100.5.2':
+    resolution: {integrity: sha512-dJjv9G/CQErv4xPQHD9rXtB4sIQaTn9c4yY0FiLWKZjMvIpME8cVwDy8g8tcYH6k1NrueJc2lGegfQLNlPCh7Q==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/resolving.resolver-base@1100.5.4':
+    resolution: {integrity: sha512-nR0DakezQo8Q42Io9ZTb8TIloErfcK/jANWuXuadHSAkqcJ9ZQNv9eG+GAEXKKUCF9SMtJtPboMfpFpiybnu3g==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/resolving.tarball-url@1100.0.0':
+    resolution: {integrity: sha512-rPmQY9CUAfRphGFAA05coN5Jt0odI549+pml6q3c4vgWAb5dfzYfCv+kkkKuKnAHl4ceVKGpY8jeDYuhJJLX4Q==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/resolving.tarball-url@1100.0.1':
+    resolution: {integrity: sha512-6LTJYB1l7VZIhFCSoEQKcrpW3xnyScAfJfukDBw5qAKTabehFsR+uwTM2mrLzsLMfXiJcRmAeFfJCQIwr7pamg==}
     engines: {node: '>=22.13'}
 
   '@pnpm/store.cafs-types@1100.0.1':
     resolution: {integrity: sha512-UeXt5uecNdvQl9fdhgpiFvcBm18CDDKFzWj686uiPyQ7cGvu77RpEGk2cd7CfXvvaY89AaMfmdER0O1+8UA51A==}
     engines: {node: '>=22.13'}
 
-  '@pnpm/types@1101.3.2':
-    resolution: {integrity: sha512-iYpRR/wY+FNnMEUT9LO4OPV256QRk3NhXIiAIVg9tZv1F4cX28Ka7yXE1oyT9zQ2yhkZZYZSgm0M9IHDEZ/62g==}
+  '@pnpm/store.cafs-types@1100.0.2':
+    resolution: {integrity: sha512-eoD3eIkNsEwqUXq47Yc2RoRHpUyv0IDEdhrn5d8m/8l2sw9PRDCFBTPM76WPZ6nRfEN09ArsAAfihzZ96iEaIA==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/types@1101.4.0':
+    resolution: {integrity: sha512-s03f87SySGMvjOE16dWXmUOsXt+5Ic/DabWaB4/+L13l4q/tMjOusIu3t2plazCK0gCY9wYOIw2p9CQ9+CHbcA==}
+    engines: {node: '>=22.13'}
+
+  '@pnpm/types@1101.6.0':
+    resolution: {integrity: sha512-oqJsbjsYcvbONsMTCQQHxpIyhGDSgRUsIoGM8TMWoydgeSdtnqpGVAvxljkvP2mgYO3Y8EwRRZ1usESSoySYjg==}
     engines: {node: '>=22.13'}
 
   '@pnpm/util.lex-comparator@4.0.1':
@@ -3619,9 +3684,9 @@ packages:
   brace-expansion@1.1.16:
     resolution: {integrity: sha512-IDw48K2/2kRkg9LdJxurvq3lV3aBgq0REY89duEqFRthjlPdXHKMj7EnQOXVckxzgisinf3nHfrcE2FufFLXMw==}
 
-  brace-expansion@5.0.7:
-    resolution: {integrity: sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==}
-    engines: {node: 18 || 20 || >=22}
+  brace-expansion@5.0.8:
+    resolution: {integrity: sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg==}
+    engines: {node: 20 || >=22}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -3763,8 +3828,8 @@ packages:
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
-  dompurify@3.4.11:
-    resolution: {integrity: sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw==}
+  dompurify@3.4.12:
+    resolution: {integrity: sha512-zQvGet8Z2sWbQhCmfFz/T5QWH2oBmjnqK3qvOjaqaNLrLEF912WamU+ohnTp0TCep/MFVHpdJuCZEdFOdTnEFg==}
 
   earcut@3.0.2:
     resolution: {integrity: sha512-X7hshQbLyMJ/3RPhyObLARM2sNxxmRALLKx1+NVFFnQ9gKzmCrxm9+uLIAdBcvc8FNLpctqlQ2V6AE92Ol9UDQ==}
@@ -3874,8 +3939,8 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
-  fast-equals@6.0.0:
-    resolution: {integrity: sha512-PFhhIGgdM79r5Uztdj9Zb6Tt1zKafqVfdMGwVca1z5z6fbX7DmsySSuJd8HiP6I1j505DCS83cLxo5rmSNeVEA==}
+  fast-equals@6.0.2:
+    resolution: {integrity: sha512-sAjhj9ZhOxYCGiNMnZLaucOqf5ZeFnHNoKoAZiD9thhJ0N8RP85qJK759/97C/3L7NzzmGVB5uiX9AUpySZmUQ==}
     engines: {node: '>=6.0.0'}
 
   fast-glob@3.3.3:
@@ -3948,8 +4013,8 @@ packages:
   flatted@3.4.2:
     resolution: {integrity: sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==}
 
-  fs-extra@11.3.5:
-    resolution: {integrity: sha512-eKpRKAovdpZtR1WopLHxlBWvAgPny3c4gX1G5Jhwmmw4XJj0ifSD5qB5TOo8hmA0wlRKDAOAhEE1yVPgs6Fgcg==}
+  fs-extra@11.4.0:
+    resolution: {integrity: sha512-EQsFzMUJkCKGr1ePqlYADkIUmHW1s3ZXr5Yqy6wbGrfUCphpl2maM/kyOIRA2HpP3AaFQTZXD4ldjek+nccddA==}
     engines: {node: '>=14.14'}
 
   fs-extra@7.0.1:
@@ -3971,10 +4036,6 @@ packages:
   geotiff@3.0.5:
     resolution: {integrity: sha512-OWcL9S9+yDZ6iAlXMt32T1iwUApJM8UiD47xbm6ZP1h33d10fqkPs14EG/ttT5EnefpZSx3G15iDFC5FxUNUwA==}
     engines: {node: '>=10.19'}
-
-  get-npm-tarball-url@2.1.0:
-    resolution: {integrity: sha512-ro+DiMu5DXgRBabqXupW38h7WPZ9+Ad8UjwhvsmmN8w1sU7ab0nzAXvVZ4kqYg57OrqomRtJvepX5/xvFKNtjA==}
-    engines: {node: '>=12.17'}
 
   get-stream@9.0.1:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
@@ -4058,8 +4119,8 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  immutable@5.1.6:
-    resolution: {integrity: sha512-q1swsS8K7L8usSHuOqF2TAoCCkonYz0SG38wLAggaa4Wml70zixIvt2ql4coQ2C2B3hTjltJry4r6bULwgAXLQ==}
+  immutable@5.1.9:
+    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -4411,8 +4472,8 @@ packages:
   outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
 
-  oxc-resolver@11.21.3:
-    resolution: {integrity: sha512-2Mx3fKQz7+xgrBONjsxOgCGtMHOn38/HxMzW1I5efwXB5a4lRN0Vp40gYUJFBWJslcrvwoofTrqoTnLbwTd3pA==}
+  oxc-resolver@11.24.2:
+    resolution: {integrity: sha512-FY91FiDBj7ls5MsFS9jN3tjz2o0/zsdSsymlakySaBwVJZorHhkWyICLZMKxlu1R9vYo+sd3z1jwb4J8x7bNDw==}
 
   oxlint@1.72.0:
     resolution: {integrity: sha512-1rhdZIP/EvoI91ABIwNU5Q8+bWf8mjrS5UzIOZld4d4bXxJvtlUhlQvaoTogIGin/qdErMOrwaIJvCSIAKTLhA==}
@@ -5351,7 +5412,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@chakra-ui/react@3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@chakra-ui/react@3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@ark-ui/react': 5.37.2(patch_hash=cdcaff11f2f2c324a7d04d94bfaaa7d325234a04b33a49a4b2d2344fa73ec625)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@emotion/is-prop-valid': 1.4.0
@@ -5539,24 +5600,24 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.0': {}
 
-  '@emnapi/core@1.11.0':
-    dependencies:
-      '@emnapi/wasi-threads': 1.2.2
-      tslib: 2.8.1
-    optional: true
-
   '@emnapi/core@1.11.1':
     dependencies:
       '@emnapi/wasi-threads': 1.2.2
       tslib: 2.8.1
     optional: true
 
-  '@emnapi/runtime@1.11.0':
+  '@emnapi/core@1.11.2':
     dependencies:
+      '@emnapi/wasi-threads': 1.2.2
       tslib: 2.8.1
     optional: true
 
   '@emnapi/runtime@1.11.1':
+    dependencies:
+      tslib: 2.8.1
+    optional: true
+
+  '@emnapi/runtime@1.11.2':
     dependencies:
       tslib: 2.8.1
     optional: true
@@ -5774,6 +5835,10 @@ snapshots:
 
   '@formatjs/icu-skeleton-parser@2.1.11': {}
 
+  '@formatjs/intl-localematcher@0.8.13':
+    dependencies:
+      '@formatjs/fast-memoize': 3.1.7
+
   '@formatjs/intl@4.1.17':
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
@@ -5862,17 +5927,17 @@ snapshots:
       quickselect: 3.0.0
       tinyqueue: 3.0.0
 
-  '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)':
-    dependencies:
-      '@emnapi/core': 1.11.0
-      '@emnapi/runtime': 1.11.0
-      '@tybys/wasm-util': 0.10.3
-    optional: true
-
   '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
     dependencies:
       '@emnapi/core': 1.11.1
       '@emnapi/runtime': 1.11.1
+      '@tybys/wasm-util': 0.10.3
+    optional: true
+
+  '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)':
+    dependencies:
+      '@emnapi/core': 1.11.2
+      '@emnapi/runtime': 1.11.2
       '@tybys/wasm-util': 0.10.3
     optional: true
 
@@ -5888,15 +5953,15 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@open-pioneer/base-theme@4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@open-pioneer/base-theme@4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@chakra-ui/react': 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@chakra-ui/react': 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     transitivePeerDependencies:
       - '@emotion/react'
       - react
       - react-dom
 
-  '@open-pioneer/build-common@4.0.1-dev.20260623134110(rollup@4.62.2)':
+  '@open-pioneer/build-common@4.0.2(rollup@4.62.2)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
       semver: 7.8.5
@@ -5905,9 +5970,9 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@open-pioneer/build-package-cli@3.1.1-dev.20260623134110(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package-cli@3.2.1(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
-      '@open-pioneer/build-package': 4.2.1-dev.20260623134110(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
+      '@open-pioneer/build-package': 4.3.1(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
       chalk: 5.6.2
       commander: 15.0.0
     transitivePeerDependencies:
@@ -5915,17 +5980,17 @@ snapshots:
       - supports-color
       - typescript
 
-  '@open-pioneer/build-package@4.2.1-dev.20260623134110(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package@4.3.1(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
-      '@open-pioneer/build-common': 4.0.1-dev.20260623134110(rollup@4.62.2)
-      '@open-pioneer/build-support': 3.1.1-dev.20260623134110
+      '@open-pioneer/build-common': 4.0.2(rollup@4.62.2)
+      '@open-pioneer/build-support': 3.1.2
       '@rollup/plugin-node-resolve': 16.0.3(rollup@4.62.2)
       chalk: 5.6.2
       debug: 4.4.3(supports-color@7.2.0)
       esbuild: 0.28.1
       find-git-root: 1.1.0
       find-workspaces: 0.3.1
-      fs-extra: 11.3.5
+      fs-extra: 11.4.0
       import-meta-resolve: 4.2.0
       postcss: 8.5.22
       postcss-import: 16.1.1(postcss@8.5.22)
@@ -5938,14 +6003,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@open-pioneer/build-support@3.1.1-dev.20260623134110': {}
+  '@open-pioneer/build-support@3.1.2': {}
 
-  '@open-pioneer/chakra-snippets@4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))':
+  '@open-pioneer/chakra-snippets@4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))':
     dependencies:
       '@ark-ui/react': 5.37.2(patch_hash=cdcaff11f2f2c324a7d04d94bfaaa7d325234a04b33a49a4b2d2344fa73ec625)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@chakra-ui/react': 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@chakra-ui/react': 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react: 19.2.8
       react-icons: 5.7.0(react@19.2.8)
     transitivePeerDependencies:
@@ -5953,44 +6018,44 @@ snapshots:
       - '@types/react'
       - react-dom
 
-  '@open-pioneer/changesets-release-line@0.1.1-dev.20260623134110': {}
+  '@open-pioneer/changesets-release-line@0.1.2': {}
 
-  '@open-pioneer/check-pnpm-duplicates@0.3.3-dev.20260623134110':
+  '@open-pioneer/check-pnpm-duplicates@0.3.4':
     dependencies:
-      '@pnpm/lockfile.fs': 1100.1.6(@pnpm/logger@1100.0.0)
-      '@pnpm/lockfile.utils': 1100.0.13
-      '@pnpm/lockfile.walker': 1100.0.11
+      '@pnpm/lockfile.fs': 1100.1.11(@pnpm/logger@1100.0.0)
+      '@pnpm/lockfile.utils': 1100.1.5
+      '@pnpm/lockfile.walker': 1100.0.16
       '@pnpm/logger': 1100.0.0
-      '@pnpm/types': 1101.3.2
+      '@pnpm/types': 1101.6.0
       chalk: 5.6.2
       commander: 15.0.0
-      js-yaml: 4.3.0
+      js-yaml: 5.2.2
 
-  '@open-pioneer/core@4.7.0-dev.20260624141040':
+  '@open-pioneer/core@4.7.0-dev.20260727091735':
     dependencies:
       '@conterra/reactivity-events': 0.8.6
-      fast-equals: 6.0.0
+      fast-equals: 6.0.2
 
-  '@open-pioneer/http@4.7.0-dev.20260624141040(@types/react@19.2.17)':
+  '@open-pioneer/http@4.7.0-dev.20260727091735(@types/react@19.2.17)':
     dependencies:
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/local-storage@4.7.0-dev.20260624141040(@types/react@19.2.17)':
+  '@open-pioneer/local-storage@4.7.0-dev.20260727091735(@types/react@19.2.17)':
     dependencies:
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/notifier@4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))':
+  '@open-pioneer/notifier@4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))':
     dependencies:
-      '@chakra-ui/react': 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/react-utils': 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@chakra-ui/react': 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/react-utils': 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
       react: 19.2.8
       react-icons: 5.7.0(react@19.2.8)
     transitivePeerDependencies:
@@ -5998,42 +6063,43 @@ snapshots:
       - '@types/react'
       - react-dom
 
-  '@open-pioneer/react-utils@4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))':
+  '@open-pioneer/react-utils@4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))':
     dependencies:
-      '@chakra-ui/react': 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@chakra-ui/react': 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core': 0.8.6
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/reactivity': 4.7.0-dev.20260624141040
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/reactivity': 4.7.0-dev.20260727091735
       react: 19.2.8
     transitivePeerDependencies:
       - '@emotion/react'
       - react-dom
 
-  '@open-pioneer/reactivity@4.7.0-dev.20260624141040':
+  '@open-pioneer/reactivity@4.7.0-dev.20260727091735':
     dependencies:
       '@conterra/reactivity-core': 0.8.6
       react: 19.2.8
 
-  '@open-pioneer/runtime@4.7.0-dev.20260624141040(@types/react@19.2.17)':
+  '@open-pioneer/runtime@4.7.0-dev.20260727091735(@types/react@19.2.17)':
     dependencies:
-      '@chakra-ui/react': 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@chakra-ui/react': 3.36.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@conterra/reactivity-core': 0.8.6
       '@emotion/cache': 11.14.0
       '@emotion/react': 11.14.0(@types/react@19.2.17)(react@19.2.8)
       '@formatjs/intl': 4.1.17
-      '@open-pioneer/base-theme': 4.7.0-dev.20260624141040(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@open-pioneer/core': 4.7.0-dev.20260624141040
-      '@open-pioneer/reactivity': 4.7.0-dev.20260624141040
+      '@formatjs/intl-localematcher': 0.8.13
+      '@open-pioneer/base-theme': 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@open-pioneer/core': 4.7.0-dev.20260727091735
+      '@open-pioneer/reactivity': 4.7.0-dev.20260727091735
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
     transitivePeerDependencies:
       - '@types/react'
 
-  '@open-pioneer/test-utils@4.7.0-dev.20260624141040(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)':
+  '@open-pioneer/test-utils@4.7.0-dev.20260727091735(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)':
     dependencies:
       '@conterra/reactivity-core': 0.8.6
       '@formatjs/intl': 4.1.17
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
       '@testing-library/dom': 10.4.1
       '@testing-library/react': 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
@@ -6042,16 +6108,16 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@open-pioneer/vite-plugin-pioneer@6.0.1-dev.20260623134110(@open-pioneer/runtime@4.7.0-dev.20260624141040(@types/react@19.2.17))(rollup@4.62.2)(sass@1.101.7)(supports-color@7.2.0)(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))':
+  '@open-pioneer/vite-plugin-pioneer@6.0.2(@open-pioneer/runtime@4.7.0-dev.20260727091735(@types/react@19.2.17))(rollup@4.62.2)(sass@1.101.7)(supports-color@7.2.0)(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))':
     dependencies:
       '@babel/generator': 7.29.7
       '@babel/template': 7.29.7
       '@babel/types': 7.29.7
-      '@open-pioneer/build-common': 4.0.1-dev.20260623134110(rollup@4.62.2)
-      '@open-pioneer/runtime': 4.7.0-dev.20260624141040(@types/react@19.2.17)
+      '@open-pioneer/build-common': 4.0.2(rollup@4.62.2)
+      '@open-pioneer/runtime': 4.7.0-dev.20260727091735(@types/react@19.2.17)
       debug: 4.4.3(supports-color@7.2.0)
-      js-yaml: 4.3.0
-      oxc-resolver: 11.21.3
+      js-yaml: 5.2.2
+      oxc-resolver: 11.24.2
       sass: 1.101.7
       vite: 8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0)
       vitefu: 1.1.3(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))
@@ -6063,65 +6129,65 @@ snapshots:
 
   '@oxc-project/types@0.139.0': {}
 
-  '@oxc-resolver/binding-android-arm-eabi@11.21.3':
+  '@oxc-resolver/binding-android-arm-eabi@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-android-arm64@11.21.3':
+  '@oxc-resolver/binding-android-arm64@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-darwin-arm64@11.21.3':
+  '@oxc-resolver/binding-darwin-arm64@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-darwin-x64@11.21.3':
+  '@oxc-resolver/binding-darwin-x64@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-freebsd-x64@11.21.3':
+  '@oxc-resolver/binding-freebsd-x64@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm-gnueabihf@11.21.3':
+  '@oxc-resolver/binding-linux-arm-gnueabihf@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm-musleabihf@11.21.3':
+  '@oxc-resolver/binding-linux-arm-musleabihf@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm64-gnu@11.21.3':
+  '@oxc-resolver/binding-linux-arm64-gnu@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm64-musl@11.21.3':
+  '@oxc-resolver/binding-linux-arm64-musl@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-ppc64-gnu@11.21.3':
+  '@oxc-resolver/binding-linux-ppc64-gnu@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-riscv64-gnu@11.21.3':
+  '@oxc-resolver/binding-linux-riscv64-gnu@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-riscv64-musl@11.21.3':
+  '@oxc-resolver/binding-linux-riscv64-musl@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-s390x-gnu@11.21.3':
+  '@oxc-resolver/binding-linux-s390x-gnu@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-x64-gnu@11.21.3':
+  '@oxc-resolver/binding-linux-x64-gnu@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-x64-musl@11.21.3':
+  '@oxc-resolver/binding-linux-x64-musl@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-openharmony-arm64@11.21.3':
+  '@oxc-resolver/binding-openharmony-arm64@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-wasm32-wasi@11.21.3':
+  '@oxc-resolver/binding-wasm32-wasi@11.24.2':
     dependencies:
-      '@emnapi/core': 1.11.0
-      '@emnapi/runtime': 1.11.0
-      '@napi-rs/wasm-runtime': 1.1.6(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)
+      '@emnapi/core': 1.11.2
+      '@emnapi/runtime': 1.11.2
+      '@napi-rs/wasm-runtime': 1.1.6(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)
     optional: true
 
-  '@oxc-resolver/binding-win32-arm64-msvc@11.21.3':
+  '@oxc-resolver/binding-win32-arm64-msvc@11.24.2':
     optional: true
 
-  '@oxc-resolver/binding-win32-x64-msvc@11.21.3':
+  '@oxc-resolver/binding-win32-x64-msvc@11.24.2':
     optional: true
 
   '@oxlint/binding-android-arm-eabi@1.72.0':
@@ -6248,51 +6314,86 @@ snapshots:
 
   '@pnpm/constants@1100.0.0': {}
 
+  '@pnpm/constants@1100.0.1': {}
+
   '@pnpm/crypto.hash@1100.0.1':
     dependencies:
       '@pnpm/fs.graceful-fs': 1100.1.0
       ssri: 13.0.1
 
-  '@pnpm/deps.path@1100.0.8':
+  '@pnpm/crypto.hash@1100.0.2':
     dependencies:
-      '@pnpm/crypto.hash': 1100.0.1
-      '@pnpm/types': 1101.3.2
+      '@pnpm/fs.graceful-fs': 1100.1.1
+      ssri: 13.0.1
+
+  '@pnpm/deps.path@1100.0.11':
+    dependencies:
+      '@pnpm/crypto.hash': 1100.0.2
+      '@pnpm/types': 1101.6.0
       semver: 7.8.5
 
-  '@pnpm/error@1100.0.0':
+  '@pnpm/deps.path@1100.0.9':
+    dependencies:
+      '@pnpm/crypto.hash': 1100.0.1
+      '@pnpm/types': 1101.4.0
+      semver: 7.8.5
+
+  '@pnpm/error@1100.0.1':
     dependencies:
       '@pnpm/constants': 1100.0.0
 
-  '@pnpm/fetching.fetcher-base@1100.1.9':
+  '@pnpm/error@1100.1.0':
     dependencies:
-      '@pnpm/resolving.resolver-base': 1100.4.2
-      '@pnpm/types': 1101.3.2
+      '@pnpm/constants': 1100.0.1
+
+  '@pnpm/fetching.fetcher-base@1100.2.2':
+    dependencies:
+      '@pnpm/resolving.resolver-base': 1100.5.2
+      '@pnpm/types': 1101.4.0
+      '@types/ssri': 7.1.5
+
+  '@pnpm/fetching.fetcher-base@1100.2.4':
+    dependencies:
+      '@pnpm/resolving.resolver-base': 1100.5.4
+      '@pnpm/types': 1101.6.0
       '@types/ssri': 7.1.5
 
   '@pnpm/fs.graceful-fs@1100.1.0':
     dependencies:
       graceful-fs: 4.2.11
 
-  '@pnpm/hooks.types@1100.0.12':
+  '@pnpm/fs.graceful-fs@1100.1.1':
     dependencies:
-      '@pnpm/fetching.fetcher-base': 1100.1.9
-      '@pnpm/lockfile.types': 1100.0.11
-      '@pnpm/resolving.resolver-base': 1100.4.2
-      '@pnpm/store.cafs-types': 1100.0.1
-      '@pnpm/types': 1101.3.2
+      graceful-fs: 4.2.11
 
-  '@pnpm/lockfile.fs@1100.1.6(@pnpm/logger@1100.0.0)':
+  '@pnpm/hooks.types@1100.2.1':
+    dependencies:
+      '@pnpm/fetching.fetcher-base': 1100.2.2
+      '@pnpm/lockfile.types': 1100.0.14
+      '@pnpm/resolving.resolver-base': 1100.5.2
+      '@pnpm/store.cafs-types': 1100.0.1
+      '@pnpm/types': 1101.4.0
+
+  '@pnpm/hooks.types@1100.2.3':
+    dependencies:
+      '@pnpm/fetching.fetcher-base': 1100.2.4
+      '@pnpm/lockfile.types': 1100.0.16
+      '@pnpm/resolving.resolver-base': 1100.5.4
+      '@pnpm/store.cafs-types': 1100.0.2
+      '@pnpm/types': 1101.6.0
+
+  '@pnpm/lockfile.fs@1100.1.11(@pnpm/logger@1100.0.0)':
     dependencies:
       '@pnpm/constants': 1100.0.0
-      '@pnpm/deps.path': 1100.0.8
-      '@pnpm/error': 1100.0.0
-      '@pnpm/lockfile.merger': 1100.0.11
-      '@pnpm/lockfile.types': 1100.0.11
-      '@pnpm/lockfile.utils': 1100.0.13
+      '@pnpm/deps.path': 1100.0.9
+      '@pnpm/error': 1100.0.1
+      '@pnpm/lockfile.merger': 1100.0.14
+      '@pnpm/lockfile.types': 1100.0.14
+      '@pnpm/lockfile.utils': 1100.1.3
       '@pnpm/logger': 1100.0.0
       '@pnpm/network.git-utils': 1100.0.2
       '@pnpm/object.key-sorting': 1100.0.1
-      '@pnpm/types': 1101.3.2
+      '@pnpm/types': 1101.4.0
       '@zkochan/rimraf': 4.0.0
       comver-to-semver: 2.0.0
       js-yaml: '@zkochan/js-yaml@0.0.11'
@@ -6302,36 +6403,53 @@ snapshots:
       strip-bom: 5.0.0
       write-file-atomic: 7.0.1
 
-  '@pnpm/lockfile.merger@1100.0.11':
+  '@pnpm/lockfile.merger@1100.0.14':
     dependencies:
-      '@pnpm/lockfile.types': 1100.0.11
-      '@pnpm/types': 1101.3.2
+      '@pnpm/lockfile.types': 1100.0.14
+      '@pnpm/types': 1101.4.0
       comver-to-semver: 2.0.0
       ramda: '@pnpm/ramda@0.28.1'
       semver: 7.8.5
 
-  '@pnpm/lockfile.types@1100.0.11':
+  '@pnpm/lockfile.types@1100.0.14':
     dependencies:
       '@pnpm/patching.types': 1100.0.0
-      '@pnpm/resolving.resolver-base': 1100.4.2
-      '@pnpm/types': 1101.3.2
+      '@pnpm/resolving.resolver-base': 1100.5.2
+      '@pnpm/types': 1101.4.0
 
-  '@pnpm/lockfile.utils@1100.0.13':
+  '@pnpm/lockfile.types@1100.0.16':
     dependencies:
-      '@pnpm/deps.path': 1100.0.8
-      '@pnpm/error': 1100.0.0
-      '@pnpm/hooks.types': 1100.0.12
-      '@pnpm/lockfile.types': 1100.0.11
-      '@pnpm/resolving.resolver-base': 1100.4.2
-      '@pnpm/types': 1101.3.2
-      get-npm-tarball-url: 2.1.0
+      '@pnpm/patching.types': 1100.0.1
+      '@pnpm/resolving.resolver-base': 1100.5.4
+      '@pnpm/types': 1101.6.0
+
+  '@pnpm/lockfile.utils@1100.1.3':
+    dependencies:
+      '@pnpm/deps.path': 1100.0.9
+      '@pnpm/error': 1100.0.1
+      '@pnpm/hooks.types': 1100.2.1
+      '@pnpm/lockfile.types': 1100.0.14
+      '@pnpm/resolving.resolver-base': 1100.5.2
+      '@pnpm/resolving.tarball-url': 1100.0.0
+      '@pnpm/types': 1101.4.0
       ramda: '@pnpm/ramda@0.28.1'
 
-  '@pnpm/lockfile.walker@1100.0.11':
+  '@pnpm/lockfile.utils@1100.1.5':
     dependencies:
-      '@pnpm/deps.path': 1100.0.8
-      '@pnpm/lockfile.types': 1100.0.11
-      '@pnpm/types': 1101.3.2
+      '@pnpm/deps.path': 1100.0.11
+      '@pnpm/error': 1100.1.0
+      '@pnpm/hooks.types': 1100.2.3
+      '@pnpm/lockfile.types': 1100.0.16
+      '@pnpm/resolving.resolver-base': 1100.5.4
+      '@pnpm/resolving.tarball-url': 1100.0.1
+      '@pnpm/types': 1101.6.0
+      ramda: '@pnpm/ramda@0.28.1'
+
+  '@pnpm/lockfile.walker@1100.0.16':
+    dependencies:
+      '@pnpm/deps.path': 1100.0.11
+      '@pnpm/lockfile.types': 1100.0.16
+      '@pnpm/types': 1101.6.0
 
   '@pnpm/logger@1100.0.0':
     dependencies:
@@ -6349,15 +6467,29 @@ snapshots:
 
   '@pnpm/patching.types@1100.0.0': {}
 
+  '@pnpm/patching.types@1100.0.1': {}
+
   '@pnpm/ramda@0.28.1': {}
 
-  '@pnpm/resolving.resolver-base@1100.4.2':
+  '@pnpm/resolving.resolver-base@1100.5.2':
     dependencies:
-      '@pnpm/types': 1101.3.2
+      '@pnpm/types': 1101.4.0
+
+  '@pnpm/resolving.resolver-base@1100.5.4':
+    dependencies:
+      '@pnpm/types': 1101.6.0
+
+  '@pnpm/resolving.tarball-url@1100.0.0': {}
+
+  '@pnpm/resolving.tarball-url@1100.0.1': {}
 
   '@pnpm/store.cafs-types@1100.0.1': {}
 
-  '@pnpm/types@1101.3.2': {}
+  '@pnpm/store.cafs-types@1100.0.2': {}
+
+  '@pnpm/types@1101.4.0': {}
+
+  '@pnpm/types@1101.6.0': {}
 
   '@pnpm/util.lex-comparator@4.0.1': {}
 
@@ -7354,7 +7486,7 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@5.0.7:
+  brace-expansion@5.0.8:
     dependencies:
       balanced-match: 4.0.4
 
@@ -7483,7 +7615,7 @@ snapshots:
 
   dom-accessibility-api@0.6.3: {}
 
-  dompurify@3.4.11:
+  dompurify@3.4.12:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
     optional: true
@@ -7637,7 +7769,7 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
-  fast-equals@6.0.0: {}
+  fast-equals@6.0.2: {}
 
   fast-glob@3.3.3:
     dependencies:
@@ -7710,7 +7842,7 @@ snapshots:
 
   flatted@3.4.2: {}
 
-  fs-extra@11.3.5:
+  fs-extra@11.4.0:
     dependencies:
       graceful-fs: 4.2.11
       jsonfile: 6.2.1
@@ -7743,8 +7875,6 @@ snapshots:
       web-worker: 1.5.0
       xml-utils: 1.10.2
       zstddec: 0.2.0
-
-  get-npm-tarball-url@2.1.0: {}
 
   get-stream@9.0.1:
     dependencies:
@@ -7839,7 +7969,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  immutable@5.1.6: {}
+  immutable@5.1.9: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -7966,7 +8096,7 @@ snapshots:
     optionalDependencies:
       canvg: 3.0.11
       core-js: 3.49.0
-      dompurify: 3.4.11
+      dompurify: 3.4.12
       html2canvas: 1.4.1
 
   keyv@4.5.4:
@@ -8093,7 +8223,7 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.7
+      brace-expansion: 5.0.8
 
   minimatch@3.1.5:
     dependencies:
@@ -8175,27 +8305,27 @@ snapshots:
 
   outdent@0.5.0: {}
 
-  oxc-resolver@11.21.3:
+  oxc-resolver@11.24.2:
     optionalDependencies:
-      '@oxc-resolver/binding-android-arm-eabi': 11.21.3
-      '@oxc-resolver/binding-android-arm64': 11.21.3
-      '@oxc-resolver/binding-darwin-arm64': 11.21.3
-      '@oxc-resolver/binding-darwin-x64': 11.21.3
-      '@oxc-resolver/binding-freebsd-x64': 11.21.3
-      '@oxc-resolver/binding-linux-arm-gnueabihf': 11.21.3
-      '@oxc-resolver/binding-linux-arm-musleabihf': 11.21.3
-      '@oxc-resolver/binding-linux-arm64-gnu': 11.21.3
-      '@oxc-resolver/binding-linux-arm64-musl': 11.21.3
-      '@oxc-resolver/binding-linux-ppc64-gnu': 11.21.3
-      '@oxc-resolver/binding-linux-riscv64-gnu': 11.21.3
-      '@oxc-resolver/binding-linux-riscv64-musl': 11.21.3
-      '@oxc-resolver/binding-linux-s390x-gnu': 11.21.3
-      '@oxc-resolver/binding-linux-x64-gnu': 11.21.3
-      '@oxc-resolver/binding-linux-x64-musl': 11.21.3
-      '@oxc-resolver/binding-openharmony-arm64': 11.21.3
-      '@oxc-resolver/binding-wasm32-wasi': 11.21.3
-      '@oxc-resolver/binding-win32-arm64-msvc': 11.21.3
-      '@oxc-resolver/binding-win32-x64-msvc': 11.21.3
+      '@oxc-resolver/binding-android-arm-eabi': 11.24.2
+      '@oxc-resolver/binding-android-arm64': 11.24.2
+      '@oxc-resolver/binding-darwin-arm64': 11.24.2
+      '@oxc-resolver/binding-darwin-x64': 11.24.2
+      '@oxc-resolver/binding-freebsd-x64': 11.24.2
+      '@oxc-resolver/binding-linux-arm-gnueabihf': 11.24.2
+      '@oxc-resolver/binding-linux-arm-musleabihf': 11.24.2
+      '@oxc-resolver/binding-linux-arm64-gnu': 11.24.2
+      '@oxc-resolver/binding-linux-arm64-musl': 11.24.2
+      '@oxc-resolver/binding-linux-ppc64-gnu': 11.24.2
+      '@oxc-resolver/binding-linux-riscv64-gnu': 11.24.2
+      '@oxc-resolver/binding-linux-riscv64-musl': 11.24.2
+      '@oxc-resolver/binding-linux-s390x-gnu': 11.24.2
+      '@oxc-resolver/binding-linux-x64-gnu': 11.24.2
+      '@oxc-resolver/binding-linux-x64-musl': 11.24.2
+      '@oxc-resolver/binding-openharmony-arm64': 11.24.2
+      '@oxc-resolver/binding-wasm32-wasi': 11.24.2
+      '@oxc-resolver/binding-win32-arm64-msvc': 11.24.2
+      '@oxc-resolver/binding-win32-x64-msvc': 11.24.2
 
   oxlint@1.72.0:
     optionalDependencies:
@@ -8549,7 +8679,7 @@ snapshots:
   sass@1.101.7:
     dependencies:
       chokidar: 5.0.0
-      immutable: 5.1.6
+      immutable: 5.1.9
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.6

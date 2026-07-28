@@ -24,4 +24,4 @@
 "@open-pioneer/spatial-bookmarks": minor
 ---
 
-Update Chakra to 3.36.0
+Update Chakra to 3.36.1
