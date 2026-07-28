@@ -99,8 +99,13 @@ function SelectionReady(props: CommonComponentProps & { viewModel: SelectionView
             <Select.Root
                 className="selection-source"
                 collection={sourceOptionsCollection}
-                value={currentSource ? [getSourceId(currentSource)] : undefined}
-                onValueChange={(option) => option && (viewModel.currentSource = option.items[0])}
+                value={currentSource ? [getSourceId(currentSource)] : []}
+                onValueChange={(details) => {
+                    const source = details.items[0];
+                    if (source) {
+                        viewModel.currentSource = source;
+                    }
+                }}
                 lazyMount={true}
                 unmountOnExit={true}
             >

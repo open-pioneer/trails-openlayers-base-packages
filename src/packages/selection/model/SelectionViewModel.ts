@@ -6,7 +6,8 @@ import {
     destroyResources,
     isAbortError,
     Resource,
-    shallowEqual
+    shallowEqual,
+    throwAbortError
 } from "@open-pioneer/core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { Extent } from "ol/extent";
@@ -30,6 +31,13 @@ export interface Messages {
     noSource: string;
 }
 
+/**
+ * Marker for a selection that has been cleared.
+ * The cleared state (when the selected source has been "lost") should be sticky, a new source
+ * should not be selected automatically.
+ */
+const CLEARED = Symbol("cleared");
+
 export class SelectionViewModel {
     #map: MapModel;
     #messages: Messages;
@@ -46,21 +54,35 @@ export class SelectionViewModel {
     /** The set of available selection sources. */
     #sources = reactive<SelectionSource[]>([], { equal: shallowEqual });
 
-    /** The currently selected selection source (free choice within this.#sources). */
+    /**
+     * The currently selected selection source (free choice within this.#sources).
+     *
+     * The state is linked to the set of sources:
+     *
+     * - while nothing has been selected yet, the first source is selected automatically
+     * - if the current source is removed from the set of sources, the selection is cleared
+     *
+     * Once the selection has been cleared that way, it remains empty until a source is
+     * selected explicitly again: later updates of the set of sources must not silently
+     * re-enable the selection behind the user's back.
+     */
     #currentSource = linked(
         () => this.#sources.value,
         (
             sources: SelectionSource[],
-            previousSource: SelectionSource | undefined
-        ): SelectionSource | undefined => {
+            previousSource: SelectionSource | typeof CLEARED | undefined
+        ): SelectionSource | typeof CLEARED | undefined => {
+            if (previousSource === CLEARED) {
+                return CLEARED;
+            }
             if (previousSource) {
-                return sources.includes(previousSource) ? previousSource : undefined;
+                return sources.includes(previousSource) ? previousSource : CLEARED;
             }
             return sources[0];
         }
     );
     #active = computed(() => {
-        const source = this.#currentSource.value;
+        const source = this.currentSource;
         return !!source && getSourceStatus(source).kind === "available";
     });
     #ariaMessage = computed(() => {
@@ -81,6 +103,10 @@ export class SelectionViewModel {
     // eslint-disable-next-line no-unused-private-class-members
     #tooltip: Overlay | undefined;
 
+    /** The selection request that is currently running (if any). */
+    #currentRequest: AbortController | undefined;
+
+    /** Resources owned by this instance. */
     #resources: Resource[];
 
     constructor(options: {
@@ -99,6 +125,7 @@ export class SelectionViewModel {
     }
 
     destroy() {
+        this.#abortRequest();
         destroyResources(this.#resources);
     }
 
@@ -111,27 +138,30 @@ export class SelectionViewModel {
     }
 
     get currentSource(): SelectionSource | undefined {
-        return this.#currentSource.value;
+        const source = this.#currentSource.value;
+        return source === CLEARED ? undefined : source;
     }
 
     set currentSource(source: SelectionSource | undefined) {
-        if (this.#sources.value.length > 0) {
+        const sources = this.#sources.value;
+        if (sources.length > 0) {
             if (!source) {
                 throw new Error(
                     "Internal error: cannot select 'undefined' if there are sources present."
                 );
             }
-            if (!this.#sources.value.includes(source)) {
+            if (!sources.includes(source)) {
                 throw new Error("Internal error: cannot select unknown selection source.");
             }
+            this.#currentSource.value = source;
         } else {
             if (source) {
                 throw new Error(
                     "Internal error: can only select 'undefined' if there are no sources present."
                 );
             }
+            // Nothing can be selected; the current state is already empty.
         }
-        this.#currentSource.value = source;
     }
 
     /** Returns true if the selection interaction is currently active. */
@@ -157,7 +187,10 @@ export class SelectionViewModel {
                     this.#map,
                     (geometry) => this.#onGeometrySelected(geometry)
                 ));
-                return () => selection.destroy();
+                return () => {
+                    selection.destroy();
+                    this.#abortRequest();
+                };
             },
             {
                 immediate: true
@@ -218,27 +251,40 @@ export class SelectionViewModel {
      * Triggers search on the currently selected selection source.
      */
     async #onGeometrySelected(geometry: Geometry) {
-        const source = this.#currentSource.value;
+        const source = this.currentSource;
         if (!source) {
             return;
         }
 
+        // Only the most recent selection is of interest; cancel the previous one (if any).
+        const request = this.#startRequest();
         try {
             LOG.debug(`Starting selection on source '${source.label}'`);
 
             const extent = geometry.getExtent();
-            const results = await this.#selectFromSource(source, extent);
+            const results = await this.#selectFromSource(source, extent, request.signal);
+            if (request.signal.aborted) {
+                // Superseded by another selection, or the widget is gone.
+                throwAbortError();
+            }
+
             LOG.debug(`Found ${results.length} results on source '${source.label}'`);
             this.#onComplete(source, results);
         } catch (e) {
             if (!isAbortError(e)) {
                 LOG.error(`selection from source ${source.label} failed`, e);
-                this.#onError();
+                if (!request.signal.aborted) {
+                    this.#onError();
+                }
+            }
+        } finally {
+            if (this.#currentRequest === request) {
+                this.#currentRequest = undefined;
             }
         }
     }
 
-    async #selectFromSource(source: SelectionSource, extent: Extent) {
+    async #selectFromSource(source: SelectionSource, extent: Extent, signal: AbortSignal) {
         const map = this.#map;
         const maxResults = this.#maxResults;
         let results = await source.select(
@@ -247,13 +293,25 @@ export class SelectionViewModel {
                 maxResults,
                 map: map,
                 mapProjection: map.projection,
-                signal: new AbortController().signal // currently not used
+                signal
             }
         );
         if (results.length > maxResults) {
             results = results.slice(0, maxResults);
         }
         return results;
+    }
+
+    /** Starts a new selection request, cancelling the previous one (if any). */
+    #startRequest(): AbortController {
+        this.#abortRequest();
+        return (this.#currentRequest = new AbortController());
+    }
+
+    /** Cancels the current selection request (if any); its results will be ignored. */
+    #abortRequest(): void {
+        this.#currentRequest?.abort();
+        this.#currentRequest = undefined;
     }
 }
 

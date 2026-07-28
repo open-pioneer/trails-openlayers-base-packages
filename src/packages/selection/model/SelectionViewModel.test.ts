@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive } from "@conterra/reactivity-core";
+import { nextTick, reactive } from "@conterra/reactivity-core";
+import { throwAbortError } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { Extent } from "ol/extent";
@@ -71,6 +72,39 @@ describe("current source", () => {
 
         viewModel.sources = [];
         expect(viewModel.currentSource).toBeUndefined();
+    });
+
+    it("does not select a source automatically after the selection was cleared", async () => {
+        const source1 = new TestSource("Source 1");
+        const source2 = new TestSource("Source 2");
+        const source3 = new TestSource("Source 3");
+        const { viewModel } = await setup({ sources: [source1, source2] });
+        expect(viewModel.currentSource).toBe(source1);
+
+        viewModel.sources = [source2]; // clears the selection
+        expect(viewModel.currentSource).toBeUndefined();
+
+        // Later updates of the sources must not silently re-enable the selection,
+        // not even if the removed source comes back.
+        viewModel.sources = [source2, source3];
+        expect(viewModel.currentSource).toBeUndefined();
+
+        viewModel.sources = [source1, source2, source3];
+        expect(viewModel.currentSource).toBeUndefined();
+    });
+
+    it("keeps the source the user picked after the selection had been cleared", async () => {
+        const source1 = new TestSource("Source 1");
+        const source2 = new TestSource("Source 2");
+        const { viewModel } = await setup({ sources: [source1, source2] });
+        expect(viewModel.currentSource).toBe(source1);
+
+        viewModel.sources = [source2]; // clears the selection
+        expect(viewModel.currentSource).toBeUndefined();
+
+        viewModel.currentSource = source2; // explicit choice
+        viewModel.sources = [source1, source2]; // still selected
+        expect(viewModel.currentSource).toBe(source2);
     });
 
     it("supports switching to another known source", async () => {
@@ -304,6 +338,7 @@ describe("selection", () => {
         expect(options.mapProjection).toBe(map.projection);
         expect(options.maxResults).toBe(10000); // default
         expect(options.signal).toBeInstanceOf(AbortSignal);
+        expect(options.signal.aborted).toBe(false);
 
         expect(onComplete).toHaveBeenCalledWith(source, source.results);
     });
@@ -316,6 +351,62 @@ describe("selection", () => {
         });
         await vi.waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1));
         expect(onComplete.mock.lastCall![1]).toEqual(source.results.slice(0, 1));
+    });
+
+    it("only reports the results of the most recent selection", async () => {
+        const source = new BlockingTestSource("Source", "available");
+        const { map, onComplete } = await setup({ sources: [source] });
+
+        await vi.waitFor(() => {
+            selectExtent(map, EXTENT);
+        });
+        selectExtent(map, EXTENT); // the user selects again while the first request is running
+        await vi.waitFor(() => expect(source.calls).toHaveLength(2));
+
+        // The outdated request has been cancelled.
+        expect(source.options(0).signal.aborted).toBe(true);
+        expect(source.options(1).signal.aborted).toBe(false);
+
+        // The outdated request finishes last and must not overwrite the current results.
+        const outdated = [source.results[0]!];
+        await source.completeSelect(1);
+        await source.completeSelect(0, outdated);
+
+        expect(onComplete).toHaveBeenCalledTimes(1);
+        expect(onComplete).toHaveBeenCalledWith(source, source.results);
+    });
+
+    it("cancels a running selection when the current source becomes unavailable", async () => {
+        const source = new BlockingTestSource("Source", "available");
+        const { map, onComplete, onError } = await setup({ sources: [source] });
+
+        await vi.waitFor(() => {
+            selectExtent(map, EXTENT);
+        });
+        await vi.waitFor(() => expect(source.calls).toHaveLength(1));
+
+        source.status = "unavailable";
+        await vi.waitFor(() => expect(source.options(0).signal.aborted).toBe(true));
+
+        await source.completeSelect(0);
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(onError).not.toHaveBeenCalled();
+    });
+
+    it("does not report an error when the source rejects with an abort error", async () => {
+        const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
+        const source = new TestSource("Cancelled", "available");
+        source.select = async () => throwAbortError();
+
+        const { map, onComplete, onError } = await setup({ sources: [source] });
+        await vi.waitFor(() => {
+            selectExtent(map, EXTENT);
+        });
+        await nextTick();
+
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(onError).not.toHaveBeenCalled();
+        expect(logSpy).not.toHaveBeenCalled();
     });
 
     it("reports errors thrown by the source", async () => {
@@ -359,6 +450,7 @@ describe("getSourceStatus", () => {
     });
 });
 
+/** A selection source that returns its results immediately. */
 class TestSource implements SelectionSource {
     readonly label: string;
     readonly results: SelectionResult[] = [
@@ -385,6 +477,47 @@ class TestSource implements SelectionSource {
     async select(kind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
         this.calls.push([kind, options]);
         return this.results;
+    }
+}
+
+/**
+ * A selection source that keeps its `select()` calls pending until the test completes them.
+ *
+ * This makes it possible to inspect the view model (and the options it passed to the source)
+ * while a selection request is still running.
+ */
+class BlockingTestSource extends TestSource {
+    /** Resolve functions of the pending `select()` calls, in call order. */
+    readonly #pending: ((results: SelectionResult[]) => void)[] = [];
+
+    override async select(
+        kind: SelectionKind,
+        options: SelectionOptions
+    ): Promise<SelectionResult[]> {
+        const callIndex = this.calls.push([kind, options]) - 1;
+        return await new Promise<SelectionResult[]>((resolve) => {
+            this.#pending[callIndex] = resolve;
+        });
+    }
+
+    /** The options that were passed to the n-th `select()` call. */
+    options(callIndex: number): SelectionOptions {
+        const call = this.calls[callIndex];
+        if (!call) {
+            throw new Error(`There is no select() call with index ${callIndex}.`);
+        }
+        return call[1];
+    }
+
+    /** Completes the n-th `select()` call and waits for the view model to react. */
+    async completeSelect(callIndex: number, results = this.results): Promise<void> {
+        const resolve = this.#pending[callIndex];
+        if (!resolve) {
+            throw new Error(`There is no pending select() call with index ${callIndex}.`);
+        }
+        delete this.#pending[callIndex];
+        resolve(results);
+        await nextTick();
     }
 }
 

@@ -69,6 +69,10 @@ export interface SelectionOptions {
     /**
      * The signal can be used to detect cancellation.
      *
+     * The signal is aborted when the results of this selection are no longer needed,
+     * for example because the user started another selection in the meantime
+     * or because the selection widget has been destroyed.
+     *
      * You can pass this signal to builtin functions like `fetch` that automatically
      * support cancellation.
      */
@@ -104,6 +108,9 @@ export interface SelectionSource {
      * The id of this source.
      *
      * Must be unique across all selection sources used within the same selection component.
+     *
+     * The id must not change while the source is in use (this value is not reactive).
+     * If no id is defined, the selection component generates one internally.
      */
     readonly id?: string;
 
@@ -129,6 +136,12 @@ export interface SelectionSource {
      *
      * Implementations should return the results ordered by priority (best match first), if possible.
      *
+     * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
+     *
+     * NOTE: If your selection source implements custom error handling (i.e. `try`/`catch`), it is
+     * good practice to forward abort errors without modification. This will enable the selection
+     * widget to differentiate real errors from cancellations.
+     *
      * @param selectionKind The geometry with which to perform the spatial selection. Currently only
      * an extent is supported.
      * @param options see interface documentation {@link SelectionOptions}
@@ -142,7 +155,9 @@ export interface VectorLayerSelectionSourceOptions {
     label: string;
 }
 
-export interface VectorLayerSelectionSource extends SelectionSource, Resource {}
+export interface VectorLayerSelectionSource extends SelectionSource, Resource {
+    readonly status: SelectionSourceStatus;
+}
 
 /**
  * A factory that creates {@link VectorLayerSelectionSource | selection sources} to be used on an
