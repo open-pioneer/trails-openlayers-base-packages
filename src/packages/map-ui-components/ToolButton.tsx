@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Button, ButtonProps, Icon, Toggle } from "@chakra-ui/react";
 import { Tooltip, TooltipProps } from "@open-pioneer/chakra-snippets/tooltip";
 import {
     CommonComponentProps,
     mergeChakraProps,
-    useCommonComponentProps
+    useCommonComponentProps,
+    classNames
 } from "@open-pioneer/react-utils";
-import { classNames } from "@open-pioneer/react-utils";
 import {
     FC,
     MouseEvent,

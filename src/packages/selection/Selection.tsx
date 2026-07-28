@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Box,
     chakra,
@@ -20,9 +21,9 @@ import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
+import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
-import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -163,12 +164,12 @@ function useSelectionSourceId(): GetSelectionSourceId {
     }
 
     return useCallback((selectionSource: SelectionSource) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         const ids = sourceIds.current!;
         if (!ids.has(selectionSource)) {
             ids.set(selectionSource, `source-${counter.current++}`);
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         return ids.get(selectionSource)!;
     }, []);
 }
@@ -341,6 +342,7 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
 /**
  * Hook to manage map controls and tooltip
  */
+// oxlint-disable-next-line max-params
 function useDragSelection(
     map: MapModel,
     intl: PackageIntl,

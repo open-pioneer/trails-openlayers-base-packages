@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
 import Feature from "ol/Feature";
 import FeatureFormat from "ol/format/Feature";
@@ -41,6 +42,7 @@ export class NextStrategy {
 
         const featureChunks: Feature[][] = [];
         do {
+            // oxlint-disable-next-line no-await-in-loop
             const { features, nextLink } = await queryFeatures(
                 url,
                 options.featureFormat,
@@ -55,7 +57,7 @@ export class NextStrategy {
                 break;
             }
             url = new URL(nextLink);
-            // eslint-disable-next-line no-constant-condition
+            // oxlint-disable-next-line no-constant-condition
         } while (1);
         return featureChunks.flat(1);
     }

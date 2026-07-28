@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
@@ -70,7 +71,7 @@ export function AppUI() {
                     <TitledSection
                         title={
                             <Box
-                                role="region"
+                                as="section"
                                 aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
                                 textAlign="center"
                                 py={1}
@@ -94,6 +95,7 @@ export function AppUI() {
                                             width={350}
                                         >
                                             {showToc && (
+                                                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
                                                 <Box role="dialog" aria-labelledby={tocTitleId}>
                                                     <TitledSection
                                                         title={

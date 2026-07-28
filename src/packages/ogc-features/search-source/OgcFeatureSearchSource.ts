@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { isAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { SearchOptions, SearchResult, SearchSource } from "@open-pioneer/search";

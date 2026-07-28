@@ -3,14 +3,14 @@
 
 import { MapContainer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import VectorLayer from "ol/layer/Vector";
 import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { Geolocation } from "./Geolocation";
-import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
 import { mockSuccessGeolocation, mockErrorGeolocation } from "./test-utils";
-import VectorLayer from "ol/layer/Vector";
-import userEvent from "@testing-library/user-event";
 
 beforeAll(() => {
     mockVectorLayer();

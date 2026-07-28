@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Layer, MapModel, Overlay } from "@open-pioneer/map";
-import { Select } from "ol/interaction";
-import { unByKey } from "ol/Observable";
 import type { Feature } from "ol";
 import type { EventsKey } from "ol/events";
+import { Select } from "ol/interaction";
 import { Layer as OlLayer } from "ol/layer";
-import { BaseInteraction } from "./BaseInteraction";
+import { unByKey } from "ol/Observable";
 import type { SelectionOptions } from "../../../api/model/InteractionOptions";
 import { TooltipMessages } from "../controller/EditingController";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface SelectionParameters {
     readonly layers: Layer[];

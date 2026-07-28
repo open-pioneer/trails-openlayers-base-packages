@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { MapModel } from "@open-pioneer/map";
 import { View } from "ol";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
-import OlMap from "ol/Map";
-import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { Coordinate } from "ol/coordinate";
+import { EventsKey } from "ol/events";
+import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
 import { useEffect, useState } from "react";
 
 interface MapViewState {

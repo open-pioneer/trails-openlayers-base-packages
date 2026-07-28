@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { type Layer, type MapModel, Overlay } from "@open-pioneer/map";
 import { Collection, type Feature } from "ol";
 import type { Geometry } from "ol/geom";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import { Modify } from "ol/interaction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
-import { BaseInteraction } from "./BaseInteraction";
 import type { TooltipMessages } from "../controller/EditingController";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface ModificationParameters {
     readonly feature: Feature;

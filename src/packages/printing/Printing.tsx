@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Button, Field, HStack, Input } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { createLogger } from "@open-pioneer/core";
@@ -10,8 +11,8 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { FC, FormEvent, useEffect, useState } from "react";
-import { FileFormatType, PrintingController } from "./PrintingController";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
+import { FileFormatType, PrintingController } from "./PrintingController";
 
 const LOG = createLogger(sourceId);
 

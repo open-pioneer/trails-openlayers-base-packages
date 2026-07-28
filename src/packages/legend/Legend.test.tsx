@@ -1,5 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Box, Image, Text } from "@chakra-ui/react";
 import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import {
@@ -10,9 +14,6 @@ import {
 } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import TileLayer from "ol/layer/Tile";
 import { ReactNode } from "react";
 import { disableReactActWarnings } from "test-utils";
@@ -120,7 +121,7 @@ it("should successfully show legend for Component configuration", async () => {
                             return (
                                 <Box>
                                     <Text>{props.layer.title}</Text>
-                                    <Box style={dotStyle}></Box>
+                                    <Box style={dotStyle} />
                                 </Box>
                             );
                         }
@@ -349,7 +350,8 @@ it("does not show child legends if 'hide-children' is used", async () => {
     render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
-    await getLegendImages(legendDiv, 0);
+    const legendImages = await getLegendImages(legendDiv, 0);
+    expect(legendImages.length).toBe(0);
 });
 
 it("only shows legend entry for group layer and not their children", async () => {
@@ -481,7 +483,7 @@ it("shows legend entries in correct order", async () => {
                                         <Image
                                             className="legend-item__image"
                                             src="https://fake.image.url/layer-3.png"
-                                        ></Image>
+                                        />
                                     </Box>
                                 </Box>
                             );
@@ -593,7 +595,7 @@ it("reacts to changes in layer visibility", async () => {
                                         <Image
                                             className="legend-item__image"
                                             src="https://fake.image.url/layer-2.png"
-                                        ></Image>
+                                        />
                                     </Box>
                                 </Box>
                             );
@@ -801,7 +803,7 @@ it("reacts to changes in layer's internal state", async () => {
                                         <Image
                                             className="legend-item__image"
                                             src="https://fake.image.url/layer-2.png"
-                                        ></Image>
+                                        />
                                     </Box>
                                 </Box>
                             );

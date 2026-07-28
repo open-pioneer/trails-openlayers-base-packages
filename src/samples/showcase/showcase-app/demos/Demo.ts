@@ -1,17 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { ReadonlyReactive } from "@conterra/reactivity-core";
+import { EditingService } from "@open-pioneer/editing";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
-import { createTocAndLegendDemo } from "./TocLegendDemo";
-import { createSelectionDemo } from "./SelectionDemo";
+import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
 import { createEditingDemo } from "./EditingDemo";
 import { createFeatureEditingDemo } from "./FeatureEditingDemo";
-import { EditingService } from "@open-pioneer/editing";
-import { NotificationService } from "@open-pioneer/notifier";
+import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
+import { createSelectionDemo } from "./SelectionDemo";
 import {
     createCoordinateViewerDemo,
     createGeolocationDemo,
@@ -24,8 +26,7 @@ import {
     createScaleViewerDemo,
     createSpatialBookmarksDemo
 } from "./SimpleDemos";
-import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
-import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
+import { createTocAndLegendDemo } from "./TocLegendDemo";
 
 export interface Demo {
     /** Unique id */

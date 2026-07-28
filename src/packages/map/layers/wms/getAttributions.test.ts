@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { readFileSync } from "fs";
-import WMSCapabilities from "ol/format/WMSCapabilities";
 import { resolve } from "path";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 import { expect, it } from "vitest";
 import { getAttributions } from "./getAttributions";
 

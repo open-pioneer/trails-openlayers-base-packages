@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { act, fireEvent } from "@testing-library/react";
-import { waitFor } from "@testing-library/react";
+
+import { act, fireEvent, waitFor } from "@testing-library/react";
 
 export async function showDropdown(selectTrigger: HTMLElement) {
     act(() => {

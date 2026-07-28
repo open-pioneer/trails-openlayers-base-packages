@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { Geometry } from "ol/geom";
-import type { Projection } from "ol/proj";
-import type { Extent } from "ol/extent";
+
 import type { Resource } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
-import VectorLayer from "ol/layer/Vector";
+import type { Extent } from "ol/extent";
 import Feature from "ol/Feature";
+import type { Geometry } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import type { Projection } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 
 /**

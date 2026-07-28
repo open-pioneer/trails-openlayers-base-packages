@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { isAbortError } from "@open-pioneer/core";
+import { MapModel } from "@open-pioneer/map";
+import { get as getProjection } from "ol/proj";
 import { afterEach, expect, vi, it } from "vitest";
-import { SearchController } from "./SearchController";
 import { SearchSource } from "../api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "../testSources";
-import { isAbortError } from "@open-pioneer/core";
-import { get as getProjection } from "ol/proj";
-import { MapModel } from "@open-pioneer/map";
+import { SearchController } from "./SearchController";
 
 const FAKE_REQUEST_TIMER = 0;
 const CITY_SOURCE = new FakeCitySource(FAKE_REQUEST_TIMER);

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
 import { Legend } from "@open-pioneer/legend";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";

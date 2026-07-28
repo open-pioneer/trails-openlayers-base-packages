@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { nextTick } from "@conterra/reactivity-core";
+import { NumberParser } from "@open-pioneer/core";
 import { MapContainer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { NumberParserService } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -18,8 +21,6 @@ import {
     getCurrentOptionValues,
     showDropdown
 } from "./test-utils";
-import { NumberParserService } from "@open-pioneer/runtime";
-import { NumberParser } from "@open-pioneer/core";
 
 beforeEach(() => {
     disableReactActWarnings();

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Text } from "@chakra-ui/react";
 import { LegendItemComponentProps } from "@open-pioneer/legend";
 
@@ -16,7 +17,7 @@ export function CustomLegendItem(props: LegendItemComponentProps) {
     return (
         <Box>
             <Text>{props.layer.title}</Text>
-            <Box style={dotStyle}></Box>
+            <Box style={dotStyle} />
         </Box>
     );
 }
