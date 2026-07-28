@@ -54,7 +54,7 @@
 
 ## Git / IDE-Setup
 
-- Use oxlint & prettier rules (reconfigure if necessary)
+- Use oxlint & oxfmt rules (reconfigure if necessary)
 - Use utf-8 text encoding
 - Use unix line endings. On windows, configure git's `autocrlf` feature:
 
