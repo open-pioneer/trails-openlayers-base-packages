@@ -149,13 +149,9 @@ export class AppModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
     constructor({ references }: ServiceOptions<References>) {
         this._mapRegistry = references.mapRegistry;
-        this._mapRegistry
-            .createMapModel("myMapModelId", {
-                /* map config */
-            })
-            .then((map) => {
-                // use the map model instance
-            });
+        this._mapRegistry.createMapModel("myMapModelId", {/* map config */}).then((map) => {
+            // use the map model instance
+        });
     }
 }
 ```
@@ -193,9 +189,7 @@ import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
-        return {
-            /* map config */
-        };
+        return {/* map config */};
     }
 }
 ```
