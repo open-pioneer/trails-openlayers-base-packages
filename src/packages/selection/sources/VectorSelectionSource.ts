@@ -18,11 +18,6 @@ import {
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
- * Features are:
- * -   using only the extent as selection kind
- * -   listening to layer visibility changes and updating the status of the source
- * -   limiting the number of returned selection results to the corresponding selection option
- * -   throwing an event `changed:status` when the status updates
  */
 export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSource {
     readonly id: string | undefined;
