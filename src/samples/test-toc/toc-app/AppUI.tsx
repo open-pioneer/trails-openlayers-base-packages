@@ -142,6 +142,10 @@ export function AppUI() {
                                             {'"'} and {'"'}TopPlus Open (Grau){'"'}) and one
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
+                                            {'"'} Straßennetz mit hide-children {'"'} should not
+                                            show its children in the Toc, but show that a sublayer
+                                            has an error. {'"'} Verkehr {'"'} should indicate that
+                                            some sublayer are broken.
                                         </Text>
                                         <Text>
                                             The &quot;Toggle steets group&quot; button allows

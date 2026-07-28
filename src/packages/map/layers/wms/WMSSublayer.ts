@@ -8,6 +8,7 @@ import {
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../../utils/InternalConstructorTag";
+import type { LayerLoadInfo, LayerLoadState } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
@@ -37,6 +38,8 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
     sublayers?: WMSSublayerConfig[];
 }
 
+export const SET_SUBLAYER_LOAD_INFO = Symbol("SET_SUBLAYER_LOAD_INFO");
+
 /**
  * Represents a sublayer of a {@link WMSLayer}.
  *
@@ -46,9 +49,10 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #parent: WMSSublayer | WMSLayer | undefined;
     #parentLayer: WMSLayer | undefined;
     #name: string | undefined;
-    #legend = reactive<string | undefined>();
+    #legend = reactive<string>();
     #sublayers: SublayersCollection<WMSSublayer>;
     #visible: Reactive<boolean>;
+    #loadInfo = reactive<LayerLoadInfo>("loaded");
 
     /**
      * @internal
@@ -104,6 +108,25 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
 
     override get legend(): string | undefined {
         return this.#legend.value;
+    }
+
+    get loadState(): LayerLoadState {
+        const current = this.#loadInfo.value;
+        if (typeof current === "string") {
+            return current;
+        }
+        return current.kind;
+    }
+
+    /**
+     * The error (if any) that prevented this sublayer from loading.
+     */
+    get loadError(): Error | undefined {
+        const current = this.#loadInfo.value;
+        if (typeof current === "object" && "kind" in current && current.kind === "error") {
+            return current.error;
+        }
+        return undefined;
     }
 
     override get visible(): boolean {
@@ -165,6 +188,15 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
      */
     [SET_LEGEND](legendUrl: string | undefined) {
         this.#legend.value = legendUrl;
+    }
+
+    /**
+     * Called by the parent layer once the capabilities have been validated.
+     *
+     * @internal
+     */
+    [SET_SUBLAYER_LOAD_INFO](loadInfo: LayerLoadInfo): void {
+        this.#loadInfo.value = loadInfo;
     }
 
     override setVisible(newVisibility: boolean): void {

@@ -25,6 +25,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/basemap-switcher": "workspace:*",
         "@open-pioneer/chakra-snippets": "catalog:",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
