@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { BaseFeature } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
 import {
@@ -15,7 +16,7 @@ import { usePrevious } from "react-use";
 import { DataTableProps } from "./DataTable";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
-    const { data, columns, onSelectionChange: onSelectionChange, selectionMode } = props;
+    const { data, columns, onSelectionChange, selectionMode } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const previousSelectionMode = usePrevious(props.selectionMode);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -58,7 +59,6 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
         }
     });
 
-    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         columns: columns,
         data,
@@ -89,7 +89,7 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
 
 function applyUpdate<T>(current: T, updaterOrValue: Updater<T>): T {
     if (typeof updaterOrValue === "function") {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         return (updaterOrValue as any)(current);
     }
     return updaterOrValue;

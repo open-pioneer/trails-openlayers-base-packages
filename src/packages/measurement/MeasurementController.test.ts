@@ -1,24 +1,25 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { MapContainer } from "@open-pioneer/map";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/react";
+import { Feature } from "ol";
+import { Geometry, Polygon } from "ol/geom";
+import LineString from "ol/geom/LineString";
+import { Interaction } from "ol/interaction";
+import Draw from "ol/interaction/Draw";
+import VectorLayer from "ol/layer/Vector";
+import OlMap from "ol/Map";
+import VectorSource from "ol/source/Vector";
+import { Fill, Style } from "ol/style";
+import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
+import { createElement } from "react";
 import { expect, it, vi } from "vitest";
 import { MeasurementsChangeEvent } from "./Measurement";
 import { MeasurementController } from "./MeasurementController";
-import OlMap from "ol/Map";
-import { Interaction } from "ol/interaction";
-import Draw from "ol/interaction/Draw";
-import LineString from "ol/geom/LineString";
-import VectorLayer from "ol/layer/Vector";
-import { Fill, Style } from "ol/style";
-import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
-import { Geometry, Polygon } from "ol/geom";
-import { Feature } from "ol";
-import VectorSource from "ol/source/Vector";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
-import { waitFor } from "@testing-library/dom";
-import { render } from "@testing-library/react";
-import { createElement } from "react";
-import { MapContainer } from "@open-pioneer/map";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const { olMap, controller } = await setup();

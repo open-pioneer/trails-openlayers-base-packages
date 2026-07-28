@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { MapContainer } from "@open-pioneer/map";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
+import { expect, it } from "vitest";
 import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
 it("should successfully create a zoom-in and zoom-out buttons", async () => {
@@ -24,11 +25,11 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
     // check zoom buttons are available
     const zoomInButton = await screen.findByTestId("zoom-in");
     expect(zoomInButton.tagName).toBe("BUTTON");
-    expect(zoomInButton).toMatchSnapshot();
+    expect(zoomInButton).toMatchSnapshot("zoom-in");
 
     const zoomOutButton = await screen.findByTestId("zoom-out");
     expect(zoomOutButton.tagName).toBe("BUTTON");
-    expect(zoomOutButton).toMatchSnapshot();
+    expect(zoomOutButton).toMatchSnapshot("zoom-out");
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
@@ -81,9 +82,8 @@ it("should zoom in and zoom out when clicked", async () => {
         newZoom = map.olMap.getView().getZoom();
         if (oldZoom === undefined || newZoom === undefined) {
             throw new Error("zoom level is undefined");
-        } else {
-            expect(newZoom).toBe(oldZoom + 1);
         }
+        expect(newZoom).toBe(oldZoom + 1);
     });
 
     oldZoom = newZoom;
@@ -93,8 +93,7 @@ it("should zoom in and zoom out when clicked", async () => {
         newZoom = map.olMap.getView().getZoom();
         if (oldZoom === undefined || newZoom === undefined) {
             throw new Error("zoom level is undefined");
-        } else {
-            expect(newZoom).toBe(oldZoom - 1);
         }
+        expect(newZoom).toBe(oldZoom - 1);
     });
 });

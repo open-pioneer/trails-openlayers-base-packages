@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Checkbox,
     Input,
@@ -10,13 +11,13 @@ import {
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot, DISPATCH_SYNC } from "@open-pioneer/reactivity";
 import type { ChangeEvent, ReactNode } from "react";
+import type { FieldConfig } from "../../../api/fields/FieldConfig";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { ColorPickerControl } from "./ColorPickerControl";
 import { ComboBoxControl } from "./ComboBoxControl";
 import { NumberFieldControl } from "./NumberFieldControl";
 import { RadioGroupControl } from "./RadioGroupControl";
 import { SelectControl } from "./SelectControl";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import type { FieldConfig } from "../../../api/fields/FieldConfig";
 
 export interface DefaultControlProps {
     readonly field: FieldConfig;

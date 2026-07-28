@@ -1,32 +1,35 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Box,
+    Checkbox,
     Collapsible,
     CollapsibleContent,
     Flex,
     Icon,
     IconButton,
+    List,
     Spacer,
-    Text
+    Text,
+    VisuallyHidden
 } from "@chakra-ui/react";
-import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
+import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
+import type { IconType } from "react-icons/lib";
+import { LuChevronDown, LuChevronRight, LuInfo, LuTriangleAlert } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
+import { displayItemForLayer } from "../../utils/displayLayer";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
+import { LayerTocAttributes, ListMode } from "../Toc";
+import { useChildLayers, useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { LayerTocAttributes } from "../Toc";
-import { displayItemForLayer } from "../../utils/displayLayer";
-import type { IconType } from "react-icons/lib";
 
 /**
  * Renders a single layer as a list item.
@@ -53,14 +56,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         };
     }, [layer]);
 
-    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(layer, intl);
-    const ariaLabel = useMemo(() => {
-        let label = title;
-        if (problemLabel) {
-            label += " " + problemLabel;
-        }
-        return label;
-    }, [title, problemLabel]);
+    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(
+        layer,
+        intl,
+        listMode
+    );
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     //all children hidden => do not render collapse button and child entries
@@ -99,11 +99,8 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         hasNestedChildren={hasNestedChildren}
                     />
                 )}
-                <Checkbox
-                    // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
-                    // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
-                    // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-label={ariaLabel}
+
+                <Checkbox.Root
                     checked={isVisible}
                     disabled={disabled}
                     onCheckedChange={(event) =>
@@ -114,10 +111,18 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         )
                     }
                 >
-                    <Text as="span" opacity={opacity}>
-                        {title}
-                    </Text>
-                </Checkbox>
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control>
+                        <Checkbox.Indicator />
+                    </Checkbox.Control>
+                    <Checkbox.Label>
+                        <Text as="span" opacity={opacity}>
+                            {title}
+                        </Text>
+                        {/* Same content as tooltip */}
+                        <VisuallyHidden as="div">{problemLabel}</VisuallyHidden>
+                    </Checkbox.Label>
+                </Checkbox.Root>
                 {problemIndicator}
                 <Spacer />
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
@@ -171,7 +176,7 @@ function CollapseButton(props: {
     );
 }
 
-function ProblemIndicator(props: { message: string; Icon: IconType; color?: string }) {
+function ProblemIndicator(props: { message: ReactNode; Icon: IconType; color?: string }) {
     const { message, Icon, color } = props;
     return (
         <Tooltip
@@ -180,7 +185,8 @@ function ProblemIndicator(props: { message: string; Icon: IconType; color?: stri
             contentProps={{ className: "toc-layer-item-problem-indicator-tooltip" }}
         >
             <span className="toc-layer-item-problem-indicator">
-                <Icon aria-label={message} color={color} />
+                {/* aria-hidden: layer item has an aria label that includes the problem as well */}
+                <Icon aria-hidden={true} color={color} />
             </span>
         </Tooltip>
     );
@@ -211,22 +217,28 @@ function useTocItem(layer: AnyLayer, display: boolean) {
     return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
 
-function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
-    const isAvailable = useLoadState(layer) !== "error";
+function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
+    const loadState = useLoadState(layer);
+    const sublayerError = useSublayerError(layer);
     const visibleInScale = useVisibleInScale(layer);
+    const isOwnError = loadState === "error";
+    const hasChildError = !!sublayerError;
 
     return useMemo(() => {
         let problemIndicator;
         let problemLabel;
         let opacity;
         let disabled;
-        if (!isAvailable) {
-            const label = intl.formatMessage({ id: "layerNotAvailable" });
+        if (isOwnError || hasChildError) {
+            const label = getProblemLabel(intl, isOwnError, listMode, sublayerError);
+            const color = isOwnError ? "red" : "orange";
             problemIndicator = (
-                <ProblemIndicator message={label} Icon={LuTriangleAlert} color="red" />
+                <ProblemIndicator message={label} Icon={LuTriangleAlert} color={color} />
             );
             problemLabel = label;
-            disabled = true;
+            // Only disable the checkbox for the layer that is the actual source
+            // of the error, so a group with a broken child can still be toggled.
+            disabled = isOwnError;
         } else if (!visibleInScale) {
             const label = intl.formatMessage({ id: "layerNotVisible" });
             problemIndicator = <ProblemIndicator message={label} Icon={LuInfo} />;
@@ -234,7 +246,39 @@ function useItemProblem(layer: AnyLayer, intl: PackageIntl) {
             opacity = 0.5;
         }
         return { problemIndicator, problemLabel, opacity, disabled };
-    }, [isAvailable, visibleInScale, intl]);
+    }, [isOwnError, hasChildError, visibleInScale, intl, listMode, sublayerError]);
+}
+
+/**
+ * Builds the message shown in the problem indicator.
+ *
+ * When the layer's own load state is in error, a generic message is used.
+ * If the list mode is "hide-children" the aggregated sublayer errors are listed so the user can
+ * still see which children failed, since their own indicators are not rendered.
+ */
+function getProblemLabel(
+    intl: PackageIntl,
+    isOwnError: boolean,
+    listMode: ListMode | undefined,
+    sublayerError: AggregateError | undefined
+): ReactNode {
+    if (isOwnError) {
+        return intl.formatMessage({ id: "layerNotAvailable" });
+    }
+    if (listMode === "hide-children" && sublayerError) {
+        return (
+            <>
+                <Text>{intl.formatMessage({ id: "childLayerNotAvailableDetails" })}</Text>
+                <List.Root ml={2}>
+                    {sublayerError.errors.map((error: Error, index) => (
+                        // oxlint-disable-next-line react/no-array-index-key
+                        <List.Item key={index}>{error.message}</List.Item>
+                    ))}
+                </List.Root>
+            </>
+        );
+    }
+    return intl.formatMessage({ id: "childLayerNotAvailable" });
 }
 
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {

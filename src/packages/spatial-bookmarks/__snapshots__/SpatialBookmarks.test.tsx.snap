@@ -92,7 +92,7 @@ exports[`should load the stored bookmark from local storage and present it visib
 </ul>
 `;
 
-exports[`should only delete all bookmarks after the user confirms the action. 1`] = `
+exports[`should only delete all bookmarks after the user confirms the action. > alert-delete 1`] = `
 <div
   class="chakra-alert__root css-1y5d7a2"
   role="alert"
@@ -117,7 +117,7 @@ exports[`should only delete all bookmarks after the user confirms the action. 1`
 </div>
 `;
 
-exports[`should only delete all bookmarks after the user confirms the action. 2`] = `
+exports[`should only delete all bookmarks after the user confirms the action. > alert-not-saved 1`] = `
 <div
   class="chakra-alert__title css-1jeznpc"
 >

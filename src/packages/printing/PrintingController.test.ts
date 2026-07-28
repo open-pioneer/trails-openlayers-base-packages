@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { vi, it, expect, afterEach } from "vitest";
-import { PrintingController } from "./PrintingController";
-import OlMap from "ol/Map";
+
 import { createManualPromise } from "@open-pioneer/core";
 import { createService } from "@open-pioneer/test-utils/services";
+import OlMap from "ol/Map";
+import { vi, it, expect, afterEach } from "vitest";
+import { PrintingController } from "./PrintingController";
 import { PrintJob, PrintingServiceImpl } from "./PrintingServiceImpl";
 
 afterEach(() => {

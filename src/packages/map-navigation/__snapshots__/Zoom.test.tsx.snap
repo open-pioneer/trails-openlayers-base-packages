@@ -37,7 +37,7 @@ exports[`should successfully create a zoom component with additional css classes
 </button>
 `;
 
-exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
+exports[`should successfully create a zoom-in and zoom-out buttons > zoom-in 1`] = `
 <button
   aria-label="zoom-in.title"
   class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in css-19u3ixl"
@@ -74,7 +74,7 @@ exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
 </button>
 `;
 
-exports[`should successfully create a zoom-in and zoom-out buttons 2`] = `
+exports[`should successfully create a zoom-in and zoom-out buttons > zoom-out 1`] = `
 <button
   aria-label="zoom-out.title"
   class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-out css-19u3ixl"

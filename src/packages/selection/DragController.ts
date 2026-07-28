@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { reactive, watch } from "@conterra/reactivity-core";
 import { Resource } from "@open-pioneer/core";
 import { MapModel, Overlay } from "@open-pioneer/map";
 import { MapBrowserEvent } from "ol";
-import OlMap from "ol/Map";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
+import OlMap from "ol/Map";
 import { createElement } from "react";
 import { SelectionTooltipContent } from "./SelectionTooltipContent";
 

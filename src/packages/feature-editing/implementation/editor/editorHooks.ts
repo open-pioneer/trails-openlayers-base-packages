@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+
 import { isLayer, type Layer, type MapModel } from "@open-pioneer/map";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Vector as VectorLayer } from "ol/layer";
 import type { Vector as VectorSource } from "ol/source";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Action } from "../components/action-selector/ActionSelector";
 import type {
     DrawingStep,
     EditingStep,
@@ -13,6 +13,7 @@ import type {
     SelectionStep
 } from "../../api/model/EditingStep";
 import type { FeatureTemplate } from "../../api/model/FeatureTemplate";
+import type { Action } from "../components/action-selector/ActionSelector";
 
 type StatePair<S> = [S, (newState: S) => void];
 

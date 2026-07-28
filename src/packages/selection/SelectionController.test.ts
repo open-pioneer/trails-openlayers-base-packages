@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, vi, it, describe } from "vitest";
-import { SelectionController } from "./SelectionController";
-import { SelectionOptions, SelectionSource } from "./api";
-import { FakePointSelectionSource } from "./test-utils";
-import { get as getProjection } from "ol/proj";
+
 import { Point } from "ol/geom";
+import { get as getProjection } from "ol/proj";
+import { afterEach, expect, vi, it, describe } from "vitest";
+import { SelectionOptions, SelectionSource } from "./api";
+import { SelectionController } from "./SelectionController";
+import { FakePointSelectionSource } from "./test-utils";
 
 afterEach(() => {
     vi.restoreAllMocks();

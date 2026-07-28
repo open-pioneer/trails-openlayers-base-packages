@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Table, chakra, useToken } from "@chakra-ui/react";
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
-import { useEvent } from "@open-pioneer/react-utils";
+import { useEvent, classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import {
     ColumnDef,
@@ -14,7 +15,6 @@ import {
     Table as TanstackTable,
     flexRender
 } from "@tanstack/react-table";
-import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { MouseEvent, createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -238,7 +238,7 @@ function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> 
 function MemoizedTableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
     const memoizedRows = useMemo(() => {
         return <TableRows table={table} />;
-        // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
+        // oxlint-disable-next-line react-hooks/exhaustive-deps
     }, [table, table.getSortedRowModel().rows, table.getSelectedRowModel().rows]);
     return memoizedRows;
 }
@@ -260,11 +260,11 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
         // Not used directly, but the memo must re-execute whenever this changes.
         // Note: columnSizing seems to be needed as well, because otherwise resetting the column size (header.column.resetSize())
         // won't to anything.
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // oxlint-disable-next-line @typescript-eslint/no-unused-expressions
         (void columnSizingInfo, columnSizing);
         const colSizes: { [key: string]: number } = {};
         for (let i = 0; i < tableHeaders.length; i++) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             const header = tableHeaders[i]!;
             colSizes[`--header-${header.id}-size`] = header.getSize();
             colSizes[`--col-${header.column.id}-size`] = header.column.getSize();

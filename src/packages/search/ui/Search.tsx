@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
@@ -105,6 +106,7 @@ export const Search: FC<SearchProps> = (props) => {
 };
 
 // Note: `clearInput` and `setInputValue` must be stable because only the initial value is used to construct the API instance at this time.
+// oxlint-disable-next-line max-params
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,

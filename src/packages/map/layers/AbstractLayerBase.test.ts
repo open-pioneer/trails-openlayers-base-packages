@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 /**
  * @vitest-environment node
  */
@@ -303,5 +304,13 @@ class SublayerImpl extends SharedParent {
 
     get parentLayer(): never {
         throw new Error("not implemented");
+    }
+
+    get loadState() {
+        return "loaded" as const;
+    }
+
+    get loadError(): Error | undefined {
+        return undefined;
     }
 }

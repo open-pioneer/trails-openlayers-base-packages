@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { HttpService } from "@open-pioneer/http";
-import { createTestLayer } from "@open-pioneer/map-test-utils";
+
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import TileState from "ol/TileState";
-import { ViewStateLayerStateExtent } from "ol/View";
+import { HttpService } from "@open-pioneer/http";
+import { createTestLayer } from "@open-pioneer/map-test-utils";
 import { get as getProjection } from "ol/proj";
 import { Source } from "ol/source";
+import TileState from "ol/TileState";
+import { ViewStateLayerStateExtent } from "ol/View";
 import { Mock, afterEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
-import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
+import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 
 const SIMPLE_WMTS_CAPAS = readFileSync(
     resolve(import.meta.dirname, "./wmts/test-data/SimpleWMTSCapas.xml"),
@@ -84,8 +85,10 @@ it("logs error when capabilities cannot be fetched", async () => {
         expect(logErrorSpy.mock.lastCall![0]).toContain("Failed to initialize WMTS layer");
         expect(`${logErrorSpy.mock.lastCall![1]}`).toContain("404");
     });
-    // TODO: should be "error" once implemented
-    expect(l.layer.loadState).toBe("loaded");
+    await vi.waitFor(() => {
+        expect(l.layer.loadState).toBe("error");
+    });
+    expect(l.layer.loadError?.message).toContain("404");
 });
 
 it("logs error when layer not detected in capabilities", async () => {

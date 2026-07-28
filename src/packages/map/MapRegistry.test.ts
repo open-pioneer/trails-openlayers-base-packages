@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createManualPromise, getErrorChain } from "@open-pioneer/core";
 import {
     createTestLayer,
@@ -9,14 +10,14 @@ import {
     SimpleMapOptions
 } from "@open-pioneer/map-test-utils";
 import { View } from "ol";
-import OlMap from "ol/Map";
-import type { ViewOptions as OlViewOptions } from "ol/View";
 import { Attribution } from "ol/control";
 import { defaults as defaultInteraction } from "ol/interaction";
 import dragRotate from "ol/interaction/DragRotate";
+import OlMap from "ol/Map";
+import type { ViewOptions as OlViewOptions } from "ol/View";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MapRegistry } from "./MapRegistry";
 import { SimpleLayer } from "./layers/SimpleLayer";
+import { MapRegistry } from "./MapRegistry";
 import { type MapConfig } from "./model/MapConfig";
 import { MapModel } from "./model/MapModel";
 import { registerProjections } from "./utils/projections";

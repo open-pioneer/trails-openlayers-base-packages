@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     computed,
+    constant,
     reactive,
     Reactive,
     ReadonlyReactive,
     synchronized
 } from "@conterra/reactivity-core";
-import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
-import { EventsKey } from "ol/events";
+import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
@@ -24,9 +25,11 @@ import {
     IS_TOPMOST_LAYER,
     LAYER_DEPS,
     LayerDependencies,
+    SET_METADATA_LOAD_INFO,
     SET_VISIBLE
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 import { Layer, LayerTypes } from "./unions";
 
@@ -38,6 +41,13 @@ const LOG = createLogger(sourceId);
  * @group Layer Utilities
  **/
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
+
+/**
+ * Load state of a single layer, bundling the state with its error.
+ *
+ * @internal
+ */
+export type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
 
 /**
  * Represents an operational layer in the map.
@@ -55,6 +65,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     // from the map, once connected).
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
+    #olSource: ReadonlyReactive<OlSource | undefined>;
     #isBaseLayer: boolean;
     #isTopMostLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
@@ -64,20 +75,29 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #maxResolution: ReadonlyReactive<number>;
     #minZoom: ReadonlyReactive<number>;
     #maxZoom: ReadonlyReactive<number>;
-    #loadState: Reactive<LayerLoadState>;
 
-    #stateWatchResource: Resource | undefined;
-
+    #sourceState: ReadonlyReactive<ReadonlyReactive<LayerLoadState> | undefined>;
+    #sourceInfo: ReadonlyReactive<LayerLoadInfo>;
+    #healthInfo: Reactive<LayerLoadInfo>;
+    #healthCheckStarted = false;
+    #metadataInfo: Reactive<LayerLoadInfo>;
+    #loadInfo = computed(() =>
+        combineLoadInfos(this.#sourceInfo.value, this.#healthInfo.value, this.#metadataInfo.value)
+    );
     #visibleInScale: ReadonlyReactive<boolean>;
 
     constructor(
-        config: SimpleLayerConfig,
+        config: SimpleLayerConfig & {
+            /** The initial load state (default: not-loaded). */
+            initialLoadInfo?: LayerLoadInfo;
+        },
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
         super(config);
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
+        this.#olSource = synchronizedOlSource(this.#olLayer);
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#isTopMostLayer = config.isTopMostLayer ?? false;
         this.#healthCheck = config.healthCheck;
@@ -116,8 +136,23 @@ export abstract class AbstractLayer extends AbstractLayerBase {
                 return () => unByKey(key);
             }
         );
+        this.#sourceState = computed(() => {
+            const olSource = this.olSource;
+            if (!olSource) {
+                return undefined;
+            }
 
-        this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+            return synchronized(
+                () => getSourceState(olSource),
+                (cb) => {
+                    const key = olSource.on("change", cb);
+                    return () => unByKey(key);
+                }
+            );
+        });
+        this.#sourceInfo = computed(() => makeSourceInfo(this.id, this.#sourceState.value?.value));
+        this.#healthInfo = reactive<LayerLoadInfo>("not-loaded");
+        this.#metadataInfo = reactive<LayerLoadInfo>(config.initialLoadInfo ?? "not-loaded");
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
 
@@ -165,7 +200,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             return;
         }
 
-        this.#stateWatchResource = destroyResource(this.#stateWatchResource);
         this.olLayer.dispose();
         super.destroy();
     }
@@ -187,6 +221,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
+     * The current source of the {@link olLayer}.
+     */
+    get olSource(): OlSource | undefined {
+        return this.#olSource.value;
+    }
+
+    /**
      * True if this layer is a base layer.
      *
      * Only one base layer can be visible at a time.
@@ -196,10 +237,23 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     /**
-     * The load state of a layer.
+     * The combined load state of a layer.
+     *
+     * Aggregates the OpenLayers source state, health check and metadata state.
+     * Priority for the state: `error` > `loading` > `not-loaded` > `loaded`.
      */
     get loadState(): LayerLoadState {
-        return this.#loadState.value;
+        return loadInfoState(this.#loadInfo.value);
+    }
+
+    /**
+     * The error (if any) that prevented this layer from loading.
+     *
+     * Combines errors from the OpenLayers source, the health check and the
+     * metadata request (health > metadata > source).
+     */
+    get loadError(): Error | undefined {
+        return errorOf(this.#loadInfo.value);
     }
 
     /**
@@ -273,17 +327,22 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     override [ATTACH_TO_MAP](map: MapModel): void {
         super[ATTACH_TO_MAP](map);
 
-        if (!this.#stateWatchResource) {
-            const { initial: initialState, resource: stateWatchResource } = watchLoadState(
-                this,
-                this.#healthCheck,
-                (state) => {
-                    this.#loadState.value = state;
-                }
-            );
-            this.#stateWatchResource = stateWatchResource;
-            this.#loadState.value = initialState;
+        // Custom health check is not needed when OpenLayers already reports an error state.
+        if (!this.#healthCheckStarted && errorOf(this.#sourceInfo.value) == null) {
+            this.#healthCheckStarted = true;
+            doHealthCheck(this, this.#healthCheck).then((loadInfo) => {
+                this.#healthInfo.value = loadInfo;
+            });
         }
+    }
+
+    /**
+     * Updates the load state of the layer's metadata request.
+     *
+     * @internal
+     */
+    [SET_METADATA_LOAD_INFO](loadInfo: LayerLoadInfo): void {
+        this.#metadataInfo.value = loadInfo;
     }
 
     override setVisible(newVisibility: boolean): void {
@@ -327,83 +386,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 }
 
-function watchLoadState(
-    layer: AbstractLayer,
-    healthCheck: LayerConfig["healthCheck"],
-    onChange: (newState: LayerLoadState) => void
-): { initial: LayerLoadState; resource: Resource } {
-    const olLayer = layer.olLayer;
-
-    if (!(olLayer instanceof OlLayer)) {
-        // Some layers don't have a source (such as group)
-        return {
-            initial: "loaded",
-            resource: {
-                destroy() {
-                    void 0;
-                }
-            }
-        };
-    }
-
-    let currentSource = getSource(olLayer);
-    const currentOlLayerState = getSourceState(currentSource);
-
-    let currentLoadState: LayerLoadState = currentOlLayerState;
-    let currentHealthState = "loading"; // initial state loading until health check finished
-
-    // custom health check not needed when OpenLayers already returning an error state
-    if (currentOlLayerState !== "error") {
-        // health check only once during initialization
-        doHealthCheck(layer, healthCheck).then((state: LayerLoadState) => {
-            currentHealthState = state;
-            updateState();
-        });
-    }
-
-    const updateState = () => {
-        const olLayerState = getSourceState(currentSource);
-        const nextLoadState: LayerLoadState =
-            currentHealthState === "error" ? "error" : olLayerState;
-
-        if (currentLoadState !== nextLoadState) {
-            currentLoadState = nextLoadState;
-            onChange(currentLoadState);
-        }
-    };
-
-    let stateHandle: EventsKey | undefined;
-    stateHandle = currentSource?.on("change", () => {
-        updateState();
-    });
-
-    const sourceHandle = olLayer.on("change:source", () => {
-        // unsubscribe from old source
-        stateHandle && unByKey(stateHandle);
-        stateHandle = undefined;
-
-        // subscribe to new source and update state
-        currentSource = getSource(olLayer);
-        stateHandle = currentSource?.on("change", () => {
-            updateState();
-        });
-        updateState();
-    });
-    return {
-        initial: currentLoadState,
-        resource: {
-            destroy() {
-                stateHandle && unByKey(stateHandle);
-                unByKey(sourceHandle);
-            }
-        }
-    };
-}
-
 async function doHealthCheck(
     layer: AbstractLayer,
     healthCheck: LayerConfig["healthCheck"]
-): Promise<LayerLoadState> {
+): Promise<LayerLoadInfo> {
     if (healthCheck == null) {
         return "loaded";
     }
@@ -428,26 +414,95 @@ async function doHealthCheck(
             `Unexpected object for 'healthCheck' parameter of layer '${layer.id}'`,
             healthCheck
         );
-        return "error";
+        return {
+            kind: "error",
+            error: new Error(`Invalid 'healthCheck' configuration for layer '${layer.id}'`)
+        };
     }
 
     try {
-        return await healthCheckFn(layer as Layer);
+        const state = await healthCheckFn(layer as Layer);
+        if (state === "error") {
+            return {
+                kind: "error",
+                error: new Error(`Health check failed for layer '${layer.id}'`)
+            };
+        }
+        return state;
     } catch (e) {
         LOG.warn(`Health check failed for layer '${layer.id}'`, e);
-        return "error";
+        return {
+            kind: "error",
+            error: e instanceof Error ? e : new Error(String(e))
+        };
     }
 }
 
-function getSource(olLayer: OlLayer | OlBaseLayer) {
-    if (!(olLayer instanceof OlLayer)) {
-        return undefined;
-    }
-    return (olLayer?.getSource() as OlSource | null) ?? undefined;
+const LOAD_STATE_SEVERITY: Record<LayerLoadState, number> = {
+    "not-loaded": 0,
+    loaded: 1,
+    loading: 2,
+    error: 3
+};
+
+/** Returns the higher severity of two load states: error > loading > not-loaded > loaded. */
+function higherSeverity(a: LayerLoadState, b: LayerLoadState): LayerLoadState {
+    return LOAD_STATE_SEVERITY[a] >= LOAD_STATE_SEVERITY[b] ? a : b;
 }
 
-function getSourceState(olSource: OlSource | undefined) {
-    const state = olSource?.getState();
+function combineLoadInfos(
+    source: LayerLoadInfo,
+    health: LayerLoadInfo,
+    metadata: LayerLoadInfo
+): LayerLoadInfo {
+    // If several channels are in error, report the most relevant one (health > metadata > source).
+    const error = errorOf(health) ?? errorOf(metadata) ?? errorOf(source);
+    if (error) {
+        return { kind: "error", error };
+    }
+    return higherSeverity(loadInfoState(source), loadInfoState(metadata)) as LayerLoadInfo;
+}
+
+function errorOf(info: LayerLoadInfo): Error | undefined {
+    return typeof info === "object" ? info.error : undefined;
+}
+
+function loadInfoState(info: LayerLoadInfo): LayerLoadState {
+    return typeof info === "object" ? "error" : info;
+}
+
+// OpenLayers sources carry no error detail, so synthesize one.
+function makeSourceInfo(id: string, state: LayerLoadState | undefined): LayerLoadInfo {
+    if (state == null) {
+        // no state -> no source -> just pretend its loaded
+        return "loaded";
+    }
+    if (state === "error") {
+        return {
+            kind: "error",
+            error: new Error(`Source of layer '${id}' is in error state`)
+        };
+    }
+    return state;
+}
+
+function synchronizedOlSource(layer: OlBaseLayer): ReadonlyReactive<OlSource | undefined> {
+    if (!(layer instanceof OlLayer)) {
+        // GroupLayer etc.
+        return constant(undefined);
+    }
+
+    return synchronized(
+        () => layer.getSource() ?? undefined,
+        (cb) => {
+            const key = layer.on("change:source", cb);
+            return () => unByKey(key);
+        }
+    );
+}
+
+function getSourceState(olSource: OlSource) {
+    const state = olSource.getState();
     switch (state) {
         case undefined:
             return "loaded";

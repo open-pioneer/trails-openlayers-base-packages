@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
 import { MapModel } from "@open-pioneer/map";
 
@@ -8,6 +9,7 @@ import { MapModel } from "@open-pioneer/map";
  */
 export function createDynamicOverlay(map: MapModel) {
     const contentItems = ["green", "yellow", "orange"].map((color: string, i: number) => (
+        // oxlint-disable-next-line react/no-array-index-key
         <Box key={i} bg={color} borderWidth={3} borderColor={"gray.700"} rounded={20} p={2}>
             {color}
         </Box>

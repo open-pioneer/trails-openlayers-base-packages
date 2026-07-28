@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { reactive } from "@conterra/reactivity-core";
 import { LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
+import { useReactiveValue } from "@open-pioneer/reactivity";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
@@ -12,7 +14,6 @@ import View from "ol/View";
 import { ReactNode } from "react";
 import { expect, it } from "vitest";
 import { ScaleSetter } from "./ScaleSetter";
-import { useReactiveValue } from "@open-pioneer/reactivity";
 
 const defaultBasemapConfig = [
     {

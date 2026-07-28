@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import type { Layer, MapModelProps } from "@open-pioneer/map";
+import { CommonComponentProps } from "@open-pioneer/react-utils";
 import Feature from "ol/Feature";
 import { FC } from "react";
 import { FeatureEditor as FeatureEditorImpl } from "../../implementation/FeatureEditor";
-import type { FeatureWriter } from "../model/FeatureWriter";
 import type { EditingStep } from "../model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
+import type { FeatureWriter } from "../model/FeatureWriter";
 import type { InteractionOptions } from "../model/InteractionOptions";
-import { CommonComponentProps } from "@open-pioneer/react-utils";
 
 /**
  * React component that provides a complete editing interface for creating and modifying map

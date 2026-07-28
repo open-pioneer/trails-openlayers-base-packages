@@ -2,44 +2,44 @@
     "name": "@open-pioneer/result-list",
     "version": "1.3.0",
     "description": "This package provides a UI component to display features and their attributes.",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
+    "homepage": "https://github.com/open-pioneer",
     "license": "Apache-2.0",
-    "main": "index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
         "directory": "src/packages/result-list"
     },
-    "homepage": "https://github.com/open-pioneer",
-    "keywords": [
-        "open-pioneer-trails"
-    ],
+    "main": "index.ts",
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    },
     "scripts": {
         "build": "build-pioneer-package"
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/reactivity": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
-        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-use": "catalog:",
-        "react-icons": "catalog:"
+        "react-icons": "catalog:",
+        "react-use": "catalog:"
     },
     "devDependencies": {
+        "@formatjs/intl": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
-        "@formatjs/intl": "catalog:",
-        "test-utils": "workspace:*",
-        "openlayers-base-packages": "workspace:*"
-    },
-    "publishConfig": {
-        "directory": "dist",
-        "linkDirectory": false
+        "openlayers-base-packages": "workspace:*",
+        "test-utils": "workspace:*"
     }
 }

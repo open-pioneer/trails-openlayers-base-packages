@@ -133,7 +133,7 @@ async function createPrinting() {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Printing map={map} data-testid="printing"></Printing>
+            <Printing map={map} data-testid="printing" />
         </PackageContextProvider>
     );
 }
