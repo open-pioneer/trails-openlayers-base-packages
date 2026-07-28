@@ -18,6 +18,7 @@ import RenderEvent from "ol/render/Event";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -42,26 +43,36 @@ export class PrintingController {
 
     #printMap: PrintResult | undefined = undefined;
     #overlay: Resource | undefined = undefined;
-    #printAreaLayer: VectorLayer;
+    #printAreaLayer: SimpleLayer;
     #postrenderListener: EventsKey;
     #renderEvent: RenderEvent | undefined;
 
-    constructor(map: MapModel, printingService: PrintingService, i18n: I18n) {
+    constructor(
+        map: MapModel,
+        layerFactory: LayerFactory,
+        printingService: PrintingService,
+        i18n: I18n
+    ) {
         this.#map = map;
         this.#olMap = map.olMap;
         this.#printingService = printingService;
         this.#i18n = i18n;
 
-        this.#printAreaLayer = new VectorLayer({
+        const vectorLayer = new VectorLayer({
             source: new VectorSource({
                 useSpatialIndex: false,
                 wrapX: true
-            }),
-            zIndex: 10000
+            })
         });
-        this.#olMap.addLayer(this.#printAreaLayer);
+        this.#printAreaLayer = layerFactory.create({
+            type: SimpleLayer,
+            internal: true,
+            title: "print-area-layer",
+            olLayer: vectorLayer
+        });
+        this.#map.layers.addLayer(this.#printAreaLayer, { at: "topmost" });
 
-        this.#postrenderListener = this.#printAreaLayer.on("postrender", (event) => {
+        this.#postrenderListener = vectorLayer.on("postrender", (event) => {
             this.#renderEvent = event;
             this.#drawPrintArea();
         });
@@ -70,7 +81,7 @@ export class PrintingController {
     destroy() {
         this.#reset();
         unByKey(this.#postrenderListener);
-        this.#olMap.removeLayer(this.#printAreaLayer);
+        this.#map.layers.removeLayer(this.#printAreaLayer);
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {

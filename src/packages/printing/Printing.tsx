@@ -3,7 +3,7 @@
 import { Box, Button, Field, HStack, Input } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { createLogger } from "@open-pioneer/core";
-import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -374,9 +374,10 @@ function useController(
 ) {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
 
     useEffect(() => {
-        const controller = new PrintingController(map, printingService, {
+        const controller = new PrintingController(map, layerFactory, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -385,7 +386,7 @@ function useController(
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl, printingService]);
+    }, [map, intl, printingService, layerFactory]);
 
     useEffect(() => {
         controller?.setViewPadding(viewPadding);
