@@ -8,8 +8,10 @@ import {
     Flex,
     Icon,
     IconButton,
+    List,
     Spacer,
-    Text
+    Text,
+    VisuallyHidden
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
@@ -43,6 +45,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
+    const checkboxLabelId = useId();
     const layerGroupId = useId();
     const listMode = useListMode(layer)?.listMode;
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
@@ -59,13 +62,6 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         intl,
         listMode
     );
-    const ariaLabel = useMemo(() => {
-        let label = title;
-        if (problemLabel) {
-            label += " " + problemLabel;
-        }
-        return label;
-    }, [title, problemLabel]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     //all children hidden => do not render collapse button and child entries
@@ -104,11 +100,14 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         hasNestedChildren={hasNestedChildren}
                     />
                 )}
+                <VisuallyHidden id={checkboxLabelId} as="div">
+                    <Text>{title}</Text> {problemLabel}
+                </VisuallyHidden>
                 <Checkbox
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
                     // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-label={ariaLabel}
+                    aria-labelledby={checkboxLabelId}
                     checked={isVisible}
                     disabled={disabled}
                     onCheckedChange={(event) =>
@@ -176,7 +175,7 @@ function CollapseButton(props: {
     );
 }
 
-function ProblemIndicator(props: { message: string; Icon: IconType; color?: string }) {
+function ProblemIndicator(props: { message: ReactNode; Icon: IconType; color?: string }) {
     const { message, Icon, color } = props;
     return (
         <Tooltip
@@ -185,7 +184,8 @@ function ProblemIndicator(props: { message: string; Icon: IconType; color?: stri
             contentProps={{ className: "toc-layer-item-problem-indicator-tooltip" }}
         >
             <span className="toc-layer-item-problem-indicator">
-                <Icon aria-label={message} color={color} />
+                {/* aria-hidden: layer item has an aria label that includes the problem as well */}
+                <Icon aria-hidden={true} color={color} />
             </span>
         </Tooltip>
     );
@@ -260,13 +260,22 @@ function getProblemLabel(
     isOwnError: boolean,
     listMode: ListMode | undefined,
     sublayerError: AggregateError | undefined
-): string {
+): ReactNode {
     if (isOwnError) {
         return intl.formatMessage({ id: "layerNotAvailable" });
     }
     if (listMode === "hide-children" && sublayerError) {
-        const details = sublayerError.errors.map((error: Error) => `- ${error.message}`).join("\n");
-        return intl.formatMessage({ id: "childLayerNotAvailableDetails" }, { details });
+        return (
+            <>
+                <Text>{intl.formatMessage({ id: "childLayerNotAvailableDetails" })}</Text>
+                <List.Root ml={2}>
+                    {sublayerError.errors.map((error: Error, index) => (
+                        // oxlint-disable-next-line react/no-array-index-key
+                        <List.Item key={index}>{error.message}</List.Item>
+                    ))}
+                </List.Root>
+            </>
+        );
     }
     return intl.formatMessage({ id: "childLayerNotAvailable" });
 }

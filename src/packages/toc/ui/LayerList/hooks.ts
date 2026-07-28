@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { computed } from "@conterra/reactivity-core";
+import { shallowEqual } from "@open-pioneer/core";
 import { AnyLayer, isLayer, isSublayer, Layer, LayerLoadState, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useMemo } from "react";
@@ -103,7 +104,7 @@ function sublayerErrorsEqual(
     }
     const aErrors = a.errors as Error[];
     const bErrors = b.errors as Error[];
-    return aErrors.length === bErrors.length && aErrors.every((error, i) => error === bErrors[i]);
+    return shallowEqual(aErrors, bErrors);
 }
 
 /**
