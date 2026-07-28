@@ -20,6 +20,7 @@ export default defineConfig({
         "**/temp",
         "**/test-data",
         "**/chakra-snippets",
+        "support/licenses",
         "**/.*"
     ],
     rules: {
