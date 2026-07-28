@@ -34,10 +34,10 @@ import {
 } from "./shared/internals";
 import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
+import { Sublayer } from "./unions";
 import { getAttributions } from "./wms/getAttributions";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
-import { Sublayer } from "./unions";
 
 /**
  * Configuration options to construct a {@link WMSLayer}.

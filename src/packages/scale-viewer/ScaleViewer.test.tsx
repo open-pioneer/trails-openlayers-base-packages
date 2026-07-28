@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
 import { get } from "ol/proj";
-import { ScaleViewer } from "./ScaleViewer";
 import View from "ol/View";
-import { setupMap } from "@open-pioneer/map-test-utils";
 import { ReactNode } from "react";
+import { expect, it } from "vitest";
+import { ScaleViewer } from "./ScaleViewer";
 
 it("should successfully create a scale viewer component", async () => {
     const { map, Wrapper } = await setup();

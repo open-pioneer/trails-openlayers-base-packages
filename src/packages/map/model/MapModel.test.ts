@@ -8,9 +8,9 @@ import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
 import { LineString, Point } from "ol/geom";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
-import { createMapModel } from "./createMapModel";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()

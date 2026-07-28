@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { readFileSync } from "fs";
-import WMSCapabilities from "ol/format/WMSCapabilities";
 import { resolve } from "path";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 import { expect, it } from "vitest";
 import { getAttributions } from "./getAttributions";
 

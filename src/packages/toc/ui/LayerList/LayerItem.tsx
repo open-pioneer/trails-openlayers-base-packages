@@ -14,20 +14,20 @@ import {
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
+import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { classNames } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
+import type { IconType } from "react-icons/lib";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
+import { displayItemForLayer } from "../../utils/displayLayer";
 import { slug } from "../../utils/slug";
+import { LayerTocAttributes } from "../Toc";
 import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { LayerTocAttributes } from "../Toc";
-import { displayItemForLayer } from "../../utils/displayLayer";
-import type { IconType } from "react-icons/lib";
 
 /**
  * Renders a single layer as a list item.

@@ -9,8 +9,8 @@ import {
     type ColorPickerValueChangeDetails
 } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
-import { LuCheck } from "react-icons/lu";
 import { useMemo, type ReactElement } from "react";
+import { LuCheck } from "react-icons/lu";
 import type { ColorPickerConfig } from "../../../api/fields/standardFieldConfigs";
 
 interface ColorPickerControlProps {

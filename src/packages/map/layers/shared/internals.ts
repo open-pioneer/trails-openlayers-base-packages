@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
-import { LayerConfig } from "./LayerConfig";
-import { Layer } from "../unions";
 import {
     InternalConstructorTag,
     INTERNAL_CONSTRUCTOR_TAG
 } from "../../utils/InternalConstructorTag";
+import { Layer } from "../unions";
+import { LayerConfig } from "./LayerConfig";
 
 /**
  * Options passed from the layer factory to the layer constructor.

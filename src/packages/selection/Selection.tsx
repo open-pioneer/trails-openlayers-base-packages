@@ -21,9 +21,9 @@ import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
+import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
-import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 
 /**
  * Properties supported by the {@link Selection} component.

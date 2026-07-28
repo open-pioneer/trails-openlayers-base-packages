@@ -3,13 +3,13 @@
 
 import { effect } from "@conterra/reactivity-core";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 import { expect, it, vi } from "vitest";
 import { AttributionItem, MapModel } from "../model/MapModel";
 import { MapContainer, MapContainerProps } from "../ui/MapContainer";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 
 it("renders attributions for layers in the map", async () => {
     const { map } = await setupMap({

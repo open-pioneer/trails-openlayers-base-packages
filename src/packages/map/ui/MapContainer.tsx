@@ -9,15 +9,15 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import type OlMap from "ol/Map";
+import { Coordinate } from "ol/coordinate";
 import { Extent } from "ol/extent";
+import type OlMap from "ol/Map";
 import { sourceId } from "open-pioneer:source-info";
 import { ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DISPLAY_STATUS, MapModel, MapPadding } from "../model/MapModel";
-import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "./hooks/useMapModel";
+import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { OverlaysRenderer } from "./OverlaysRenderer";
-import { Coordinate } from "ol/coordinate";
 
 const LOG = createLogger(sourceId);
 

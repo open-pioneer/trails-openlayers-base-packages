@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { constant, effect, watch } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { throwAbortError } from "@open-pioneer/core";
@@ -8,9 +11,6 @@ import { HttpService } from "@open-pioneer/http";
 import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { Group } from "ol/layer";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GroupLayer } from "../layers/GroupLayer";

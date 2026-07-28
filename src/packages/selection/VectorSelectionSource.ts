@@ -1,6 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
+import VectorLayer from "ol/layer/Vector";
+import { unByKey } from "ol/Observable";
+import VectorSource from "ol/source/Vector";
+import { v4 as uuid4v } from "uuid";
 import {
     SelectionResult,
     SelectionOptions,
@@ -8,14 +16,6 @@ import {
     VectorLayerSelectionSource,
     SelectionSourceStatusObject
 } from "./api";
-import VectorLayer from "ol/layer/Vector";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
-import { v4 as uuid4v } from "uuid";
-import Feature from "ol/Feature";
-import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
-import VectorSource from "ol/source/Vector";
-import { PackageIntl } from "@open-pioneer/runtime";
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { BaseInteraction } from "./BaseInteraction";
 import { type DrawingState } from "../useGeometryEditing";
+import { BaseInteraction } from "./BaseInteraction";
 
 interface KeyboardParameters {
     readonly actions: DrawingState;

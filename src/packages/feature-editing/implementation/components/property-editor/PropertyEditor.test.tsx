@@ -7,13 +7,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
+import { disableReactActWarnings } from "test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FormTemplateContext } from "../../../api/editor/editor";
 import type { ModificationStep } from "../../../api/model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyEditor } from "./PropertyEditor";
-import { disableReactActWarnings } from "test-utils";
 
 type DeclarativeFeatureTemplate = Extract<FeatureTemplate, { kind: "declarative" }>;
 

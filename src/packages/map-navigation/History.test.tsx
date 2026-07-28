@@ -5,9 +5,9 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { ReactNode } from "react";
 import { expect, it } from "vitest";
 import { HistoryBackward, HistoryForward } from "./History";
-import { ReactNode } from "react";
 
 it("should successfully create an view history navigation component", async () => {
     const { map, Wrapper } = await setup();

@@ -3,8 +3,8 @@
 
 import { Button, Toggle } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
-import { LuMousePointerClick } from "react-icons/lu";
 import type { ReactElement } from "react";
+import { LuMousePointerClick } from "react-icons/lu";
 
 interface SelectButtonProps {
     readonly isActive: boolean;

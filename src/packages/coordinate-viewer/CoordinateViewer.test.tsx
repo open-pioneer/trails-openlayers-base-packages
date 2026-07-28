@@ -5,8 +5,8 @@ import { MapContainer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
-import View from "ol/View";
 import BaseEvent from "ol/events/Event";
+import View from "ol/View";
 import { expect, it } from "vitest";
 import { CoordinateViewer, CoordinateViewerProps } from "./CoordinateViewer";
 

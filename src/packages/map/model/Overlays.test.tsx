@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { Box } from "@chakra-ui/react";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, waitFor } from "@testing-library/react";
+import BaseEvent from "ol/events/Event";
+import { expect, it } from "vitest";
 import { MapContainer } from "../ui/MapContainer";
 import { Overlays } from "./Overlays";
-import { expect, it } from "vitest";
-import { Box } from "@chakra-ui/react";
-import BaseEvent from "ol/events/Event";
 
 it("return all current overlays", async () => {
     const { overlays } = await setup();

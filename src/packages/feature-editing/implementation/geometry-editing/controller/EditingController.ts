@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { LayerFactory, MapModel } from "@open-pioneer/map";
+import type { Type as GeometryType } from "ol/geom/Geometry";
 import type { Vector as VectorSource } from "ol/source";
+import { ReactNode } from "react";
 import type { InteractionOptions } from "../../../api/model/InteractionOptions";
 import { BaseInteraction } from "../interactions/BaseInteraction";
 import { DoubleClickInteraction } from "../interactions/DoubleClickInteraction";
@@ -19,8 +21,6 @@ import {
 } from "../interactions/SelectionInteraction";
 import { SnappingInteraction } from "../interactions/SnappingInteraction";
 import { DrawingSession } from "./DrawingSession";
-import type { Type as GeometryType } from "ol/geom/Geometry";
-import { ReactNode } from "react";
 
 type StartDrawingFeatureOptions = Required<
     Omit<DrawingParameters, "tracker" | "layerFactory" | "tooltipMessages">

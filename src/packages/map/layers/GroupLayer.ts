@@ -9,7 +9,6 @@ import { MapModel } from "../model/MapModel";
 import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { LayerConfig } from "./shared/LayerConfig";
 import {
     ATTACH_TO_MAP,
     DETACH_FROM_MAP,
@@ -17,6 +16,7 @@ import {
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 import { Layer } from "./unions";
 
 /**

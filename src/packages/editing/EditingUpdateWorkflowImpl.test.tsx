@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { describe, expect, it, vi } from "vitest";
-import VectorLayer from "ol/layer/Vector";
-import { FlatStyle } from "ol/style/flat";
+import { constant } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render } from "@testing-library/react";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
-import { Interaction, Modify } from "ol/interaction";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
+import { Interaction, Modify } from "ol/interaction";
+import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { constant } from "@conterra/reactivity-core";
+import { FlatStyle } from "ol/style/flat";
+import { describe, expect, it, vi } from "vitest";
+import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 
 // Flat style parsing doesn't work in tests (node, happy-dom, etc.)
 vi.mock("ol/render/canvas/style.js", async (importOriginal) => {

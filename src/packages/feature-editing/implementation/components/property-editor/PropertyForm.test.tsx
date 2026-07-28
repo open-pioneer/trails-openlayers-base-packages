@@ -11,10 +11,10 @@ import { disableReactActWarnings } from "test-utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { CreationStep, ModificationStep } from "../../../api/model/EditingStep";
 import type { DeclarativeFormTemplate, FeatureTemplate } from "../../../api/model/FeatureTemplate";
-import { EditingCallbacks } from "../../editor/useEditingCallbacks";
-import { PropertyForm } from "./PropertyForm";
 import { DeclarativeFormContext, FormContext } from "../../context/PropertyFormContext";
+import { EditingCallbacks } from "../../editor/useEditingCallbacks";
 import { PropertyField } from "./PropertyField";
+import { PropertyForm } from "./PropertyForm";
 
 beforeEach(() => {
     disableReactActWarnings();

@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
-import userEvent from "@testing-library/user-event";
-import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
 
 it("Should successfully create a toc with default tool component", async () => {
     const { map } = await setupMap({

@@ -12,10 +12,10 @@ import {
     useMapModelValue
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Toc } from "@open-pioneer/toc";
-import { MAP_ID } from "./MapConfigProviderImpl";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { Toc } from "@open-pioneer/toc";
 import { useEffect, useState } from "react";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);

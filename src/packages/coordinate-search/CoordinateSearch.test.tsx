@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { NumberParser } from "@open-pioneer/core";
 import { MapContainer } from "@open-pioneer/map";
 import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { NumberParserService } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
@@ -17,8 +19,6 @@ import {
     getCurrentOptionValues,
     showDropdown
 } from "./test-utils";
-import { NumberParser } from "@open-pioneer/core";
-import { NumberParserService } from "@open-pioneer/runtime";
 
 it("should successfully create a coordinate search component", async () => {
     const { map, injectedServices } = await setUp();

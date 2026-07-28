@@ -4,9 +4,9 @@
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
+import { sourceId } from "open-pioneer:source-info";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { SearchResult, SearchSource, SelectResult } from "../api";
-import { sourceId } from "open-pioneer:source-info";
 import { SearchController, ResultGroup } from "../model/SearchController";
 import { SearchProps } from "./Search";
 

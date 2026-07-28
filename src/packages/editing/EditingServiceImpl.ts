@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { watch } from "@conterra/reactivity-core";
+import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel, MapRegistry } from "@open-pioneer/map";
+import { ServiceOptions } from "@open-pioneer/runtime";
+import { Feature } from "ol";
+import { FlatStyle } from "ol/style/flat";
 import { EditingService } from "./api";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
-import { FlatStyle } from "ol/style/flat";
-import { ServiceOptions } from "@open-pioneer/runtime";
-import { HttpService } from "@open-pioneer/http";
-import { Feature } from "ol";
-import { watch } from "@conterra/reactivity-core";
 
 export interface References {
     mapRegistry: MapRegistry;

@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { MapContainer } from "@open-pioneer/map";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
+import { expect, it } from "vitest";
 import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
 it("should successfully create a zoom-in and zoom-out buttons", async () => {

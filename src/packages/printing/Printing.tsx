@@ -11,8 +11,8 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { FC, FormEvent, useEffect, useState } from "react";
-import { FileFormatType, PrintingController } from "./PrintingController";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
+import { FileFormatType, PrintingController } from "./PrintingController";
 
 const LOG = createLogger(sourceId);
 

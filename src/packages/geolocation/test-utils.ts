@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { vi } from "vitest";
 import { GeolocationController } from "./GeolocationController";
-import { setupMap } from "@open-pioneer/map-test-utils";
 
 export function mockSuccessGeolocation(coords: number[]) {
     vi.spyOn(navigator, "geolocation", "get").mockReturnValue({

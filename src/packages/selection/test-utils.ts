@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Reactive, reactive } from "@conterra/reactivity-core";
+import { Point } from "ol/geom";
 import {
     SelectionSource,
     SelectionResult,
@@ -9,7 +10,6 @@ import {
     SelectionSourceStatus,
     SelectionKind
 } from "./api";
-import { Point } from "ol/geom";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)

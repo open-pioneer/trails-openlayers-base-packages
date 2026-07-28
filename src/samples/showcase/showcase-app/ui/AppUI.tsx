@@ -6,11 +6,11 @@ import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { ApplicationContext } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode, useEffect, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
-import { ApplicationContext } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");

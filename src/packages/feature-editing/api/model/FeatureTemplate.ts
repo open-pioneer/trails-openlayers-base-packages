@@ -5,10 +5,10 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 import type { ReactNode } from "react";
 // oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CustomFormContext } from "../editor/context";
-import type { FieldConfig } from "../fields/FieldConfig";
-import type { DrawingOptions } from "./InteractionOptions";
 // oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { FeatureEditorProps } from "../editor/editor";
+import type { FieldConfig } from "../fields/FieldConfig";
+import type { DrawingOptions } from "./InteractionOptions";
 
 /**
  * Base interface for feature template configuration.

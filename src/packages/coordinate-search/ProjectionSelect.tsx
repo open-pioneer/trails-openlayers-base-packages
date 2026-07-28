@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createListCollection, Portal, Select, VisuallyHidden } from "@chakra-ui/react";
+import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useMemo } from "react";
 import { ProjectionItem } from "./CoordinateInput";
-import { useIntl } from "open-pioneer:react-hooks";
 
 export const ProjectionSelect = memo(function ProjectionSelect(props: {
     currentProjection: ProjectionItem;

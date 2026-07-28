@@ -104,7 +104,9 @@ const template: FeatureTemplate = {
 
     // Optional drawing customization
     drawingOptions: {
-        style: new Style({/* ... */})
+        style: new Style({
+            /* ... */
+        })
     }
 };
 ```

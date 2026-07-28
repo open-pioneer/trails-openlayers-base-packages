@@ -11,11 +11,11 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
-import { SimpleLayer } from "../layers/SimpleLayer";
 import { LayerDependencies } from "../layers/shared/internals";
+import { SimpleLayer } from "../layers/SimpleLayer";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
-import { DisplayTarget, MapModel, ZoomOptions } from "./MapModel";
 import { getGeometries } from "./getGeometries";
+import { DisplayTarget, MapModel, ZoomOptions } from "./MapModel";
 
 export const DESTROY_HIGHLIGHTS = Symbol("DESTROY_HIGHLIGHTS");
 export const GET_HIGHLIGHT_LAYER = Symbol("GET_HIGHLIGHT_LAYER");

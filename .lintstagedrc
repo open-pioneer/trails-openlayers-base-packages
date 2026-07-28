@@ -1,10 +1,4 @@
-
 {
-    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": [
-        "oxfmt --no-error-on-unmatched-pattern",
-        "oxlint"
-    ],
-    "*.{md,json,css,scss,html,yaml,yml}": [
-        "oxfmt --no-error-on-unmatched-pattern"
-    ]
+    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": ["oxfmt --no-error-on-unmatched-pattern", "oxlint"],
+    "*.{md,json,css,scss,html,yaml,yml}": ["oxfmt --no-error-on-unmatched-pattern"]
 }

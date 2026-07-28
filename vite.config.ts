@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { dirname, resolve } from "node:path";
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
-import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
 
 // Find sites under src/samples with an index.html and build them all.

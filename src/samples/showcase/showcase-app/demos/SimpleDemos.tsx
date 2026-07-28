@@ -12,16 +12,16 @@ import {
     ZoomOut
 } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { OverviewMap } from "@open-pioneer/overview-map";
 import { Printing } from "@open-pioneer/printing";
+import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { Demo, SharedDemoOptions } from "./Demo";
-import { OverviewMap } from "@open-pioneer/overview-map";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
-import { FormattedRichMessage } from "@open-pioneer/react-utils";
+import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createCoordinateViewerDemo({ currentIntl }: SharedDemoOptions): Demo {
     return {

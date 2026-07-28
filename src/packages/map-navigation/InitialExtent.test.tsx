@@ -6,8 +6,8 @@ import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import OlMap from "ol/Map";
 import { Extent, equals } from "ol/extent";
+import OlMap from "ol/Map";
 import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
 

@@ -7,8 +7,8 @@ import type { Geometry } from "ol/geom";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import { Modify } from "ol/interaction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
-import { BaseInteraction } from "./BaseInteraction";
 import type { TooltipMessages } from "../controller/EditingController";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface ModificationParameters {
     readonly feature: Feature;

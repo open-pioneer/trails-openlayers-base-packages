@@ -5,9 +5,6 @@ import { Flex, useDisclosure } from "@chakra-ui/react";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useCallback, useMemo, type ReactElement } from "react";
-import { ButtonRow } from "./ButtonRow";
-import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
-import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { FeatureEditorProps, FormTemplateContext } from "../../../api/editor/editor";
 import { CreationStep, UpdateStep } from "../../../api/model/EditingStep";
 import { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
@@ -16,10 +13,13 @@ import {
     CustomFormContextImpl,
     FormContext
 } from "../../context/PropertyFormContext";
+import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import { EditingCallbacks } from "../../editor/useEditingCallbacks";
+import { ButtonRow } from "./ButtonRow";
+import { CancelConfirmationDialog } from "./CancelConfirmationDialog";
+import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { PropertyField } from "./PropertyField";
 import { PropertyForm } from "./PropertyForm";
-import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 
 export function PropertyEditor(props: {
     editingStep: CreationStep | UpdateStep;

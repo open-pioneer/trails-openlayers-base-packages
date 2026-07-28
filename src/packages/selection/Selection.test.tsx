@@ -1,23 +1,23 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { reactive } from "@conterra/reactivity-core";
 import { createTestLayer, setupMap } from "@open-pioneer/map-test-utils";
+import { NotificationService } from "@open-pioneer/notifier";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
+import { Feature } from "ol";
+import GeoJSON from "ol/format/GeoJSON";
+import { Point } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { disableReactActWarnings } from "test-utils";
+import { beforeEach, afterEach, expect, it, vi } from "vitest";
+import { SelectionSource } from "./api";
 import { Selection, SelectionSourceChangedEvent } from "./Selection";
 import { FakePointSelectionSource, NoStatusSelectionSource } from "./test-utils";
 import { VectorLayerSelectionSourceImpl } from "./VectorSelectionSource";
-import { NotificationService } from "@open-pioneer/notifier";
-import { Point } from "ol/geom";
-import { SelectionSource } from "./api";
-import VectorSource from "ol/source/Vector";
-import { Feature } from "ol";
-import GeoJSON from "ol/format/GeoJSON";
-import VectorLayer from "ol/layer/Vector";
-import { beforeEach, afterEach, expect, it, vi } from "vitest";
-import { disableReactActWarnings } from "test-utils";
-import { reactive } from "@conterra/reactivity-core";
-import { PackageIntl } from "@open-pioneer/runtime";
 
 beforeEach(() => {
     disableReactActWarnings();

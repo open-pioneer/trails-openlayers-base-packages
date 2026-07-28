@@ -4,8 +4,8 @@
 import { computed, effect, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
 import { destroyResources, Resource, shallowEqual } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
-import OlMap, { FrameState } from "ol/Map";
 import Attribution from "ol/control/Attribution";
+import OlMap, { FrameState } from "ol/Map";
 import { sanitizeHtml } from "../utils/sanitize";
 import { AttributionItem } from "./MapModel";
 

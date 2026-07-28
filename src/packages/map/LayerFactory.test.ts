@@ -7,8 +7,8 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { expect, it } from "vitest";
 import { LayerFactory } from "./LayerFactory";
 import { AbstractLayer } from "./layers/AbstractLayer";
-import { SimpleLayer } from "./layers/SimpleLayer";
 import { GET_DEPS } from "./layers/shared/internals";
+import { SimpleLayer } from "./layers/SimpleLayer";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test

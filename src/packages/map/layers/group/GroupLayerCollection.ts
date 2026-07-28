@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { getRecursiveLayers } from "../shared/getRecursiveLayers";
-import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared/LayerRetrievalOptions";
+import {
+    assertInternalConstructor,
+    InternalConstructorTag
+} from "../../utils/InternalConstructorTag";
 import { AbstractLayer } from "../AbstractLayer";
 import { GroupLayer } from "../GroupLayer";
 import { ChildrenCollection } from "../shared/ChildrenCollection";
+import { getRecursiveLayers } from "../shared/getRecursiveLayers";
 import {
     ATTACH_TO_GROUP,
     DETACH_FROM_GROUP,
     GET_PARENT,
     GET_RAW_LAYERS
 } from "../shared/internals";
-import {
-    assertInternalConstructor,
-    InternalConstructorTag
-} from "../../utils/InternalConstructorTag";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared/LayerRetrievalOptions";
 import { AnyLayer, Layer } from "../unions";
 
 /**

@@ -17,10 +17,10 @@ import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
-import { MAP_ID } from "./MapConfigProviderImpl";
 import { Fill, Icon, Stroke, Style } from "ol/style";
-import mapMarkerUrl2 from "./mapMarker2.png?url";
 import { useRef, useState } from "react";
+import { MAP_ID } from "./MapConfigProviderImpl";
+import mapMarkerUrl2 from "./mapMarker2.png?url";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);

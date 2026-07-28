@@ -3,10 +3,10 @@
 
 import { Flex, VStack, Text } from "@chakra-ui/react";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ReactNode, type ReactElement } from "react";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export interface PropertyFormProps {
     children?: ReactNode;

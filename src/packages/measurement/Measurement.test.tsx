@@ -4,9 +4,9 @@
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import OlMap from "ol/Map";
 import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
+import OlMap from "ol/Map";
 import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
@@ -151,7 +151,8 @@ async function waitForMeasurement() {
 function getGeometryType(olMap: OlMap) {
     const interactions = olMap.getInteractions().getArray();
     const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw) as
-        Draw | undefined;
+        | Draw
+        | undefined;
     const geometryType: string | undefined = (draw as any)?.type_;
     return geometryType;
 }

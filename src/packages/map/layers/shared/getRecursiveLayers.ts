@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { ChildrenCollection } from "./ChildrenCollection";
 import { AnyLayer } from "../unions";
+import { ChildrenCollection } from "./ChildrenCollection";
 import { RecursiveRetrievalOptions } from "./LayerRetrievalOptions";
 
 /** @internal */
@@ -29,7 +29,13 @@ export function getRecursiveLayers<LayerType extends AnyLayer>(
     const sortByDisplayOrder = options.sortByDisplayOrder ?? false;
     const includeInternalLayers = options.includeInternalLayers ?? false;
     const result: AnyLayer[] = [];
-    gatherRecursiveLayers({ from: options.from, filter, sortByDisplayOrder, includeInternalLayers, result });
+    gatherRecursiveLayers({
+        from: options.from,
+        filter,
+        sortByDisplayOrder,
+        includeInternalLayers,
+        result
+    });
     return result;
 }
 
@@ -42,7 +48,9 @@ interface GatherOptions<LayerType extends AnyLayer> {
 }
 
 // Walks the layer tree recursively and gathers matching layers into the result array.
-function gatherRecursiveLayers<LayerType extends AnyLayer>(options: GatherOptions<LayerType>): void {
+function gatherRecursiveLayers<LayerType extends AnyLayer>(
+    options: GatherOptions<LayerType>
+): void {
     const { from, filter, sortByDisplayOrder, includeInternalLayers, result } = options;
     const layers = from.getItems({
         sortByDisplayOrder: sortByDisplayOrder,

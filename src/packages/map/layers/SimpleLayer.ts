@@ -7,8 +7,8 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { LayerFactory } from "../LayerFactory";
 import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/LayerConfig";
 import { LayerConstructor, LayerDependencies } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 
 /**
  * Options to construct a simple layer.

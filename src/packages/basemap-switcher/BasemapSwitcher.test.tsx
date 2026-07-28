@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { nextTick } from "@conterra/reactivity-core";
+import { SimpleLayer } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor, act } from "@testing-library/react";
@@ -10,7 +11,6 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { describe, expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
-import { SimpleLayer } from "@open-pioneer/map";
 
 const defaultBasemapConfig = [
     {

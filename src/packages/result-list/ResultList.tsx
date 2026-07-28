@@ -17,8 +17,8 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
+import { DataTable } from "./DataTable/DataTable";
 
 /**
  * Configures a column in the result list component.

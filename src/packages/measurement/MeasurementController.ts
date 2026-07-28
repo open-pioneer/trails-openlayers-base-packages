@@ -3,24 +3,24 @@
 
 import { destroyResource, Resource } from "@open-pioneer/core";
 import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
-import Feature from "ol/Feature";
-import OlMap from "ol/Map";
-import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
 import { LineString, Polygon } from "ol/geom";
 import Draw from "ol/interaction/Draw";
 import { Vector as VectorLayer } from "ol/layer";
+import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
 import { Projection } from "ol/proj";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
+import { createElement } from "react";
 import {
     type MeasurementsChangeEvent,
     type MeasurementGeometry,
     type MeasurementProps
 } from "./Measurement";
-import { createElement } from "react";
 import { MeasurementTooltipContent } from "./MeasurementTooltip";
 
 type MeasurementsChangeHandler = NonNullable<MeasurementProps["onMeasurementsChange"]>;

@@ -3,8 +3,8 @@
 
 import { Table } from "@chakra-ui/react";
 import type { ReactElement } from "react";
-import { TemplateItem } from "./TemplateItem";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
+import { TemplateItem } from "./TemplateItem";
 
 interface TemplateSelectorProps {
     readonly templates: FeatureTemplate[];

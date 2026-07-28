@@ -3,8 +3,8 @@
 
 import { Snap } from "ol/interaction";
 import type { Vector as VectorSource } from "ol/source";
-import { BaseInteraction } from "./BaseInteraction";
 import type { SnappingOptions } from "../../../api/model/InteractionOptions";
+import { BaseInteraction } from "./BaseInteraction";
 
 export interface SnappingParameters {
     readonly snappingSources: VectorSource[];

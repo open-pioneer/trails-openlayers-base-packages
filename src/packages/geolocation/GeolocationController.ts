@@ -4,15 +4,15 @@
 import { reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { calculateBufferedExtent, LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
-import Feature from "ol/Feature";
-import olGeolocation, { GeolocationError } from "ol/Geolocation";
-import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import type { EventsKey } from "ol/events";
 import { Extent } from "ol/extent";
+import Feature from "ol/Feature";
+import olGeolocation, { GeolocationError } from "ol/Geolocation";
 import { Polygon } from "ol/geom";
 import Point from "ol/geom/Point";
 import VectorLayer from "ol/layer/Vector";
+import { unByKey } from "ol/Observable";
 import VectorSource from "ol/source/Vector";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";

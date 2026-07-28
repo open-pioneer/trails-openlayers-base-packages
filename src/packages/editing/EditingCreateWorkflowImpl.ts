@@ -6,10 +6,8 @@ import { createLogger, createManualPromise, ManualPromise, Resource } from "@ope
 import { HttpService } from "@open-pioneer/http";
 import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import Feature from "ol/Feature";
-import OlMap from "ol/Map";
-import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
 import {
     default as GeoJSON,
     default as GeoJSONGeometry,
@@ -17,13 +15,15 @@ import {
 } from "ol/format/GeoJSON";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
+import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
 import VectorSource from "ol/source/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { sourceId } from "open-pioneer:source-info";
-import { saveCreatedFeature } from "./SaveFeaturesHandler";
-import { createTooltip, Tooltip } from "./Tooltip";
 import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
+import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { createStyles } from "./style-utils";
+import { createTooltip, Tooltip } from "./Tooltip";
 
 const LOG = createLogger(sourceId);
 

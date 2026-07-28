@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Combobox, Highlight, HStack, ListCollection, Span } from "@chakra-ui/react";
+import { useIntl } from "open-pioneer:react-hooks";
 import { memo } from "react";
 import { SearchOption, SearchResultsState } from "./useSearchState";
-import { useIntl } from "open-pioneer:react-hooks";
 
 export interface SearchResultsProps {
     collection: ListCollection<SearchOption>;

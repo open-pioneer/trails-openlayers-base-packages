@@ -4,21 +4,21 @@
 import { batch, reactive } from "@conterra/reactivity-core";
 import { createLogger, deprecated, isAbortError } from "@open-pioneer/core";
 import { ImageTile } from "ol";
-import Tile from "ol/Tile";
-import TileState from "ol/TileState";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import TileLayer from "ol/layer/Tile";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities, Options as WMTSSourceOptions } from "ol/source/WMTS";
+import Tile from "ol/Tile";
+import TileState from "ol/TileState";
 import { sourceId } from "open-pioneer:source-info";
 // oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
-import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { fetchText } from "../utils/fetch";
+import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/LayerConfig";
 import { ATTACH_TO_MAP, GET_DEPS, LayerConstructor, LayerDependencies } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 import { getAttributions } from "./wmts/getAttributions";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 

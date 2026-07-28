@@ -12,17 +12,17 @@ import {
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
 import { v4 as uuid4v } from "uuid";
 import { MapModel } from "../model/MapModel";
-import { GroupLayer } from "./GroupLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
+import { GroupLayer } from "./GroupLayer";
 import { ChildrenCollection } from "./shared/ChildrenCollection";
-import { SublayersCollection } from "./shared/SublayersCollection";
-import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
 import {
     ATTACH_TO_GROUP,
     ATTACH_TO_MAP,
     DETACH_FROM_GROUP,
     DETACH_FROM_MAP
 } from "./shared/internals";
+import { SublayersCollection } from "./shared/SublayersCollection";
+import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
 
 export interface AbstractLayerBaseOptions {
     id?: string;

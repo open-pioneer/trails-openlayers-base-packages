@@ -63,7 +63,8 @@ interface References {
 }
 
 type ModelJobResult =
-    { kind: "model"; model: MapModel; listener: Resource } | { kind: "error"; error: Error };
+    | { kind: "model"; model: MapModel; listener: Resource }
+    | { kind: "error"; error: Error };
 
 /**
  * Provides access to registered map instances.

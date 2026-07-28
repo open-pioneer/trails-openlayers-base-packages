@@ -4,8 +4,8 @@
 import { MapModel } from "@open-pioneer/map";
 import { get as getProjection } from "ol/proj";
 import { afterEach, expect, it, vi } from "vitest";
-import { OgcFeatureSearchSource, SearchResponse } from "./OgcFeatureSearchSource";
 import { OgcFeatureSearchSourceOptions } from "../api";
+import { OgcFeatureSearchSource, SearchResponse } from "./OgcFeatureSearchSource";
 
 const mockedFetch = vi.fn();
 

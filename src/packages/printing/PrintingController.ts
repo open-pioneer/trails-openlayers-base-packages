@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { Resource } from "@open-pioneer/core";
 import OlMap from "ol/Map";
 import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay } from "./utils";
-import { Resource } from "@open-pioneer/core";
 
 export type FileFormatType = "png" | "pdf";
 
