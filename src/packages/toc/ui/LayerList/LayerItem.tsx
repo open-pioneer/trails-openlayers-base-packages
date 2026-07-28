@@ -3,6 +3,7 @@
 
 import {
     Box,
+    Checkbox,
     Collapsible,
     CollapsibleContent,
     Flex,
@@ -11,9 +12,8 @@ import {
     List,
     Spacer,
     Text,
-    VisuallyHidden
+    VisuallyHidden,
 } from "@chakra-ui/react";
-import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
 import { classNames } from "@open-pioneer/react-utils";
@@ -45,7 +45,6 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
-    const checkboxLabelId = useId();
     const layerGroupId = useId();
     const listMode = useListMode(layer)?.listMode;
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
@@ -53,14 +52,14 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             title: layer.title,
             description: layer.description,
             isVisible: layer.visible,
-            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
+            allChildrenHidden: !hasShownChildren(layer), //re-evaluates if a child layer's list mode or internal state changes
         };
     }, [layer]);
 
     const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(
         layer,
         intl,
-        listMode
+        listMode,
     );
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
@@ -100,28 +99,30 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         hasNestedChildren={hasNestedChildren}
                     />
                 )}
-                <VisuallyHidden id={checkboxLabelId} as="div">
-                    <Text>{title}</Text> {problemLabel}
-                </VisuallyHidden>
-                <Checkbox
-                    // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
-                    // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
-                    // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-labelledby={checkboxLabelId}
+
+                <Checkbox.Root
                     checked={isVisible}
                     disabled={disabled}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
                             event.checked === true,
-                            tocOptions.autoShowParents
+                            tocOptions.autoShowParents,
                         )
                     }
                 >
-                    <Text as="span" opacity={opacity}>
-                        {title}
-                    </Text>
-                </Checkbox>
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control>
+                        <Checkbox.Indicator />
+                    </Checkbox.Control>
+                    <Checkbox.Label>
+                        <Text as="span" opacity={opacity}>
+                            {title}
+                        </Text>
+                        {/* Same content as tooltip */}
+                        <VisuallyHidden as="div">{problemLabel}</VisuallyHidden>
+                    </Checkbox.Label>
+                </Checkbox.Root>
                 {problemIndicator}
                 <Spacer />
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
@@ -166,8 +167,8 @@ function CollapseButton(props: {
             css={{
                 // Chakra theme adds a background to components with "aria-expanded" by default.
                 "&:is([aria-expanded='true']):not(:hover)": {
-                    background: "none"
-                }
+                    background: "none",
+                },
             }}
         >
             <Icon>{icon}</Icon>
@@ -259,7 +260,7 @@ function getProblemLabel(
     intl: PackageIntl,
     isOwnError: boolean,
     listMode: ListMode | undefined,
-    sublayerError: AggregateError | undefined
+    sublayerError: AggregateError | undefined,
 ): ReactNode {
     if (isOwnError) {
         return intl.formatMessage({ id: "layerNotAvailable" });
@@ -283,7 +284,7 @@ function getProblemLabel(
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
     return useReactiveSnapshot(
         () => layer.attributes.toc as LayerTocAttributes | undefined,
-        [layer]
+        [layer],
     );
 }
 
@@ -291,7 +292,7 @@ function useNestedChildren(
     layerGroupId: string,
     title: string,
     layer: AnyLayer,
-    intl: PackageIntl
+    intl: PackageIntl,
 ) {
     const childLayers = useChildLayers(layer);
     const children = useMemo(() => {

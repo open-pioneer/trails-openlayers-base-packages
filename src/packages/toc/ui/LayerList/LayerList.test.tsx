@@ -271,7 +271,7 @@ it("includes the layer id in the item's class list", async () => {
 
     const item = container.querySelector(".layer-some-layer-id");
     expect(item).toBeTruthy();
-    expect(item!.textContent).toBe("Layer 1");
+    expect(item!.querySelector(".chakra-checkbox__label")?.textContent).toBe("Layer 1");
 });
 
 it("renders buttons for all layer's with description property", async () => {
@@ -428,7 +428,8 @@ it("reacts to changes of the layer load state", async () => {
     expect(checkbox.disabled).toBe(true);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
+    // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot();
 
     // and back
     await act(async () => {
@@ -474,7 +475,8 @@ it("updates problem indicators when there are visibility issues", async () => {
     });
     const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
+    // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot();
 });
 
 it("supports a hierarchy of layers", async () => {
@@ -868,13 +870,13 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(groupIcon).not.toBeNull();
     expect(groupCheckbox.disabled).toBe(false);
-    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(`"childLayerNotAvailable"`);
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot();
 
     // Child: indicator shown, checkbox disabled (direct error)
     const childIcon = childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(childIcon).not.toBeNull();
     expect(childCheckbox.disabled).toBe(true);
-    expect(childIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
+    expect(getAccessibleLabel(childItem)).toMatchInlineSnapshot();
 
     // Recovery: both clear
     await act(async () => {
@@ -926,9 +928,7 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
 
     const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
     expect(groupIcon).not.toBeNull();
-    expect(groupIcon!.getAttribute("aria-label")).toMatchInlineSnapshot(
-        `"childLayerNotAvailableDetails"`
-    );
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot();
 
     await act(async () => {
         childSource.setState("ready");
@@ -942,9 +942,26 @@ function getCurrentItems(container: HTMLElement) {
     return queryAllByRole(container, "listitem");
 }
 
-/** Returns only the labels of the layer list's current items. */
+/** Returns only the (visible) titles of the layer list's current items. */
 function getCurrentLabels(container: HTMLElement) {
-    return getCurrentItems(container).map((item) => item.textContent);
+    return getCurrentItems(container).map(
+        (item) => item.querySelector(".chakra-checkbox__label")?.textContent ?? null
+    );
+}
+
+/**
+ * Returns the accessible label announced for the item's checkbox.
+ *
+ * The label is provided by a visually hidden element (referenced via `aria-labelledby`)
+ * and combines the layer title with the current problem description (if any).
+ */
+function getAccessibleLabel(item: HTMLElement) {
+    const checkbox = item.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    );
+    const labelId = checkbox?.getAttribute("aria-labelledby");
+    const labelElement = labelId ? item.ownerDocument.getElementById(labelId) : null;
+    return labelElement?.textContent ?? null;
 }
 
 function findLayerItem(container: HTMLElement, id: string) {
