@@ -45,7 +45,6 @@ export class PrintingController {
     #overlay: Resource | undefined = undefined;
     #printAreaLayer: SimpleLayer;
     #postrenderListener: EventsKey;
-    #renderEvent: RenderEvent | undefined;
 
     constructor(
         map: MapModel,
@@ -70,11 +69,11 @@ export class PrintingController {
             title: "print-area-layer",
             olLayer: vectorLayer
         });
+
         this.#map.layers.addLayer(this.#printAreaLayer, { at: "topmost" });
 
         this.#postrenderListener = vectorLayer.on("postrender", (event) => {
-            this.#renderEvent = event;
-            this.#drawPrintArea();
+            this.#drawPrintArea(event);
         });
     }
 
@@ -86,30 +85,29 @@ export class PrintingController {
 
     setViewPadding(padding: ViewPaddingBehavior) {
         this.#viewPadding = padding;
-        this.#drawPrintArea();
+        this.#printAreaLayer.olLayer.changed();
     }
 
     setSize(size: PageSizeType) {
         this.#size = size;
-        this.#drawPrintArea();
+        this.#printAreaLayer.olLayer.changed();
     }
 
     setOrientation(orientation: PageOrientationType) {
         this.#orientation = orientation;
-        this.#drawPrintArea();
+        this.#printAreaLayer.olLayer.changed();
     }
 
     setScale(scale: number) {
         this.#scale = scale;
-        this.#drawPrintArea();
+        this.#printAreaLayer.olLayer.changed();
     }
 
-    #drawPrintArea() {
+    #drawPrintArea(renderEvent: RenderEvent) {
         const rectangle = this.#getPixelBounds();
         if (!rectangle) return;
 
-        if (!this.#renderEvent) return;
-        const context = this.#renderEvent.context;
+        const context = renderEvent.context;
         if (!context || !(context instanceof CanvasRenderingContext2D)) return;
 
         context.reset();
@@ -131,18 +129,16 @@ export class PrintingController {
         context.beginPath();
 
         // outside polygon, clockwise
-        context.moveTo(...(getRenderPixel(this.#renderEvent, [0, 0]) as [number, number]));
-        context.lineTo(...(getRenderPixel(this.#renderEvent, [mapWidth, 0]) as [number, number]));
-        context.lineTo(
-            ...(getRenderPixel(this.#renderEvent, [mapWidth, mapHeight]) as [number, number])
-        );
-        context.lineTo(...(getRenderPixel(this.#renderEvent, [0, mapHeight]) as [number, number]));
+        context.moveTo(...(getRenderPixel(renderEvent, [0, 0]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [mapWidth, 0]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [mapWidth, mapHeight]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [0, mapHeight]) as [number, number]));
 
         // inner polygon, counter-clockwise
-        context.moveTo(...(getRenderPixel(this.#renderEvent, [minx, miny]) as [number, number]));
-        context.lineTo(...(getRenderPixel(this.#renderEvent, [minx, maxy]) as [number, number]));
-        context.lineTo(...(getRenderPixel(this.#renderEvent, [maxx, maxy]) as [number, number]));
-        context.lineTo(...(getRenderPixel(this.#renderEvent, [maxx, miny]) as [number, number]));
+        context.moveTo(...(getRenderPixel(renderEvent, [minx, miny]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [minx, maxy]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [maxx, maxy]) as [number, number]));
+        context.lineTo(...(getRenderPixel(renderEvent, [maxx, miny]) as [number, number]));
 
         context.closePath();
 
