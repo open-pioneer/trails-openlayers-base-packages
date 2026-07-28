@@ -1,0 +1,8 @@
+messages:
+  selectionTitle: "Räumliche Auswahl"
+  selectionComplete: "{source} hat {count} Ergebnis(se) geliefert"
+  sourceChanged: "Aktuelle Selektionsquelle: {source}"
+  sourceCleared: "Keine Selektionsquelle"
+  ariaLabel:
+    header: "Kopfleiste"
+    map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
