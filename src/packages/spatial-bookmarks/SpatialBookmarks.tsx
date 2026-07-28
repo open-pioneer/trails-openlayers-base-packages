@@ -266,7 +266,8 @@ function BookmarkItem(props: {
             className={classNames("spatial-bookmarks-item")}
             tabIndex={0}
             rounded="md"
-            // oxlint-disable-next-line jsx-a11y/role-has-required-aria-props TODO: needs a good fix
+            // TODO: needs a good fix
+            // oxlint-disable-next-line jsx-a11y/role-has-required-aria-props
             role="option"
             cursor="pointer"
             outline={0}

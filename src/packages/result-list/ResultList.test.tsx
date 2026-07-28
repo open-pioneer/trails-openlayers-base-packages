@@ -340,7 +340,8 @@ it("expect result list display all data types except dates", async () => {
     expect(lastRowCells).toHaveLength(6);
     for (let i = 0; i < 6; ++i) {
         const cell = lastRowCells[i]!;
-        // oxlint-disable-next-line vitest/valid-expect : message is allowed
+        // message is allowed in expect
+        // oxlint-disable-next-line vitest/valid-expect
         expect(cell.textContent, "cell " + i).toBe("");
     }
 });

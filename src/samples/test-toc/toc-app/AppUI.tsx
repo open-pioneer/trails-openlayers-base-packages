@@ -95,7 +95,6 @@ export function AppUI() {
                                             width={350}
                                         >
                                             {showToc && (
-                                                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
                                                 <Box role="dialog" aria-labelledby={tocTitleId}>
                                                     <TitledSection
                                                         title={

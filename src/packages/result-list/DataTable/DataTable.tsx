@@ -238,7 +238,7 @@ function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> 
 function MemoizedTableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
     const memoizedRows = useMemo(() => {
         return <TableRows table={table} />;
-        // oxlint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
+        // oxlint-disable-next-line react-hooks/exhaustive-deps
     }, [table, table.getSortedRowModel().rows, table.getSelectedRowModel().rows]);
     return memoizedRows;
 }

@@ -197,9 +197,10 @@ it("generates automatic unique ids for layers", async () => {
 
     const ids = model.layers.getLayers().map((l) => l.id);
     const verifyId = (id: unknown, message: string) => {
-        // oxlint-disable-next-line vitest/valid-expect : message is allowed
+        // messages are allowed in expect
+        // oxlint-disable-next-line vitest/valid-expect
         expect(id, message).toBeTypeOf("string");
-        // oxlint-disable-next-line vitest/valid-expect : message is allowed
+        // oxlint-disable-next-line vitest/valid-expect
         expect((id as string).length, message).toBeGreaterThan(0);
     };
 

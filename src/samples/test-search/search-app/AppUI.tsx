@@ -99,7 +99,6 @@ export function AppUI() {
                                     top={5}
                                     left="50%"
                                     transform="translateX(-50%)"
-                                    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
                                     role="region"
                                     aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                                 >

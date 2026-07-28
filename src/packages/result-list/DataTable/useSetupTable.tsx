@@ -59,7 +59,6 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
         }
     });
 
-    // oxlint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         columns: columns,
         data,
