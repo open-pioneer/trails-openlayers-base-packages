@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-ui-components",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "Contains ui components that can used together with the map",
     "keywords": [
         "open-pioneer-trails"

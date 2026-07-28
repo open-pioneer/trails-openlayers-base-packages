@@ -1,5 +1,16 @@
 # @open-pioneer/coordinate-search
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -48,6 +59,7 @@
 
 - 66179bc: Update to core-packages v4.0.0
 - 888fc2b: improve a11y of coordinate search and coordinate input
+
     - switch order of projection select and coordinate input (visually and tab order) in order to have the correct focus order
     - add instructions to `aria-label` for coordinate input to improve usability for screenreader users
 

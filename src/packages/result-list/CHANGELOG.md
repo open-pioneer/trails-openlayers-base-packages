@@ -1,5 +1,16 @@
 # @open-pioneer/result-list
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -70,6 +81,7 @@
     ```
 
 - 5c2cca2: Fix a11y issues:
+
     - Fix wrong `aria-labelledby` ids
     - Introduce optional property `labelProperty` to result list's `input` option
         - A feature's property value is used to provide context in aria attributes.

@@ -1,5 +1,17 @@
 # @open-pioneer/measurement
 
+## 1.4.0
+
+### Minor Changes
+
+- c30396d: Update Chakra to 3.36.1
+- d862003: Update to trails core-packages 4.7.0
+
+### Patch Changes
+
+- 078bef5: Use private JavaScript properties (#) instead of TypeScript keyword.
+- c16a401: Migrated from eslint to oxlint and from prettier to oxfmt.
+
 ## 1.3.0
 
 ### Minor Changes
@@ -122,6 +134,7 @@
 
 - b152428: Update trails dependencies
 - 23b48ad: Add two new optional properties:
+
     - `predefinedMeasurements`: an array of measurements that will be added to the map (without user interaction)
     - `onMeasurementsChange`: an event listener that will be called when measurements are added or removed
 
