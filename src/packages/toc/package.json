@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/toc",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "This package provides a UI component that displays the map content to the user and allows them to control it.",
     "keywords": [
         "open-pioneer-trails"
@@ -25,6 +25,7 @@
         "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/basemap-switcher": "workspace:*",
         "@open-pioneer/chakra-snippets": "catalog:",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",

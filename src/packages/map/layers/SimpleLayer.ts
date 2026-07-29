@@ -63,7 +63,7 @@ export class SimpleLayer extends AbstractLayer {
         if (!internalTag) {
             deprecatedConstructor();
         }
-        super(config, deps, internalTag);
+        super({ ...config, initialLoadInfo: "loaded" }, deps, internalTag);
     }
 
     override get type() {

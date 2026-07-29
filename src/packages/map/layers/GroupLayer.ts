@@ -79,7 +79,7 @@ export class GroupLayer extends AbstractLayer {
 
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
-        super({ ...config, olLayer: olGroup }, deps, internalTag);
+        super({ ...config, olLayer: olGroup, initialLoadInfo: "loaded" }, deps, internalTag);
         this.#children = new GroupLayerCollection(groupLayers, this, INTERNAL_CONSTRUCTOR_TAG);
     }
 
@@ -88,6 +88,10 @@ export class GroupLayer extends AbstractLayer {
     }
 
     override get legend() {
+        return undefined;
+    }
+
+    override get olSource() {
         return undefined;
     }
 

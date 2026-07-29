@@ -85,6 +85,7 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: "happy-dom",
+            silent: "passed-only",
             setupFiles: ["testing/global-setup.ts"],
             server: {
                 deps: {
