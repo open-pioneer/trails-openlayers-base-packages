@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create a selection component and select the first selection source 1`] = `
+exports[`renders the select control for the current selection source 1`] = `
 <div
   class="chakra-stack selection css-ui72bc"
   data-testid="selection"
@@ -56,7 +56,7 @@ exports[`should successfully create a selection component and select the first s
           <div
             class="selection-source-value selection-source-value--disabled css-1x05v4l"
           >
-            Fake Selection Source #1
+            Snapshot Source
             <div
               class="css-eggl6h"
             >

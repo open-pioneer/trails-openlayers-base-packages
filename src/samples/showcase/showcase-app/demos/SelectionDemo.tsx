@@ -176,6 +176,7 @@ function initSelectionSource(
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
+        id: "kitas",
         vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
         label: opLayer.title
     });

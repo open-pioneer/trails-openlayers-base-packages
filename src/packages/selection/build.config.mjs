@@ -4,15 +4,21 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-    styles: "./selection.css",
     entryPoints: ["index"],
     i18n: ["en", "de"],
     services: {
+        SelectionViewModelFactory: {
+            provides: "selection.ViewModelFactory",
+            references: {
+                notifier: "notifier.NotificationService"
+            }
+        },
         VectorSelectionSourceFactory: {
             provides: "selection.VectorSelectionSourceFactory"
         }
     },
     ui: {
-        references: ["notifier.NotificationService"]
-    }
+        references: ["selection.ViewModelFactory"]
+    },
+    styles: "./ui/selection.css"
 });

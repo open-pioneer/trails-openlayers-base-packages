@@ -44,21 +44,27 @@ To provide the selection sources that are used by the selection-UI component, im
 ```tsx
 import {
     Selection,
+    SelectionKind,
+    SelectionOptions,
     SelectionResult,
     SelectionSource,
     SelectionSourceStatus
 } from "@open-pioneer/selection";
-import { MAP_ID } from "./MapConfigProviderImpl";
 
 class MySelectionSource implements SelectionSource {
+    // The optional id of this source. It must be unique among the sources used by the same
+    // selection component and it must not change. If no id is defined, the selection component
+    // generates one internally.
+    id = "my-sample-rest-service";
+
     // The label of this source, used as a title for this source's results.
     label = "My sample REST-Service";
 
     // The optional status of this source. If there is no status defined, it is assumed that the source is always available.
+    // Use the object form (`{ kind: "unavailable", reason: "..." }`) to tell the user why the source is
+    // not available; if no reason is given, the i18n value for "sourceNotAvailable" is displayed.
+    // This value may be reactive: changes are reflected in the UI.
     status?: SelectionSourceStatus;
-
-    // The reason that the source is not available. If it is not defined, the i18n value for "sourceNotAvailable" will be displayed
-    unavailableStatusReason?: string;
 
     // Performs a selection with a given selectionKind and returns a list of selection results.
     // see the API documentation of `SelectionSource`.
@@ -79,9 +85,8 @@ the provided service `VectorSelectionSourceFactory` can be used to create an ins
 Key features of this selection source implementation are:
 
 - using only the extent as selection kind
-- listening to layer visibility changes and updating the status of the source
+- listening to layer visibility changes and updating the reactive `status` of the source accordingly
 - limiting the number of returned selection results to the corresponding selection option
-- throwing an event `changed:status` when the status updates
 
 Inject the selection source factory by referencing `"selection.VectorSelectionSourceFactory"`:
 
@@ -106,13 +111,27 @@ and create a selection source instance:
 ```ts
 const vectorSelectionSourceFactory = this._vectorSelectionSourceFactory; // injected
 const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
+    id: "my-vector-layer", // optional, see "Implementing a selection source"
     vectorLayer: vectorLayer,
     label: "My Vector Layer Title shown in UI"
 });
+```
 
-const eventHandler = layerSelectionSource.on("changed:status", () => {
-    // do something (e.g. like removing map highlighting if unavailable)
-});
+The `status` of the source is reactive: it changes when the visibility of the layer changes.
+To react to those changes, watch the value using the reactivity API:
+
+```ts
+import { watchValue } from "@conterra/reactivity-core";
+
+const handle = watchValue(
+    () => layerSelectionSource.status,
+    (status) => {
+        // do something (e.g. like removing map highlighting if unavailable)
+    }
+);
+
+// later, when you are no longer interested in the status:
+handle.destroy();
 ```
 
 ## License

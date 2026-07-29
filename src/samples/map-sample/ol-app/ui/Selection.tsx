@@ -2,16 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Box } from "@chakra-ui/react";
-import { useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { FormatOptions } from "@open-pioneer/result-list";
-import {
-    Selection,
-    SelectionCompleteEvent,
-    SelectionSourceChangedEvent
-} from "@open-pioneer/selection";
+import { Selection, SelectionCompleteEvent } from "@open-pioneer/selection";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { AppModel } from "../AppModel";
@@ -20,7 +15,6 @@ export function SelectionComponent() {
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
-    const map = useMapModelValue(); // uses default map configured in AppUI.tsx
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useReactiveSnapshot(() => appModel.selectionSources.getItems(), [appModel]);
 
@@ -37,11 +31,6 @@ export function SelectionComponent() {
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
         const { source, results } = event;
-
-        if (!map) {
-            console.debug("Map not ready");
-            return;
-        }
 
         const currentMetadata = appModel.sourceMetadata.get(source);
         if (!currentMetadata) {
@@ -68,10 +57,6 @@ export function SelectionComponent() {
         });
     }
 
-    function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-        appModel.clearHighlight();
-    }
-
     return (
         <Box role="dialog" aria-labelledby={selectionTitleId}>
             <TitledSection
@@ -83,11 +68,7 @@ export function SelectionComponent() {
                     </SectionHeading>
                 }
             >
-                <Selection
-                    sources={sources}
-                    onSelectionComplete={onSelectionComplete}
-                    onSelectionSourceChanged={onSelectionSourceChanged}
-                />
+                <Selection sources={sources} onSelectionComplete={onSelectionComplete} />
             </TitledSection>
         </Box>
     );

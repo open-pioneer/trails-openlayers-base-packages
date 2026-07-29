@@ -1,0 +1,8 @@
+messages:
+  selectionTitle: "Spatial selection"
+  selectionComplete: "{source} returned {count} result(s)"
+  sourceChanged: "Current selection source: {source}"
+  sourceCleared: "No selection source"
+  ariaLabel:
+    header: "Header bar"
+    map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."

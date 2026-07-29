@@ -1,47 +1,49 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { computed, reactive, ReadonlyReactive } from "@conterra/reactivity-core";
+import { computed, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { EventsKey } from "ol/events";
 import Feature from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
 import { unByKey } from "ol/Observable";
 import VectorSource from "ol/source/Vector";
 import { v4 as uuid4v } from "uuid";
 import {
-    SelectionResult,
-    SelectionOptions,
     SelectionKind,
-    VectorLayerSelectionSource,
-    SelectionSourceStatusObject
-} from "./api";
+    SelectionOptions,
+    SelectionResult,
+    SelectionSourceStatusObject,
+    VectorLayerSelectionSource
+} from "../api";
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
- * Features are:
- * -   using only the extent as selection kind
- * -   listening to layer visibility changes and updating the status of the source
- * -   limiting the number of returned selection results to the corresponding selection option
- * -   throwing an event `changed:status` when the status updates
  */
 export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSource {
+    readonly id: string | undefined;
     readonly label: string;
     #vectorLayer: VectorLayer<VectorSource, Feature>;
-    #eventHandler: EventsKey;
     #currentIntl: ReadonlyReactive<PackageIntl>;
-    #layerVisible = reactive<boolean>(true);
+    #layerVisible: ReadonlyReactive<boolean>;
     #status: ReadonlyReactive<SelectionSourceStatusObject>;
 
     constructor(
+        id: string | undefined,
         vectorLayer: VectorLayer<VectorSource, Feature>,
         label: string,
         currentIntl: ReadonlyReactive<PackageIntl>
     ) {
+        this.id = id;
         this.label = label;
         this.#vectorLayer = vectorLayer;
         this.#currentIntl = currentIntl;
-        this.#layerVisible.value = vectorLayer.getVisible();
+        this.#layerVisible = synchronized(
+            () => vectorLayer.getVisible(),
+            (cb) => {
+                const key = vectorLayer.on("change:visible", cb);
+                return () => unByKey(key);
+            }
+        );
         this.#status = computed<SelectionSourceStatusObject>(() =>
             this.#layerVisible.value
                 ? { kind: "available" }
@@ -50,14 +52,9 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
                       reason: this.#currentIntl.value.formatMessage({ id: "layerNotVisibleReason" })
                   }
         );
-        this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
-            this.#layerVisible.value = this.#vectorLayer.getVisible();
-        });
     }
 
-    destroy() {
-        unByKey(this.#eventHandler);
-    }
+    destroy() {}
 
     get status() {
         return this.#status.value;
