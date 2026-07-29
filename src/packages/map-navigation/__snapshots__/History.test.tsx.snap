@@ -1,44 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create an view history navigation component 1`] = `
-<button
-  aria-label="view-forward.title"
-  class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-19u3ixl"
-  data-ownedby="_r_1_"
-  data-part="trigger"
-  data-scope="tooltip"
-  data-state="closed"
-  data-testid="navi-history-for"
-  dir="ltr"
-  disabled=""
-  id="tooltip:_r_1_:trigger"
-  type="button"
->
-  <svg
-    aria-hidden="true"
-    class="chakra-icon css-1qiwd9j"
-    fill="none"
-    focusable="false"
-    height="1em"
-    stroke="currentColor"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="2"
-    viewBox="0 0 24 24"
-    width="1em"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <polyline
-      points="15 14 20 9 15 4"
-    />
-    <path
-      d="M4 20v-7a4 4 0 0 1 4-4h12"
-    />
-  </svg>
-</button>
-`;
-
-exports[`should successfully create an view history navigation component 2`] = `
+exports[`should successfully create an view history navigation component > history-div-backward 1`] = `
 <button
   aria-label="view-backward.title"
   class="chakra-button chakra-tooltip__trigger tool-button view view-backward tool-button--disabled css-19u3ixl"
@@ -71,6 +33,44 @@ exports[`should successfully create an view history navigation component 2`] = `
     />
     <path
       d="M20 20v-7a4 4 0 0 0-4-4H4"
+    />
+  </svg>
+</button>
+`;
+
+exports[`should successfully create an view history navigation component > history-div-forward 1`] = `
+<button
+  aria-label="view-forward.title"
+  class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-19u3ixl"
+  data-ownedby="_r_1_"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
+  data-testid="navi-history-for"
+  dir="ltr"
+  disabled=""
+  id="tooltip:_r_1_:trigger"
+  type="button"
+>
+  <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <polyline
+      points="15 14 20 9 15 4"
+    />
+    <path
+      d="M4 20v-7a4 4 0 0 1 4-4h12"
     />
   </svg>
 </button>

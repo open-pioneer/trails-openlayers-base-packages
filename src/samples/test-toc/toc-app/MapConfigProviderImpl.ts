@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     GroupLayer,
     LayerFactory,
@@ -133,7 +134,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             isBaseLayer: false,
                             internal: false
                         }),
-                        createStrassenLayer(layerFactory)
+                        createStrassenLayer(layerFactory),
+                        layerFactory.create({
+                            type: GroupLayer,
+                            id: "group_sublayer_errors",
+                            title: "Straßennetz mit hide-children",
+                            minZoom: 8,
+                            maxZoom: 16,
+                            attributes: {
+                                toc: {
+                                    listMode: "hide-children"
+                                } satisfies LayerTocAttributes
+                            },
+                            layers: [createBrokenSublayersLayer(layerFactory)]
+                        })
                     ]
                 })
             ]
@@ -251,6 +265,25 @@ function createSchulenLayer(layerFactory: LayerFactory) {
         sourceOptions: {
             ratio: 1
         }
+    });
+}
+
+function createBrokenSublayersLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
+        id: "streets_broken_sublayers",
+        title: "Straßennetz (fehlerhafte Sublayer)",
+        url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        sublayers: [
+            {
+                name: "1",
+                title: "Verwaltungen"
+            },
+            {
+                name: "does-not-exist-a",
+                title: "Kaputter Sublayer A"
+            }
+        ]
     });
 }
 

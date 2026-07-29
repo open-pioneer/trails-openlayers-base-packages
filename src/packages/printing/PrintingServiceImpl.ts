@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { createManualPromise, Resource } from "@open-pioneer/core";
+import { DEFAULT_DPI, MapModel } from "@open-pioneer/map/model/MapModel";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
 import { ScaleLine } from "ol/control";
@@ -18,8 +21,6 @@ import {
     scalePadding,
     ViewPadding
 } from "./utils";
-import { ReadonlyReactive } from "@conterra/reactivity-core";
-import { DEFAULT_DPI, MapModel } from "@open-pioneer/map/model/MapModel";
 
 const MM_PER_INCH = 25.4;
 
@@ -176,7 +177,7 @@ export class PrintJob {
         }));
         this.#scaleLine.setDpi(this.#resolution);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;
         if (!scaleLineElement) {
             throw new Error("Scale line does not have an element");

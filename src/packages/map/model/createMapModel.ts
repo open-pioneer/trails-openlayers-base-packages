@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { batch, ReadonlyReactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
-import OlMap, { MapOptions } from "ol/Map";
-import View, { ViewOptions } from "ol/View";
 import { getCenter } from "ol/extent";
 import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
+import OlMap, { MapOptions } from "ol/Map";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
+import View, { ViewOptions } from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
@@ -207,7 +208,7 @@ class MapModelFactory {
 
     #initializeProjection(projectionOption: MapConfig["projection"]) {
         if (projectionOption == null) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
             return getProjection("EPSG:3857")!; // default OpenLayers projection
         }
 

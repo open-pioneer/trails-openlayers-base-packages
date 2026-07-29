@@ -1,5 +1,6 @@
 {
     "name": "map-anchors-app",
+    "version": "0.0.11",
     "private": true,
     "dependencies": {
         "@chakra-ui/react": "catalog:",
@@ -9,6 +10,5 @@
         "@open-pioneer/runtime": "catalog:",
         "ol": "catalog:",
         "react": "catalog:"
-    },
-    "version": "0.0.11"
+    }
 }

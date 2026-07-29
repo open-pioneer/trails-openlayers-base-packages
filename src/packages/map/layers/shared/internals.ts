@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
-import { LayerConfig } from "./LayerConfig";
-import { Layer } from "../unions";
 import {
     InternalConstructorTag,
     INTERNAL_CONSTRUCTOR_TAG
 } from "../../utils/InternalConstructorTag";
+import { Layer } from "../unions";
+import { LayerConfig } from "./LayerConfig";
 
 /**
  * Options passed from the layer factory to the layer constructor.
@@ -70,3 +71,4 @@ export const GET_RAW_SUBLAYERS = Symbol("GET_RAW_SUBLAYERS");
 export const ATTACH_TO_PARENT = Symbol("ATTACH_TO_PARENT");
 export const SET_LEGEND = Symbol("SET_LEGEND");
 export const LAYER_DEPS = Symbol("LAYER_DEPS");
+export const SET_METADATA_LOAD_INFO = Symbol("SET_METADATA_LOAD_INFO");

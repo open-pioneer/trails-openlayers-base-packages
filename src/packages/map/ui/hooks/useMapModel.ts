@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { createLogger } from "@open-pioneer/core";
 import { useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { useEffect, useMemo } from "react";
 import { useAsync } from "react-use";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
 import { useDefaultMap } from "../DefaultMapProvider";
-import { createLogger } from "@open-pioneer/core";
-import { sourceId } from "open-pioneer:source-info";
 
 const LOG = createLogger(sourceId);
 
@@ -120,7 +121,7 @@ export function useMapModel(
         if (state.error) {
             return { kind: "rejected", error: state.error };
         }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
         return { kind: "resolved", map: state.value! };
     }, [state]);
 

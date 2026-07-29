@@ -1,11 +1,12 @@
 {
     "name": "ol-map",
+    "version": "0.0.16",
     "private": true,
     "dependencies": {
+        "@chakra-ui/react": "catalog:",
         "@conterra/reactivity-core": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
-        "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:*",
         "@open-pioneer/editing": "workspace:*",
         "@open-pioneer/http": "catalog:",
@@ -31,6 +32,5 @@
         "react-dom": "catalog:",
         "react-icons": "catalog:",
         "react-use": "catalog:"
-    },
-    "version": "0.0.16"
+    }
 }

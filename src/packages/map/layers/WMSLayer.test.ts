@@ -1,20 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { nextTick } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer } from "@open-pioneer/map-test-utils";
 import ImageLayer from "ol/layer/Image";
 import { get as getProjection } from "ol/proj";
+import { Source } from "ol/source";
 import ImageWMS from "ol/source/ImageWMS";
+import { ViewStateLayerStateExtent } from "ol/View";
 import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
 import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
-import { ViewStateLayerStateExtent } from "ol/View";
-import { Source } from "ol/source";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
 
 const WMS_NW_DGK5_CAPAS = readFileSync(
     resolve(import.meta.dirname, "./wms/test-data/wms_nw_dgk5.xml"),
@@ -140,100 +141,169 @@ it("uses http service to fetch images", async () => {
     expect(urls[0]!).toMatch(/^https:\/\/example\.com\/wms-service\?REQUEST=GetMap/);
 });
 
-it("fetches capabilities if 'fetchCapabilities' property is set to true", async () => {
-    const urls: string[] = [];
-    createLayer({
-        title: "Layer",
-        url: SERVICE_URL,
-        fetchCapabilities: true,
-        sublayers: [
-            {
-                name: "sublayer-1",
-                title: "Sublayer 1"
-            }
-        ],
-        attach: true,
-        fetch: vi.fn(async (url) => {
-            urls.push(String(url));
-            return new Response("", {
-                status: 200
-            });
-        })
+describe("service capabilities and custom metadata", () => {
+    it("fetches capabilities if 'fetchCapabilities' property is set to true", async () => {
+        const urls: string[] = [];
+        createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            fetchCapabilities: true,
+            sublayers: [
+                {
+                    name: "sublayer-1",
+                    title: "Sublayer 1"
+                }
+            ],
+            fetch: vi.fn(async (url) => {
+                urls.push(String(url));
+                return new Response("", {
+                    status: 200
+                });
+            })
+        });
+
+        await vi.waitUntil(() => urls.length > 0);
+        expect(urls[0]!).toMatch(
+            /(^https:\/\/example\.com\/wms-service).*&REQUEST=GetCapabilities/
+        );
     });
 
-    await vi.waitUntil(() => urls.length > 0);
-    expect(urls[0]!).toMatch(/(^https:\/\/example\.com\/wms-service).*&REQUEST=GetCapabilities/);
-});
+    it("does not fetch capabilities if 'fetchCapabilities' property is set to false", async () => {
+        const urls: string[] = [];
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            fetchCapabilities: false,
+            sublayers: [
+                {
+                    name: "sublayer-1",
+                    title: "Sublayer 1"
+                }
+            ],
+            fetch: vi.fn(async (url) => {
+                urls.push(String(url));
+                return new Response("", {
+                    status: 200
+                });
+            })
+        });
 
-it("does not fetch capabilities if 'fetchCapabilities' property is set to false", async () => {
-    const urls: string[] = [];
-    const { layer } = createLayer({
-        title: "Layer",
-        url: SERVICE_URL,
-        fetchCapabilities: false,
-        sublayers: [
-            {
-                name: "sublayer-1",
-                title: "Sublayer 1"
-            }
-        ],
-        attach: true,
-        fetch: vi.fn(async (url) => {
-            urls.push(String(url));
-            return new Response("", {
-                status: 200
-            });
-        })
+        const source = layer.olSource!;
+        const projection = getProjection("EPSG:3857")!;
+        const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
+        image.load();
+
+        vi.advanceTimersByTime(1000);
+        expect(urls).toHaveLength(1); // if capabilities were fetched, the length of urls would be 2
+        expect(urls[0]!).toMatch(/^https:\/\/example\.com\/wms-service\?REQUEST=GetMap/);
     });
 
-    const source = layer.olSource!;
-    const projection = getProjection("EPSG:3857")!;
-    const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
-    image.load();
+    it("loads attributions from service metadata", async () => {
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "nw_dgk5_grundriss",
+                    title: "Sublayer"
+                }
+            ],
+            fetch
+        });
 
-    vi.advanceTimersByTime(1000);
-    expect(urls).toHaveLength(1); // if capabilities were fetched, the length of urls would be 2
-    expect(urls[0]!).toMatch(/^https:\/\/example\.com\/wms-service\?REQUEST=GetMap/);
-});
-
-it("supports explicit attributions via sourceOptions", async () => {
-    const { layer } = createLayer({
-        title: "Layer",
-        url: SERVICE_URL,
-        sublayers: [
-            {
-                name: "sublayer-name",
-                title: "Sublayer"
-            }
-        ],
-        sourceOptions: {
-            attributions: "Custom Attributions"
-        }
+        const olSource = layer.olSource!;
+        const attributions = await vi.waitUntil(() => getAttributions(olSource));
+        expect(attributions).toMatchInlineSnapshot(
+            `"Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: Es gelten die durch den IT-Planungsrat im Datenportal für Deutschland (GovData) veröffentlichten einheitlichen Lizenzbedingungen „Datenlizenz Deutschland – Zero“ (https://www.govdata.de/dl-de/zero-2-0). Jede Nutzung ist ohne Einschränkungen oder Bedingungen zulässig. Eine Haftung für die zur Verfügung gestellten Daten und Dienste wird ausgeschlossen. Dies gilt insbesondere für deren Aktualität, Richtigkeit, Verfügbarkeit, Qualität und Vollständigkeit sowie die Kompatibilität und Interoperabilität mit den Systemen des Nutzers. Vom Haftungsausschluss ausgenommen sind gesetzliche Schadensersatzansprüche für eine Verletzung des Lebens, des Körpers und der Gesundheit sowie die gesetzliche Haftung für sonstige Schäden, soweit diese auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung beruhen."`
+        );
     });
 
-    const olSource = layer.olSource!;
-    expect(getAttributions(olSource)).toMatchInlineSnapshot(`"Custom Attributions"`);
-});
-
-it("loads attributions from service metadata", async () => {
-    const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
-    const { layer } = createLayer({
-        title: "Layer",
-        url: SERVICE_URL,
-        sublayers: [
-            {
-                name: "sublayer-name",
-                title: "Sublayer"
+    it("supports explicit attributions via sourceOptions", async () => {
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "sublayer-name",
+                    title: "Sublayer"
+                }
+            ],
+            sourceOptions: {
+                attributions: "Custom Attributions"
             }
-        ],
-        fetch
+        });
+
+        const olSource = layer.olSource!;
+        expect(getAttributions(olSource)).toMatchInlineSnapshot(`"Custom Attributions"`);
     });
 
-    const olSource = layer.olSource!;
-    const attributions = await vi.waitUntil(() => getAttributions(olSource));
-    expect(attributions).toMatchInlineSnapshot(
-        `"Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: Es gelten die durch den IT-Planungsrat im Datenportal für Deutschland (GovData) veröffentlichten einheitlichen Lizenzbedingungen „Datenlizenz Deutschland – Zero“ (https://www.govdata.de/dl-de/zero-2-0). Jede Nutzung ist ohne Einschränkungen oder Bedingungen zulässig. Eine Haftung für die zur Verfügung gestellten Daten und Dienste wird ausgeschlossen. Dies gilt insbesondere für deren Aktualität, Richtigkeit, Verfügbarkeit, Qualität und Vollständigkeit sowie die Kompatibilität und Interoperabilität mit den Systemen des Nutzers. Vom Haftungsausschluss ausgenommen sind gesetzliche Schadensersatzansprüche für eine Verletzung des Lebens, des Körpers und der Gesundheit sowie die gesetzliche Haftung für sonstige Schäden, soweit diese auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung beruhen."`
-    );
+    it("sets loadState to 'error' when the capabilities request fails", async () => {
+        const logErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = vi.fn(async () => new Response("Server gone", { status: 503 }));
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [],
+            fetch
+        });
+
+        await vi.waitUntil(() => layer.loadState === "error");
+        expect(layer.loadError?.message).toContain("503");
+        expect(logErrorSpy).toHaveBeenCalled();
+    });
+
+    it("puts broken sublayers into an error state", async () => {
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                { name: "nw_dgk5_grundriss", title: "Valid" },
+                { name: "missing-a", title: "foo A" },
+                { name: "missing-b", title: "foo B" }
+            ],
+            fetch
+        });
+
+        const [valid, missingA, missingB] = layer.sublayers.getSublayers();
+        await vi.waitUntil(() => missingA!.loadState === "error");
+
+        expect(valid!.loadError).toBeUndefined();
+        expect(missingA!.loadError?.message).toContain("missing-a");
+        expect(missingB!.loadError?.message).toContain("missing-b");
+
+        expect(layer.loadError).toBeUndefined();
+        expect(layer.loadState).toBe("loaded");
+    });
+
+    it("excludes a broken sublayer from the GetMap request but keeps valid ones", async () => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        const fetch = mockFetch(WMS_NW_DGK5_CAPAS);
+        const { layer } = createLayer({
+            title: "Layer",
+            url: SERVICE_URL,
+            sublayers: [
+                {
+                    name: "nw_dgk5_grundriss",
+                    title: "Valid"
+                },
+                {
+                    name: "does-not-exist",
+                    title: "Broken"
+                }
+            ],
+            fetch
+        });
+
+        const broken = layer.sublayers.getSublayers()[1]!;
+        await vi.waitUntil(() => broken.loadState === "error");
+
+        // The invalid name is dropped, so the request for the remaining valid sublayer succeeds.
+        const params = layer.olSource!.getParams();
+        expect(params.LAYERS).toEqual(["nw_dgk5_grundriss"]);
+    });
 });
 
 describe("sublayers", () => {
@@ -269,7 +339,7 @@ describe("sublayers", () => {
         expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
     });
 
-    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop ", () => {
+    it("only configures the source's LAYERS parameter for sublayers with optional `name` prop", () => {
         const { layer } = createLayer({
             title: "Layer",
             url: SERVICE_URL,
@@ -358,8 +428,7 @@ describe("sublayers", () => {
                     name: "sublayer-2",
                     title: "Sublayer 2"
                 }
-            ],
-            attach: true
+            ]
         });
 
         const olSource = layer.olSource!;
@@ -388,8 +457,7 @@ describe("sublayers", () => {
                     name: "sublayer-1",
                     title: "Sublayer 1"
                 }
-            ],
-            attach: true
+            ]
         });
         expect(layer.children).toBe(layer.sublayers);
 
@@ -418,8 +486,7 @@ describe("sublayers", () => {
                     title: "Sublayer 2",
                     internal: true
                 }
-            ],
-            attach: true
+            ]
         });
 
         let sublayers = layer.sublayers.getSublayers();
@@ -448,8 +515,7 @@ describe("sublayers", () => {
                         }
                     ]
                 }
-            ],
-            attach: true
+            ]
         });
 
         const sublayer1 = layer.sublayers.getSublayers()[0]!;
@@ -479,8 +545,7 @@ describe("sublayers", () => {
                         }
                     ]
                 }
-            ],
-            attach: true
+            ]
         });
 
         const sublayers = layer.sublayers.getRecursiveLayers();
@@ -514,8 +579,7 @@ describe("sublayers", () => {
                         }
                     ]
                 }
-            ],
-            attach: true
+            ]
         });
 
         let sublayers = layer.sublayers.getRecursiveLayers();

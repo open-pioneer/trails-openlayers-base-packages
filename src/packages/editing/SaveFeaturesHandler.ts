@@ -1,20 +1,27 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
-import GeoJSONGeometry from "ol/format/GeoJSON";
-import GeoJSONGeometryCollection from "ol/format/GeoJSON";
+import { GeoJSONGeometry, GeoJSONGeometryCollection } from "ol/format/GeoJSON";
 import { Projection } from "ol/proj";
+
+export interface SaveCreatedFeatureOptions {
+    httpService: HttpService;
+    url: URL;
+    geometry: GeoJSONGeometry | GeoJSONGeometryCollection;
+    projection: Projection;
+}
 
 /**
  * Function to save a created feature to an OGC API Features service.
  * Resolves with feature id, or rejects if an error occurs.
  */
-export async function saveCreatedFeature(
-    httpService: HttpService,
-    url: URL,
-    geometry: GeoJSONGeometry | GeoJSONGeometryCollection,
-    projection: Projection
-) {
+export async function saveCreatedFeature({
+    httpService,
+    url,
+    geometry,
+    projection
+}: SaveCreatedFeatureOptions) {
     const epsgCode = projection.getCode();
     const crs = epsgCode.replace("EPSG:", "http://www.opengis.net/def/crs/EPSG/0/");
     const response = await httpService.fetch(url, {
@@ -39,17 +46,25 @@ export async function saveCreatedFeature(
     return Promise.resolve(featureId);
 }
 
+export interface SaveUpdatedFeatureOptions {
+    httpService: HttpService;
+    url: URL;
+    featureId: string;
+    geometry: GeoJSONGeometry | GeoJSONGeometryCollection;
+    projection: Projection;
+}
+
 /**
  * Function to save an updated geometry to a feature to an OGC API Features service.
  * Resolves with feature id, or rejects if an error occurs.
  */
-export async function saveUpdatedFeature(
-    httpService: HttpService,
-    url: URL,
-    featureId: string,
-    geometry: GeoJSONGeometry | GeoJSONGeometryCollection,
-    projection: Projection
-) {
+export async function saveUpdatedFeature({
+    httpService,
+    url,
+    featureId,
+    geometry,
+    projection
+}: SaveUpdatedFeatureOptions) {
     const epsgCode = projection.getCode();
     const crs = epsgCode.replace("EPSG:", "http://www.opengis.net/def/crs/EPSG/0/");
     const featureUrl = new URL(`${url.toString()}/${featureId}`);

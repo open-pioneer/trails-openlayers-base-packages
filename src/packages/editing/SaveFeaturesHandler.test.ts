@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { HttpService } from "@open-pioneer/http";
 import {
     default as GeoJSON,
@@ -46,12 +47,12 @@ describe("Editing workflow: create", () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
 
-        const featureId = await saveCreatedFeature(
-            HTTP_SERVICE_SUCCESS_CREATE,
-            OGC_API_URL_TEST,
+        const featureId = await saveCreatedFeature({
+            httpService: HTTP_SERVICE_SUCCESS_CREATE,
+            url: OGC_API_URL_TEST,
             geometry,
             projection
-        );
+        });
         expect(featureId).toBe(TEST_ID);
     });
 
@@ -59,12 +60,12 @@ describe("Editing workflow: create", () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
 
-        const promise = saveCreatedFeature(
-            HTTP_SERVICE_FAIL,
-            OGC_API_URL_TEST,
+        const promise = saveCreatedFeature({
+            httpService: HTTP_SERVICE_FAIL,
+            url: OGC_API_URL_TEST,
             geometry,
             projection
-        );
+        });
         await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
             `[Error: Request failed: 400]`
         );
@@ -76,13 +77,13 @@ describe("Editing workflow: update", () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
 
-        const featureId = await saveUpdatedFeature(
-            HTTP_SERVICE_SUCCESS_UPDATE,
-            OGC_API_URL_TEST,
-            TEST_ID,
+        const featureId = await saveUpdatedFeature({
+            httpService: HTTP_SERVICE_SUCCESS_UPDATE,
+            url: OGC_API_URL_TEST,
+            featureId: TEST_ID,
             geometry,
             projection
-        );
+        });
         expect(featureId).toBe(TEST_ID);
     });
 
@@ -90,13 +91,13 @@ describe("Editing workflow: update", () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
 
-        const promise = saveUpdatedFeature(
-            HTTP_SERVICE_FAIL,
-            OGC_API_URL_TEST,
-            TEST_ID,
+        const promise = saveUpdatedFeature({
+            httpService: HTTP_SERVICE_FAIL,
+            url: OGC_API_URL_TEST,
+            featureId: TEST_ID,
             geometry,
             projection
-        );
+        });
         await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
             `[Error: Request failed: 400]`
         );

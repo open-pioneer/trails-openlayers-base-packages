@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -85,12 +86,12 @@ it("should only delete all bookmarks after the user confirms the action.", async
     const deleteAllBtn = await findByLabelText(div, "bookmark.button.deleteAll");
     await user.click(deleteAllBtn);
     const alertMessage = await findByRole(div, "alert");
-    expect(alertMessage).toMatchSnapshot();
+    expect(alertMessage).toMatchSnapshot("alert-delete");
 
     const confirmBtn = await findByText(div, "bookmark.button.confirmDelete");
     await user.click(confirmBtn);
     const noSavedBookmarksAlert = await findByText(div, "bookmark.alert.noSaved");
-    expect(noSavedBookmarksAlert).toMatchSnapshot();
+    expect(noSavedBookmarksAlert).toMatchSnapshot("alert-not-saved");
 
     const bookmarks = MOCK_NAMESPACE.get("bookmarks") as Bookmark[];
     expect(bookmarks).toHaveLength(0);

@@ -4,9 +4,9 @@
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import OlMap from "ol/Map";
 import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
+import OlMap from "ol/Map";
 import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
@@ -17,7 +17,7 @@ it("should successfully create a measurement component", async () => {
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} data-testid="measurement"></Measurement>
+            <Measurement map={map} data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -36,7 +36,7 @@ it("should successfully create a measurement component with additional css class
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -53,7 +53,7 @@ it("should successfully select a measurement from the select dropdown", async ()
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -78,7 +78,7 @@ it("should successfully add tooltip overlays to the map", async () => {
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -107,7 +107,7 @@ it("should successfully activate draw interaction for the right geometry type", 
     };
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement" />
         </PackageContextProvider>
     );
 
@@ -151,7 +151,8 @@ async function waitForMeasurement() {
 function getGeometryType(olMap: OlMap) {
     const interactions = olMap.getInteractions().getArray();
     const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw) as
-        Draw | undefined;
+        | Draw
+        | undefined;
     const geometryType: string | undefined = (draw as any)?.type_;
     return geometryType;
 }

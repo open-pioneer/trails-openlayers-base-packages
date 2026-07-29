@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     ReadonlyReactiveArray,
     ReadonlyReactiveMap,
@@ -24,7 +25,7 @@ import {
 } from "@open-pioneer/map";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
-import { type DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
+import { DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import { View } from "ol";
@@ -160,7 +161,7 @@ export class AppModel implements Service, AppState {
             })
             .catch((error) => {
                 LOG.error("Failed to initialize map", error);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                // oxlint-disable-next-line @typescript-eslint/no-explicit-any
                 this.#launchError.value = (error as any).message || "Internal error";
             });
 
@@ -334,6 +335,7 @@ export class AppModel implements Service, AppState {
             }
 
             const layerSelectionSource = this.#vectorSelectionSourceFactory.createSelectionSource({
+                id: `selection-${opLayer.id}`,
                 vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
                 label: opLayer.title
             });

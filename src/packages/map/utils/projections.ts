@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { register } from "ol/proj/proj4";
 import proj4 from "proj4";
 
@@ -39,7 +40,7 @@ export function registerProjections(projections: Record<string, ProjectionDefini
     for (const [name, definition] of Object.entries(projections)) {
         proj4.defs(name, definition);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     register(proj4 as any);
 }
 

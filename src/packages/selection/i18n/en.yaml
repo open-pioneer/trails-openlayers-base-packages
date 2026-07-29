@@ -1,9 +1,4 @@
 messages:
-  selectMethod: Select method
-  EXTENT: "Rechteck"
-  POLYGON: "Polygon"
-  FREEPOLYGON: "Freies Zeichnen"
-  CIRCLE: "Kreis"
   selectSource: "Select source"
   tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
   disabledTooltip: "The current selection source is not available"
@@ -12,4 +7,3 @@ messages:
   selectionFailed: "Spatial selection failed"
   selectionPlaceholder: "No source selected"
   layerNotVisibleReason: "Matching layer is not visible."
-  selected: "selected"

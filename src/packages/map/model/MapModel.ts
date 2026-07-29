@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
 import {
@@ -11,21 +12,25 @@ import {
     ManualPromise
 } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import OlMap from "ol/Map";
-import { unByKey } from "ol/Observable";
-import OlView from "ol/View";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { createEmpty, extend, getArea, getCenter } from "ol/extent";
+import { Geometry } from "ol/geom";
+import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
 import { getPointResolution, Projection } from "ol/proj";
+import OlView from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
+import { BaseFeature } from "../utils/BaseFeature";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../utils/InternalConstructorTag";
-import { calculateBufferedExtent } from "../utils/geometry-utils";
+import { getGeometries } from "./getGeometries";
 import {
     DESTROY_HIGHLIGHTS,
     Highlight,
@@ -34,13 +39,9 @@ import {
     HighlightZoomOptions
 } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
+import { MapAttributions } from "./MapAttributions";
 import { ExtentConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
-import { getGeometries } from "./getGeometries";
-import { BaseFeature } from "../utils/BaseFeature";
-import { Geometry } from "ol/geom";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { MapAttributions } from "./MapAttributions";
 
 const LOG = createLogger(sourceId);
 

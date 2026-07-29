@@ -1,35 +1,35 @@
 {
     "name": "@open-pioneer/editing",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "This package provides an editing service that allows to start and handle geometry editing workflows.",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
+    "homepage": "https://github.com/open-pioneer",
     "license": "Apache-2.0",
-    "main": "index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
         "directory": "src/packages/editing"
     },
-    "homepage": "https://github.com/open-pioneer",
-    "keywords": [
-        "open-pioneer-trails"
-    ],
+    "main": "index.ts",
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    },
     "scripts": {
         "build": "build-pioneer-package"
     },
     "dependencies": {
+        "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
-        "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/map": "workspace:*",
-        "ol": "catalog:",
-        "@conterra/reactivity-core": "catalog:"
+        "@open-pioneer/runtime": "catalog:",
+        "ol": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
-    },
-    "publishConfig": {
-        "directory": "dist",
-        "linkDirectory": false
     }
 }

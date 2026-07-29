@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Style } from "ol/style";
-import { MultiPoint, Polygon } from "ol/geom";
-import { GeometryFunction } from "ol/style/Style";
-import { FlatStyle } from "ol/style/flat";
-import VectorLayer from "ol/layer/Vector";
+
 import { Feature } from "ol";
+import { MultiPoint, Polygon } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import { Style } from "ol/style";
+import { FlatStyle } from "ol/style/flat";
+import { GeometryFunction } from "ol/style/Style";
 
 interface EditingStyleProps {
     polygon: FlatStyle;

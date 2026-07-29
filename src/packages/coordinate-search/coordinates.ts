@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger } from "@open-pioneer/core";
 import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { Coordinate } from "ol/coordinate";
@@ -103,7 +104,7 @@ function checkIfCoordsInProjectionsExtent(
     }
 
     return (
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        /* oxlint-disable @typescript-eslint/no-non-null-assertion */
         extent[0]! <= coords[0]! &&
         extent[1]! <= coords[1]! &&
         extent[2]! >= coords[0]! &&

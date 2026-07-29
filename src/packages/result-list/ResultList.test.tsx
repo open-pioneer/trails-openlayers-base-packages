@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -339,6 +340,8 @@ it("expect result list display all data types except dates", async () => {
     expect(lastRowCells).toHaveLength(6);
     for (let i = 0; i < 6; ++i) {
         const cell = lastRowCells[i]!;
+        // message is allowed in expect
+        // oxlint-disable-next-line vitest/valid-expect
         expect(cell.textContent, "cell " + i).toBe("");
     }
 });

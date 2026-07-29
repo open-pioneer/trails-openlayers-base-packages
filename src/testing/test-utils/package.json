@@ -1,7 +1,7 @@
 {
     "name": "test-utils",
-    "description": "Shared local test utilities",
     "version": "0.0.1",
     "private": true,
+    "description": "Shared local test utilities",
     "main": "index.ts"
 }

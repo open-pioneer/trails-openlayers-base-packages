@@ -1,11 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import type { ReactiveMap } from "@conterra/reactivity-core";
 import type { Layer } from "@open-pioneer/map";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import type { Feature } from "ol";
 import { useCustomFormContext as useCustomFormContextImpl } from "../../implementation/context/usePropertyFormContext";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CreationStep, ModificationStep, UpdateStep } from "../model/EditingStep";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DynamicFormTemplate, FeatureTemplate } from "../model/FeatureTemplate";
 
 /**

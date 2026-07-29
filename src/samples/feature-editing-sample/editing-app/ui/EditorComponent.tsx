@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box } from "@chakra-ui/react";
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -68,6 +69,6 @@ async function delay() {
 
 function useFeatureTemplates(): FeatureTemplate[] {
     return useMemo(() => {
-        return LAYER_CONFIG.map(({ id, template }) => ({ layerId: id, ...template }));
+        return LAYER_CONFIG.map(({ id, template }) => Object.assign({ layerId: id }, template));
     }, []);
 }

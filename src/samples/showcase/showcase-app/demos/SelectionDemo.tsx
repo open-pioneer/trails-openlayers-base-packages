@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { computed, reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { FormattedRichMessage } from "@open-pioneer/react-utils";
@@ -175,6 +176,7 @@ function initSelectionSource(
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
+        id: "kitas",
         vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
         label: opLayer.title
     });

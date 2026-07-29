@@ -115,7 +115,6 @@ exports[`should successfully create a toc component 1`] = `
           class="toc-layer-item-content css-1rikyh3"
         >
           <label
-            aria-label="Layer 2"
             class="chakra-checkbox__root css-if4mqv"
             data-part="root"
             data-scope="checkbox"
@@ -163,6 +162,9 @@ exports[`should successfully create a toc component 1`] = `
               <span>
                 Layer 2
               </span>
+              <div
+                class="css-cfk6a1"
+              />
             </span>
           </label>
           <div
@@ -177,7 +179,6 @@ exports[`should successfully create a toc component 1`] = `
           class="toc-layer-item-content css-1rikyh3"
         >
           <label
-            aria-label="Layer 1"
             class="chakra-checkbox__root css-if4mqv"
             data-part="root"
             data-scope="checkbox"
@@ -225,6 +226,9 @@ exports[`should successfully create a toc component 1`] = `
               <span>
                 Layer 1
               </span>
+              <div
+                class="css-cfk6a1"
+              />
             </span>
           </label>
           <div

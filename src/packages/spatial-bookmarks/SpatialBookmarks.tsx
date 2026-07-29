@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     Button,
     ButtonProps,
@@ -19,10 +20,13 @@ import { Alert } from "@open-pioneer/chakra-snippets/alert";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { LocalStorageService } from "@open-pioneer/local-storage";
 import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    useCommonComponentProps,
+    classNames
+} from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { classNames } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { LuMap, LuTrash } from "react-icons/lu";
@@ -119,7 +123,7 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
                             addBookmark();
                         }
                     }}
-                    autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+                    autoFocus // oxlint-disable-line jsx-a11y/no-autofocus
                 />
             </Field.Root>
             <CreateControls
@@ -262,6 +266,8 @@ function BookmarkItem(props: {
             className={classNames("spatial-bookmarks-item")}
             tabIndex={0}
             rounded="md"
+            // TODO: needs a good fix
+            // oxlint-disable-next-line jsx-a11y/role-has-required-aria-props
             role="option"
             cursor="pointer"
             outline={0}

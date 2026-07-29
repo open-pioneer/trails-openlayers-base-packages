@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { ZoomIn, ZoomOut, InitialExtent } from "@open-pioneer/map-navigation";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
-import { ZoomIn, ZoomOut, InitialExtent } from "@open-pioneer/map-navigation";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
 

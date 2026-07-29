@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it, vi } from "vitest";
-import { EditingServiceImpl } from "./EditingServiceImpl";
-import { setupMap } from "@open-pioneer/map-test-utils";
+
 import { HttpService } from "@open-pioneer/http";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
-import { FlatStyle } from "ol/style/flat";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
-import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
-import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
+import { FlatStyle } from "ol/style/flat";
+import { describe, expect, it, vi } from "vitest";
 import { EditingService } from "./api";
+import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
+import { EditingServiceImpl } from "./EditingServiceImpl";
+import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 

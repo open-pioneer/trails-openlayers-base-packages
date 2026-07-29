@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { LayerFactory } from "../LayerFactory";
 import { MapModel } from "../model/MapModel";
 import { INTERNAL_CONSTRUCTOR_TAG, InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { LayerConfig } from "./shared/LayerConfig";
 import {
     ATTACH_TO_MAP,
     DETACH_FROM_MAP,
@@ -15,6 +16,7 @@ import {
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 import { Layer } from "./unions";
 
 /**
@@ -77,7 +79,7 @@ export class GroupLayer extends AbstractLayer {
 
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
-        super({ ...config, olLayer: olGroup }, deps, internalTag);
+        super({ ...config, olLayer: olGroup, initialLoadInfo: "loaded" }, deps, internalTag);
         this.#children = new GroupLayerCollection(groupLayers, this, INTERNAL_CONSTRUCTOR_TAG);
     }
 
@@ -86,6 +88,10 @@ export class GroupLayer extends AbstractLayer {
     }
 
     override get legend() {
+        return undefined;
+    }
+
+    override get olSource() {
         return undefined;
     }
 
@@ -123,7 +129,7 @@ export class GroupLayer extends AbstractLayer {
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
-// eslint-disable-next-line no-constant-condition
+// oxlint-disable-next-line no-constant-condition
 if (false) {
     const check: LayerConstructor<GroupLayerConfig, GroupLayer> = GroupLayer;
     void check;

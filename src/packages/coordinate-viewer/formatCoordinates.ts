@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { PackageIntl } from "@open-pioneer/runtime";
 import type { CoordinateViewerProps } from "./CoordinateViewer";
 
@@ -21,6 +22,7 @@ export function formatCoordinates(
     const [x, y] = coordinates;
 
     let str;
+    // oxlint-disable-next-line oxc/branches-sharing-code
     if (format === "degree" && isFinite(x) && isFinite(y)) {
         const [xHour, xMin, xSek] = toDegree(x, intl, precision);
         const [yHour, yMin, ySek] = toDegree(y, intl, precision);

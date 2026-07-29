@@ -1,6 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
+import { Resource } from "@open-pioneer/core";
+import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { EventsKey } from "ol/events";
+import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
+import { Pixel } from "ol/pixel";
+import { getRenderPixel } from "ol/render";
+import RenderEvent from "ol/render/Event";
+import VectorSource from "ol/source/Vector";
 import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import {
     canvasToPng,
@@ -10,16 +21,6 @@ import {
     PageOrientationType,
     PageSizeType
 } from "./utils";
-import { Resource } from "@open-pioneer/core";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { getRenderPixel } from "ol/render";
-import RenderEvent from "ol/render/Event";
-import { unByKey } from "ol/Observable";
-import { EventsKey } from "ol/events";
-import { MapModel } from "@open-pioneer/map/model/MapModel";
-import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
-import { Pixel } from "ol/pixel";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -138,7 +139,12 @@ export class PrintingController {
         context.restore();
     }
 
-    #drawCanvasRectangle(context: CanvasRenderingContext2D, renderEvent: RenderEvent, pixelExtent: number[], reverse: boolean = false) {
+    #drawCanvasRectangle(
+        context: CanvasRenderingContext2D,
+        renderEvent: RenderEvent,
+        pixelExtent: number[],
+        reverse: boolean = false
+    ) {
         // start in top left edge
         context.moveTo(
             ...(getRenderPixel(renderEvent, [pixelExtent[0], pixelExtent[1]] as Pixel) as [
@@ -155,9 +161,7 @@ export class PrintingController {
         if (reverse) points.reverse(); // anti-clockwise drawing
 
         for (const point of points) {
-            context.lineTo(
-                ...(getRenderPixel(renderEvent, point as Pixel) as [number, number])
-            );
+            context.lineTo(...(getRenderPixel(renderEvent, point as Pixel) as [number, number]));
         }
     }
 

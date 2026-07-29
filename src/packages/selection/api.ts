@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { Geometry } from "ol/geom";
-import type { Projection } from "ol/proj";
-import type { Extent } from "ol/extent";
+
 import type { Resource } from "@open-pioneer/core";
-import { BaseFeature } from "@open-pioneer/map";
+import { BaseFeature, MapModel } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
-import VectorLayer from "ol/layer/Vector";
+import type { Extent } from "ol/extent";
 import Feature from "ol/Feature";
+import type { Geometry } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import type { Projection } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 
 /**
@@ -62,7 +63,16 @@ export interface SelectionOptions {
     mapProjection: Projection;
 
     /**
+     * The map model of the map associated with the selection.
+     */
+    map: MapModel;
+
+    /**
      * The signal can be used to detect cancellation.
+     *
+     * The signal is aborted when the results of this selection are no longer needed,
+     * for example because the user started another selection in the meantime
+     * or because the selection widget has been destroyed.
      *
      * You can pass this signal to builtin functions like `fetch` that automatically
      * support cancellation.
@@ -96,6 +106,16 @@ export type SelectionKind = ExtentSelection;
  */
 export interface SelectionSource {
     /**
+     * The id of this source.
+     *
+     * Must be unique across all selection sources used within the same selection component.
+     *
+     * The id must not change while the source is in use (this value is not reactive).
+     * If no id is defined, the selection component generates one internally.
+     */
+    readonly id?: string;
+
+    /**
      * The label of this source.
      *
      * This will be displayed by the user interface during selection source selection.
@@ -117,6 +137,12 @@ export interface SelectionSource {
      *
      * Implementations should return the results ordered by priority (best match first), if possible.
      *
+     * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
+     *
+     * NOTE: If your selection source implements custom error handling (i.e. `try`/`catch`), it is
+     * good practice to forward abort errors without modification. This will enable the selection
+     * widget to differentiate real errors from cancellations.
+     *
      * @param selectionKind The geometry with which to perform the spatial selection. Currently only
      * an extent is supported.
      * @param options see interface documentation {@link SelectionOptions}
@@ -125,11 +151,14 @@ export interface SelectionSource {
 }
 
 export interface VectorLayerSelectionSourceOptions {
+    id?: string;
     vectorLayer: VectorLayer<VectorSource, Feature>;
     label: string;
 }
 
-export interface VectorLayerSelectionSource extends Required<SelectionSource>, Resource {}
+export interface VectorLayerSelectionSource extends SelectionSource, Resource {
+    readonly status: SelectionSourceStatus;
+}
 
 /**
  * A factory that creates {@link VectorLayerSelectionSource | selection sources} to be used on an

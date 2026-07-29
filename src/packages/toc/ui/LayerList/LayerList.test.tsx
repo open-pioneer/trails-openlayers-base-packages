@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer } from "@open-pioneer/map";
 import {
@@ -25,6 +26,9 @@ import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
 import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
+
+const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
+const CONTENT_PROBLEM_INDICATOR_SELECTOR = `.toc-layer-item-content ${PROBLEM_INDICATOR_SELECTOR}`;
 
 it("should show layers in the correct order", async () => {
     const { map, Wrapper } = await setup({
@@ -267,7 +271,7 @@ it("includes the layer id in the item's class list", async () => {
 
     const item = container.querySelector(".layer-some-layer-id");
     expect(item).toBeTruthy();
-    expect(item!.textContent).toBe("Layer 1");
+    expect(item!.querySelector(".chakra-checkbox__label")?.textContent).toBe("Layer 1");
 });
 
 it("renders buttons for all layer's with description property", async () => {
@@ -324,7 +328,9 @@ it("changes the description popover's visibility when toggling the button", asyn
     }
 
     //initially not there because of lazy mounting of popover
-    expect(() => screen.getByText(layer.description)).toThrow();
+    expect(() => screen.getByText(layer.description)).toThrow(
+        "Unable to find an element with the text: Description 1. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible."
+    );
 
     // open the popover
     fireEvent.click(button);
@@ -406,7 +412,7 @@ it("reacts to changes of the layer load state", async () => {
 
     const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
     const button = queryByRole<HTMLInputElement>(container, "button");
-    let icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    let icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
 
     expect(checkbox).toBeTruthy();
     expect(checkbox.disabled).toBe(false);
@@ -418,11 +424,15 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(checkbox.disabled).toBe(true);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotAvailable"`);
+    // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot(`
+      "  Layer 1
+        layerNotAvailable"
+    `);
 
     // and back
     await act(async () => {
@@ -430,7 +440,7 @@ it("reacts to changes of the layer load state", async () => {
         await nextTick();
     });
 
-    icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(checkbox.disabled).toBe(false);
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
@@ -458,7 +468,7 @@ it("updates problem indicators when there are visibility issues", async () => {
         wrapper: Wrapper
     });
     {
-        const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+        const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
         expect(icons).toHaveLength(0);
     }
     // set map out of layer visibility
@@ -466,9 +476,13 @@ it("updates problem indicators when there are visibility issues", async () => {
         map.olView.setZoom(5);
         await nextTick();
     });
-    const icons = container.querySelectorAll(".toc-layer-item-problem-indicator svg");
+    const icons = container.querySelectorAll(PROBLEM_INDICATOR_SELECTOR);
     expect(icons).toHaveLength(1);
-    expect(icons[0]!.getAttribute("aria-label")).toMatchInlineSnapshot(`"layerNotVisible"`);
+    // The problem is announced via the checkbox's accessible label; the icon itself is decorative.
+    expect(getAccessibleLabel(getCurrentItems(container)[0]!)).toMatchInlineSnapshot(`
+      "  Layer 1
+        layerNotVisible"
+    `);
 });
 
 it("supports a hierarchy of layers", async () => {
@@ -583,7 +597,7 @@ it("should collapse and expand list items", async () => {
     expect(collapsibleList.getAttribute("data-state")).toBe("open");
 });
 
-it("it renders collapse buttons (only) for groups", async () => {
+it("renders collapse buttons (only) for groups", async () => {
     const { group } = createGroupHierarchy();
     const { map, Wrapper } = await setup({
         layers: [
@@ -815,14 +829,168 @@ it("does not display layer item for child layer if the group's listMode is `hide
     expect(childLayerItem).toBeFalsy(); //layer item for child should not be there anymore
 });
 
+it("propagates child layer errors to the group's problem indicator", async () => {
+    const childSource = new OSM();
+    const childLayer = createTestLayer({
+        id: "child",
+        title: "Broken Child",
+        olLayer: new TileLayer({ source: childSource })
+    });
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        layers: [childLayer]
+    });
+
+    const { map, Wrapper } = await setup({
+        layers: [groupLayer]
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    const childItem = findLayerItem(container, "child")!;
+    expect(groupItem).toBeTruthy();
+    expect(childItem).toBeTruthy();
+
+    const groupCheckbox = groupItem.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    )!;
+    const childCheckbox = childItem.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    )!;
+
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(childCheckbox.disabled).toBe(false);
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+
+    await act(async () => {
+        childSource.setState("error");
+        await nextTick();
+    });
+
+    // Group: indicator shown, checkbox NOT disabled (warning only)
+    const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(groupIcon).not.toBeNull();
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot(`
+      "  Group
+        childLayerNotAvailable"
+    `);
+
+    // Child: indicator shown, checkbox disabled (direct error)
+    const childIcon = childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(childIcon).not.toBeNull();
+    expect(childCheckbox.disabled).toBe(true);
+    expect(getAccessibleLabel(childItem)).toMatchInlineSnapshot(`
+      "  Broken Child
+        layerNotAvailable"
+    `);
+
+    // Recovery: both clear
+    await act(async () => {
+        childSource.setState("ready");
+        await nextTick();
+    });
+
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+    expect(childItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+    expect(groupCheckbox.disabled).toBe(false);
+    expect(childCheckbox.disabled).toBe(false);
+});
+
+it("shows an aggregated child error message on the parent when list mode is 'hide-children'", async () => {
+    const childSource = new OSM();
+    const childLayer = createTestLayer({
+        id: "child",
+        title: "Broken Child",
+        olLayer: new TileLayer({ source: childSource })
+    });
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        layers: [childLayer],
+        attributes: {
+            toc: {
+                listMode: "hide-children"
+            }
+        }
+    });
+
+    const { map, Wrapper } = await setup({
+        layers: [groupLayer]
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeTruthy();
+    expect(findLayerItem(container, "child")).toBeFalsy();
+
+    await act(async () => {
+        childSource.setState("error");
+        await nextTick();
+    });
+
+    const groupIcon = groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR);
+    expect(groupIcon).not.toBeNull();
+    expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot(`
+      "  Group
+          childLayerNotAvailableDetails
+            Source of layer 'child' is in error state"
+    `);
+
+    await act(async () => {
+        childSource.setState("ready");
+        await nextTick();
+    });
+    expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+});
+
 /** Returns the layer list's current list items. */
 function getCurrentItems(container: HTMLElement) {
     return queryAllByRole(container, "listitem");
 }
 
-/** Returns only the labels of the layer list's current items. */
+/** Returns only the (visible) titles of the layer list's current items. */
 function getCurrentLabels(container: HTMLElement) {
-    return getCurrentItems(container).map((item) => item.textContent);
+    return getCurrentItems(container).map((item) => getLabelNode(item)?.textContent);
+}
+
+function getAccessibleLabel(item: HTMLElement) {
+    const label = getLabelNode(item);
+    if (!label) {
+        return "";
+    }
+    return textTree(label);
+}
+
+function getLabelNode(item: HTMLElement) {
+    return item.querySelector(".chakra-checkbox__label") ?? null;
+}
+
+function textTree(node: Node, indent = ""): string {
+    const lines: string[] = [];
+    for (const child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+            const text = child.textContent?.trim();
+            if (text) {
+                lines.push(indent + text);
+            }
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+            const childTree = textTree(child, indent + "  ");
+            if (childTree) {
+                lines.push(childTree);
+            }
+        }
+    }
+    return lines.join("\n");
 }
 
 function findLayerItem(container: HTMLElement, id: string) {
