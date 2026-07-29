@@ -128,6 +128,10 @@ export interface MapConfig {
      */
     layers?: Layer[];
 
+    baseLayers?: Layer[];
+
+    topmostLayers?: Layer[];
+
     /**
      * Whether to show the default attribution control.
      *

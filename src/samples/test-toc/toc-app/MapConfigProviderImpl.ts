@@ -33,18 +33,33 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 14
             },
             projection: "EPSG:25832",
-            layers: [
+            baseLayers: [
                 layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
-                    isBaseLayer: true,
+                    isBaseLayer: true, //deprecated,
                     visible: true,
                     // broken URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
-                }),
+                })
+            ],
+            topmostLayers: [
+                layerFactory.create({
+                    type: SimpleLayer,
+                    title: "Topmost Haltestellen Stadt Rostock",
+                    id: "busstops_topmost",
+                    visible: true,
+                    description:
+                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                    olLayer: createHaltestellenLayer(),
+                    isBaseLayer: false,
+                    internal: false
+                })
+            ],
+            layers: [
                 layerFactory.create({
                     type: WMTSLayer,
                     isBaseLayer: true,
@@ -96,18 +111,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }),
-                layerFactory.create({
-                    type: SimpleLayer,
-                    title: "Topmost Haltestellen Stadt Rostock",
-                    id: "busstops_topmost",
-                    visible: true,
-                    description:
-                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                    olLayer: createHaltestellenLayer(),
-                    isBaseLayer: false,
-                    internal: false,
-                    isTopMostLayer: true
                 }),
                 layerFactory.create({
                     type: GroupLayer,

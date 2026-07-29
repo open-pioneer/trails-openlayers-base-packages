@@ -22,7 +22,6 @@ import {
     ATTACH_TO_MAP,
     GET_DEPS,
     getLayerDependencies,
-    IS_TOPMOST_LAYER,
     LAYER_DEPS,
     LayerDependencies,
     SET_METADATA_LOAD_INFO,
@@ -67,7 +66,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #olLayer: OlBaseLayer;
     #olSource: ReadonlyReactive<OlSource | undefined>;
     #isBaseLayer: boolean;
-    #isTopMostLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
 
     #visible: ReadonlyReactive<boolean>;
@@ -99,7 +97,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#olLayer = config.olLayer;
         this.#olSource = synchronizedOlSource(this.#olLayer);
         this.#isBaseLayer = config.isBaseLayer ?? false;
-        this.#isTopMostLayer = config.isTopMostLayer ?? false;
         this.#healthCheck = config.healthCheck;
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
@@ -233,7 +230,18 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Only one base layer can be visible at a time.
      */
     get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
+        if (this.#isBaseLayer) {
+            return true;
+        } else {
+            if (!this.nullableMap || !this.nullableMap.layers) {
+                return false;
+            }
+
+            return this.nullableMap.layers
+                .getBaseLayers()
+                .map((layer) => layer.id)
+                .includes(this.id);
+        }
     }
 
     /**
@@ -378,11 +386,6 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             `Layer '${this.id}' has not been attached to a map yet. "
             + "Use the LayerFactory to create an instance or add the layer to the map first.`
         );
-    }
-
-    /** @internal */
-    [IS_TOPMOST_LAYER](): boolean {
-        return this.#isTopMostLayer;
     }
 }
 
