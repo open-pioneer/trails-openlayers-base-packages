@@ -224,8 +224,7 @@ export class MapModel {
 
         this.#viewBindings = computed(() => createViewBindings(this.#olView.value));
         this.#scale = computed(() => {
-            const { resolution, projection, center } = this;
-            return this.centerResolutionToScale(resolution, projection, center);
+            return this.getCurrentScale();
         });
 
         // expects fully constructed mapModel
@@ -437,7 +436,6 @@ export class MapModel {
         this.olView.setResolution(centerResolution);
     }
 
-    // TODO projection/center are not necessary and just parameters to be used inside the computed property #scale above; find better solution
     /**
      * Returns the resolution at the current map center in meters per pixel.
      *
@@ -448,20 +446,16 @@ export class MapModel {
      * @param resolution Optional resolution to be used for calculation instead of current map resolution
      * @returns Resolution in meters per pixel
      */
-    getCenterResolution(
-        resolution?: number,
-        projection?: Projection,
-        center?: Coordinate
-    ): number | undefined {
+    getCenterResolution(resolution?: number): number | undefined {
         const res = resolution ?? this.resolution;
         if (!res) return undefined;
 
-        const cen = center ?? this.center;
+        const cen = this.center;
         if (!cen) {
             return;
         }
 
-        const proj = projection ?? this.projection;
+        const proj = this.projection;
         const mpu = proj.getMetersPerUnit() ?? 1;
 
         return getPointResolution(proj, res * mpu, cen, "m");
@@ -490,14 +484,9 @@ export class MapModel {
      *
      * @returns Scale of the map
      */
-    // TODO resolution/projection/center are not necessary and just parameters to be used inside the computed property #scale above; find better solution
-    centerResolutionToScale(
-        resolution?: number,
-        projection?: Projection,
-        center?: Coordinate
-    ): number | undefined {
+    getCurrentScale(): number | undefined {
         const res = INCHES_PER_METRE * DEFAULT_DPI;
-        const centerResolution = this.getCenterResolution(resolution, projection, center);
+        const centerResolution = this.getCenterResolution(this.resolution);
         if (!centerResolution) return undefined;
         return Math.round(centerResolution * res);
     }
