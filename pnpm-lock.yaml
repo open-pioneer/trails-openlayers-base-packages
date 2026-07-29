@@ -1791,13 +1791,13 @@ importers:
         version: link:../../../packages/map
       '@open-pioneer/notifier':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260727091735(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+        version: 4.7.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
       '@open-pioneer/runtime':
         specifier: 'catalog:'
-        version: 4.7.0-dev.20260727091735(@types/react@19.2.17)
+        version: 4.7.0(@types/react@19.2.17)
       '@open-pioneer/selection':
         specifier: workspace:*
         version: link:../../../packages/selection
