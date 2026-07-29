@@ -17,6 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
       - name: Audit dependencies
         run: pnpm audit

@@ -60,7 +60,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
-        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@main
         with:
           src-repo: "openlayers-base-packages"
           token: ${{ secrets.DEMO_DEPLOY_TOKEN }}

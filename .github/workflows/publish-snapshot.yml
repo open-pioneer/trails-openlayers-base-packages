@@ -22,10 +22,12 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
+        with:
+          npm-auth: "true" # publishes to npm
 
       - name: "Publish packages"
-        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@main
         with:
           snapshot-tag: ${{ inputs.snapshot-tag }}
           npm-token: ${{ secrets.NPM_TOKEN }}

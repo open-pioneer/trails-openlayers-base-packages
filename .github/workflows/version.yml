@@ -28,7 +28,9 @@ jobs:
           fetch-depth: 0
 
       - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
+        with:
+          npm-auth: "true" # publishes to npm
 
       - id: changesets
         name: Create Release Pull Request or Publish to npm
