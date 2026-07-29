@@ -35,7 +35,7 @@ export function useSelectionViewModel(
     useEffect(() => {
         const vm = viewModelFactory.createViewModel({
             map,
-            onComplete
+            onSelectionComplete: onComplete
         });
 
         setViewModel(vm);

@@ -16,15 +16,15 @@ import { Geometry } from "ol/geom";
 import { sourceId } from "open-pioneer:source-info";
 import { createElement } from "react";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
+import { ExtentSelectionInteraction } from "../interactions/ExtentSelectionInteraction";
 import { SelectionTooltipContent } from "../ui/SelectionTooltipContent";
-import { ExtentSelection } from "./ExtentSelection";
 
 const LOG = createLogger(sourceId);
 
 const DEFAULT_MAX_RESULTS = 10000;
 
-const ACTIVE_CLASS = "selection-active";
-const INACTIVE_CLASS = "selection-inactive";
+const ACTIVE_INTERACTION_CLASS = "selection-active";
+const INACTIVE_INTERACTION_CLASS = "selection-inactive";
 
 export interface Messages {
     active: string;
@@ -33,7 +33,7 @@ export interface Messages {
 }
 
 /**
- * Marker for a selection that has been cleared.
+ * Marker for a selection source that has been cleared.
  * The cleared state (when the selected source has been "lost") should be sticky, a new source
  * should not be selected automatically.
  */
@@ -61,11 +61,11 @@ export class SelectionViewModel {
      * The state is linked to the set of sources:
      *
      * - while nothing has been selected yet, the first source is selected automatically
-     * - if the current source is removed from the set of sources, the selection is cleared
+     * - if the current source is removed from the set of sources, the selection source is cleared
      *
-     * Once the selection has been cleared that way, it remains empty until a source is
+     * Once the selection source has been cleared that way, it remains empty until a source is
      * selected explicitly again: later updates of the set of sources must not silently
-     * re-enable the selection behind the user's back.
+     * re-enable the selection source behind the user's back.
      */
     #currentSource = linked(
         () => this.#sources.value,
@@ -83,7 +83,7 @@ export class SelectionViewModel {
         }
     );
 
-    #active = computed(() => {
+    #interactionActive = computed(() => {
         const source = this.currentSource;
         return !!source && getSourceStatus(source).kind === "available";
     });
@@ -93,7 +93,7 @@ export class SelectionViewModel {
         if (!this.currentSource) {
             return messages.noSource;
         }
-        if (!this.isActive) {
+        if (!this.isInteractionActive) {
             return messages.inactive;
         }
         return messages.active;
@@ -101,14 +101,14 @@ export class SelectionViewModel {
 
     // For debugging
     // oxlint-disable-next-line no-unused-private-class-members
-    #currentSelection: ExtentSelection | undefined;
+    #currentInteraction: ExtentSelectionInteraction | undefined;
 
     // For debugging
     // oxlint-disable-next-line no-unused-private-class-members
     #tooltip: Overlay | undefined;
 
-    /** The selection request that is currently running (if any). */
-    #currentRequest: AbortController | undefined;
+    /** The abort controller of the selection request that is currently running (if any). */
+    #currentAbortController: AbortController | undefined;
 
     /** Resources owned by this instance. */
     #resources: Resource[];
@@ -116,20 +116,24 @@ export class SelectionViewModel {
     constructor(options: {
         map: MapModel;
         messages: Messages;
-        onComplete: (source: SelectionSource, results: SelectionResult[]) => void;
+        onSelectionComplete: (source: SelectionSource, results: SelectionResult[]) => void;
         onError: () => void;
         maxResults?: number;
     }) {
         this.#map = options.map;
         this.#messages = options.messages;
         this.#maxResults = options.maxResults ?? DEFAULT_MAX_RESULTS;
-        this.#onComplete = options.onComplete;
+        this.#onComplete = options.onSelectionComplete;
         this.#onError = options.onError;
-        this.#resources = [this.#initSelection(), ...this.#initTooltip(), ...this.#initViewport()];
+        this.#resources = [
+            this.#initSelectionInteraction(),
+            ...this.#initTooltip(),
+            ...this.#initViewport()
+        ];
     }
 
     destroy() {
-        this.#abortRequest();
+        this.#abortPendingSelection();
         destroyResources(this.#resources);
     }
 
@@ -164,13 +168,13 @@ export class SelectionViewModel {
                     "Internal error: can only select 'undefined' if there are no sources present."
                 );
             }
-            // Nothing can be selected; the current state is already empty.
+            // No source can be selected; the current state is already empty.
         }
     }
 
     /** Returns true if the selection interaction is currently active. */
-    get isActive(): boolean {
-        return this.#active.value;
+    get isInteractionActive(): boolean {
+        return this.#interactionActive.value;
     }
 
     /** Aria message to represent the current state. Also serves as the tooltip text. */
@@ -178,22 +182,22 @@ export class SelectionViewModel {
         return this.#ariaMessage.value;
     }
 
-    /** Runs the selection while active. */
-    #initSelection(): Resource {
+    /** Runs the selection interaction while active. */
+    #initSelectionInteraction(): Resource {
         return watchValue(
-            () => this.isActive,
+            () => this.isInteractionActive,
             (isActive) => {
                 if (!isActive) {
                     return;
                 }
 
-                const selection = (this.#currentSelection = new ExtentSelection(
+                const selection = (this.#currentInteraction = new ExtentSelectionInteraction(
                     this.#map,
                     (geometry) => this.#onGeometrySelected(geometry)
                 ));
                 return () => {
                     selection.destroy();
-                    this.#abortRequest();
+                    this.#abortPendingSelection();
                 };
             },
             {
@@ -203,8 +207,8 @@ export class SelectionViewModel {
     }
 
     /**
-     * Disables the viewport's context menu and marks the viewport
-     * with css classes when selection is active or inactive.
+     * Disables the viewport's context menu
+     * and marks the viewport with css classes when selection interaction is active or inactive.
      */
     #initViewport(): Resource[] {
         const viewport = this.#map.olMap.getViewport();
@@ -221,8 +225,8 @@ export class SelectionViewModel {
                 }
             },
             effect(() => {
-                const active = this.isActive;
-                const className = active ? ACTIVE_CLASS : INACTIVE_CLASS;
+                const active = this.isInteractionActive;
+                const className = active ? ACTIVE_INTERACTION_CLASS : INACTIVE_INTERACTION_CLASS;
                 viewport.classList.add(className);
                 return () => viewport.classList.remove(className);
             })
@@ -251,7 +255,7 @@ export class SelectionViewModel {
     }
 
     /**
-     * Called after a successful selection on the map.
+     * Called after a successful selection interaction on the map.
      * Triggers search on the currently selected selection source.
      */
     async #onGeometrySelected(geometry: Geometry) {
@@ -261,13 +265,15 @@ export class SelectionViewModel {
         }
 
         // Only the most recent selection is of interest; cancel the previous one (if any).
-        const request = this.#startRequest();
+        this.#abortPendingSelection();
+
+        const abortController = (this.#currentAbortController = new AbortController());
         try {
             LOG.debug(`Starting selection on source '${source.label}'`);
 
             const extent = geometry.getExtent();
-            const results = await this.#selectFromSource(source, extent, request.signal);
-            if (request.signal.aborted) {
+            const results = await this.#selectFromSource(source, extent, abortController.signal);
+            if (abortController.signal.aborted) {
                 // Superseded by another selection, or the widget is gone.
                 throwAbortError();
             }
@@ -277,13 +283,13 @@ export class SelectionViewModel {
         } catch (e) {
             if (!isAbortError(e)) {
                 LOG.error(`selection from source ${source.label} failed`, e);
-                if (!request.signal.aborted) {
+                if (!abortController.signal.aborted) {
                     this.#onError();
                 }
             }
         } finally {
-            if (this.#currentRequest === request) {
-                this.#currentRequest = undefined;
+            if (this.#currentAbortController === abortController) {
+                this.#currentAbortController = undefined;
             }
         }
     }
@@ -306,16 +312,10 @@ export class SelectionViewModel {
         return results;
     }
 
-    /** Starts a new selection request, cancelling the previous one (if any). */
-    #startRequest(): AbortController {
-        this.#abortRequest();
-        return (this.#currentRequest = new AbortController());
-    }
-
     /** Cancels the current selection request (if any); its results will be ignored. */
-    #abortRequest(): void {
-        this.#currentRequest?.abort();
-        this.#currentRequest = undefined;
+    #abortPendingSelection(): void {
+        this.#currentAbortController?.abort();
+        this.#currentAbortController = undefined;
     }
 }
 

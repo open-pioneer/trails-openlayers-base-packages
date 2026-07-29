@@ -13,7 +13,7 @@ import MapBrowserEvent from "ol/MapBrowserEvent";
  *
  * Calls `onSuccess` whenever the user selected an extent.
  */
-export class ExtentSelection {
+export class ExtentSelectionInteraction {
     #map: MapModel;
     #onSuccess: (geometry: Geometry) => void;
 
@@ -56,7 +56,7 @@ function createDragboxInteraction(
     };
 }
 
-// For panning using the right mouse button during selection
+// For panning using the right mouse button during selection interaction
 function createPanningInteraction(map: MapModel): Resource {
     const olMap = map.olMap;
     const rightClick = (mapBrowserEvent: MapBrowserEvent) => {

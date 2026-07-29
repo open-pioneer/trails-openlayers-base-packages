@@ -44,16 +44,19 @@ describe("current source", () => {
         const source2 = new TestSource("Source 2");
 
         viewModel.sources = [source1, source2];
+        expect(viewModel.sources).toEqual([source1, source2]);
         expect(viewModel.currentSource).toBe(source1);
     });
 
     it("keeps the current source if it is still present after a source update", async () => {
         const source1 = new TestSource("Source 1");
         const source2 = new TestSource("Source 2");
+        const source3 = new TestSource("Source 3");
+
         const { viewModel } = await setup({ sources: [source1, source2] });
 
         viewModel.currentSource = source2;
-        viewModel.sources = [source2];
+        viewModel.sources = [source2, source3];
         expect(viewModel.currentSource).toBe(source2);
     });
 
@@ -75,14 +78,14 @@ describe("current source", () => {
         expect(viewModel.currentSource).toBeUndefined();
     });
 
-    it("does not select a source automatically after the selection was cleared", async () => {
+    it("does not select a source automatically after the current selection source was removed", async () => {
         const source1 = new TestSource("Source 1");
         const source2 = new TestSource("Source 2");
         const source3 = new TestSource("Source 3");
         const { viewModel } = await setup({ sources: [source1, source2] });
         expect(viewModel.currentSource).toBe(source1);
 
-        viewModel.sources = [source2]; // clears the selection
+        viewModel.sources = [source2]; // remove the current selection source
         expect(viewModel.currentSource).toBeUndefined();
 
         // Later updates of the sources must not silently re-enable the selection,
@@ -94,7 +97,7 @@ describe("current source", () => {
         expect(viewModel.currentSource).toBeUndefined();
     });
 
-    it("keeps the source the user picked after the selection had been cleared", async () => {
+    it("keeps the source the user picked after the current selection had been removed", async () => {
         const source1 = new TestSource("Source 1");
         const source2 = new TestSource("Source 2");
         const { viewModel } = await setup({ sources: [source1, source2] });
@@ -147,7 +150,7 @@ describe("current source", () => {
 describe("active state", () => {
     it("is inactive while no source is selected", async () => {
         const { viewModel } = await setup();
-        expect(viewModel.isActive).toBe(false);
+        expect(viewModel.isInteractionActive).toBe(false);
         expect(viewModel.ariaMessage).toBe(MESSAGES.noSource);
     });
 
@@ -155,7 +158,7 @@ describe("active state", () => {
         const source = new TestSource("Source", "available");
         const { viewModel } = await setup({ sources: [source] });
 
-        expect(viewModel.isActive).toBe(true);
+        expect(viewModel.isInteractionActive).toBe(true);
         expect(viewModel.ariaMessage).toBe(MESSAGES.active);
     });
 
@@ -163,14 +166,14 @@ describe("active state", () => {
         const source: SelectionSource = { label: "Source", select: async () => [] };
         const { viewModel } = await setup({ sources: [source] });
 
-        expect(viewModel.isActive).toBe(true);
+        expect(viewModel.isInteractionActive).toBe(true);
     });
 
     it("is inactive if the current source is unavailable", async () => {
         const source = new TestSource("Source", "unavailable");
         const { viewModel } = await setup({ sources: [source] });
 
-        expect(viewModel.isActive).toBe(false);
+        expect(viewModel.isInteractionActive).toBe(false);
         expect(viewModel.ariaMessage).toBe(MESSAGES.inactive);
     });
 
@@ -178,16 +181,16 @@ describe("active state", () => {
         const source = new TestSource("Source", { kind: "unavailable", reason: "nope" });
         const { viewModel } = await setup({ sources: [source] });
 
-        expect(viewModel.isActive).toBe(false);
+        expect(viewModel.isInteractionActive).toBe(false);
     });
 
     it("tracks the status of the current source", async () => {
         const source = new TestSource("Source", "unavailable");
         const { viewModel } = await setup({ sources: [source] });
-        expect(viewModel.isActive).toBe(false);
+        expect(viewModel.isInteractionActive).toBe(false);
 
         source.status = "available";
-        expect(viewModel.isActive).toBe(true);
+        expect(viewModel.isInteractionActive).toBe(true);
         expect(viewModel.ariaMessage).toBe(MESSAGES.active);
     });
 
@@ -195,10 +198,10 @@ describe("active state", () => {
         const source1 = new TestSource("Source 1", "available");
         const source2 = new TestSource("Source 2", "unavailable");
         const { viewModel } = await setup({ sources: [source1, source2] });
-        expect(viewModel.isActive).toBe(true);
+        expect(viewModel.isInteractionActive).toBe(true);
 
         viewModel.currentSource = source2;
-        expect(viewModel.isActive).toBe(false);
+        expect(viewModel.isInteractionActive).toBe(false);
     });
 });
 
@@ -326,11 +329,11 @@ describe("tooltip", () => {
 describe("selection", () => {
     it("queries the current source when the user selected an extent", async () => {
         const source = new TestSource("Source", "available");
-        const { map, onComplete } = await setup({ sources: [source] });
+        const { map, onSelectionComplete } = await setup({ sources: [source] });
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
         });
-        await vi.waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1));
+        await vi.waitFor(() => expect(onSelectionComplete).toHaveBeenCalledTimes(1));
 
         expect(source.calls).toHaveLength(1);
         const [kind, options] = source.calls[0]!;
@@ -341,22 +344,22 @@ describe("selection", () => {
         expect(options.signal).toBeInstanceOf(AbortSignal);
         expect(options.signal.aborted).toBe(false);
 
-        expect(onComplete).toHaveBeenCalledWith(source, source.results);
+        expect(onSelectionComplete).toHaveBeenCalledWith(source, source.results);
     });
 
     it("limits the results to 'maxResults'", async () => {
         const source = new TestSource("Source", "available");
-        const { map, onComplete } = await setup({ sources: [source], maxResults: 1 });
+        const { map, onSelectionComplete } = await setup({ sources: [source], maxResults: 1 });
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
         });
-        await vi.waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1));
-        expect(onComplete.mock.lastCall![1]).toEqual(source.results.slice(0, 1));
+        await vi.waitFor(() => expect(onSelectionComplete).toHaveBeenCalledTimes(1));
+        expect(onSelectionComplete.mock.lastCall![1]).toEqual(source.results.slice(0, 1));
     });
 
     it("only reports the results of the most recent selection", async () => {
         const source = new BlockingTestSource("Source", "available");
-        const { map, onComplete } = await setup({ sources: [source] });
+        const { map, onSelectionComplete } = await setup({ sources: [source] });
 
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
@@ -369,17 +372,16 @@ describe("selection", () => {
         expect(source.options(1).signal.aborted).toBe(false);
 
         // The outdated request finishes last and must not overwrite the current results.
-        const outdated = [source.results[0]!];
+        await source.completeSelect(0, []);
         await source.completeSelect(1);
-        await source.completeSelect(0, outdated);
 
-        expect(onComplete).toHaveBeenCalledTimes(1);
-        expect(onComplete).toHaveBeenCalledWith(source, source.results);
+        expect(onSelectionComplete).toHaveBeenCalledTimes(1);
+        expect(onSelectionComplete).toHaveBeenCalledWith(source, source.results);
     });
 
     it("cancels a running selection when the current source becomes unavailable", async () => {
         const source = new BlockingTestSource("Source", "available");
-        const { map, onComplete, onError } = await setup({ sources: [source] });
+        const { map, onSelectionComplete, onError } = await setup({ sources: [source] });
 
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
@@ -390,7 +392,7 @@ describe("selection", () => {
         await vi.waitFor(() => expect(source.options(0).signal.aborted).toBe(true));
 
         await source.completeSelect(0);
-        expect(onComplete).not.toHaveBeenCalled();
+        expect(onSelectionComplete).not.toHaveBeenCalled();
         expect(onError).not.toHaveBeenCalled();
     });
 
@@ -399,13 +401,13 @@ describe("selection", () => {
         const source = new TestSource("Cancelled", "available");
         source.select = async () => throwAbortError();
 
-        const { map, onComplete, onError } = await setup({ sources: [source] });
+        const { map, onSelectionComplete, onError } = await setup({ sources: [source] });
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
         });
         await nextTick();
 
-        expect(onComplete).not.toHaveBeenCalled();
+        expect(onSelectionComplete).not.toHaveBeenCalled();
         expect(onError).not.toHaveBeenCalled();
         expect(logSpy).not.toHaveBeenCalled();
     });
@@ -417,13 +419,13 @@ describe("selection", () => {
             throw new Error("boom");
         };
 
-        const { map, onComplete, onError } = await setup({ sources: [source] });
+        const { map, onSelectionComplete, onError } = await setup({ sources: [source] });
         await vi.waitFor(() => {
             selectExtent(map, EXTENT);
         });
         await vi.waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
 
-        expect(onComplete).not.toHaveBeenCalled();
+        expect(onSelectionComplete).not.toHaveBeenCalled();
         expect(logSpy).toHaveBeenCalledOnce();
         expect(logSpy.mock.lastCall![0]).toMatchInlineSnapshot(
             `"[ERROR] @open-pioneer/selection/model/SelectionViewModel: selection from source Broken failed"`
@@ -525,23 +527,23 @@ class BlockingTestSource extends TestSource {
 async function setup(options?: { sources?: SelectionSource[]; maxResults?: number }): Promise<{
     map: MapModel;
     viewModel: SelectionViewModel;
-    onComplete: Mock;
+    onSelectionComplete: Mock;
     onError: Mock;
 }> {
     const { map } = await setupMap({ advanced: { interactions: [], view: undefined } });
-    const onComplete = vi.fn();
+    const onSelectionComplete = vi.fn();
     const onError = vi.fn();
     const viewModel = new SelectionViewModel({
         map,
         messages: MESSAGES,
         maxResults: options?.maxResults,
-        onComplete,
+        onSelectionComplete: onSelectionComplete,
         onError
     });
     if (options?.sources) {
         viewModel.sources = options.sources;
     }
-    return { map, viewModel, onComplete, onError };
+    return { map, viewModel, onSelectionComplete, onError };
 }
 
 /** Simulates the user drawing a box on the map. */

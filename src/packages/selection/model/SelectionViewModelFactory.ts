@@ -42,12 +42,12 @@ export class SelectionViewModelFactory {
 
     createViewModel(options: {
         map: MapModel;
-        onComplete: (source: SelectionSource, results: SelectionResult[]) => void;
+        onSelectionComplete: (source: SelectionSource, results: SelectionResult[]) => void;
     }): SelectionViewModel {
         return new SelectionViewModel({
             map: options.map,
             messages: this.#messages,
-            onComplete: options.onComplete,
+            onSelectionComplete: options.onSelectionComplete,
             onError: () => {
                 this.#notifier.notify({
                     level: "error",
