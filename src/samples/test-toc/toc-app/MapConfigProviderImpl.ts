@@ -34,6 +34,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             baseLayers: [
+                //ToDo: remove mixed use of baseLayers and isBaseLayer before merge
                 layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open",
