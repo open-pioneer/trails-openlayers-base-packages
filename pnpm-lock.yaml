@@ -31,8 +31,8 @@ catalogs:
       specifier: ^4.0.0
       version: 4.0.0
     '@open-pioneer/build-support':
-      specifier: ^3.1.3
-      version: 3.1.3
+      specifier: ^4.0.0
+      version: 4.0.0
     '@open-pioneer/chakra-snippets':
       specifier: ^4.7.0
       version: 4.7.0
@@ -224,7 +224,7 @@ importers:
         version: 4.0.0(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
-        version: 3.1.3
+        version: 4.0.0
       '@open-pioneer/changesets-release-line':
         specifier: 'catalog:'
         version: 0.2.0
@@ -2425,10 +2425,6 @@ packages:
         optional: true
       typescript:
         optional: true
-
-  '@open-pioneer/build-support@3.1.3':
-    resolution: {integrity: sha512-5I2vrdiPMMTCVHIF8pV8jYHvsQOBb+1/fIhM0MdqMlEz9FUm1GiEESGptew+kVNFYXX+YKJS7gNvGNfe0WHsdw==}
-    engines: {node: '>= 20'}
 
   '@open-pioneer/build-support@4.0.0':
     resolution: {integrity: sha512-ssO4/5DYIXrr9fcGYPXMzE6BY67lHZ0/Vy1OBz022gt0aqq1ZszoGgA22ueQemt7MTs7YIZ8UbWl2ho54akoXw==}
@@ -6130,8 +6126,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  '@open-pioneer/build-support@3.1.3': {}
 
   '@open-pioneer/build-support@4.0.0': {}
 
