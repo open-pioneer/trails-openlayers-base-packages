@@ -28,8 +28,8 @@ catalogs:
       specifier: ^4.1.17
       version: 4.1.17
     '@open-pioneer/build-package-cli':
-      specifier: ^3.2.2
-      version: 3.2.2
+      specifier: ^4.0.0
+      version: 4.0.0
     '@open-pioneer/build-support':
       specifier: ^3.1.3
       version: 3.1.3
@@ -221,7 +221,7 @@ importers:
         version: 2.31.1(@types/node@20.19.43)
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
-        version: 3.2.2(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
+        version: 4.0.0(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
         version: 3.1.3
@@ -2412,13 +2412,17 @@ packages:
     resolution: {integrity: sha512-4W9hgCJWGEi/kkn0PqNIMhtZunAOZcBePIhJ0+tsl61Fn5WOIFFusCGyrXT06iRlxQzebJvc/8fr+XBMJjMIRg==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/build-package-cli@3.2.2':
-    resolution: {integrity: sha512-/gKNYPDdb+ZOagZm63HcXbAVc84Xf3tqdkgdskBsLuwQ80LY5sR7hR8MFyxkEn/AvP1QxyE2mnqpti5zslNCpw==}
+  '@open-pioneer/build-common@5.0.0':
+    resolution: {integrity: sha512-gNKjmwd1ouwZQSUoNuQHTzyHJIVXLZXX/Eegh93Zh18WED60HCYdOPvNQn12VfdfYISkmZar8gEEFL6wSAPlrg==}
+    engines: {node: '>= 20'}
+
+  '@open-pioneer/build-package-cli@4.0.0':
+    resolution: {integrity: sha512-EcY3PlJ75uvwK+ACqDSUBeP3xIZMN60artdaGpBFedLWxYb4PkFeKxpthdu8xQZ1bpiPM8m8Ax3JdHoKda9aug==}
     engines: {node: '>= 20'}
     hasBin: true
 
-  '@open-pioneer/build-package@4.3.2':
-    resolution: {integrity: sha512-7OfVGe5nyJxrML9Te9vluEW1vuiU5ekLxawEpR+abcKFjmPCUK8voXR8u68YB1gGPoeuk61wNwn5QRXOaOHPBw==}
+  '@open-pioneer/build-package@5.0.0':
+    resolution: {integrity: sha512-fHtDisM9InYroL2Ncg1a6s1KaJWL+BMSafq6dY0y4+5XK5m+D6uKdruaH1iiBb6CTHV1itfPlof1fPNPb+SYoQ==}
     engines: {node: '>= 20'}
     peerDependencies:
       sass: '*'
@@ -2431,6 +2435,10 @@ packages:
 
   '@open-pioneer/build-support@3.1.3':
     resolution: {integrity: sha512-5I2vrdiPMMTCVHIF8pV8jYHvsQOBb+1/fIhM0MdqMlEz9FUm1GiEESGptew+kVNFYXX+YKJS7gNvGNfe0WHsdw==}
+    engines: {node: '>= 20'}
+
+  '@open-pioneer/build-support@4.0.0':
+    resolution: {integrity: sha512-ssO4/5DYIXrr9fcGYPXMzE6BY67lHZ0/Vy1OBz022gt0aqq1ZszoGgA22ueQemt7MTs7YIZ8UbWl2ho54akoXw==}
     engines: {node: '>= 20'}
 
   '@open-pioneer/chakra-snippets@4.7.0':
@@ -6087,9 +6095,19 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@open-pioneer/build-package-cli@3.2.2(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-common@5.0.0(rollup@4.62.2)':
     dependencies:
-      '@open-pioneer/build-package': 4.3.2(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
+      '@open-pioneer/build-support': 4.0.0
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
+      semver: 7.8.5
+      zod: 4.4.3
+      zod-validation-error: 5.0.0(zod@4.4.3)
+    transitivePeerDependencies:
+      - rollup
+
+  '@open-pioneer/build-package-cli@4.0.0(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
+    dependencies:
+      '@open-pioneer/build-package': 5.0.0(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)
       chalk: 5.6.2
       commander: 15.0.0
     transitivePeerDependencies:
@@ -6097,11 +6115,12 @@ snapshots:
       - supports-color
       - typescript
 
-  '@open-pioneer/build-package@4.3.2(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package@5.0.0(sass@1.101.7)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
-      '@open-pioneer/build-common': 4.0.3(rollup@4.62.2)
-      '@open-pioneer/build-support': 3.1.3
+      '@open-pioneer/build-common': 5.0.0(rollup@4.62.2)
+      '@open-pioneer/build-support': 4.0.0
       '@rollup/plugin-node-resolve': 16.0.3(rollup@4.62.2)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
       chalk: 5.6.2
       debug: 4.4.3(supports-color@7.2.0)
       esbuild: 0.28.1
@@ -6121,6 +6140,8 @@ snapshots:
       - supports-color
 
   '@open-pioneer/build-support@3.1.3': {}
+
+  '@open-pioneer/build-support@4.0.0': {}
 
   '@open-pioneer/chakra-snippets@4.7.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.8))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))':
     dependencies:
