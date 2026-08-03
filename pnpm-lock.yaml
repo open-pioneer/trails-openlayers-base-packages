@@ -40,8 +40,8 @@ catalogs:
       specifier: ^0.2.0
       version: 0.2.0
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: ^0.3.5
-      version: 0.3.5
+      specifier: ^0.4.0
+      version: 0.4.0
     '@open-pioneer/core':
       specifier: ^4.7.0
       version: 4.7.0
@@ -230,7 +230,7 @@ importers:
         version: 0.2.0
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.3.5
+        version: 0.4.0
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
         version: 6.0.3(@open-pioneer/runtime@4.7.0(@types/react@19.2.17))(rollup@4.62.2)(sass@1.101.7)(supports-color@7.2.0)(vite@8.1.5(@types/node@20.19.43)(esbuild@0.28.1)(sass@1.101.7)(tsx@4.23.1)(yaml@2.9.0))
@@ -2440,8 +2440,8 @@ packages:
     resolution: {integrity: sha512-s+2FXer7aO/ZVXb/v92dOhi+XqnaJTph3WyWGBPPx8UPUDx4Fd6mLoxYxv1E0lbZqtrp2HXlpyFwbfm+53oE3g==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/check-pnpm-duplicates@0.3.5':
-    resolution: {integrity: sha512-dVUKX3PH1rC5TCud8DDm34gqsGsddDZTjVhaFThB37Kv/N9MiDNfpKD6eoktatOmUaadHy66xI+R8x/pqMB+IQ==}
+  '@open-pioneer/check-pnpm-duplicates@0.4.0':
+    resolution: {integrity: sha512-8Y+yVX/dy7B+7EDoY/serQDaGAsRcyjcziN7K2+nlisGqWze/hMUdDtihvzIZ8KEyla5OZF7OTWrbWyjDVbwOQ==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -6137,7 +6137,7 @@ snapshots:
 
   '@open-pioneer/changesets-release-line@0.2.0': {}
 
-  '@open-pioneer/check-pnpm-duplicates@0.3.5':
+  '@open-pioneer/check-pnpm-duplicates@0.4.0':
     dependencies:
       '@pnpm/lockfile.fs': 1100.1.14(@pnpm/logger@1100.0.0)
       '@pnpm/lockfile.utils': 1100.1.5
