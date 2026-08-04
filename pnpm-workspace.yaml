@@ -105,14 +105,18 @@ overrides:
 
   # https://github.com/advisories/GHSA-3jxr-9vmj-r5cp, CVE-2026-13149
   # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
-  "brace-expansion@<1.1.16": "^1.1.16"
-  "brace-expansion@>=3.0.0 <5.0.8": "^5.0.8"
+  # https://github.com/advisories/GHSA-rgw5-rvv9-x895, CVE-2026-69152
+  "brace-expansion@<1.1.18": "^1.1.18"
+  "brace-expansion@>=3.0.0 <5.0.8": "^5.0.9"
 
   # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
   "immutable@>=5.0.0 <5.1.8": "^5.1.8"
 
   # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
   "dompurify@<=3.4.11": "^3.4.12"
+
+  # https://github.com/advisories/GHSA-fxqj-rqcc-2cmp, CVE-2026-69153
+  "postcss@<=8.5.22": "^8.5.23"
 
 allowUnusedPatches: true
 patchedDependencies:
