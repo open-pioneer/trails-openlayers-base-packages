@@ -12,7 +12,7 @@ import {
     List,
     Spacer,
     Text,
-    VisuallyHidden,
+    VisuallyHidden
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
@@ -52,14 +52,14 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             title: layer.title,
             description: layer.description,
             isVisible: layer.visible,
-            allChildrenHidden: !hasShownChildren(layer), //re-evaluates if a child layer's list mode or internal state changes
+            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
         };
     }, [layer]);
 
     const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(
         layer,
         intl,
-        listMode,
+        listMode
     );
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
@@ -107,7 +107,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         updateLayerVisibility(
                             layer,
                             event.checked === true,
-                            tocOptions.autoShowParents,
+                            tocOptions.autoShowParents
                         )
                     }
                 >
@@ -167,8 +167,8 @@ function CollapseButton(props: {
             css={{
                 // Chakra theme adds a background to components with "aria-expanded" by default.
                 "&:is([aria-expanded='true']):not(:hover)": {
-                    background: "none",
-                },
+                    background: "none"
+                }
             }}
         >
             <Icon>{icon}</Icon>
@@ -260,7 +260,7 @@ function getProblemLabel(
     intl: PackageIntl,
     isOwnError: boolean,
     listMode: ListMode | undefined,
-    sublayerError: AggregateError | undefined,
+    sublayerError: AggregateError | undefined
 ): ReactNode {
     if (isOwnError) {
         return intl.formatMessage({ id: "layerNotAvailable" });
@@ -284,7 +284,7 @@ function getProblemLabel(
 function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
     return useReactiveSnapshot(
         () => layer.attributes.toc as LayerTocAttributes | undefined,
-        [layer],
+        [layer]
     );
 }
 
@@ -292,7 +292,7 @@ function useNestedChildren(
     layerGroupId: string,
     title: string,
     layer: AnyLayer,
-    intl: PackageIntl,
+    intl: PackageIntl
 ) {
     const childLayers = useChildLayers(layer);
     const children = useMemo(() => {

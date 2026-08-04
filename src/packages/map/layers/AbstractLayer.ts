@@ -230,7 +230,18 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Only one base layer can be visible at a time.
      */
     get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
+        if (this.#isBaseLayer) {
+            return true;
+        } else {
+            if (!this.nullableMap || !this.nullableMap.layers) {
+                return false;
+            }
+
+            return this.nullableMap.layers
+                .getBaseLayers()
+                .map((layer) => layer.id)
+                .includes(this.id);
+        }
     }
 
     /**

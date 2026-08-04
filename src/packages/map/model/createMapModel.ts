@@ -14,6 +14,7 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import View, { ViewOptions } from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
+import { Layer } from "..";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
@@ -125,9 +126,20 @@ class MapModelFactory {
 
         return batch(() => {
             try {
+                this.#assertUniqueLayerPlacement(mapConfig);
                 if (mapConfig.layers) {
                     for (const layerConfig of mapConfig.layers) {
                         mapModel.layers.addLayer(layerConfig);
+                    }
+                }
+                if (mapConfig.baseLayers) {
+                    for (const layerConfig of mapConfig.baseLayers) {
+                        mapModel.layers.addLayer(layerConfig, { at: "base" });
+                    }
+                }
+                if (mapConfig.topmostLayers) {
+                    for (const layerConfig of mapConfig.topmostLayers) {
+                        mapModel.layers.addLayer(layerConfig, { at: "topmost" });
                     }
                 }
                 return mapModel;
@@ -217,5 +229,32 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
+    }
+
+    #assertUniqueLayerPlacement(mapConfig: MapConfig) {
+        const groups = new Map<"baseLayers" | "layers" | "topmostLayers", Layer[] | undefined>([
+            ["baseLayers", mapConfig.baseLayers],
+            ["layers", mapConfig.layers],
+            ["topmostLayers", mapConfig.topmostLayers]
+        ]);
+
+        const groupByLayer = new WeakMap<Layer, string>();
+
+        for (const [groupName, layers] of groups) {
+            if (!layers) {
+                continue;
+            }
+
+            for (const layer of layers) {
+                const previousGroup = groupByLayer.get(layer);
+                if (previousGroup != null) {
+                    throw new Error(
+                        `Layer '${layer.title ?? layer.id}' is configured in both '${previousGroup}' and '${groupName}'. ` +
+                            `A layer may only appear in one layer list.`
+                    );
+                }
+                groupByLayer.set(layer, groupName);
+            }
+        }
     }
 }
