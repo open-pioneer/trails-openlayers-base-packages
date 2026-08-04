@@ -4,17 +4,34 @@
 import { Box, Button, Field, HStack, Input } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { createLogger } from "@open-pioneer/core";
-import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
+import { LayerFactory, MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { sourceId } from "open-pioneer:source-info";
-import { FC, FormEvent, useEffect, useState } from "react";
+import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
 import { FileFormatType, PrintingController } from "./PrintingController";
+import { getPageDimensions, getViewPadding, PageOrientationType, PageSizeType } from "./utils";
 
-const LOG = createLogger(sourceId);
+const LOG = createLogger("bis-printing");
+
+const PRINT_AREA_BUFFER = 20; // padding between map frame and printing area in pixels
+
+const DEFAULT_SCALES = [
+    2500000, 2000000, 1500000, 1000000, 750000, 500000, 300000, 250000, 200000, 150000, 100000,
+    75000, 50000, 25000, 20000, 15000, 10000, 7500, 5000, 2500, 2000, 1500, 1000, 500, 250, 100
+];
+const DEFAULT_RESOLUTIONS = [96, 150, 300];
+const DEFAULT_PAGE_SIZES: PageSizeType[] = ["a3", "a4", "a5"];
+const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
+const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
+
+// TODO make configurable with props in future
+const INITIAL_RESOLUTION = 96;
+const INITIAL_PAGE_SIZE = "a4";
+const INITIAL_PAGE_ORIENTATION = "landscape";
+const INITIAL_FILE_FORMAT = "pdf";
 
 /**
  * This is special property for the Printing.
@@ -26,6 +43,31 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
      * See also {@link ViewPaddingBehavior}.
      */
     viewPadding?: ViewPaddingBehavior;
+
+    /**
+     * The set of scales that can be selected by the user (default: selection of pre-configured values).
+     */
+    scales?: number[];
+
+    /**
+     * The set of print resolutions in DPI that can be selected by the user (default: selection of pre-configured values).
+     */
+    resolutions?: number[];
+
+    /**
+     * The set of page sizes that can be selected by the user (default: selection of pre-configured values).
+     */
+    pageSizes?: PageSizeType[];
+
+    /**
+     * The set of page orientations that can be selected by the user (default: selection of pre-configured values).
+     */
+    pageOrientations?: PageOrientationType[];
+
+    /**
+     * The set of file formats that can be selected by the user (default: selection of pre-configured values).
+     */
+    fileFormats?: FileFormatType[];
 }
 
 /**
@@ -33,21 +75,76 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
  */
 export const Printing: FC<PrintingProps> = (props) => {
     const intl = useIntl();
+    const map = useMapModelValue(props);
 
-    const { viewPadding = "auto" } = props;
+    const {
+        viewPadding = "auto",
+        scales = DEFAULT_SCALES,
+        resolutions = DEFAULT_RESOLUTIONS,
+        pageSizes = DEFAULT_PAGE_SIZES,
+        pageOrientations = DEFAULT_PAGE_ORIENTATIONS,
+        fileFormats = DEFAULT_FILE_FORMATS
+    } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
-    const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
+
+    const initialScale = useMemo(() => getFittingScale(map, scales), [map, scales]);
+    const initialResolution = useMemo(
+        () => getInitialOption(resolutions, INITIAL_RESOLUTION),
+        [resolutions]
+    );
+    const initialPageSize = useMemo(
+        () => getInitialOption(pageSizes, INITIAL_PAGE_SIZE),
+        [pageSizes]
+    );
+    const initialPageOrientation = useMemo(
+        () => getInitialOption(pageOrientations, INITIAL_PAGE_ORIENTATION),
+        [pageOrientations]
+    );
+    const initialFileFormat = useMemo(
+        () => getInitialOption(fileFormats, INITIAL_FILE_FORMAT),
+        [fileFormats]
+    );
+
+    const [scale, setScale] = useState<number>(initialScale);
+    const [resolution, setResolution] = useState<number>(initialResolution);
+    const [size, setSize] = useState<PageSizeType>(initialPageSize);
+    const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
+    const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
+    const controller = useController(map, intl, viewPadding, size, orientation, scale);
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
-    const map = useMapModelValue(props);
-    const controller = useController(map, intl, viewPadding);
+    function changeSize(size: string) {
+        if (size === "a3" || size === "a4" || size === "a5") {
+            setSize(size);
+        }
+    }
+
+    function changeOrientation(orientation: string) {
+        if (orientation === "landscape" || orientation === "portrait") {
+            setOrientation(orientation);
+        }
+    }
 
     function changeFileFormat(fileFormat: string) {
         if (fileFormat === "png" || fileFormat === "pdf") {
-            setSelectedFileFormat(fileFormat);
+            setFileFormat(fileFormat);
+        }
+    }
+
+    function changeResolution(resolution: string) {
+        const res = parseInt(resolution);
+        if (res) {
+            setResolution(res);
+        }
+    }
+
+    function changeScale(scale: string) {
+        const sc = parseInt(scale);
+        if (sc) {
+            setScale(sc);
         }
     }
 
@@ -57,10 +154,12 @@ export const Printing: FC<PrintingProps> = (props) => {
         }
 
         setRunning(true);
+
         controller
             .handleMapExport({
-                title,
-                fileFormat: selectedFileFormat
+                title: title,
+                fileFormat: fileFormat,
+                resolution: resolution
             })
             .catch((error) => {
                 const errorMessage = intl.formatMessage({ id: "printingFailed" });
@@ -74,6 +173,56 @@ export const Printing: FC<PrintingProps> = (props) => {
                 setRunning(false);
             });
     }
+
+    const scaleOptions = useMemo(
+        () =>
+            scales.map((scaleValue) => (
+                <option key={scaleValue} value={scaleValue}>
+                    {renderScaleText(intl, scaleValue)}
+                </option>
+            )),
+        [intl, scales]
+    );
+
+    const resolutionOptions = useMemo(
+        () =>
+            resolutions.map((resolution) => (
+                <option key={resolution} value={resolution}>
+                    {resolution}
+                </option>
+            )),
+        [resolutions]
+    );
+
+    const pageSizeOptions = useMemo(
+        () =>
+            pageSizes.map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                    {intl.formatMessage({ id: "pageSize." + pageSize })}
+                </option>
+            )),
+        [intl, pageSizes]
+    );
+
+    const pageOrientationOptions = useMemo(
+        () =>
+            pageOrientations.map((pageOrientation) => (
+                <option key={pageOrientation} value={pageOrientation}>
+                    {intl.formatMessage({ id: "pageOrientation." + pageOrientation })}
+                </option>
+            )),
+        [intl, pageOrientations]
+    );
+
+    const fileFormatOptions = useMemo(
+        () =>
+            fileFormats.map((fileFormat) => (
+                <option key={fileFormat} value={fileFormat}>
+                    {intl.formatMessage({ id: "fileFormat." + fileFormat })}
+                </option>
+            )),
+        [intl, fileFormats]
+    );
 
     return (
         <Box {...containerProps}>
@@ -104,18 +253,89 @@ export const Printing: FC<PrintingProps> = (props) => {
                 <Field.Root asChild>
                     <HStack mb={2}>
                         <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "fileFormat" })}
+                            {intl.formatMessage({ id: "pageSize.label" })}
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
                                 className="printing-select"
-                                value={selectedFileFormat}
+                                value={size}
+                                onChange={(event) => {
+                                    changeSize(event.target.value);
+                                }}
+                            >
+                                {pageSizeOptions}
+                            </NativeSelectField>
+                        </NativeSelectRoot>
+                    </HStack>
+                </Field.Root>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "pageOrientation.label" })}
+                        </Field.Label>
+                        <NativeSelectRoot>
+                            <NativeSelectField
+                                className="printing-select"
+                                value={orientation}
+                                onChange={(event) => {
+                                    changeOrientation(event.target.value);
+                                }}
+                            >
+                                {pageOrientationOptions}
+                            </NativeSelectField>
+                        </NativeSelectRoot>
+                    </HStack>
+                </Field.Root>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "fileFormat.label" })}
+                        </Field.Label>
+                        <NativeSelectRoot>
+                            <NativeSelectField
+                                className="printing-select"
+                                value={fileFormat}
                                 onChange={(event) => {
                                     changeFileFormat(event.target.value);
                                 }}
                             >
-                                <option value={"png"}>PNG</option>
-                                <option value={"pdf"}>PDF</option>
+                                {fileFormatOptions}
+                            </NativeSelectField>
+                        </NativeSelectRoot>
+                    </HStack>
+                </Field.Root>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "resolution" })}
+                        </Field.Label>
+                        <NativeSelectRoot>
+                            <NativeSelectField
+                                className="printing-select"
+                                value={resolution}
+                                onChange={(event) => {
+                                    changeResolution(event.target.value);
+                                }}
+                            >
+                                {resolutionOptions}
+                            </NativeSelectField>
+                        </NativeSelectRoot>
+                    </HStack>
+                </Field.Root>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "scale.label" })}
+                        </Field.Label>
+                        <NativeSelectRoot>
+                            <NativeSelectField
+                                className="printing-select"
+                                value={scale}
+                                onChange={(event) => {
+                                    changeScale(event.target.value);
+                                }}
+                            >
+                                {scaleOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -140,12 +360,20 @@ export const Printing: FC<PrintingProps> = (props) => {
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(map: MapModel, intl: PackageIntl, viewPadding: ViewPaddingBehavior) {
+function useController(
+    map: MapModel,
+    intl: PackageIntl,
+    viewPadding: ViewPaddingBehavior,
+    size: PageSizeType,
+    orientation: PageOrientationType,
+    scale: number
+) {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
+    const layerFactory = useService<LayerFactory>("map.LayerFactory");
 
     useEffect(() => {
-        const controller = new PrintingController(map.olMap, printingService, {
+        const controller = new PrintingController(map, layerFactory, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -154,11 +382,79 @@ function useController(map: MapModel, intl: PackageIntl, viewPadding: ViewPaddin
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl, printingService]);
+    }, [map, intl, printingService, layerFactory]);
 
     useEffect(() => {
         controller?.setViewPadding(viewPadding);
     }, [controller, viewPadding]);
 
+    useEffect(() => {
+        controller?.setSize(size);
+    }, [controller, size]);
+
+    useEffect(() => {
+        controller?.setOrientation(orientation);
+    }, [controller, orientation]);
+
+    useEffect(() => {
+        controller?.setScale(scale);
+    }, [controller, scale]);
+
     return controller;
 }
+
+function renderScaleText(intl: PackageIntl, rawScale: number): string {
+    return "1 : " + intl.formatNumber(rawScale);
+}
+
+// find the largest scale that fits completely inside the map view, considering some padding
+function getFittingScale(map: MapModel, scales: number[]): number {
+    const fallbackScale = scales[0];
+    if (!fallbackScale) {
+        throw new Error("No scales defined");
+    }
+
+    const mapSize = map.olMap.getSize();
+    if (!mapSize || mapSize.length < 2) {
+        return fallbackScale;
+    }
+    const [mapWidth, mapHeight] = mapSize as [number, number];
+
+    const viewPadding = getViewPadding(map);
+
+    const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
+    const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
+
+    const resolution = map.getCenterResolution(); // meters per pixel
+    if (!resolution) return fallbackScale;
+
+    const width = resolution * maxPrintWidth; // meters
+    const height = resolution * maxPrintHeight;
+
+    const printDimension = getPageDimensions(INITIAL_PAGE_SIZE, INITIAL_PAGE_ORIENTATION);
+
+    const scaleWidth = width / (printDimension.width / 1000.0);
+    const scaleHeight = height / (printDimension.height / 1000.0);
+
+    const maxFittingScale = Math.min(scaleHeight, scaleWidth);
+
+    const sortedScales = scales.toSorted((a, b) => b - a); // sort descending
+    return sortedScales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function getInitialOption(options: any[], initialOption: any) {
+    if (options.includes(initialOption)) {
+        return initialOption;
+    } else {
+        LOG.warn(
+            `Configured initial option '${initialOption}' not included in list. Use first option as fallback.`
+        );
+        if (options[0]) {
+            return options[0];
+        } else {
+            throw new Error("No fallback option found in options. Is the list empty?");
+        }
+    }
+}
+/* eslint-ensable @typescript-eslint/no-explicit-any */

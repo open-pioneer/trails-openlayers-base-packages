@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { MapModel } from "@open-pioneer/map/model/MapModel";
 import { DeclaredService } from "@open-pioneer/runtime";
-import OlMap from "ol/Map";
 
 /**
  * Options supported when printing the map.
@@ -26,6 +26,26 @@ export interface PrintingOptions {
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
+
+    /**
+     * The print resolution to be generated in dots per inch (DPI) (default: current display resolution).
+     */
+    resolution: number | undefined;
+
+    /**
+     * The scale of the generated map (default: current map scale).
+     */
+    scale: number | undefined;
+
+    /**
+     * The vertical size of the generated map in millimeters (default: current map size).
+     */
+    height: number | undefined;
+
+    /**
+     * The horizontal size of the generated map in millimeters (default: current map size).
+     */
+    width: number | undefined;
 }
 
 /**
@@ -49,7 +69,7 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      */
-    printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResult>;
+    printMap(map: MapModel, options?: PrintingOptions): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */

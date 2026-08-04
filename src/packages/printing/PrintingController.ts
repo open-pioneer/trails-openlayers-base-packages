@@ -2,9 +2,25 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
+import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { EventsKey } from "ol/events";
+import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
+import { Pixel } from "ol/pixel";
+import { getRenderPixel } from "ol/render";
+import RenderEvent from "ol/render/Event";
+import VectorSource from "ol/source/Vector";
 import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
-import { canvasToPng, createBlockUserOverlay } from "./utils";
+import {
+    canvasToPng,
+    createBlockUserOverlay,
+    getPageDimensions,
+    getViewPadding,
+    PageOrientationType,
+    PageSizeType
+} from "./utils";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -13,42 +29,191 @@ const DEFAULT_FILE_NAME = "map";
 export interface ExportOptions {
     title?: string | undefined;
     fileFormat: FileFormatType;
+    resolution: number;
 }
 
 export class PrintingController {
+    #map: MapModel;
     #olMap: OlMap;
     #i18n: I18n;
 
     #printingService: PrintingService;
     #viewPadding: ViewPaddingBehavior | undefined;
+    #size: PageSizeType | undefined;
+    #orientation: PageOrientationType | undefined;
+    #scale: number | undefined;
 
     #printMap: PrintResult | undefined = undefined;
     #overlay: Resource | undefined = undefined;
+    #printAreaLayer: SimpleLayer;
+    #postrenderListener: EventsKey;
 
-    constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
-        this.#olMap = olMap;
+    constructor(
+        map: MapModel,
+        layerFactory: LayerFactory,
+        printingService: PrintingService,
+        i18n: I18n
+    ) {
+        this.#map = map;
+        this.#olMap = map.olMap;
         this.#printingService = printingService;
         this.#i18n = i18n;
+
+        const vectorLayer = new VectorLayer({
+            source: new VectorSource({
+                useSpatialIndex: false,
+                wrapX: true
+            })
+        });
+        this.#printAreaLayer = layerFactory.create({
+            type: SimpleLayer,
+            internal: true,
+            title: "print-area-layer",
+            olLayer: vectorLayer
+        });
+
+        this.#map.layers.addLayer(this.#printAreaLayer, { at: "topmost" });
+
+        this.#postrenderListener = vectorLayer.on("postrender", (event) => {
+            this.#drawPrintArea(event);
+        });
     }
 
     destroy() {
         this.#reset();
+        unByKey(this.#postrenderListener);
+        this.#map.layers.removeLayer(this.#printAreaLayer);
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {
         this.#viewPadding = padding;
+        this.#printAreaLayer.olLayer.changed();
+    }
+
+    setSize(size: PageSizeType) {
+        this.#size = size;
+        this.#printAreaLayer.olLayer.changed();
+    }
+
+    setOrientation(orientation: PageOrientationType) {
+        this.#orientation = orientation;
+        this.#printAreaLayer.olLayer.changed();
+    }
+
+    setScale(scale: number) {
+        this.#scale = scale;
+        this.#printAreaLayer.olLayer.changed();
+    }
+
+    #drawPrintArea(renderEvent: RenderEvent) {
+        const printArea = this.#getPixelBounds();
+        if (!printArea) return;
+
+        const context = renderEvent.context;
+        if (!context || !(context instanceof CanvasRenderingContext2D)) return;
+
+        context.reset();
+
+        const mapSize = this.#olMap.getSize();
+        if (!mapSize || !mapSize[0] || !mapSize[1]) return;
+        const mapHeight = mapSize[1];
+        const mapWidth = mapSize[0];
+        if (!mapWidth || !mapHeight) return;
+
+        context.save();
+
+        context.beginPath();
+
+        // outside polygon, clockwise
+        const outer = [0, 0, mapWidth, mapHeight];
+        this.#drawCanvasRectangle(context, renderEvent, outer);
+
+        // inner polygon, counter-clockwise
+        this.#drawCanvasRectangle(context, renderEvent, printArea, true);
+
+        context.closePath();
+
+        context.fillStyle = "rgba(0, 5, 25, 0.70)";
+        context.fill();
+
+        context.restore();
+    }
+
+    #drawCanvasRectangle(
+        context: CanvasRenderingContext2D,
+        renderEvent: RenderEvent,
+        pixelExtent: number[],
+        reverse: boolean = false
+    ) {
+        // start in top left edge
+        context.moveTo(
+            ...(getRenderPixel(renderEvent, [pixelExtent[0], pixelExtent[1]] as Pixel) as [
+                number,
+                number
+            ])
+        );
+
+        const points = [
+            [pixelExtent[2], pixelExtent[1]],
+            [pixelExtent[2], pixelExtent[3]],
+            [pixelExtent[0], pixelExtent[3]]
+        ];
+        if (reverse) points.reverse(); // anti-clockwise drawing
+
+        for (const point of points) {
+            context.lineTo(...(getRenderPixel(renderEvent, point as Pixel) as [number, number]));
+        }
+    }
+
+    #getPixelBounds() {
+        if (!this.#size || !this.#orientation || !this.#scale) return;
+
+        const mapSize = this.#olMap.getSize();
+        if (!mapSize || !mapSize[0] || !mapSize[1]) return;
+
+        const printDimension = getPageDimensions(this.#size, this.#orientation);
+        const padding = getViewPadding(this.#map);
+
+        const widthInMeters = (printDimension.width * this.#scale) / 1000.0;
+        const heightInMeters = (printDimension.height * this.#scale) / 1000.0;
+
+        const resolution = this.#map.getCenterResolution(); // meters per pixel
+        if (!resolution) return;
+
+        const pixelWidth = widthInMeters / resolution;
+        const pixelHeight = heightInMeters / resolution;
+
+        const centerPixel = [
+            (mapSize[0] + padding.left - padding.right) / 2,
+            (mapSize[1] + padding.top - padding.bottom) / 2
+        ];
+        if (!centerPixel[0] || !centerPixel[1]) return;
+
+        const minx = centerPixel[0] - pixelWidth / 2;
+        const miny = centerPixel[1] - pixelHeight / 2;
+        const maxx = centerPixel[0] + pixelWidth / 2;
+        const maxy = centerPixel[1] + pixelHeight / 2;
+
+        return [minx, miny, maxx, maxy];
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.#olMap) {
-            return;
+        if (!this.#size || !this.#orientation || !this.#scale) {
+            throw new Error("Printing params undefined");
         }
 
         try {
             this.#begin();
-            this.#printMap = await this.#printingService.printMap(this.#olMap, {
+
+            const { height, width } = getPageDimensions(this.#size, this.#orientation);
+
+            this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
-                viewPadding: this.#viewPadding
+                viewPadding: this.#viewPadding,
+                resolution: options.resolution,
+                scale: this.#scale,
+                height: height,
+                width: width
             });
             const canvas = this.#printMap.getCanvas();
             if (canvas) {
@@ -70,11 +235,13 @@ export class PrintingController {
         if (container) {
             this.#overlay = createBlockUserOverlay(container, this.#i18n.overlayText);
         }
+        this.#printAreaLayer.setVisible(false);
     }
 
     #reset() {
         this.#overlay?.destroy();
         this.#overlay = undefined;
+        this.#printAreaLayer.setVisible(true);
     }
 
     #getTitleAndFileName(options: ExportOptions) {
@@ -127,9 +294,9 @@ export class PrintingController {
         // Lazy load pdfjs as well.
         const { jsPDF } = await import("jspdf");
         const pdf = new jsPDF({
-            orientation: "landscape",
+            orientation: this.#orientation,
             unit: "mm",
-            format: "a4"
+            format: this.#size
         });
 
         // Simple layout: 50 pixels for the header and
