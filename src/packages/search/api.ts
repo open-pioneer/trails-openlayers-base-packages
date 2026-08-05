@@ -11,6 +11,16 @@ import { Projection } from "ol/proj";
  */
 export interface SearchSource {
     /**
+     * The id of this source.
+     *
+     * Must be unique across all search sources used within the same search component.
+     *
+     * The id must not change while the source is in use (this value is not reactive).
+     * If no id is defined, the search component generates one internally.
+     */
+    readonly id?: string;
+
+    /**
      * The label of this source.
      *
      * This will be displayed by the user interface when results from this search source are shown.
@@ -142,7 +152,7 @@ export interface SearchApi {
 
     /**
      * Sets the search input field to the given value.
-     * The search is not automatically triggered when setting the input value.
+     * The suggestion menu is not opened automatically when setting the input value.
      * @param inputValue The value to be set in the search input field.
      */
     setInputValue(inputValue: string): void;

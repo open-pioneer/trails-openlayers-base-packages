@@ -1,32 +1,28 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { SearchApi, SearchClearTrigger, SelectResult } from "../api";
+import { SearchApi, SelectResult } from "../api";
+import { SearchViewModel } from "../model";
 
+/**
+ * Implements the public search API by delegating to the view model.
+ */
 export class SearchApiImpl implements SearchApi {
-    #clearInput: (trigger: SearchClearTrigger) => void;
-    #setInputValue: (newValue: string) => void;
-    #searchAndSelect: (input: string) => Promise<SelectResult | undefined>;
+    #viewModel: SearchViewModel;
 
-    constructor(
-        clearInput: (trigger: SearchClearTrigger) => void,
-        setInputValue: (newValue: string) => void,
-        searchAndSelect: (inputValue: string) => Promise<SelectResult | undefined>
-    ) {
-        this.#clearInput = clearInput;
-        this.#setInputValue = setInputValue;
-        this.#searchAndSelect = searchAndSelect;
+    constructor(viewModel: SearchViewModel) {
+        this.#viewModel = viewModel;
     }
 
-    resetInput() {
-        this.#clearInput("api-reset");
+    resetInput(): void {
+        this.#viewModel.clear("api-reset");
     }
 
-    setInputValue(inputValue: string) {
-        this.#setInputValue(inputValue);
+    setInputValue(inputValue: string): void {
+        this.#viewModel.setInputValue(inputValue);
     }
 
-    async searchAndSelect(inputValue: string) {
-        return this.#searchAndSelect(inputValue);
+    searchAndSelect(inputValue: string): Promise<SelectResult | undefined> {
+        return this.#viewModel.searchAndSelect(inputValue);
     }
 }
