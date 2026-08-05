@@ -17,7 +17,7 @@ import {
 import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const LOG = createLogger(sourceId);
@@ -28,7 +28,7 @@ export function AppUI() {
     const notificationService = useService<NotificationService>("notifier.NotificationService");
     const searchApiRef = useRef<SearchApi>(undefined);
 
-    const sources = [new FakeCitySource(1)];
+    const sources = useMemo(() => [new FakeCitySource(1)], []);
 
     function onSearchSelect({ result }: SearchSelectEvent) {
         notificationService.notify({

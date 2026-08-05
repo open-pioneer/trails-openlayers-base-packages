@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
     const devMode = mode === "development";
 
     // Allowed values are "DEBUG", "INFO", "WARN", "ERROR"
-    const logLevel = devMode ? "INFO" : "WARN";
+    const logLevel = devMode ? "DEBUG" : "WARN";
 
     return {
         root: resolve(__dirname, "src"),
