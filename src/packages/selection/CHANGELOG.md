@@ -1,5 +1,20 @@
 # @open-pioneer/selection
 
+## 1.5.0
+
+### Minor Changes
+
+- fab4c36: Add the map model to the context of the selection source's `select` method.
+- fab4c36: Add support for an `id` property on the selection source interface to identify sources. The property remains optional for the time being to preserve backwards compatibility.
+
+### Patch Changes
+
+- fab4c36: Cancel selection requests that are no longer needed.
+  If the user starts another selection while a request is still running, the previous request is cancelled
+  and only the results of the most recent selection are used.
+- fab4c36: Use `synchronized` to watch the vector layer's visibility.
+- fab4c36: Refactor internal state management.
+
 ## 1.4.0
 
 ### Minor Changes
