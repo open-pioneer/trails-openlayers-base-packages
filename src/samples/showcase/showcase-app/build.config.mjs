@@ -26,7 +26,7 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["app.AppInitModel", "runtime.ApplicationContext", "map.LayerFactory"]
+        references: ["app.AppInitModel", "runtime.LocaleService", "map.LayerFactory"]
     },
     properties: {
         /** Whether this app is embedded or full page. The full page variant modifies the host page's URL. */

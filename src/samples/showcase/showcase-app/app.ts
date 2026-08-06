@@ -28,6 +28,9 @@ const element = createCustomElement({
             },
             locale: !embedded ? FORCED_LANG : undefined
         };
+    },
+    advanced: {
+        enableLiveLocaleChanges: true
     }
 });
 
