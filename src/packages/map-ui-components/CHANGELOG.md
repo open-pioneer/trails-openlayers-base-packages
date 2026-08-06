@@ -1,5 +1,7 @@
 # @open-pioneer/map-ui-components
 
+## 1.5.0
+
 ## 1.4.0
 
 ### Minor Changes
