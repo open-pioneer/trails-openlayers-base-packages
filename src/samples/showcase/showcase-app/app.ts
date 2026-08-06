@@ -16,8 +16,18 @@ const element = createCustomElement({
             "@open-pioneer/local-storage": {
                 "storageId": "ol-showcase-state"
             }
-        },
-        locale: FORCED_LANG
+        }
+    },
+    async resolveConfig(ctx) {
+        const embedded = ctx.getAttribute("embedded") === "true";
+        return {
+            properties: {
+                "showcase-app": {
+                    embedded
+                }
+            },
+            locale: !embedded ? FORCED_LANG : undefined
+        };
     }
 });
 

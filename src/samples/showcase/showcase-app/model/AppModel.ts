@@ -19,6 +19,14 @@ import { DemoInfo } from "./AppInitModel";
 
 const LOG = createLogger(sourceId);
 
+export interface AppModelOptions {
+    demos: Demo[];
+    mapModel: MapModel;
+    notifier: NotificationService;
+    currentIntl: ReadonlyReactive<PackageIntl>;
+    embedded: boolean;
+}
+
 export class AppModel {
     #mapModel: MapModel;
     #notifier: NotificationService;
@@ -34,12 +42,7 @@ export class AppModel {
     });
     #resources: Resource[] = [];
 
-    constructor(
-        mapModel: MapModel,
-        notifier: NotificationService,
-        currentIntl: ReadonlyReactive<PackageIntl>,
-        demos: Demo[]
-    ) {
+    constructor({ mapModel, notifier, currentIntl, demos, embedded }: AppModelOptions) {
         this.#mapModel = mapModel;
         this.#notifier = notifier;
         this.#currentIntl = currentIntl;
@@ -55,8 +58,10 @@ export class AppModel {
         }
         this.#currentDemo = reactive([demo, demo.createModel()]);
 
-        this.#applyStateFromUrl();
-        this.#resources.push(this.#syncStateToUrl());
+        if (!embedded) {
+            this.#applyStateFromUrl();
+            this.#resources.push(this.#syncStateToUrl());
+        }
     }
 
     destroy(): void {
