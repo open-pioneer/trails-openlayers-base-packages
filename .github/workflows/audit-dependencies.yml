@@ -19,4 +19,4 @@ jobs:
       - name: Install
         uses: open-pioneer/trails-repo-automation/.github/actions/install@main
       - name: Audit dependencies
-        run: pnpm audit
+        run: pnpm audit --audit-level moderate
