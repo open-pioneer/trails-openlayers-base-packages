@@ -172,7 +172,7 @@ export class PrintingController {
         if (!mapSize || !mapSize[0] || !mapSize[1]) return;
 
         const printDimension = getPageDimensions(this.#size, this.#orientation);
-        const padding = getViewPadding(this.#map);
+        const padding = getViewPadding(this.#olMap.getView());
 
         const widthInMeters = (printDimension.width * this.#scale) / 1000.0;
         const heightInMeters = (printDimension.height * this.#scale) / 1000.0;
@@ -210,7 +210,7 @@ export class PrintingController {
             this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
                 viewPadding: this.#viewPadding,
-                resolution: options.resolution,
+                dpi: options.resolution,
                 scale: this.#scale,
                 height: height,
                 width: width

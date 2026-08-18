@@ -420,7 +420,7 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     }
     const [mapWidth, mapHeight] = mapSize as [number, number];
 
-    const viewPadding = getViewPadding(map);
+    const viewPadding = getViewPadding(map.olView);
 
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;

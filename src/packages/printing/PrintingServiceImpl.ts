@@ -31,15 +31,26 @@ export class PrintingServiceImpl implements PrintingService {
         this.#intl = options.currentIntl;
     }
 
-    async printMap(map: MapModel, options?: PrintingOptions): Promise<PrintResultImpl> {
-        const job = new PrintJob(map, {
+    async printMap(
+        mapParam: MapModel | OlMap,
+        options?: PrintingOptions
+    ): Promise<PrintResultImpl> {
+        // Basic property detection to discriminate between olmap / mapmodel, this is done to preserve backwards compatibility for
+        // callers that only pass an OlMap.
+        let map: MapModel | undefined;
+        let olMap: OlMap;
+        if ("getViewResolutionForScale" in mapParam) {
+            map = mapParam;
+            olMap = map.olMap;
+        } else {
+            olMap = mapParam;
+        }
+
+        const job = new PrintJob(map, olMap, {
             blockUserInteraction: true,
             overlayText: this.#intl.value.formatMessage({ id: "printingMap" }),
             viewPadding: "auto",
-            resolution: undefined,
-            scale: undefined,
-            height: undefined,
-            width: undefined,
+            dpi: DEFAULT_DPI,
             ...options
         });
         return await job.printMap();
@@ -51,16 +62,20 @@ interface DrawInfo {
     style: StyleLike | FlatStyleLike | null | undefined;
 }
 
+// some options such as scale do not have hardcoded defaults; their defaults are computed on demand only.
+type PrintJobOptions = PrintingOptions &
+    Required<Omit<PrintingOptions, "scale" | "height" | "width">>;
+
 // Exported just for test (mocking)
 export class PrintJob {
-    #map: MapModel;
+    #map: MapModel | undefined;
     #olMap: OlMap;
     #blockUserInteraction: boolean = false;
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
     #resolution: number | undefined = undefined;
-    #height: number | undefined = undefined;
-    #width: number | undefined = undefined;
+    #height: number | undefined = undefined; // Pixels!
+    #width: number | undefined = undefined; // Pixels!
 
     #running = false;
     #drawInformation: DrawInfo[] | undefined = [];
@@ -71,16 +86,17 @@ export class PrintJob {
     #viewWidth: string;
     #scaleResolution: number | undefined = undefined;
 
-    constructor(map: MapModel, options: Required<PrintingOptions>) {
+    // NOTE: Map is optional here to support the legacy "OlMap-only" API.
+    constructor(map: MapModel | undefined, olMap: OlMap, options: PrintJobOptions) {
         this.#map = map;
-        this.#olMap = map.olMap;
+        this.#olMap = olMap;
         this.#blockUserInteraction = options.blockUserInteraction;
         this.#overlayText = options.overlayText;
         this.#viewPadding = options.viewPadding;
 
         // save current state of map
-        const viewResolution = map.resolution;
-        if (!viewResolution) {
+        const viewResolution = olMap.getView().getResolution();
+        if (viewResolution == null) {
             throw new Error("Cannot get current map resolution");
         }
         this.#viewResolution = viewResolution;
@@ -88,24 +104,20 @@ export class PrintJob {
         this.#viewWidth = this.#olMap.getTargetElement().style.width;
 
         // if no params for target image specified, export current map canvas
-        const padding = getViewPadding(this.#map);
-        this.#width =
-            options.resolution && options.width
-                ? Math.round((options.width * options.resolution) / MM_PER_INCH) +
-                  padding.left +
-                  padding.right
-                : this.#olMap.getTargetElement().offsetWidth;
-        this.#height =
-            options.resolution && options.height
-                ? Math.round((options.height * options.resolution) / MM_PER_INCH) +
-                  padding.top +
-                  padding.bottom
-                : this.#olMap.getTargetElement().offsetHeight;
+        const padding = getViewPadding(olMap.getView());
+        this.#width = options.width
+            ? Math.round((options.width * options.dpi) / MM_PER_INCH) + padding.left + padding.right
+            : this.#olMap.getTargetElement().offsetWidth;
+        this.#height = options.height
+            ? Math.round((options.height * options.dpi) / MM_PER_INCH) +
+              padding.top +
+              padding.bottom
+            : this.#olMap.getTargetElement().offsetHeight;
         this.#scaleResolution =
-            options.scale && options.resolution
-                ? this.#map.getViewResolutionForScale(options.scale, options.resolution)
-                : this.#map.resolution;
-        this.#resolution = options.resolution ? options.resolution : DEFAULT_DPI;
+            options.scale != null && this.#map
+                ? this.#map.getViewResolutionForScale(options.scale, options.dpi)
+                : this.#olMap.getView().getResolution();
+        this.#resolution = options.dpi ? options.dpi : DEFAULT_DPI;
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -122,7 +134,7 @@ export class PrintJob {
             }
 
             if (this.#viewPadding === "auto") {
-                canvas = this.removePadding(canvas, getViewPadding(this.#map));
+                canvas = this.removePadding(canvas, getViewPadding(this.#olMap.getView()));
             }
             return new PrintResultImpl(canvas);
         } finally {
@@ -189,7 +201,9 @@ export class PrintJob {
         let bottom = 50;
         let left = 8;
         if (this.#viewPadding === "auto") {
-            const { bottom: paddingBottom, left: paddingLeft } = getViewPadding(this.#map);
+            const { bottom: paddingBottom, left: paddingLeft } = getViewPadding(
+                this.#olMap.getView()
+            );
             bottom = Math.max(paddingBottom + 8, bottom);
             left += paddingLeft;
         }

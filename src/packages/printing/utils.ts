@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
-import { MapModel } from "@open-pioneer/map/model/MapModel";
+import type OlView from "ol/View";
 
 const DEFAULT_QUALITY = 0.8;
 
@@ -83,9 +83,9 @@ export function scalePadding(rawPadding: ViewPadding): ViewPadding {
     };
 }
 
-export function getViewPadding(map: MapModel): ViewPadding {
+export function getViewPadding(olView: OlView): ViewPadding {
     // top, right, bottom, left
-    const rawPadding = (map.olView.padding ?? [0, 0, 0, 0]) as [number, number, number, number];
+    const rawPadding = (olView.padding ?? [0, 0, 0, 0]) as [number, number, number, number];
     return {
         top: rawPadding[0] ?? 0,
         right: rawPadding[1] ?? 0,

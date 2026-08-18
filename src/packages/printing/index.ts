@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { MapModel } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
+import type OlMap from "ol/Map";
 
 /**
- * Options supported when printing the map.
+ * These options are supported when printing an `olMap` only (without a map model).
+ *
+ * They will eventually move into {@link PrintingOptions}.
+ *
+ * @deprecated
  */
-export interface PrintingOptions {
+export interface OlMapPrintingOptions {
     /**
      * When this is true (the default), an overlay will be added above the map
      * to block user interactions.
@@ -26,26 +31,33 @@ export interface PrintingOptions {
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
+}
 
+/**
+ * Options supported when printing the map.
+ *
+ * These options require a `mapModel` to be passed -- not a raw OlMap.
+ */
+export interface PrintingOptions extends OlMapPrintingOptions {
     /**
-     * The print resolution to be generated in dots per inch (DPI) (default: current display resolution).
+     * The print resolution to be generated in dots per inch (default: current display resolution).
      */
-    resolution: number | undefined;
+    dpi?: number;
 
     /**
      * The scale of the generated map (default: current map scale).
      */
-    scale: number | undefined;
+    scale?: number;
 
     /**
      * The vertical size of the generated map in millimeters (default: current map size).
      */
-    height: number | undefined;
+    height?: number;
 
     /**
      * The horizontal size of the generated map in millimeters (default: current map size).
      */
-    width: number | undefined;
+    width?: number;
 }
 
 /**
@@ -63,6 +75,16 @@ export type ViewPaddingBehavior = "auto" | "ignore";
  * Inject an instance of this service by referencing the interface name `"printing.PrintingService"`.
  */
 export interface PrintingService extends DeclaredService<"printing.PrintingService"> {
+    /**
+     * Starts a map print operation on the specified map.
+     *
+     * The promise resolves with the resulting map image or with any error that occurred
+     * while printing the map.
+     *
+     * @deprecated
+     */
+    printMap(olMap: OlMap, options?: OlMapPrintingOptions): Promise<PrintResult>;
+
     /**
      * Starts a map print operation on the specified map.
      *
