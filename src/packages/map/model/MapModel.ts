@@ -19,12 +19,17 @@ import { createEmpty, extend, getArea, getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
-import { getPointResolution, Projection } from "ol/proj";
+import { Projection } from "ol/proj";
 import OlView from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
 import { BaseFeature } from "../utils/BaseFeature";
-import { calculateBufferedExtent } from "../utils/geometry-utils";
+import {
+    calculateBufferedExtent,
+    getPointResolution,
+    getResolutionForScale,
+    getScaleForPointResolution
+} from "../utils/geometry-utils";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
@@ -45,13 +50,10 @@ import { Overlays } from "./Overlays";
 
 const LOG = createLogger(sourceId);
 
-const INCHES_PER_METRE = 39.37;
-
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
-export const DEFAULT_DPI = 25.4 / 0.28;
 export const DISPLAY_STATUS = Symbol("DISPLAY_STATUS");
 
 const deprecatedHighlights = deprecated({
@@ -225,7 +227,11 @@ export class MapModel {
 
         this.#viewBindings = computed(() => createViewBindings(this.#olView.value));
         this.#scale = computed(() => {
-            return this.getCurrentScale();
+            const pointResolution = this.getCenterPointResolution();
+            if (pointResolution == null) {
+                return undefined;
+            }
+            return Math.round(getScaleForPointResolution({ pointResolution }));
         });
 
         // expects fully constructed mapModel
@@ -311,8 +317,11 @@ export class MapModel {
     }
 
     /**
-     * Returns the current resolution of the map.
+     * Returns the current _view resolution_ of the map, in _projection units per pixel_.
      * Same as `olView.getResolution()`, but reactive.
+     *
+     * > NOTE: This is only a distance in meters if the map's projection uses meters as its unit.
+     * > Use {@link getCenterPointResolution} to obtain meters per pixel for any projection.
      */
     get resolution(): number | undefined {
         return this.#viewBindings.value.resolution.value;
@@ -343,6 +352,7 @@ export class MapModel {
      *
      * > NOTE: Technically, this is the _denominator_ of the current scale.
      * > In order to display it, use a format like `1:${scale}`.
+     * > The value is rounded to an integer, since it is intended for display.
      */
     get scale(): number | undefined {
         return this.#scale.value;
@@ -426,70 +436,67 @@ export class MapModel {
     /**
      * Changes the current scale of the map to the given value.
      *
-     * Internally, this computes a new zoom level / resolution based on the scale
-     * and the current center.
-     * The new resolution is then applied to the current `olView`.
+     * Internally, this computes the view resolution for the given scale and the current center
+     * (see {@link getViewResolutionForScale}) and applies it to the current `olView`.
      *
-     * See also {@link scale}.
+     * Reading {@link scale} afterwards returns the given value again, rounded to an integer.
      */
     setScale(newScale: number): void {
-        const centerResolution = this.scaleToCenterResolution(newScale);
-        this.olView.setResolution(centerResolution);
+        const viewResolution = this.getViewResolutionForScale(newScale);
+        this.olView.setResolution(viewResolution);
     }
 
     /**
-     * Returns the resolution at the current map center in meters per pixel.
+     * Returns the _point resolution_ at the current map center, in _meters per pixel_.
      *
-     * By default, the calculated point resolution uses the current view map view state (resolution, projection, center).
-     * It is also possible to calculate the resolution for a defined target resolution specified in the
-     * optional parameter.
+     * Unlike {@link resolution} (which is in projection units per pixel), this is a real world
+     * distance for every projection. It is derived from the current `resolution`, `projection` and
+     * `center` of the map, and therefore also changes when the map is _panned_.
      *
-     * @param resolution Optional resolution to be used for calculation instead of current map resolution
-     * @returns Resolution in meters per pixel
+     * Returns `undefined` while the map has no resolution or center yet.
+     *
+     * @see {@link getPointResolution}
      */
-    getCenterResolution(resolution?: number): number | undefined {
-        const res = resolution ?? this.resolution;
-        if (!res) return undefined;
-
-        const cen = this.center;
-        if (!cen) {
-            return;
+    getCenterPointResolution(): number | undefined {
+        const resolution = this.resolution;
+        if (!resolution) {
+            return undefined;
         }
 
-        const proj = this.projection;
-        const mpu = proj.getMetersPerUnit() ?? 1;
+        const center = this.center;
+        if (!center) {
+            return undefined;
+        }
 
-        return getPointResolution(proj, res * mpu, cen, "m");
+        return getPointResolution({ point: center, projection: this.projection, resolution });
     }
 
     /**
-     * Computes the resolution based on a given scale and the current map center
+     * Computes the _view resolution_ (in _projection units per pixel_) needed to display the map at
+     * the given `scale` around the current map center.
      *
-     * @param scale Scale
-     * @param targetDpi Optional pixel density for calculating resolution for different output than screen (default: OpenLayers default of 90.71)
-     * @returns Resolution
+     * The result can be passed to `olView.setResolution()`; see also {@link setScale}.
+     *
+     * Returns `undefined` while the map has no center yet.
+     *
+     * @param scale The target scale (the denominator, i.e. `1:${scale}`).
+     * @param targetDpi Optional pixel density, for computing a resolution for an output medium other
+     *   than the screen. Defaults to `DEFAULT_DPI` (~90.71), the standardized screen dpi.
+     *
+     * @see {@link getResolutionForScale}
      */
-    scaleToCenterResolution(scale: number, targetDpi?: number): number | undefined {
-        const dpi = targetDpi ?? DEFAULT_DPI; // pixels per inch
-        const res = INCHES_PER_METRE * dpi; // pixels per meter
-        const centerResolution = this.getCenterResolution(res); // meters per pixel
-        if (!centerResolution) return undefined;
-        return scale / centerResolution;
-    }
+    getViewResolutionForScale(scale: number, targetDpi?: number): number | undefined {
+        const center = this.center;
+        if (!center) {
+            return undefined;
+        }
 
-    /**
-     * Computes the scale based on the current center of the map
-     *
-     * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
-     * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
-     *
-     * @returns Scale of the map
-     */
-    getCurrentScale(): number | undefined {
-        const res = INCHES_PER_METRE * DEFAULT_DPI;
-        const centerResolution = this.getCenterResolution(this.resolution);
-        if (!centerResolution) return undefined;
-        return Math.round(centerResolution * res);
+        return getResolutionForScale({
+            scale,
+            point: center,
+            projection: this.projection,
+            dpi: targetDpi
+        });
     }
 
     /**

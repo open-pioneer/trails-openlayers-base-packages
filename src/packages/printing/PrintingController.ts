@@ -177,7 +177,7 @@ export class PrintingController {
         const widthInMeters = (printDimension.width * this.#scale) / 1000.0;
         const heightInMeters = (printDimension.height * this.#scale) / 1000.0;
 
-        const resolution = this.#map.getCenterResolution(); // meters per pixel
+        const resolution = this.#map.getCenterPointResolution(); // meters per pixel
         if (!resolution) return;
 
         const pixelWidth = widthInMeters / resolution;

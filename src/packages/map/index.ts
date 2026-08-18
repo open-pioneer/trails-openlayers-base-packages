@@ -119,9 +119,12 @@ export {
 } from "./MapRegistry";
 
 // Utils
-export { calculateBufferedExtent } from "./utils/geometry-utils";
+export {
+    calculateBufferedExtent,
+    DEFAULT_DPI,
+    getPointResolution,
+    getResolutionForScale,
+    getScaleForPointResolution
+} from "./utils/geometry-utils";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
 export { type BaseFeature } from "./utils/BaseFeature";
-
-// FIXME
-export { DEFAULT_DPI } from "./model/MapModel";

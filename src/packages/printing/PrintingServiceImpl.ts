@@ -103,7 +103,7 @@ export class PrintJob {
                 : this.#olMap.getTargetElement().offsetHeight;
         this.#scaleResolution =
             options.scale && options.resolution
-                ? this.#map.scaleToCenterResolution(options.scale, options.resolution)
+                ? this.#map.getViewResolutionForScale(options.scale, options.resolution)
                 : this.#map.resolution;
         this.#resolution = options.resolution ? options.resolution : DEFAULT_DPI;
     }

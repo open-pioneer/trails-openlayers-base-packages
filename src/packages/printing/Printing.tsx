@@ -425,7 +425,7 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
 
-    const resolution = map.getCenterResolution(); // meters per pixel
+    const resolution = map.getCenterPointResolution(); // meters per pixel
     if (!resolution) return fallbackScale;
 
     const width = resolution * maxPrintWidth; // meters
