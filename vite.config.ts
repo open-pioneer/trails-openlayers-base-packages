@@ -6,6 +6,7 @@ import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
 import { defineConfig } from "vite";
+import { dependencySourcemaps } from "./support/vite/dependency-sourcemaps";
 
 // Find sites under src/samples with an index.html and build them all.
 const sampleSites = glob
@@ -45,7 +46,13 @@ export default defineConfig(({ mode }) => {
             // Include services.ts files as entry points.
             // This makes it easier for vite's dev server to find dependencies,
             // and thereby reduces the number of repeated bundler executions on dev server startup.
-            entries: ["**/*.html", "**/services.{ts,js}", "!**/dist/**"]
+            entries: ["**/*.html", "**/services.{ts,js}", "!**/dist/**"],
+
+            rolldownOptions: {
+                // Preserve dependency source maps through pre-bundling (see plugin for details).
+                // You can disable this if you don't need to see the source code of dependencies when debugging.
+                plugins: [dependencySourcemaps()]
+            }
         },
 
         plugins: [
@@ -60,7 +67,10 @@ export default defineConfig(({ mode }) => {
                 ],
 
                 // Apps to distribute as .js files for embedded use cases
-                apps: []
+                apps: {
+                    "showcase": "samples/showcase/showcase-app/app.ts",
+                    "sample-app": "samples/map-sample/ol-app/app.ts"
+                }
             }),
             react()
         ],

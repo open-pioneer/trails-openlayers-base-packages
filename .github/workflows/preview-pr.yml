@@ -21,7 +21,7 @@ jobs:
       # this workflow (pull_request_target) then deploys the resulting build artifact as a preview.
       # If you know a smarter way, let us now.
       - name: Wait for other checks to succeed
-        uses: lewagon/wait-on-check-action@1d57e2c51a58d812d2765e036a028b6bdb5a6154 # v1.8.1
+        uses: lewagon/wait-on-check-action@369769072fe522a3a8a85c03c96af1e5242a1994 # v1.9.1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           check-name: "Build samples and documentation"
@@ -39,7 +39,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # https://github.com/JamesIves/github-pages-deploy-action/issues/1928#issuecomment-3635092712
           persist-credentials: false
@@ -60,7 +60,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
-        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@3db596c46b571582bad9438f2cd49af7b960f44b # main
+        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@main
         with:
           src-repo: "openlayers-base-packages"
           token: ${{ secrets.DEMO_DEPLOY_TOKEN }}

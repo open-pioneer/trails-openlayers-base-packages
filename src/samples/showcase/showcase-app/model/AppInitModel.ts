@@ -55,30 +55,18 @@ export interface AppStateReady {
 export class AppInitModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "app.AppInitModel";
 
+    #references: References;
+    #currentIntl: ReadonlyReactive<PackageIntl>;
+    #embedded: boolean;
     #appState = reactive<AppState>({ kind: "loading" });
     #resources: Resource[] = [];
     #isDestroyed = false;
 
     constructor(serviceOptions: ServiceOptions<References>) {
-        const {
-            mapRegistry,
-            httpService,
-            notifier,
-            vectorSelectionSourceFactory,
-            editingService,
-            notificationService
-        } = serviceOptions.references;
-        const currentIntl = serviceOptions.currentIntl;
-
-        this.#init({
-            mapRegistry,
-            httpService,
-            notifier,
-            vectorSelectionSourceFactory,
-            editingService,
-            currentIntl,
-            notificationService
-        }).catch((err) => {
+        this.#references = serviceOptions.references;
+        this.#currentIntl = serviceOptions.currentIntl;
+        this.#embedded = serviceOptions.properties.embedded as boolean;
+        this.#init().catch((err) => {
             LOG.error("Failed to initialize application", err);
 
             this.#appState.value = {
@@ -99,24 +87,16 @@ export class AppInitModel implements Service {
         return this.#appState.value;
     }
 
-    async #init(options: {
-        mapRegistry: MapRegistry;
-        httpService: HttpService;
-        notifier: NotificationService;
-        vectorSelectionSourceFactory: VectorSelectionSourceFactory;
-        editingService: EditingService;
-        currentIntl: ReadonlyReactive<PackageIntl>;
-        notificationService: NotificationService;
-    }) {
+    async #init() {
         const {
             mapRegistry,
             httpService,
             notifier,
             vectorSelectionSourceFactory,
             editingService,
-            currentIntl,
             notificationService
-        } = options;
+        } = this.#references;
+        const currentIntl = this.#currentIntl;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
 
         if (!mapModel) {
@@ -131,8 +111,13 @@ export class AppInitModel implements Service {
             editingService,
             notificationService
         });
-        const appModel = new AppModel(mapModel, notifier, currentIntl, demos);
-
+        const appModel = new AppModel({
+            mapModel,
+            notifier,
+            currentIntl,
+            demos,
+            embedded: this.#embedded
+        });
         const state: AppStateReady = {
             kind: "ready",
             appModel,
