@@ -9,9 +9,12 @@ const DEFAULT_QUALITY = 0.8;
 export type PageSizeType = "a3" | "a4" | "a5";
 export type PageOrientationType = "landscape" | "portrait";
 
-// long: longer side of the page
-// lengths in millimeters
-const PAGE_SIZE: { [format: string]: { short: number; long: number } } = {
+interface PageSize {
+    short: number; // millimeters
+    long: number; // millimeters
+}
+
+const PAGE_SIZE: Record<PageSizeType, PageSize> = {
     a3: { short: 297, long: 420 },
     a4: { short: 210, long: 297 },
     a5: { short: 148, long: 210 }
@@ -56,14 +59,7 @@ export function getPageDimensions(
     size: PageSizeType,
     orientation: PageOrientationType
 ): PageDimension {
-    const pageSize = PAGE_SIZE[size];
-    if (!pageSize) {
-        throw new Error("Page Size ${size} is not defined");
-    }
-
-    const short = pageSize.short;
-    const long = pageSize.long;
-
+    const { short, long } = PAGE_SIZE[size];
     const width = orientation === "landscape" ? long : short;
     const height = orientation === "landscape" ? short : long;
 
