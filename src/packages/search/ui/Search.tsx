@@ -3,20 +3,19 @@
 
 import { Box } from "@chakra-ui/react";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { FC, useEffect, useRef } from "react";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { FC, useEffect, useEffectEvent, useMemo } from "react";
 import {
-    SearchApi,
     SearchClearEvent,
     SearchDisposedEvent,
     SearchReadyEvent,
     SearchSelectEvent,
-    SearchSource,
-    SelectResult
+    SearchSource
 } from "../api";
+import { SearchViewModel } from "../model";
 import { SearchApiImpl } from "./SearchApiImpl";
 import { SearchInput } from "./SearchInput";
-import { useSearchState } from "./useSearchState";
+import { useSearchViewModel } from "./useSearchViewModel";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -71,77 +70,65 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
  * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
  */
 export const Search: FC<SearchProps> = (props) => {
-    const {
-        sources,
-        searchTypingDelay,
-        maxResultsPerGroup,
-        placeholder,
-        onSelect,
-        onClear,
-        onReady,
-        onDisposed
-    } = props;
+    const { onReady, onDisposed, placeholder } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const map = useMapModelValue(props);
-    const { input, results, onInputChanged, onOptionConfirmed, selectedOption, searchAndSelect } =
-        useSearchState(sources, searchTypingDelay, maxResultsPerGroup, map, onSelect);
-
-    // api trigger hooks
-    useSearchApi(onReady, onDisposed, onInputChanged, onClear, searchAndSelect);
+    const viewModel = useSearchViewModel(map, props);
 
     return (
         <Box {...containerProps} width={"100%"}>
-            <SearchInput
-                input={input}
-                selectedOption={selectedOption}
-                results={results}
-                placeholder={placeholder}
-                onClear={onClear}
-                onSelect={onSelect}
-                onInputChanged={onInputChanged}
-                onOptionConfirmed={onOptionConfirmed}
-            />
+            {viewModel && (
+                <SearchReady
+                    viewModel={viewModel}
+                    placeholder={placeholder}
+                    onReady={onReady}
+                    onDisposed={onDisposed}
+                />
+            )}
         </Box>
     );
 };
 
-// Note: `clearInput` and `setInputValue` must be stable because only the initial value is used to construct the API instance at this time.
-// oxlint-disable-next-line max-params
+interface SearchReadyProps {
+    viewModel: SearchViewModel;
+    placeholder: string | undefined;
+    onReady: ((event: SearchReadyEvent) => void) | undefined;
+    onDisposed: ((event: SearchDisposedEvent) => void) | undefined;
+}
+
+/**
+ * The search component, rendered once its view model exists.
+ */
+function SearchReady(props: SearchReadyProps) {
+    const { viewModel, placeholder, onReady, onDisposed } = props;
+    useSearchApi(viewModel, onReady, onDisposed);
+    return <SearchInput viewModel={viewModel} placeholder={placeholder} />;
+}
+
+/**
+ * Creates the public {@link SearchApi} and triggers the ready / disposed events.
+ */
 function useSearchApi(
+    viewModel: SearchViewModel,
     onReady: ((event: SearchReadyEvent) => void) | undefined,
-    onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
-    onInputChanged: (newValue: string) => void,
-    onClear: ((event: SearchClearEvent) => void) | undefined,
-    searchAndSelect: (inputValue: string) => Promise<SelectResult | undefined>
+    onDisposed: ((event: SearchDisposedEvent) => void) | undefined
 ) {
-    const clearInput = useEvent(() => {
-        onInputChanged("");
-        onClear?.({ trigger: "api-reset" });
+    // The API controls a single view model instance.
+    // A new API is handed out if the view model is replaced (which happens when the map changes).
+    // It might also do Non-ViewModel things in the future (e.g. focus handling), so this is not necessarily just a wrapper.
+    const api = useMemo(() => new SearchApiImpl(viewModel), [viewModel]);
+
+    const readyTrigger = useEffectEvent(() => {
+        onReady?.({ api });
     });
 
-    const apiRef = useRef<SearchApi>(null);
-    if (!apiRef.current) {
-        // NOTE: The API object is only created once.
-        // This is why the functions must currently be stable!
-        apiRef.current = new SearchApiImpl(clearInput, onInputChanged, searchAndSelect);
-    }
-
-    const api = apiRef.current;
-
-    const readyTrigger = useEvent(() => {
-        onReady?.({
-            api
-        });
-    });
-
-    const disposeTrigger = useEvent(() => {
+    const disposeTrigger = useEffectEvent(() => {
         onDisposed?.({});
     });
 
-    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
-    // useEvent() returns a stable function reference.
+    // The ready / disposed events bracket the lifetime of the API.
     useEffect(() => {
         readyTrigger();
-        return disposeTrigger;
-    }, [readyTrigger, disposeTrigger]);
+        return () => disposeTrigger();
+    }, [api]);
 }
