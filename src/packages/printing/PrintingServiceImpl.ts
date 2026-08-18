@@ -3,7 +3,7 @@
 
 import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { createManualPromise, Resource } from "@open-pioneer/core";
-import { DEFAULT_DPI, MapModel } from "@open-pioneer/map/model/MapModel";
+import { DEFAULT_DPI, MapModel } from "@open-pioneer/map";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
 import { ScaleLine } from "ol/control";
