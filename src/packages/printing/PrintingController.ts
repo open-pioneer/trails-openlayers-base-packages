@@ -29,7 +29,7 @@ const DEFAULT_FILE_NAME = "map";
 export interface ExportOptions {
     title?: string | undefined;
     fileFormat: FileFormatType;
-    resolution: number;
+    dpi: number;
 }
 
 export class PrintingController {
@@ -210,7 +210,7 @@ export class PrintingController {
             this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
                 viewPadding: this.#viewPadding,
-                dpi: options.resolution,
+                dpi: options.dpi,
                 scale: this.#scale,
                 height: height,
                 width: width

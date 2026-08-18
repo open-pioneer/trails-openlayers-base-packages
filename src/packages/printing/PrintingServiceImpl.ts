@@ -73,7 +73,7 @@ export class PrintJob {
     #blockUserInteraction: boolean = false;
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
-    #resolution: number | undefined = undefined;
+    #dpi: number | undefined = undefined;
     #height: number | undefined = undefined; // Pixels!
     #width: number | undefined = undefined; // Pixels!
 
@@ -81,9 +81,17 @@ export class PrintJob {
     #drawInformation: DrawInfo[] | undefined = [];
     #scaleLine: ScaleLine | undefined = undefined;
     #overlay: Resource | undefined = undefined;
+
+    /** The original resolution, at the start of the print job. */
     #viewResolution: number;
+
+    /** The original height, at the start of the print job. */
     #viewHeight: string;
+
+    /** The original width, at the start of the print job. */
     #viewWidth: string;
+
+    /** The target resolution for the print job. */
     #scaleResolution: number | undefined = undefined;
 
     // NOTE: Map is optional here to support the legacy "OlMap-only" API.
@@ -117,7 +125,7 @@ export class PrintJob {
             options.scale != null && this.#map
                 ? this.#map.getViewResolutionForScale(options.scale, options.dpi)
                 : this.#olMap.getView().getResolution();
-        this.#resolution = options.dpi ? options.dpi : DEFAULT_DPI;
+        this.#dpi = options.dpi ? options.dpi : DEFAULT_DPI;
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -187,7 +195,7 @@ export class PrintJob {
             text: true,
             minWidth: 125
         }));
-        this.#scaleLine.setDpi(this.#resolution);
+        this.#scaleLine.setDpi(this.#dpi);
 
         // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;

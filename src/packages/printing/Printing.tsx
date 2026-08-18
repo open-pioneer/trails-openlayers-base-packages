@@ -159,7 +159,7 @@ export const Printing: FC<PrintingProps> = (props) => {
             .handleMapExport({
                 title: title,
                 fileFormat: fileFormat,
-                resolution: resolution
+                dpi: resolution
             })
             .catch((error) => {
                 const errorMessage = intl.formatMessage({ id: "printingFailed" });
