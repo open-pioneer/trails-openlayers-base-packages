@@ -24,7 +24,8 @@ vi.mock("ol/render/canvas/style.js", async (importOriginal) => {
     return {
         ...original,
         rulesToStyleFunction: () => () => [],
-        flatStylesToStyleFunction: () => () => []
+        flatStylesToStyleFunction: () => () => [],
+        flatStyleLikeToStyleFunction: () => () => []
     };
 });
 
