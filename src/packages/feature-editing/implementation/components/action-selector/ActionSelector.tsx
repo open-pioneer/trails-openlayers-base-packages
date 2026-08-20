@@ -7,6 +7,7 @@ import { TitledSection, useEvent } from "@open-pioneer/react-utils";
 import type { Type as GeometryType } from "ol/geom/Geometry";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useEffect, useEffectEvent, useMemo, useState, type ReactElement } from "react";
+import { FeatureEditorProps } from "../../../api/editor/editor";
 import { EditingStep } from "../../../api/model/EditingStep";
 import type { FeatureTemplate } from "../../../api/model/FeatureTemplate";
 import { useSelectionAvailability } from "../../editor/editorHooks";
@@ -17,13 +18,14 @@ import { TemplateSelector } from "./TemplateSelector";
 
 // TODO(refactor): Takes too many props, just to show or reset the availability of the select button.
 export interface ActionSelectorProps {
-    readonly mapModel: MapModel;
-    readonly selectableLayers: Layer[] | undefined;
-    readonly templates: FeatureTemplate[];
-    readonly showActionBar: boolean;
-    readonly editingStep: EditingStep;
-    readonly drawingState: DrawingState;
-    readonly onActionChange: (newAction: Action | undefined) => void;
+    mapModel: MapModel;
+    templates: FeatureTemplate[];
+    selectableLayers: Layer[] | undefined;
+    getSelectionAvailability: FeatureEditorProps["getSelectionAvailability"];
+    showActionBar: boolean;
+    editingStep: EditingStep;
+    drawingState: DrawingState;
+    onActionChange: (newAction: Action | undefined) => void;
 }
 
 export interface CreateAction {
@@ -39,14 +41,20 @@ export type Action = CreateAction | UpdateAction;
 
 export function ActionSelector({
     mapModel,
-    selectableLayers,
     templates,
+    selectableLayers,
+    getSelectionAvailability,
     showActionBar,
     editingStep,
     drawingState,
     onActionChange
 }: ActionSelectorProps): ReactElement {
-    const selectionAvailability = useSelectionAvailability(mapModel, templates, selectableLayers);
+    const selectionAvailability = useSelectionAvailability(
+        mapModel,
+        templates,
+        selectableLayers,
+        getSelectionAvailability
+    );
 
     // Reset editing step "initial" when the selection becomes unavailable.
     // TODO(refactor): this should be initiated by the model; not the UI.

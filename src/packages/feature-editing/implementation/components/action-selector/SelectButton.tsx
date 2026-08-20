@@ -4,7 +4,7 @@
 import { Button, Toggle } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useEffect, useMemo, type ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 import { LuMousePointerClick } from "react-icons/lu";
 
 interface SelectButtonProps {
@@ -35,14 +35,6 @@ export function SelectButton(props: SelectButtonProps): ReactElement {
             intl.formatMessage({ id: "selection.defaultNotAvailableMessage" })
         );
     }, [intl, isAvailable, notAvailableMessageProp]);
-
-    useEffect(() => {
-        if (notAvailableMessage != null) {
-            console.log("Not available", notAvailableMessage);
-        } else {
-            console.log("Available");
-        }
-    }, [notAvailableMessage]);
 
     return (
         <Tooltip disabled={notAvailableMessage == null} content={notAvailableMessage}>

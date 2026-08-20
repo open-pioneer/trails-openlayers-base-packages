@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { reactive } from "@conterra/reactivity-core";
 import { LayerFactory } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import type { NotificationService } from "@open-pioneer/notifier";
@@ -204,6 +205,7 @@ describe("Editor interaction", () => {
     });
 
     it("disables the select button when there are no selectable layers", async () => {
+        const user = userEvent.setup();
         const { map, layerFactory } = await setupMap();
         const onEditingStepChange = vi.fn();
 
@@ -224,6 +226,15 @@ describe("Editor interaction", () => {
 
         // No layers -> disabled
         expect(selectButton).toBeDisabled();
+
+        // The tooltip explains why the button is disabled.
+        await user.hover(selectButton);
+        await waitFor(
+            () => {
+                expect(selectButton).toHaveAccessibleDescription("selection.noVisibleLayers");
+            },
+            { timeout: 3000 }
+        );
     });
 
     it("disables the select button when all layers are invisible", async () => {
@@ -265,6 +276,48 @@ describe("Editor interaction", () => {
         layers[0]!.setVisible(true);
         await waitFor(() => {
             expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("supports custom strategies for the availability of the selection interaction", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const onEditingStepChange = vi.fn();
+
+        // Simple signal to test reactivity
+        const errorMessage = reactive("");
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    onEditingStepChange={onEditingStepChange}
+                    getSelectionAvailability={() => {
+                        return errorMessage.value
+                            ? { status: "unavailable", reason: errorMessage.value }
+                            : { status: "available" };
+                    }}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+        expect(selectButton).toBeEnabled();
+
+        // The editor watches on the function above, which uses this signal.
+        errorMessage.value = "Something went wrong!";
+        await waitFor(() => {
+            expect(selectButton).toBeDisabled();
+        });
+
+        // The tooltip carries the reason from above.
+        await user.hover(selectButton);
+        await waitFor(() => {
+            expect(selectButton).toHaveAccessibleDescription(errorMessage.value);
         });
     });
 });
