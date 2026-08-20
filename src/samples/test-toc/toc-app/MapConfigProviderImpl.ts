@@ -39,7 +39,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
-                    isBaseLayer: true, //deprecated,
+                    isBaseLayer: false, //deprecated,
                     visible: true,
                     // broken URL
                     healthCheck:
