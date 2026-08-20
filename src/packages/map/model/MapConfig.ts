@@ -128,8 +128,22 @@ export interface MapConfig {
      */
     layers?: Layer[];
 
+    /**
+     * Configures the base layers of the map.
+     *
+     * Base layers are always displayed below all operational layers.
+     * Only one base layer can be active at a time.
+     *
+     * Note: Prefer this property over the `LayerConfig.isBaseLayer` property.
+     */
     baseLayers?: Layer[];
 
+    /**
+     * Configures the topmost layers of the map.
+     *
+     * Topmost layers are always displayed above all operational layers and base layers.
+     * The order of topmost layers is determined by their order in this array, with layers defined later being displayed above earlier ones.
+     */
     topmostLayers?: Layer[];
 
     /**

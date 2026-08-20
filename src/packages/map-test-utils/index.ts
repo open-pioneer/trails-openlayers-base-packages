@@ -55,6 +55,16 @@ export interface SimpleMapOptions {
      */
     layers?: LayerConfig[];
 
+    /**
+     * Base layers for the map.
+     */
+    baseLayers?: LayerConfig[];
+
+    /**
+     * Layers that are displayed on top of all other layers.
+     */
+    topmostLayers?: LayerConfig[];
+
     /** See {@link MapConfig.showAttributions} */
     showAttributions?: boolean;
 
@@ -157,13 +167,9 @@ export async function setupMap(
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
-        layers: options?.layers?.map(
-            (config) =>
-                "map" in config
-                    ? config
-                    : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
-            // using map as discriminator (no prototype for Layer)
-        ) ?? [createTestLayer()],
+        layers: options?.layers?.map((config) => useOrCreateLayer(config)) ?? [createTestLayer()],
+        baseLayers: options?.baseLayers?.map((config) => useOrCreateLayer(config)) ?? [],
+        topmostLayers: options?.topmostLayers?.map((config) => useOrCreateLayer(config)) ?? [],
         showAttributions: options?.showAttributions,
         advanced: options?.advanced
     };
@@ -292,6 +298,13 @@ function mockVectorLayer() {
     VectorLayer.prototype.render = () => {
         return div;
     };
+}
+
+function useOrCreateLayer(config: LayerConfig): Layer {
+    return "map" in config
+        ? config
+        : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) });
+    // using map as discriminator (no prototype for Layer)
 }
 
 mockVectorLayer();

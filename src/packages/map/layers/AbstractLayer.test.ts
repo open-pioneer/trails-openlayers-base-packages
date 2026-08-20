@@ -231,6 +231,27 @@ describe("health checks", () => {
         `);
     });
 
+    it("computes isBaseLayer correctly if layer was added but not declared as base layer", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            olLayer: createTestOlLayer()
+        });
+        const layerAddAsBase = new LayerImpl({
+            id: "testId2",
+            title: "B",
+            olLayer: createTestOlLayer()
+        });
+
+        await setupMap({
+            layers: [layer],
+            baseLayers: [layerAddAsBase]
+        });
+
+        expect(layer.isBaseLayer).toBe(false);
+        expect(layerAddAsBase.isBaseLayer).toBe(true);
+    });
+
     it("when specified as function", async () => {
         let didResolve = false;
         const mockedFetch: MockInstance = vi.spyOn(global, "fetch");
