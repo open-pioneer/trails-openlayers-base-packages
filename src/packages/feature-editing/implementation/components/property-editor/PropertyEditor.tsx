@@ -149,7 +149,7 @@ function EditorControls(): ReactElement {
     const onCancelClick = useEvent(() => {
         if (!context.didEdit) {
             LOG.debug(
-                "Skipping cancel conformation dialog because the user did not edit the feature"
+                "Skipping cancel confirmation dialog because the user did not edit the feature"
             );
             onConfirmCancelClick();
         } else {
