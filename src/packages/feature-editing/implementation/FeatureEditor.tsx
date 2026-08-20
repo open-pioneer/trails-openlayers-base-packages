@@ -87,7 +87,10 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
         case "selection":
             content = (
                 <ActionSelector
+                    editingStep={editingStep}
+                    mapModel={mapModel}
                     templates={templates}
+                    selectableLayers={selectableLayers}
                     showActionBar={showActionBar}
                     onActionChange={onActionChange}
                     drawingState={drawingState}
