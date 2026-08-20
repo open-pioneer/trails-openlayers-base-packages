@@ -24,4 +24,4 @@
 "@open-pioneer/toc": patch
 ---
 
-Update dependencies
+Updated dependencies
