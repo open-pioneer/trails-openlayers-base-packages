@@ -40,7 +40,7 @@ import {
 } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { MapAttributions } from "./MapAttributions";
-import { ExtentConfig } from "./MapConfig";
+import { ExtentConfig, InitialPositionConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
 
 const LOG = createLogger(sourceId);
@@ -164,6 +164,7 @@ export class MapModel {
         options: {
             id: string;
             olMap: OlMap;
+            initialPosition: InitialPositionConfig | undefined;
             initialExtent: ExtentConfig | undefined;
             showDefaultAttributions: boolean;
             currentIntl: ReadonlyReactive<PackageIntl>;
@@ -198,7 +199,7 @@ export class MapModel {
         };
 
         this.#displayStatus = "waiting";
-        this.#initializeView().then(
+        this.#initializeView(options.initialPosition).then(
             () => {
                 this.#displayStatus = "ready";
                 this.#displayWaiter?.resolve();
@@ -560,7 +561,7 @@ export class MapModel {
      * AbortError is thrown when cancelled via `this.#abortController`, for example
      * when the map model is destroyed before it has ever been displayed.
      */
-    async #initializeView(): Promise<void> {
+    async #initializeView(initialPosition: InitialPositionConfig | undefined): Promise<void> {
         try {
             await waitForMapSize(this.olMap, this.#abortController.signal); // may throw on cancel
         } catch (e) {
@@ -587,7 +588,9 @@ export class MapModel {
 
                 view.setCenter(olCenter);
                 view.setResolution(resolution);
-            } else {
+            } else if (initialPosition) {
+                view.setZoom(initialPosition.zoom);
+                view.setCenter([initialPosition.center.x, initialPosition.center.y]);
                 // Initial extent was NOT set from the outside.
                 // We detect whatever the view is displaying and consider it to be the initial extent.
                 const olExtent = view.calculateExtent();
@@ -626,21 +629,21 @@ interface ViewBindings {
 function createViewBindings(view: OlView): ViewBindings {
     return {
         resolution: synchronized(
-            () => view.getResolution(),
+            () => view.getResolution() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);
             }
         ),
         center: synchronized(
-            () => view.getCenter(),
+            () => view.getCenter() ?? undefined,
             (cb) => {
                 const key = view.on("change:center", cb);
                 return () => unByKey(key);
             }
         ),
         zoom: synchronized(
-            () => view.getZoom(),
+            () => view.getZoom() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);

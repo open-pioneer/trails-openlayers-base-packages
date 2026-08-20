@@ -859,6 +859,9 @@ importers:
       '@chakra-ui/react':
         specifier: 3.36.1
         version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@open-pioneer/core':
+        specifier: 'catalog:'
+        version: 4.7.0
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map

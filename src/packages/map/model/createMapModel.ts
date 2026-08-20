@@ -103,6 +103,7 @@ class MapModelFactory {
 
         const initialView = mapConfig.initialView;
         const initialExtent = initialView?.kind === "extent" ? initialView.extent : undefined;
+        const initialPosition = initialView?.kind === "position" ? initialView : undefined;
 
         LOG.debug(`Constructing OpenLayers map with options`, mapOptions);
 
@@ -116,6 +117,7 @@ class MapModelFactory {
                 id: mapId,
                 olMap,
                 initialExtent,
+                initialPosition,
                 showDefaultAttributions,
                 currentIntl: this.#currentIntl,
                 httpService: this.#httpService
@@ -160,30 +162,7 @@ class MapModelFactory {
 
         const projection = (view.projection = this.#initializeProjection(mapConfig.projection));
         const initialView = mapConfig.initialView;
-        if (initialView) {
-            switch (initialView.kind) {
-                case "position":
-                    view.zoom = initialView.zoom;
-                    view.center = [initialView.center.x, initialView.center.y];
-                    break;
-                case "extent": {
-                    /*
-                        OpenLayers does not support configuration of the initial map extent.
-                        The only relevant options here are center, zoom (and resolution).
-                        We must set those values because otherwise OpenLayers will not initialize layer sources.
-
-                        The actual initial extent is applied once tha map has loaded and its size is known.
-                    */
-                    const extent = initialView.extent;
-                    view.zoom = 0;
-                    view.center = [
-                        extent.xMin + (extent.xMax - extent.xMin) / 2,
-                        extent.yMin + (extent.yMax - extent.yMin) / 2
-                    ];
-                    break;
-                }
-            }
-        } else {
+        if (!initialView) {
             this.#setViewDefaults(view, projection);
         }
     }
