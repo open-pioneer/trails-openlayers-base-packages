@@ -198,6 +198,7 @@ overrides:
   stylis@<4.3.5: '>= 4.3.5'
   regenerator-runtime@<=0.13.11: ^0.14.0
   csstype@<3.2.3: '>=3.2.3'
+  geotiff@>=3.0.5 <3.1.0-beta.0: ^3.1.0-beta.0
   '@chakra-ui/react': 3.36.1
   '@ark-ui/react': 5.37.2
   '@zag-js/interact-outside': 1.41.2
@@ -665,7 +666,7 @@ importers:
         version: 10.10.0
       proj4:
         specifier: 'catalog:'
-        version: 2.21.0(geotiff@3.0.5)
+        version: 2.21.0(geotiff@3.1.0-beta.0)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -4128,10 +4129,6 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  geotiff@3.0.5:
-    resolution: {integrity: sha512-OWcL9S9+yDZ6iAlXMt32T1iwUApJM8UiD47xbm6ZP1h33d10fqkPs14EG/ttT5EnefpZSx3G15iDFC5FxUNUwA==}
-    engines: {node: '>=10.19'}
-
   geotiff@3.1.0-beta.0:
     resolution: {integrity: sha512-wbVwOaQYuN+ywly5NoMXn37nHslwkQg5EFHqMeUTtjDACrSag0EEVlFsc+2DK3Pzmmp6XzJW2RTZOamPsBM6ng==}
     engines: {node: '>=10.19'}
@@ -4745,7 +4742,7 @@ packages:
   proj4@2.21.0:
     resolution: {integrity: sha512-33HfDftqw8kY+Cl1dcL16SJuqTSzYxmz4re7Nmhk+fs1/N1fFrAkkF579msQTR/4fLeJVSNne8/gpoCz0fk1uw==}
     peerDependencies:
-      geotiff: '*'
+      geotiff: ^3.1.0-beta.0
     peerDependenciesMeta:
       geotiff:
         optional: true
@@ -7948,18 +7945,6 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  geotiff@3.0.5:
-    dependencies:
-      '@petamoriken/float16': 3.9.3
-      lerc: 3.0.0
-      pako: 2.1.0
-      parse-headers: 2.0.6
-      quick-lru: 6.1.2
-      web-worker: 1.5.0
-      xml-utils: 1.10.2
-      zstddec: 0.2.0
-    optional: true
-
   geotiff@3.1.0-beta.0:
     dependencies:
       '@petamoriken/float16': 3.9.3
@@ -8585,12 +8570,12 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  proj4@2.21.0(geotiff@3.0.5):
+  proj4@2.21.0(geotiff@3.1.0-beta.0):
     dependencies:
       mgrs: 1.0.0
       wkt-parser: 1.5.5
     optionalDependencies:
-      geotiff: 3.0.5
+      geotiff: 3.1.0-beta.0
 
   protocol-buffers-schema@3.6.1: {}
 
