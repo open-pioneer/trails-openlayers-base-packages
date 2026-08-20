@@ -57,6 +57,7 @@ export async function setup() {
     return {
         map,
         controller: new GeolocationController(map, layerFactory, (error) => {
+            // oxlint-disable-next-line no-console
             console.error("Unexpected error", error);
         })
     };
@@ -74,6 +75,7 @@ export async function setupWithCustomProperties() {
         map,
         layerFactory,
         (error) => {
+            // oxlint-disable-next-line no-console
             console.error("Unexpected error", error);
         },
         trackingOptions

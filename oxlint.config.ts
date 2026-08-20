@@ -26,6 +26,7 @@ export default defineConfig({
         reportUnusedDisableDirectives: "error"
     },
     rules: {
+        "no-console": "error",
         "no-array-constructor": "error",
         "no-case-declarations": "error",
         "no-empty": "error",
@@ -129,6 +130,18 @@ export default defineConfig({
             rules: {
                 "typescript/no-non-null-assertion": "off",
                 "typescript/no-explicit-any": "off"
+            }
+        },
+        {
+            files: [
+                "*config.{js,ts,mjs}",
+                "src/samples/**",
+                "src/testing/**",
+                "support/**",
+                "**/*.test.*"
+            ],
+            rules: {
+                "no-console": "off"
             }
         }
     ]
