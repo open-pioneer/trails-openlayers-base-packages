@@ -22,12 +22,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             ],
             topmostLayers: [
                 //all operational highlight layers
-                layerFactory.create()
+                layerFactory.create(...)
             ],
             layers: [
                 //all other operational layers
-                layerFactory.create(),
-                layerFactory.create()
+                layerFactory.create(...),
+                layerFactory.create(...)
             ]
         };
     }
