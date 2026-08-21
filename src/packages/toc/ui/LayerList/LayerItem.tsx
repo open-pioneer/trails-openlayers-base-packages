@@ -24,10 +24,11 @@ import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import type { IconType } from "react-icons/lib";
 import { LuChevronDown, LuChevronRight, LuInfo, LuTriangleAlert } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
+import { TocLayerNode } from "../../new-model/TocLayerNode";
 import { displayItemForLayer } from "../../utils/displayLayer";
 import { slug } from "../../utils/slug";
 import { LayerTocAttributes, ListMode } from "../Toc";
-import { useChildLayers, useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
+import { useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 
@@ -36,13 +37,14 @@ import { LayerList } from "./LayerList";
  *
  * The item may have further nested list items if there are sublayers present.
  */
-export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
-    const { layer } = props;
+export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }): ReactNode {
+    const { node } = props;
+    const layer = node.layer;
 
     const intl = useIntl();
     const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
-    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
-    const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
+    const [tocOptions, tocItemElemRef] = useTocItem(node, display);
+    const isExpanded = useReactiveSnapshot(() => node.isExpanded, [node]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
     const layerGroupId = useId();
@@ -62,7 +64,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         listMode
     );
 
-    const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
+    const nestedChildren = useNestedChildren(layerGroupId, title, node, intl);
     //all children hidden => do not render collapse button and child entries
     let hasNestedChildren = !!nestedChildren;
     if (allChildrenHidden || listMode === "hide-children") {
@@ -94,8 +96,8 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     <CollapseButton
                         layerTitle={title}
                         layerGroupId={layerGroupId}
-                        expanded={expanded}
-                        onClick={() => tocItem.setExpanded(!expanded)}
+                        expanded={isExpanded}
+                        onClick={() => node.setExpanded(!isExpanded)}
                         hasNestedChildren={hasNestedChildren}
                     />
                 )}
@@ -128,7 +130,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
             {hasNestedChildren && (
-                <Collapsible.Root open={expanded} className="toc-collapsible-item">
+                <Collapsible.Root open={isExpanded} className="toc-collapsible-item">
                     <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
             )}
@@ -193,13 +195,13 @@ function ProblemIndicator(props: { message: ReactNode; Icon: IconType; color?: s
 }
 
 // Creates a toc item and registers it with the shared toc model.
-function useTocItem(layer: AnyLayer, display: boolean) {
+function useTocItem(node: TocLayerNode, display: boolean) {
     const tocModel = useTocModel();
     const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
     const tocItemElemRef = useRef<HTMLDivElement>(null);
     const tocItem = useMemo((): TocItemImpl => {
-        return new TocItemImpl(layer, tocModel, !options.initiallyCollapsed);
-    }, [layer, options.initiallyCollapsed, tocModel]);
+        return new TocItemImpl(node);
+    }, [node]);
 
     // Register the item on the shared toc model
     useEffect(() => {
@@ -214,7 +216,7 @@ function useTocItem(layer: AnyLayer, display: boolean) {
         };
     }, [tocModel, tocItem, display]);
 
-    return [tocItem, tocModel, options, tocItemElemRef] as const;
+    return [options, tocItemElemRef] as const;
 }
 
 function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
@@ -291,23 +293,23 @@ function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
 function useNestedChildren(
     layerGroupId: string,
     title: string,
-    layer: AnyLayer,
+    node: TocLayerNode,
     intl: PackageIntl
 ) {
-    const childLayers = useChildLayers(layer);
+    const childNodes = useReactiveSnapshot(() => node.children, [node]);
     const children = useMemo(() => {
-        if (childLayers?.length) {
+        if (childNodes?.length) {
             return (
                 <LayerList
                     id={layerGroupId}
-                    layers={childLayers}
+                    nodes={childNodes}
                     ml={4}
                     aria-label={intl.formatMessage({ id: "childgroupLabel" }, { title: title })}
                 />
             );
         }
         return undefined;
-    }, [layerGroupId, intl, title, childLayers]);
+    }, [layerGroupId, intl, title, childNodes]);
     return children;
 }
 
