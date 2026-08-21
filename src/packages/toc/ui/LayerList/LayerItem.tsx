@@ -25,7 +25,6 @@ import type { IconType } from "react-icons/lib";
 import { LuChevronDown, LuChevronRight, LuInfo, LuTriangleAlert } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { TocLayerNode } from "../../new-model/TocLayerNode";
-import { displayItemForLayer } from "../../utils/displayLayer";
 import { slug } from "../../utils/slug";
 import { LayerTocAttributes, ListMode } from "../Toc";
 import { useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
@@ -42,19 +41,18 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
     const layer = node.layer;
 
     const intl = useIntl();
-    const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
+    const display = useReactiveSnapshot(() => node.show, [node]);
     const [tocOptions, tocItemElemRef] = useTocItem(node, display);
     const isExpanded = useReactiveSnapshot(() => node.isExpanded, [node]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
     const layerGroupId = useId();
     const listMode = useListMode(layer)?.listMode;
-    const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
+    const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
             description: layer.description,
-            isVisible: layer.visible,
-            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
+            isVisible: layer.visible
         };
     }, [layer]);
 
@@ -66,10 +64,9 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
 
     const nestedChildren = useNestedChildren(layerGroupId, title, node, intl);
     //all children hidden => do not render collapse button and child entries
-    let hasNestedChildren = !!nestedChildren;
-    if (allChildrenHidden || listMode === "hide-children") {
-        hasNestedChildren = false;
-    }
+    const hasNestedChildren = useReactiveSnapshot(() => {
+        return node.showChildren && node.hasShownChildren;
+    }, [node]);
 
     if (!display) {
         return null;
@@ -322,19 +319,4 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
 
 function getClassNameForLayer(layer: AnyLayer) {
     return `layer-${slug(layer.id)}`;
-}
-
-/**
- * Checks if at least on child layer of the given layer exists and should be displayed.
- * @returns true if at least one child layer's display mode is not `hide`
- */
-function hasShownChildren(layer: AnyLayer): boolean {
-    if (!layer.children || layer.children.getItems().length === 0) {
-        return false;
-    } else {
-        return layer.children.getItems().some((childLayer) => {
-            const isDisplayed = displayItemForLayer(childLayer);
-            return isDisplayed;
-        });
-    }
 }

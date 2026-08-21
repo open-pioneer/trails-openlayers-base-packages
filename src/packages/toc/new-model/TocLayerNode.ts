@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { reactive } from "@conterra/reactivity-core";
+import { computed, reactive } from "@conterra/reactivity-core";
 import { Resource, destroyResource } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
+import { LayerTocAttributes } from "../ui/Toc";
 import { syncChildren } from "./syncChildren";
 
 export class TocLayerNode {
@@ -13,7 +14,38 @@ export class TocLayerNode {
     #childIndex = new Map<AnyLayer, TocLayerNode>();
     #children = reactive<TocLayerNode[]>([]);
     #layersWatch: Resource | undefined;
+    #show = computed(() => {
+        const tocAttributes = this.layer.attributes.toc as LayerTocAttributes | undefined;
+        if (tocAttributes && tocAttributes.listMode) {
+            return tocAttributes.listMode !== "hide";
+        } else {
+            return !this.layer.internal;
+        }
+    });
+    #showChildren = computed(() => {
+        if (!this.show) {
+            return false;
+        }
 
+        const tocAttributes = this.layer.attributes.toc as LayerTocAttributes | undefined;
+        if (tocAttributes && tocAttributes.listMode) {
+            return tocAttributes.listMode !== "hide-children";
+        } else {
+            return true;
+        }
+    });
+    #hasShownChildren = computed(() => {
+        if (!this.#show.value) {
+            return false;
+        }
+
+        for (const child of this.#children.value) {
+            if (child.#show.value) {
+                return true;
+            }
+        }
+        return false;
+    });
     #expanded = reactive(true);
 
     constructor(layer: AnyLayer, parent: TocLayerNode | undefined) {
@@ -53,6 +85,29 @@ export class TocLayerNode {
     // TODO: Implement 'initiallyCollapsed' option --> use this as the initial value for expanded
     get isExpanded(): boolean {
         return this.#expanded.value;
+    }
+
+    get show(): boolean {
+        return this.#show.value;
+    }
+
+    get showChildren(): boolean {
+        return this.#showChildren.value;
+    }
+
+    get hasShownChildren(): boolean {
+        return this.#hasShownChildren.value;
+    }
+
+    get visible(): boolean {
+        return this.layer.visible;
+    }
+
+    setVisible(visible: boolean, bubble: boolean) {
+        this.layer.setVisible(visible);
+        if (bubble) {
+            this.parent?.setVisible(visible, bubble);
+        }
     }
 
     setExpanded(expanded: boolean, bubble?: boolean | undefined) {
