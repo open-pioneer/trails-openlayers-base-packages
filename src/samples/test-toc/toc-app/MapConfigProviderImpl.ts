@@ -12,9 +12,12 @@ import {
     WMTSLayer
 } from "@open-pioneer/map";
 import { LayerTocAttributes } from "@open-pioneer/toc";
+import { Feature } from "ol";
 import GeoJSON from "ol/format/GeoJSON";
+import { Point } from "ol/geom";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
+import { fromLonLat } from "ol/proj";
 import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
@@ -34,36 +37,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             baseLayers: [
-                //ToDo: remove mixed use of baseLayers and isBaseLayer before merge
                 layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
-                    isBaseLayer: false, //deprecated,
                     visible: true,
                     // broken URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
-                })
-            ],
-            topmostLayers: [
-                layerFactory.create({
-                    type: SimpleLayer,
-                    title: "Topmost Haltestellen Stadt Rostock",
-                    id: "busstops_topmost",
-                    visible: true,
-                    description:
-                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                    olLayer: createHaltestellenLayer(),
-                    isBaseLayer: false,
-                    internal: false
-                })
-            ],
-            layers: [
+                }),
                 layerFactory.create({
                     type: WMTSLayer,
-                    isBaseLayer: true,
                     title: "Orthofotos NRW",
                     url: "https://www.wmts.nrw.de/geobasis/wmts_nw_dop/1.0.0/WMTSCapabilities.xml",
                     name: "nw_dop",
@@ -78,7 +63,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: SimpleLayer,
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
-                    isBaseLayer: true,
                     visible: false,
                     // example for a custom health check running async
                     healthCheck: async () => {
@@ -95,7 +79,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: SimpleLayer,
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
-                    isBaseLayer: true,
                     minZoom: 10,
                     maxZoom: 16,
                     visible: false,
@@ -108,11 +91,35 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     type: SimpleLayer,
                     title: "OSM",
                     visible: false,
-                    isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }),
+                })
+            ],
+            topmostLayers: [
+                layerFactory.create({
+                    type: SimpleLayer,
+                    title: "Highlight Feature Layer",
+                    id: "highlight",
+                    visible: true,
+                    olLayer: new VectorLayer({
+                        source: new VectorSource({
+                            features: [
+                                new Feature({
+                                    geometry: new Point(fromLonLat([7.6131, 51.9636], "EPSG:25832"))
+                                })
+                            ]
+                        }),
+                        style: {
+                            "circle-radius": 15,
+                            "circle-fill-color": "rgba(255, 0, 0, 0.5)",
+                            "circle-stroke-color": "rgba(255, 0, 0, 1)",
+                            "circle-stroke-width": 2
+                        }
+                    })
+                })
+            ],
+            layers: [
                 layerFactory.create({
                     type: GroupLayer,
                     id: "group_edu",
@@ -147,7 +154,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
-                            isBaseLayer: false,
                             internal: false
                         }),
                         createStrassenLayer(layerFactory),
