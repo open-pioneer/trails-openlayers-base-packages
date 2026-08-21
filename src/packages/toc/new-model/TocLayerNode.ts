@@ -37,6 +37,9 @@ export class TocLayerNode {
 
     destroy() {
         this.#layersWatch = destroyResource(this.#layersWatch);
+        for (const child of this.#children.value) {
+            child.destroy();
+        }
     }
 
     get id(): string {

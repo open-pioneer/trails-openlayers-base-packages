@@ -11,8 +11,8 @@ export class TocViewModel {
     #map: MapModel;
     // #nodesById = reactiveMap<string, TocLayerNode>();
 
-    #nodeIndex = new Map<AnyLayer, TocLayerNode>();
-    #nodes = reactive<TocLayerNode[]>([]);
+    #childIndex = new Map<AnyLayer, TocLayerNode>();
+    #children = reactive<TocLayerNode[]>([]);
 
     #layersWatch: Resource | undefined;
 
@@ -20,21 +20,24 @@ export class TocViewModel {
         this.#map = map;
         this.#layersWatch = syncChildren(
             undefined,
-            this.#nodeIndex,
+            this.#childIndex,
             () =>
                 this.#map.layers.getOperationalLayers({
                     sortByDisplayOrder: true,
                     includeInternalLayers: true
                 }),
-            this.#nodes
+            this.#children
         );
     }
 
     destroy() {
         this.#layersWatch = destroyResource(this.#layersWatch);
+        for (const child of this.#children.value) {
+            child.destroy();
+        }
     }
 
     get children(): TocLayerNode[] {
-        return this.#nodes.value;
+        return this.#children.value;
     }
 }
