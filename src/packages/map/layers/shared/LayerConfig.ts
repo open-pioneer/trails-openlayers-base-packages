@@ -58,6 +58,8 @@ export interface LayerConfig extends LayerBaseConfig {
      * Only one base layer can be active at a time.
      *
      * Defaults to `false`.
+     *
+     * Note: Prefer using the `MapConfig.baseLayers` property over this property.
      */
     isBaseLayer?: boolean;
 

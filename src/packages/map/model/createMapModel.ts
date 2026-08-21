@@ -151,7 +151,7 @@ class MapModelFactory {
                                 );
                             } else if (layerConfig[DECLARED_AS_BASE_LAYER]() === false) {
                                 LOG.warn(
-                                    `Base layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.baseLayers' property but 'LayerConfig.isBaseLayer' property is explicitly set to false. This layer will be treated as a base layer. Prefer using the 'MapConfig.baseLayers' property only for base layers.`
+                                    `Base layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.baseLayers' property but 'LayerConfig.isBaseLayer' property is explicitly set to false. This layer will be treated as a base layer. Prefer using only the 'MapConfig.baseLayers' property for base layers.`
                                 );
                             }
                         }

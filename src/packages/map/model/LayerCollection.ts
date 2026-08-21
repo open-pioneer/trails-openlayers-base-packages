@@ -72,7 +72,7 @@ export class LayerCollection {
     /** Operational layers that are always displayed at the top above all other layers (e.g. a highlight layer) */
     #topMostOperationalLayers = reactiveArray<LayerType>();
 
-    /** all base layers */
+    /** All base layers */
     #baseLayers = reactiveArray<LayerType>();
 
     #syncHandle: Resource | undefined;

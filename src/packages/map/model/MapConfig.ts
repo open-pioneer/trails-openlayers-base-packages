@@ -132,7 +132,7 @@ export interface MapConfig {
      * Configures the base layers of the map.
      *
      * Base layers are always displayed below all operational layers.
-     * Only one base layer can be active at a time.
+     * Only one base layer can be active (visible) at a time.
      *
      * Note: Prefer this property over the `LayerConfig.isBaseLayer` property.
      */
