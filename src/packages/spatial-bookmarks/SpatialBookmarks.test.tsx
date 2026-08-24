@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { mockMapRender, setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     act,
@@ -62,7 +62,7 @@ it("should save a bookmark and update the list", async () => {
     const user = userEvent.setup();
     MOCK_NAMESPACE.set("bookmarks", []);
 
-    const { div } = await createBookmarkComponent();
+    const { div } = await createBookmarkComponent(true);
 
     const createBtn = await findByText(div, "bookmark.button.create");
 
@@ -115,7 +115,8 @@ it("should remove bookmark from the list by clicking the remove button", async (
 it("should center the map on the selected bookmark", async () => {
     const user = userEvent.setup();
     const bookmarks = createBookmarks();
-    const { mapModel, div } = await createBookmarkComponent();
+    const { mapModel, div } = await createBookmarkComponent(true);
+    await waitForMapRender(mapModel);
 
     const extent = bookmarks[0]!.extent;
     const bookmarkExtent = [extent.minX, extent.minY, extent.maxX, extent.maxY];
@@ -165,16 +166,18 @@ interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
 
-async function createBookmarkComponent() {
-    const { mapModel, injectedServices } = await setupComponent();
+async function createBookmarkComponent(mockMapRender?: boolean) {
+    const { mapModel, injectedServices } = await setupComponent(mockMapRender);
+
     renderComponent({ services: injectedServices }, { map: mapModel, "data-testid": "bookmarks" });
     const div = await waitForSpatialBookmarks();
     return { mapModel, div };
 }
 
-async function setupComponent() {
+async function setupComponent(mockMapRender?: boolean) {
     const { map } = await setupMap({
-        projection: "EPSG:25832"
+        projection: "EPSG:25832",
+        mockMapRender
     });
     const injectedServices = {
         "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE

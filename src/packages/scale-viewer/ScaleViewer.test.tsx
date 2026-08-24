@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { get } from "ol/proj";
@@ -11,7 +11,7 @@ import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
 
 it("should successfully create a scale viewer component", async () => {
-    const { map, Wrapper } = await setup();
+    const { map, Wrapper } = await setup({ mockMapRender: true });
     render(<ScaleViewer map={map} data-testid="scale-viewer" />, { wrapper: Wrapper });
 
     // scale viewer is mounted
@@ -23,7 +23,7 @@ it("should successfully create a scale viewer component", async () => {
 });
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
-    const { map, Wrapper } = await setup();
+    const { map, Wrapper } = await setup({ mockMapRender: true });
     render(<ScaleViewer map={map} className="test test1 test2" data-testid="scale-viewer" />, {
         wrapper: Wrapper
     });
@@ -89,8 +89,10 @@ async function waitForScaleViewer() {
     return { viewerDiv, viewerText };
 }
 
-async function setup() {
-    const { map } = await setupMap();
+async function setup(options?: SimpleMapOptions & { returnMap?: true }) {
+    const { map } = await setupMap({
+        ...options
+    });
 
     let locale: string | undefined;
     function setLocale(newLocale: string | undefined) {

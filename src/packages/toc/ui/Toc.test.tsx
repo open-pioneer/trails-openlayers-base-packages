@@ -3,7 +3,12 @@
 
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, Layer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import {
+    createTestLayer,
+    createTestOlLayer,
+    setupMap,
+    waitForMapRender
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
@@ -17,10 +22,11 @@ const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
 const BASEMAP_SWITCHER_TRIGGER_CLASS = ".basemap-switcher-select-trigger";
 
 it("should successfully create a toc component", async () => {
-    const { map, Wrapper } = await setupTocContext();
+    const { map, Wrapper } = await setupTocContext(undefined, true);
     render(<Toc map={map} data-testid="toc" />, {
         wrapper: Wrapper
     });
+    await waitForMapRender(map);
 
     const tocDiv = await findToc();
     const { basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
@@ -294,7 +300,7 @@ describe("toc api", () => {
     });
 });
 
-async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
+async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[], mockMapRender?: boolean) {
     const { map } = await setupMap({
         layers: layers ?? [
             {
@@ -313,7 +319,8 @@ async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
                 id: "layer-2",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender
     });
     const Wrapper = (props: { children?: ReactNode }) => {
         return <PackageContextProvider>{props.children}</PackageContextProvider>;

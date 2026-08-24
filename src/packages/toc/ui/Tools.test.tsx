@@ -23,7 +23,8 @@ it("Should successfully create a toc with default tool component", async () => {
                 id: "layer-1",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
 
     render(

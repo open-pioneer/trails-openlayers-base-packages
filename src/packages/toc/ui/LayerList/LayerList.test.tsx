@@ -7,7 +7,8 @@ import {
     createTestLayer,
     createTestOlLayer,
     LayerConfig,
-    setupMap
+    setupMap,
+    waitForMapRender
 } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
@@ -45,9 +46,11 @@ it("should show layers in the correct order", async () => {
                 title: "Layer 3",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
 
+    await waitForMapRender(map);
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
     });
@@ -78,8 +81,10 @@ it("does not display base layers", async function () {
                 isBaseLayer: true,
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -100,8 +105,10 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
                 title: "Layer 2",
                 olLayer: new LayerGroup({})
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -130,8 +137,11 @@ it("reacts to changes in the layer composition", async function () {
                 title: "Layer 1",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
+
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
     });
@@ -164,8 +174,10 @@ it("displays the layer's current title", async () => {
                 title: "Layer 1",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
@@ -262,8 +274,10 @@ it("includes the layer id in the item's class list", async () => {
                 title: "Layer 1",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -361,8 +375,10 @@ it("reacts to changes in the layer description", async () => {
                 title: "Layer 2",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const layer = map.layers.getLayerById("layer1");
     if (!layer) {
@@ -403,8 +419,10 @@ it("reacts to changes of the layer load state", async () => {
                     source: source
                 })
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -456,8 +474,10 @@ it("updates problem indicators when there are visibility issues", async () => {
                 maxZoom: 16,
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const layer = map.layers.getLayerById("layer1");
     if (!layer) {
@@ -844,8 +864,10 @@ it("propagates child layer errors to the group's problem indicator", async () =>
     });
 
     const { map, Wrapper } = await setup({
-        layers: [groupLayer]
+        layers: [groupLayer],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -922,8 +944,10 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
     });
 
     const { map, Wrapper } = await setup({
-        layers: [groupLayer]
+        layers: [groupLayer],
+        mockMapRender: true
     });
+    await waitForMapRender(map);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: Wrapper
@@ -1031,9 +1055,14 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-async function setup(opts?: { layers?: LayerConfig[]; tocOptions?: Partial<TocWidgetOptions> }) {
+async function setup(opts?: {
+    layers?: LayerConfig[];
+    tocOptions?: Partial<TocWidgetOptions>;
+    mockMapRender?: boolean;
+}) {
     const { map } = await setupMap({
-        layers: opts?.layers
+        layers: opts?.layers,
+        mockMapRender: opts?.mockMapRender
     });
 
     const testModel = new TocModel({
