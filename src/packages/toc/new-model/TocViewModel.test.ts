@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { batch, nextTick } from "@conterra/reactivity-core";
+import { batch, computed, nextTick } from "@conterra/reactivity-core";
 import { AnyLayer, GroupLayer, isLayer, Layer } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 import { TocLayerNode } from "./TocLayerNode";
-import { TocViewModel } from "./TocViewModel";
+import { TocViewModel, TocWidgetOptions } from "./TocViewModel";
 
 describe("node structure", () => {
     it("reflects the layers of the map", async () => {
@@ -229,6 +229,125 @@ describe("parent / child links", () => {
     });
 });
 
+describe("widget options", () => {
+    it("exposes the options to all nodes", async () => {
+        const { model } = await setup();
+
+        expect(model.options).toMatchObject(DEFAULT_OPTIONS);
+        for (const node of collectNodes(model)) {
+            expect(node.options, `options of node '${node.id}'`).toBe(model.options);
+        }
+    });
+
+    it("propagates new options to existing nodes", async () => {
+        const { model } = await setup();
+        const node = model.getNodeById("subgroup-member")!;
+
+        model.setOptions({ ...DEFAULT_OPTIONS, autoShowParents: false });
+
+        expect(model.options.autoShowParents).toBe(false);
+        expect(node.options.autoShowParents).toBe(false);
+    });
+
+    it("makes option changes visible to reactive consumers", async () => {
+        const { model } = await setup({ options: { collapsibleGroups: true } });
+        const node = model.getNodeById("group")!;
+        node.setExpanded(false);
+
+        const isExpanded = computed(() => node.isExpanded);
+        expect(isExpanded.value).toBe(false);
+
+        // Groups can no longer be collapsed, so every node counts as expanded.
+        model.setOptions({ ...DEFAULT_OPTIONS, collapsibleGroups: false });
+        expect(isExpanded.value).toBe(true);
+    });
+});
+
+describe("expansion", () => {
+    it("expands all nodes by default", async () => {
+        const { model } = await setup({ options: { collapsibleGroups: true } });
+        for (const node of collectNodes(model)) {
+            expect(node.isExpanded, `node '${node.id}' is expanded`).toBe(true);
+        }
+    });
+
+    it("collapses all nodes if `initiallyCollapsed` is enabled", async () => {
+        const { model } = await setup({
+            options: { collapsibleGroups: true, initiallyCollapsed: true }
+        });
+        for (const node of collectNodes(model)) {
+            expect(node.isExpanded, `node '${node.id}' is collapsed`).toBe(false);
+        }
+    });
+
+    it("reports all nodes as expanded if `collapsibleGroups` is disabled", async () => {
+        const { model } = await setup({
+            options: { collapsibleGroups: false, initiallyCollapsed: true }
+        });
+        const node = model.getNodeById("group")!;
+        expect(node.isExpanded).toBe(true);
+
+        node.setExpanded(false);
+        expect(node.isExpanded).toBe(true);
+    });
+
+    it("expands the parent nodes when a node is expanded", async () => {
+        const { model } = await setup({
+            options: { collapsibleGroups: true, initiallyCollapsed: true }
+        });
+
+        model.getNodeById("subgroup-member")!.setExpanded(true);
+        expect(expansions(model)).toEqual({
+            "group": true,
+            "subgroup": true,
+            "subgroup-member": true,
+            "group-member": false,
+            "layer-1": false
+        });
+    });
+
+    it("does not collapse the parent nodes when a node is collapsed", async () => {
+        const { model } = await setup({ options: { collapsibleGroups: true } });
+
+        model.getNodeById("subgroup-member")!.setExpanded(false);
+        expect(expansions(model)).toEqual({
+            "group": true,
+            "subgroup": true,
+            "subgroup-member": false,
+            "group-member": true,
+            "layer-1": true
+        });
+    });
+
+    it("collapses the parent nodes if `bubble` is explicitly enabled", async () => {
+        const { model } = await setup({ options: { collapsibleGroups: true } });
+
+        model.getNodeById("subgroup-member")!.setExpanded(false, true);
+        expect(expansions(model)).toEqual({
+            "group": false,
+            "subgroup": false,
+            "subgroup-member": false,
+            "group-member": true,
+            "layer-1": true
+        });
+    });
+
+    it("does not expand the parent nodes if `bubble` is explicitly disabled", async () => {
+        const { model } = await setup({
+            options: { collapsibleGroups: true, initiallyCollapsed: true }
+        });
+
+        model.getNodeById("subgroup-member")!.setExpanded(true, false);
+        expect(expansions(model)).toEqual({
+            "group": false,
+            "subgroup": false,
+            "subgroup-member": true,
+            "group-member": false,
+            "layer-1": false
+        });
+    });
+});
+
 describe("destruction", () => {
     it("removes all children", async () => {
         const { model } = await setup();
@@ -272,14 +391,20 @@ describe("destruction", () => {
     });
 });
 
+const DEFAULT_OPTIONS: TocWidgetOptions = {
+    autoShowParents: true,
+    collapsibleGroups: false,
+    initiallyCollapsed: false
+};
+
 /**
  * Creates a map and a toc view model on top of it.
  */
-async function setup(options?: { layers?: Layer[] }) {
+async function setup(config?: { layers?: Layer[]; options?: Partial<TocWidgetOptions> }) {
     const { map } = await setupMap({
-        layers: options?.layers ?? createDefaultLayers()
+        layers: config?.layers ?? createDefaultLayers()
     });
-    const model = new TocViewModel(map);
+    const model = new TocViewModel(map, { ...DEFAULT_OPTIONS, ...config?.options });
     onTestFinished(() => {
         model.destroy();
         map.destroy();
@@ -337,6 +462,11 @@ function createDefaultLayers() {
             ]
         })
     ];
+}
+
+/** Maps node id -> `isExpanded`, for all nodes in the tree. */
+function expansions(model: TocViewModel): Record<string, boolean> {
+    return Object.fromEntries(collectNodes(model).map((node) => [node.id, node.isExpanded]));
 }
 
 /**

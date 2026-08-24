@@ -1,12 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { computed, reactive } from "@conterra/reactivity-core";
+import { computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { AnyLayer } from "@open-pioneer/map";
 import { LayerTocAttributes } from "../ui/Toc";
 import { SyncedChildNodes } from "./SyncedChildNodes";
-import { SharedData } from "./TocViewModel";
+import { SharedData, TocWidgetOptions } from "./TocViewModel";
 
+/**
+ * @internal
+ */
 export class TocLayerNode {
     readonly parent: TocLayerNode | undefined;
     readonly layer: AnyLayer;
@@ -47,12 +50,13 @@ export class TocLayerNode {
         return false;
     });
 
-    #expanded = reactive(true);
+    #expanded: Reactive<boolean>;
 
     constructor(layer: AnyLayer, parent: TocLayerNode | undefined, shared: SharedData) {
         this.parent = parent;
         this.layer = layer;
         this.#shared = shared;
+        this.#expanded = reactive(!this.#shared.options.initiallyCollapsed);
 
         // Never has any children if children == null
         let getLayers;
@@ -90,12 +94,21 @@ export class TocLayerNode {
         return this.layer.id;
     }
 
+    /**
+     * The widget's global options, provided here for convenience.
+     */
+    get options(): TocWidgetOptions {
+        return this.#shared.options;
+    }
+
     get children(): TocLayerNode[] {
         return this.#syncedChildren.children;
     }
 
-    // TODO: Implement 'initiallyCollapsed' option --> use this as the initial value for expanded
     get isExpanded(): boolean {
+        if (!this.options.collapsibleGroups) {
+            return true;
+        }
         return this.#expanded.value;
     }
 
@@ -117,7 +130,7 @@ export class TocLayerNode {
 
     setVisible(visible: boolean) {
         this.layer.setVisible(visible);
-        if (visible) {
+        if (visible && this.options.autoShowParents) {
             this.parent?.setVisible(visible);
         }
     }

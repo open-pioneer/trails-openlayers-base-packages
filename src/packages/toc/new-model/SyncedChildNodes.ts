@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { batch, reactive, Reactive, watchValue } from "@conterra/reactivity-core";
+import { batch, reactive, watchValue } from "@conterra/reactivity-core";
 import { destroyResource, Resource, shallowEqual } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
 import { TocLayerNode } from "./TocLayerNode";
 
+/** @internal */
 export interface SyncedChildOptions {
     /**
      * Constructs an new child, properly linked with its parent.
@@ -23,11 +24,23 @@ export interface SyncedChildOptions {
  * changes in the map. However, preexisting nodes from the last version are reused.
  * The performance for this _should_ be okay: even a layer with hundreds of children, which might get reordered,
  * will only recreate an array of moderate size, reusing all nodes from before.
+ *
+ * @internal
  */
 export class SyncedChildNodes implements Resource {
     readonly #createChildNode: (layer: AnyLayer) => TocLayerNode;
     readonly #getLayers: (() => AnyLayer[]) | undefined;
-    readonly #children = createNodeChildren();
+
+    /**
+     * The collection of child nodes, keyed by the layer they represent.
+     * NOTE: currently not reactive (not needed).
+     */
+    readonly #index = new Map<AnyLayer, TocLayerNode>();
+
+    /**
+     * Same items as in `index`, but in their display order.
+     */
+    readonly #order = reactive<TocLayerNode[]>([]);
 
     #destroyed = false;
     #watchHandle: Resource | undefined;
@@ -46,12 +59,12 @@ export class SyncedChildNodes implements Resource {
         this.#destroyed = true;
         this.#watchHandle = destroyResource(this.#watchHandle);
         batch(() => {
-            for (const childNode of this.#children.index.values()) {
+            for (const childNode of this.#index.values()) {
                 childNode.destroy();
             }
 
-            this.#children.index.clear();
-            this.#children.order.value = [];
+            this.#index.clear();
+            this.#order.value = [];
         });
     }
 
@@ -59,7 +72,7 @@ export class SyncedChildNodes implements Resource {
      * Returns the current set of children, in display order.
      */
     get children(): TocLayerNode[] {
-        return this.#children.order.value;
+        return this.#order.value;
     }
 
     #watchChildren() {
@@ -69,16 +82,14 @@ export class SyncedChildNodes implements Resource {
         }
 
         const createChildNode = this.#createChildNode;
-        const children = this.#children;
+        const nodeIndex = this.#index;
+        const nodeOrder = this.#order;
         return watchValue(
             () => getLayers().reverse(),
             (layers) => {
                 // NOTE: one large batch because the individual node constructors have side effects,
                 // they register themselves in the global node lookup index.
                 batch(() => {
-                    const nodeIndex = children.index;
-                    const nodeOrder = children.order;
-
                     // NOTE: obsolete nodes are destroyed _before_ any new node is created.
                     // New nodes register themselves (and their children) in the global node index,
                     // which would otherwise conflict with the not-yet-destroyed nodes for the same ids.
@@ -110,22 +121,4 @@ export class SyncedChildNodes implements Resource {
             }
         );
     }
-}
-
-interface NodeChildren {
-    /// The collection of child nodes, keyed by the layer they represent.
-    /// NOTE: currently not reactive (not needed).
-    index: Map<AnyLayer, TocLayerNode>;
-
-    /// Same items as in `index`, but in their display order.
-    order: Reactive<TocLayerNode[]>;
-}
-
-function createNodeChildren(): NodeChildren {
-    const index = new Map();
-    const order = reactive([]);
-    return {
-        index,
-        order
-    };
 }
