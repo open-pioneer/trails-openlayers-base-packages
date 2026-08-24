@@ -1,43 +1,64 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { reactive } from "@conterra/reactivity-core";
+import { reactiveMap, ReactiveMap } from "@conterra/reactivity-core";
 import { destroyResource, Resource } from "@open-pioneer/core";
-import { AnyLayer, MapModel } from "@open-pioneer/map";
-import { syncChildren } from "./syncChildren";
+import { MapModel } from "@open-pioneer/map";
+import { createNodeChildren, syncChildren } from "./syncChildren";
 import { TocLayerNode } from "./TocLayerNode";
 
 export class TocViewModel {
     #map: MapModel;
-    // #nodesById = reactiveMap<string, TocLayerNode>();
-
-    #childIndex = new Map<AnyLayer, TocLayerNode>();
-    #children = reactive<TocLayerNode[]>([]);
+    #shared: SharedData;
+    #children = createNodeChildren();
 
     #layersWatch: Resource | undefined;
 
     constructor(map: MapModel) {
         this.#map = map;
-        this.#layersWatch = syncChildren(
-            undefined,
-            this.#childIndex,
-            () =>
+        this.#shared = {
+            nodesById: reactiveMap()
+        };
+        this.#layersWatch = syncChildren({
+            parent: undefined,
+            shared: this.#shared,
+            getLayers: () =>
                 this.#map.layers.getOperationalLayers({
                     sortByDisplayOrder: true,
                     includeInternalLayers: true
                 }),
-            this.#children
-        );
+            children: this.#children
+        });
     }
 
     destroy() {
         this.#layersWatch = destroyResource(this.#layersWatch);
-        for (const child of this.#children.value) {
-            child.destroy();
-        }
     }
 
-    get children(): TocLayerNode[] {
-        return this.#children.value;
+    /**
+     * Returns the toc node associated with the given id.
+     */
+    getNodeById(id: string): TocLayerNode | undefined {
+        return this.#shared.nodesById.get(id);
     }
+
+    /**
+     * Returns the top level toc nodes in this view model, in display order.
+     *
+     * Nested children can be reached by walking the object graph.
+     */
+    get children(): TocLayerNode[] {
+        return this.#children.order.value;
+    }
+}
+
+/**
+ * Data shared by the view model and all it sub objects.
+ */
+export interface SharedData {
+    /**
+     * Id -> Node mapping for all nodes in the model.
+     * These are updated by the synchronization code whenever node are created or destroyed.
+     */
+    nodesById: ReactiveMap<string, TocLayerNode>;
 }

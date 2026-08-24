@@ -2,20 +2,24 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { computed, reactive } from "@conterra/reactivity-core";
-import { Resource, destroyResource } from "@open-pioneer/core";
+import { Resource, createLogger, destroyResource } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
+import { sourceId } from "open-pioneer:source-info";
 import { LayerTocAttributes } from "../ui/Toc";
-import { syncChildren } from "./syncChildren";
+import { createNodeChildren, syncChildren } from "./syncChildren";
+import { SharedData } from "./TocViewModel";
+
+const LOG = createLogger(sourceId);
 
 export class TocLayerNode {
     readonly parent: TocLayerNode | undefined;
     readonly layer: AnyLayer;
 
-    #childIndex = new Map<AnyLayer, TocLayerNode>();
-    #children = reactive<TocLayerNode[]>([]);
+    #shared: SharedData;
+    #children = createNodeChildren();
     #layersWatch: Resource | undefined;
     #show = computed(() => {
-        const tocAttributes = this.layer.attributes.toc as LayerTocAttributes | undefined;
+        const tocAttributes = getTocAttributes(this.layer);
         if (tocAttributes && tocAttributes.listMode) {
             return tocAttributes.listMode !== "hide";
         } else {
@@ -27,7 +31,7 @@ export class TocLayerNode {
             return false;
         }
 
-        const tocAttributes = this.layer.attributes.toc as LayerTocAttributes | undefined;
+        const tocAttributes = getTocAttributes(this.layer);
         if (tocAttributes && tocAttributes.listMode) {
             return tocAttributes.listMode !== "hide-children";
         } else {
@@ -35,12 +39,12 @@ export class TocLayerNode {
         }
     });
     #hasShownChildren = computed(() => {
-        if (!this.#show.value) {
+        if (!this.show) {
             return false;
         }
 
-        for (const child of this.#children.value) {
-            if (child.#show.value) {
+        for (const child of this.children) {
+            if (child.show) {
                 return true;
             }
         }
@@ -48,30 +52,40 @@ export class TocLayerNode {
     });
     #expanded = reactive(true);
 
-    constructor(layer: AnyLayer, parent: TocLayerNode | undefined) {
+    constructor(layer: AnyLayer, parent: TocLayerNode | undefined, shared: SharedData) {
         this.parent = parent;
         this.layer = layer;
+        this.#shared = shared;
 
         // Never has any children if children == null
         if (layer.children != null) {
-            this.#layersWatch = syncChildren(
-                this,
-                this.#childIndex,
-                () =>
+            this.#layersWatch = syncChildren({
+                parent: this,
+                shared: this.#shared,
+                getLayers: () =>
                     this.layer.children?.getItems({
                         sortByDisplayOrder: true,
                         includeInternalLayers: true
                     }) ?? [],
-                this.#children
-            );
+                children: this.#children
+            });
         }
+
+        // Register this node in global node index.
+        const nodesById = this.#shared.nodesById;
+        const id = this.id;
+        nodesById.set(id, this);
     }
 
     destroy() {
-        this.#layersWatch = destroyResource(this.#layersWatch);
-        for (const child of this.#children.value) {
-            child.destroy();
+        // Unregister this node from the global index.
+        const nodesById = this.#shared.nodesById;
+        const id = this.id;
+        if (nodesById.get(id) == this) {
+            nodesById.delete(id);
         }
+
+        this.#layersWatch = destroyResource(this.#layersWatch);
     }
 
     get id(): string {
@@ -79,7 +93,7 @@ export class TocLayerNode {
     }
 
     get children(): TocLayerNode[] {
-        return this.#children.value;
+        return this.#children.order.value;
     }
 
     // TODO: Implement 'initiallyCollapsed' option --> use this as the initial value for expanded
@@ -103,10 +117,10 @@ export class TocLayerNode {
         return this.layer.visible;
     }
 
-    setVisible(visible: boolean, bubble: boolean) {
+    setVisible(visible: boolean) {
         this.layer.setVisible(visible);
-        if (bubble) {
-            this.parent?.setVisible(visible, bubble);
+        if (visible) {
+            this.parent?.setVisible(visible);
         }
     }
 
@@ -122,4 +136,8 @@ export class TocLayerNode {
             this.parent?.setExpanded(expanded, bubble);
         }
     }
+}
+
+function getTocAttributes(layer: AnyLayer): LayerTocAttributes | undefined {
+    return layer.attributes.toc as LayerTocAttributes | undefined;
 }
