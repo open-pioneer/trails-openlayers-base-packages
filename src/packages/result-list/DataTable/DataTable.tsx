@@ -66,6 +66,7 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
     // Note that this is in a useEffect() on purpose to defer "freeing" click events a bit.
     const [isClickBlocked, setIsClickBlocked] = useState(false);
     useEffect(() => {
+        // oxlint-disable-next-line react/no-deriving-state-in-effects
         setIsClickBlocked(isResizing);
     }, [isResizing]);
     const blockClicksIfResizing = useEvent((e: MouseEvent) => {

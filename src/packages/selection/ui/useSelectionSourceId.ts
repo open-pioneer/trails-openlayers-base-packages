@@ -17,6 +17,7 @@ const GENERATED_ID_PREFIX = "__anon_source_";
 export function useSelectionSourceId(): GetSelectionSourceId {
     const sourceIds = useRef<WeakMap<SelectionSource, string>>(undefined);
     const counter = useRef(0);
+    // oxlint-disable-next-line react/refs
     if (!sourceIds.current) {
         sourceIds.current = new WeakMap();
     }
