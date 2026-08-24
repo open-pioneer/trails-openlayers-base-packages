@@ -38,6 +38,8 @@ export class TocLayerNode {
         }
     });
     #hasShownChildren = computed(() => {
+        // TODO: inconsistent with `#shownChildren` (this.show vs this.showChildren).
+        //       decide on one way, and document it clearly.
         if (!this.show) {
             return false;
         }
