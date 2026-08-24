@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { batch, nextTick, reactiveMap } from "@conterra/reactivity-core";
+import { batch, nextTick } from "@conterra/reactivity-core";
 import { AnyLayer, GroupLayer, isLayer, Layer } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 import { TocLayerNode } from "./TocLayerNode";
-import { SharedData, TocViewModel } from "./TocViewModel";
+import { TocViewModel } from "./TocViewModel";
 
 describe("node structure", () => {
     it("reflects the layers of the map", async () => {

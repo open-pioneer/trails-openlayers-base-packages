@@ -2,37 +2,32 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { reactiveMap, ReactiveMap } from "@conterra/reactivity-core";
-import { destroyResource, Resource } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
-import { createNodeChildren, syncChildren } from "./syncChildren";
+import { SyncedChildNodes } from "./SyncedChildNodes";
 import { TocLayerNode } from "./TocLayerNode";
 
 export class TocViewModel {
     #map: MapModel;
     #shared: SharedData;
-    #children = createNodeChildren();
-
-    #layersWatch: Resource | undefined;
+    #syncedChildren: SyncedChildNodes;
 
     constructor(map: MapModel) {
         this.#map = map;
         this.#shared = {
             nodesById: reactiveMap()
         };
-        this.#layersWatch = syncChildren({
-            parent: undefined,
-            shared: this.#shared,
+        this.#syncedChildren = new SyncedChildNodes({
+            createChildNode: (layer) => new TocLayerNode(layer, undefined, this.#shared),
             getLayers: () =>
                 this.#map.layers.getOperationalLayers({
                     sortByDisplayOrder: true,
                     includeInternalLayers: true
-                }),
-            children: this.#children
+                })
         });
     }
 
     destroy() {
-        this.#layersWatch = destroyResource(this.#layersWatch);
+        this.#syncedChildren.destroy();
     }
 
     /**
@@ -48,7 +43,7 @@ export class TocViewModel {
      * Nested children can be reached by walking the object graph.
      */
     get children(): TocLayerNode[] {
-        return this.#children.order.value;
+        return this.#syncedChildren.children;
     }
 }
 

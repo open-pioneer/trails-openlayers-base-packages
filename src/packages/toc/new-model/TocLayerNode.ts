@@ -2,22 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { computed, reactive } from "@conterra/reactivity-core";
-import { Resource, createLogger, destroyResource } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
-import { sourceId } from "open-pioneer:source-info";
 import { LayerTocAttributes } from "../ui/Toc";
-import { createNodeChildren, syncChildren } from "./syncChildren";
+import { SyncedChildNodes } from "./SyncedChildNodes";
 import { SharedData } from "./TocViewModel";
-
-const LOG = createLogger(sourceId);
 
 export class TocLayerNode {
     readonly parent: TocLayerNode | undefined;
     readonly layer: AnyLayer;
 
     #shared: SharedData;
-    #children = createNodeChildren();
-    #layersWatch: Resource | undefined;
+    #syncedChildren: SyncedChildNodes;
+
     #show = computed(() => {
         const tocAttributes = getTocAttributes(this.layer);
         if (tocAttributes && tocAttributes.listMode) {
@@ -50,6 +46,7 @@ export class TocLayerNode {
         }
         return false;
     });
+
     #expanded = reactive(true);
 
     constructor(layer: AnyLayer, parent: TocLayerNode | undefined, shared: SharedData) {
@@ -58,18 +55,19 @@ export class TocLayerNode {
         this.#shared = shared;
 
         // Never has any children if children == null
+        let getLayers;
         if (layer.children != null) {
-            this.#layersWatch = syncChildren({
-                parent: this,
-                shared: this.#shared,
-                getLayers: () =>
-                    this.layer.children?.getItems({
-                        sortByDisplayOrder: true,
-                        includeInternalLayers: true
-                    }) ?? [],
-                children: this.#children
-            });
+            getLayers = () =>
+                this.layer.children?.getItems({
+                    sortByDisplayOrder: true,
+                    includeInternalLayers: true
+                }) ?? [];
         }
+
+        this.#syncedChildren = new SyncedChildNodes({
+            createChildNode: (layer) => new TocLayerNode(layer, this, this.#shared),
+            getLayers
+        });
 
         // Register this node in global node index.
         const nodesById = this.#shared.nodesById;
@@ -85,7 +83,7 @@ export class TocLayerNode {
             nodesById.delete(id);
         }
 
-        this.#layersWatch = destroyResource(this.#layersWatch);
+        this.#syncedChildren.destroy();
     }
 
     get id(): string {
@@ -93,7 +91,7 @@ export class TocLayerNode {
     }
 
     get children(): TocLayerNode[] {
-        return this.#children.order.value;
+        return this.#syncedChildren.children;
     }
 
     // TODO: Implement 'initiallyCollapsed' option --> use this as the initial value for expanded
