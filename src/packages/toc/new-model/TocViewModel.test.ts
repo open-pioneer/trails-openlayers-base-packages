@@ -5,6 +5,7 @@ import { batch, computed, nextTick } from "@conterra/reactivity-core";
 import { AnyLayer, GroupLayer, isLayer, Layer } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
+import { LayerTocAttributes } from "../ui/Toc";
 import { TocLayerNode } from "./TocLayerNode";
 import { TocViewModel, TocWidgetOptions } from "./TocViewModel";
 
@@ -45,6 +46,66 @@ describe("node structure", () => {
         const node = model.getNodeById("internal-layer");
         expect(node).toBeDefined();
         expect(node!.show).toBe(false);
+    });
+});
+
+describe("shown nodes", () => {
+    it("only lists top level nodes that are shown", async () => {
+        const { model } = await setup({
+            layers: [
+                createTestLayer({
+                    id: "layer-1",
+                    title: "Layer 1",
+                    olLayer: createTestOlLayer()
+                }),
+                createTestLayer({
+                    id: "internal-layer",
+                    title: "Internal layer",
+                    internal: true,
+                    olLayer: createTestOlLayer()
+                }),
+                createTestLayer({
+                    id: "hidden-layer",
+                    title: "Hidden layer",
+                    attributes: { toc: { listMode: "hide" } satisfies LayerTocAttributes },
+                    olLayer: createTestOlLayer()
+                })
+            ]
+        });
+
+        expect(ids(model.children)).toEqual(["hidden-layer", "internal-layer", "layer-1"]);
+        expect(ids(model.shownChildren)).toEqual(["layer-1"]);
+    });
+
+    it("only lists children of a group that are shown", async () => {
+        const { model } = await setup({ layers: [createGroupWithHiddenMember()] });
+        const group = model.getNodeById("group")!;
+
+        expect(ids(group.children)).toEqual(["hidden-member", "group-member"]);
+        expect(ids(group.shownChildren)).toEqual(["group-member"]);
+    });
+
+    it("does not list any children if the node hides its children", async () => {
+        const { model } = await setup({
+            layers: [createGroupWithHiddenMember({ toc: { listMode: "hide-children" } })]
+        });
+        const group = model.getNodeById("group")!;
+
+        expect(group.showChildren).toBe(false);
+        expect(group.children.length).toBe(2);
+        expect(group.shownChildren).toEqual([]);
+    });
+
+    it("updates when a child stops being shown", async () => {
+        const { model } = await setup({ layers: [createGroupWithHiddenMember()] });
+        const group = model.getNodeById("group")!;
+        const shownChildren = computed(() => ids(group.shownChildren));
+        expect(shownChildren.value).toEqual(["group-member"]);
+
+        model.getNodeById("group-member")!.layer.updateAttributes({
+            toc: { listMode: "hide" } satisfies LayerTocAttributes
+        });
+        expect(shownChildren.value).toEqual([]);
     });
 });
 
@@ -462,6 +523,37 @@ function createDefaultLayers() {
             ]
         })
     ];
+}
+
+/**
+ * Group layer with one shown and one hidden member:
+ *
+ * ```text
+ * group
+ *   group-member
+ *   hidden-member (listMode: "hide")
+ * ```
+ */
+function createGroupWithHiddenMember(groupAttributes?: Record<string, unknown>) {
+    return createTestLayer({
+        type: GroupLayer,
+        id: "group",
+        title: "Group",
+        attributes: groupAttributes,
+        layers: [
+            createTestLayer({
+                id: "group-member",
+                title: "Group member",
+                olLayer: createTestOlLayer()
+            }),
+            createTestLayer({
+                id: "hidden-member",
+                title: "Hidden member",
+                attributes: { toc: { listMode: "hide" } satisfies LayerTocAttributes },
+                olLayer: createTestOlLayer()
+            })
+        ]
+    });
 }
 
 /** Maps node id -> `isExpanded`, for all nodes in the tree. */

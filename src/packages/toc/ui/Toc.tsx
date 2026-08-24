@@ -209,7 +209,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
                                 })}
                             </Text>
                             <Spacer />
-                            {showTools && <Tools map={map} {...toolsConfig} />}
+                            {showTools && <Tools viewModel={viewModel} {...toolsConfig} />}
                         </Flex>
                     </SectionHeading>
                 }

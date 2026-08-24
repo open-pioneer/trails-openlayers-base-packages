@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { reactive, reactiveMap, ReactiveMap, Reactive } from "@conterra/reactivity-core";
+import { computed, reactive, Reactive, reactiveMap, ReactiveMap } from "@conterra/reactivity-core";
 import { MapModel } from "@open-pioneer/map";
 import { SyncedChildNodes } from "./SyncedChildNodes";
 import { TocLayerNode } from "./TocLayerNode";
@@ -55,6 +55,8 @@ export class TocViewModel {
     #shared: SharedData;
     #syncedChildren: SyncedChildNodes;
 
+    #shownChildren = computed(() => this.children.filter((c) => c.show));
+
     constructor(map: MapModel, options: TocWidgetOptions) {
         this.#map = map;
 
@@ -87,12 +89,21 @@ export class TocViewModel {
     }
 
     /**
-     * Returns the top level toc nodes in this view model, in display order.
+     * Returns the full set of top level toc nodes in this view model, in display order.
      *
      * Nested children can be reached by walking the object graph.
      */
     get children(): TocLayerNode[] {
         return this.#syncedChildren.children;
+    }
+
+    /**
+     * Returns the list of children that are actually presented to the user, as UI items.
+     *
+     * Not to be confused with the layer's visibility.
+     */
+    get shownChildren(): TocLayerNode[] {
+        return this.#shownChildren.value;
     }
 
     /**

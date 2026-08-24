@@ -41,13 +41,13 @@ export class TocLayerNode {
         if (!this.show) {
             return false;
         }
-
-        for (const child of this.children) {
-            if (child.show) {
-                return true;
-            }
+        return this.children.some((c) => c.show);
+    });
+    #shownChildren = computed(() => {
+        if (!this.showChildren) {
+            return [];
         }
-        return false;
+        return this.children.filter((c) => c.show);
     });
 
     #expanded: Reactive<boolean>;
@@ -101,8 +101,20 @@ export class TocLayerNode {
         return this.#shared.options;
     }
 
+    /**
+     * Returns the full set of children.
+     */
     get children(): TocLayerNode[] {
         return this.#syncedChildren.children;
+    }
+
+    /**
+     * Returns the list of children that are actually presented to the user, as UI items.
+     *
+     * Not to be confused with the layer's visibility.
+     */
+    get shownChildren(): TocLayerNode[] {
+        return this.#shownChildren.value;
     }
 
     get isExpanded(): boolean {
