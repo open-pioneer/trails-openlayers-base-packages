@@ -62,7 +62,7 @@ it("should save a bookmark and update the list", async () => {
     const user = userEvent.setup();
     MOCK_NAMESPACE.set("bookmarks", []);
 
-    const { div } = await createBookmarkComponent(true);
+    const { div } = await createBookmarkComponent({ mockMapRender: true });
 
     const createBtn = await findByText(div, "bookmark.button.create");
 
@@ -115,7 +115,7 @@ it("should remove bookmark from the list by clicking the remove button", async (
 it("should center the map on the selected bookmark", async () => {
     const user = userEvent.setup();
     const bookmarks = createBookmarks();
-    const { mapModel, div } = await createBookmarkComponent(true);
+    const { mapModel, div } = await createBookmarkComponent({ mockMapRender: true });
     await waitForMapRender(mapModel);
 
     const extent = bookmarks[0]!.extent;
@@ -166,18 +166,20 @@ interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
 
-async function createBookmarkComponent(mockMapRender?: boolean) {
-    const { mapModel, injectedServices } = await setupComponent(mockMapRender);
+async function createBookmarkComponent(opts?: { mockMapRender?: boolean }) {
+    const { mapModel, injectedServices } = await setupComponent({
+        mockMapRender: opts?.mockMapRender
+    });
 
     renderComponent({ services: injectedServices }, { map: mapModel, "data-testid": "bookmarks" });
     const div = await waitForSpatialBookmarks();
     return { mapModel, div };
 }
 
-async function setupComponent(mockMapRender?: boolean) {
+async function setupComponent(opts: { mockMapRender?: boolean }) {
     const { map } = await setupMap({
         projection: "EPSG:25832",
-        mockMapRender
+        mockMapRender: opts?.mockMapRender
     });
     const injectedServices = {
         "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
