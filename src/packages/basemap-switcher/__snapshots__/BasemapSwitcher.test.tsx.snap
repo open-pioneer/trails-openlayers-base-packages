@@ -6,7 +6,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
   data-part="root"
   data-scope="select"
   dir="ltr"
-  id="select:_r_c_"
+  id="select:_r_10_"
 >
   <div
     class="chakra-select__control css-17j1053"
@@ -14,21 +14,21 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
     data-scope="select"
     data-state="closed"
     dir="ltr"
-    id="select:_r_c_:control"
+    id="select:_r_10_:control"
   >
     <button
-      aria-controls="select:_r_c_:content"
+      aria-controls="select:_r_10_:content"
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-invalid="false"
-      aria-labelledby="select:_r_c_:label"
+      aria-labelledby="select:_r_10_:label"
       aria-required="false"
       class="basemap-switcher-select-trigger chakra-select__trigger css-lwaeyv"
       data-part="trigger"
       data-scope="select"
       data-state="closed"
       dir="ltr"
-      id="select:_r_c_:trigger"
+      id="select:_r_10_:trigger"
       role="combobox"
       type="button"
     >
@@ -46,12 +46,12 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
         >
           <span
             class="chakra-tooltip__trigger"
-            data-ownedby="_r_d_"
+            data-ownedby="_r_11_"
             data-part="trigger"
             data-scope="tooltip"
             data-state="closed"
             dir="ltr"
-            id="tooltip:_r_d_:trigger"
+            id="tooltip:_r_11_:trigger"
           >
             <svg
               aria-label="layerNotAvailable"
@@ -116,7 +116,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
     data-part="root"
     data-scope="select"
     dir="ltr"
-    id="select:_r_3_"
+    id="select:_r_4_"
   >
     <div
       class="chakra-select__control css-17j1053"
@@ -124,14 +124,14 @@ exports[`should successfully create a basemap switcher component 1`] = `
       data-scope="select"
       data-state="open"
       dir="ltr"
-      id="select:_r_3_:control"
+      id="select:_r_4_:control"
     >
       <button
-        aria-controls="select:_r_3_:content"
+        aria-controls="select:_r_4_:content"
         aria-expanded="true"
         aria-haspopup="listbox"
         aria-invalid="false"
-        aria-labelledby="select:_r_3_:label"
+        aria-labelledby="select:_r_4_:label"
         aria-required="false"
         class="basemap-switcher-select-trigger chakra-select__trigger css-lwaeyv"
         data-part="trigger"
@@ -140,7 +140,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
         data-side="bottom"
         data-state="open"
         dir="ltr"
-        id="select:_r_3_:trigger"
+        id="select:_r_4_:trigger"
         role="combobox"
         type="button"
       >
