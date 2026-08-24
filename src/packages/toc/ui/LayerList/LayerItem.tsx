@@ -43,16 +43,20 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
     const intl = useIntl();
     const display = useReactiveSnapshot(() => node.show, [node]);
     const [tocOptions, tocItemElemRef] = useTocItem(node, display);
-    const isExpanded = useReactiveSnapshot(() => node.isExpanded, [node]);
+    const {isExpanded, isVisible} = useReactiveSnapshot(() => {
+        return {
+            isExpanded: node.isExpanded,
+            isVisible: node.isVisible
+        };
+    }, [node]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
     const layerGroupId = useId();
     const listMode = useListMode(layer)?.listMode;
-    const { title, description, isVisible } = useReactiveSnapshot(() => {
+    const { title, description } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
             description: layer.description,
-            isVisible: layer.visible
         };
     }, [layer]);
 
@@ -104,7 +108,7 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
                     disabled={disabled}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
-                            layer,
+                            node,
                             event.checked === true,
                             tocOptions.autoShowParents
                         )
@@ -310,10 +314,11 @@ function useNestedChildren(
     return children;
 }
 
-function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
-    layer.setVisible(visible);
-    if (visible && autoShowParents && layer.parent) {
-        updateLayerVisibility(layer.parent, true, true);
+function updateLayerVisibility(node: TocLayerNode, visible: boolean, autoShowParents: boolean) {
+    if (visible && autoShowParents) {
+        node.setVisible(visible, true); //bubbles up to parents
+    }else{
+        node.setVisible(visible);
     }
 }
 

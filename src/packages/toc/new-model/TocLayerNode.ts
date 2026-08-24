@@ -111,14 +111,14 @@ export class TocLayerNode {
         return this.#hasShownChildren.value;
     }
 
-    get visible(): boolean {
+    get isVisible(): boolean {
         return this.layer.visible;
     }
 
-    setVisible(visible: boolean) {
+    setVisible(visible: boolean, bubble: boolean = false) {
         this.layer.setVisible(visible);
-        if (visible) {
-            this.parent?.setVisible(visible);
+        if (bubble) {
+            this.parent?.setVisible(visible, bubble);
         }
     }
 
