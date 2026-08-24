@@ -226,11 +226,15 @@ function TocContent(props: TocProps & { map: MapModel }) {
 function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
     const tocModelRef = useRef<TocModel>(null);
+    // oxlint-disable-next-line react/refs
     if (!tocModelRef.current) {
         tocModelRef.current = new TocModel(
             createOptions(
+                // oxlint-disable-next-line react/refs
                 initialProps.current.autoShowParents,
+                // oxlint-disable-next-line react/refs
                 initialProps.current.collapsibleGroups,
+                // oxlint-disable-next-line react/refs,
                 initialProps.current.initiallyCollapsed
             )
         );
@@ -242,12 +246,15 @@ function useTocModel(props: TocProps): TocModel {
         tocModelRef.current!.updateOptions(
             createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
         );
+        // oxlint-disable-next-line react/refs
     }, [
         props.autoShowParents,
         props.collapsibleGroups,
         props.initiallyCollapsed,
+        // oxlint-disable-next-line react/refs
         tocModelRef.current.options
     ]);
+    // oxlint-disable-next-line react/refs
     return tocModelRef.current;
 }
 
@@ -257,6 +264,7 @@ function useTocAPI(
     onDisposed: TocProps["onDisposed"] | undefined
 ) {
     const apiRef = useRef<TocApi>(null);
+    // oxlint-disable-next-line react/refs
     if (!apiRef.current) {
         apiRef.current = new TocApiImpl(model);
     }

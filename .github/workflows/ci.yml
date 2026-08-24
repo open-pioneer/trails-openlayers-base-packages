@@ -1,0 +1,30 @@
+# Runs quality checks (linting, tests, etc.), updates the release PR / publishes packages.
+# Also builds the sample site + api docs (in the main branch) and publishes them to github pages.
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-ci.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
+      demo-id: openlayers-base-packages
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      DEMO_DEPLOY_TOKEN: ${{ secrets.DEMO_DEPLOY_TOKEN }}

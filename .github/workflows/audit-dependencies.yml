@@ -1,8 +1,8 @@
-name: Audit dependencies (daily)
+# Checks dependencies for security vulnerabilities.
+name: Audit dependencies (weekly)
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: "0 12 * * 1"
 
@@ -11,12 +11,4 @@ permissions:
 
 jobs:
   audit-dependencies:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
-      - name: Audit dependencies
-        run: pnpm audit --audit-level moderate
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-audit-dependencies.yml@main

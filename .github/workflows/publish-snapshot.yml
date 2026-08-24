@@ -1,3 +1,4 @@
+# Publishes x.y.z-dev* package versions for packages in this repository.
 name: Publish snapshot
 
 on:
@@ -13,21 +14,9 @@ permissions:
   contents: read
 
 jobs:
-  build_packages:
-    name: "Build and publish"
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install
-        uses: open-pioneer/trails-repo-automation/.github/actions/install@main
-        with:
-          npm-auth: "true" # publishes to npm
-
-      - name: "Publish packages"
-        uses: open-pioneer/trails-repo-automation/.github/actions/publish-snapshots@main
-        with:
-          snapshot-tag: ${{ inputs.snapshot-tag }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
+  publish-snapshot:
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-publish-snapshot.yml@main
+    with:
+      snapshot-tag: ${{ inputs.snapshot-tag }}
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

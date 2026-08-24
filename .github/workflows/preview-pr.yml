@@ -1,66 +1,25 @@
+# Deploys a preview for every pull request.
 name: Preview PR
 
 on:
-  pull_request_target:
+  workflow_run:
+    workflows:
+      - Build Samples
     types:
-      - opened
-      - reopened
-      - synchronize
+      - completed
 
 permissions:
   contents: read
 
 jobs:
-  wait:
-    name: Wait for checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      # This job simply waits for the test-and-build checks to complete.
-      # test-and-build runs on the pull_request event (for both same-repo and fork PRs);
-      # this workflow (pull_request_target) then deploys the resulting build artifact as a preview.
-      # If you know a smarter way, let us now.
-      - name: Wait for other checks to succeed
-        uses: lewagon/wait-on-check-action@369769072fe522a3a8a85c03c96af1e5242a1994 # v1.9.1
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-name: "Build samples and documentation"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-
-  deploy:
+  preview:
     name: Preview PR
-    runs-on: ubuntu-latest
-    concurrency: preview-${{ github.ref }}
-    timeout-minutes: 5
-    needs: wait
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-preview-pr.yml@main
     permissions:
-      contents: write
+      actions: read
+      contents: read
       pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          # https://github.com/JamesIves/github-pages-deploy-action/issues/1928#issuecomment-3635092712
-          persist-credentials: false
-
-      - name: Download latest build artifact
-        run: |
-          # Both same-repo and fork PRs build via the pull_request-triggered test-and-build run.
-          WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e pull_request --json databaseId --limit 1 | jq .[0].databaseId -r)
-          echo "Latest workflow run: $WORKFLOW_RUN"
-
-          mkdir site && cd site;
-
-          echo "Downloading build artifact"
-          gh run download $WORKFLOW_RUN -n build
-          echo "Download successful:"
-          ls -alh
-        env:
-          GH_TOKEN: ${{ github.token }}
-
-      - name: Deploy PR Preview
-        uses: open-pioneer/trails-repo-automation/.github/actions/deploy-pr-preview@main
-        with:
-          src-repo: "openlayers-base-packages"
-          token: ${{ secrets.DEMO_DEPLOY_TOKEN }}
+    with:
+      demo-id: openlayers-base-packages
+    secrets:
+      DEMO_DEPLOY_TOKEN: ${{ secrets.DEMO_DEPLOY_TOKEN }}

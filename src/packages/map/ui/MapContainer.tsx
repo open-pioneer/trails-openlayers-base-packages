@@ -160,7 +160,7 @@ export function MapContainer(props: MapContainerProps) {
                 {ready && map && (
                     <MapContainerReady
                         map={map}
-                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion react/refs
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
                         viewPaddingChangeBehavior={viewPaddingChangeBehavior}
