@@ -5,6 +5,7 @@ import { createManualPromise, getErrorChain } from "@open-pioneer/core";
 import {
     createTestLayer,
     createTestOlLayer,
+    mockMapRender,
     setupMap,
     SetupMapResult,
     SimpleMapOptions,
@@ -224,11 +225,7 @@ it("should successfully create View with 'extent' property without a MapConfigPr
         initialView: { extent, kind: "extent" }
     });
 
-    const dummyContainer = document.createElement("div");
-    dummyContainer.style.width = "100px";
-    dummyContainer.style.height = "100px";
-    document.body.appendChild(dummyContainer);
-    mapModel.olMap.setTarget(dummyContainer);
+    mockMapRender(mapModel);
     await waitForMapRender(mapModel);
 
     const xMin = extent.xMin + (extent.xMax - extent.xMin) / 2;

@@ -220,19 +220,25 @@ export async function setupMap(
         map = await promise;
 
         if (options?.mockMapRender) {
-            // Render the map into a pseudo (non-visible) div so the map's view gets initialized
-            const dummyContainer = document.createElement("div");
-            dummyContainer.style.width = "100px";
-            dummyContainer.style.height = "100px";
-            dummyContainer.setAttribute("data-testid", "map");
-            document.body.appendChild(dummyContainer);
-            map.olMap.setTarget(dummyContainer);
+            mockMapRender(map);
         }
     } else {
         // Ignore error on this promise (prevents unhandled error in tests)
         promise.catch(() => undefined);
     }
     return { mapId, registry, layerFactory, map };
+}
+
+/**
+ *  Renders an OL map into a pseudo (non-visible) div so the map's view gets initialized
+ */
+export function mockMapRender(map: MapModel) {
+    const dummyContainer = document.createElement("div");
+    dummyContainer.style.width = "100px";
+    dummyContainer.style.height = "100px";
+    dummyContainer.setAttribute("data-testid", "map");
+    document.body.appendChild(dummyContainer);
+    map.olMap.setTarget(dummyContainer);
 }
 
 function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
