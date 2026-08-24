@@ -14,7 +14,7 @@ permissions:
 jobs:
   preview:
     name: Preview PR
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-preview-pr.yml@dev
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-preview-pr.yml@main
     permissions:
       actions: read
       contents: read

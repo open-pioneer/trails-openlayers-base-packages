@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   audit-dependencies:
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-audit-dependencies.yml@dev
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-audit-dependencies.yml@main

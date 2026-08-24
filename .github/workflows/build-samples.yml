@@ -17,4 +17,4 @@ permissions:
 
 jobs:
   build:
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-build-samples.yml@dev
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-build-samples.yml@main
