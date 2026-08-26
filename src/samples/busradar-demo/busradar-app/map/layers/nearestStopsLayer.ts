@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import Feature from "ol/Feature";
+import type { FeatureLike } from "ol/Feature";
 import LineString from "ol/geom/LineString";
 import Point from "ol/geom/Point";
-import type { FeatureLike } from "ol/Feature";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";

@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { FrameState } from "ol/Map";
+
 import VectorLayer from "ol/layer/Vector";
+import type { FrameState } from "ol/Map";
 import type ExecutorGroup from "ol/render/canvas/ExecutorGroup";
 import CanvasVectorLayerRenderer from "ol/renderer/canvas/VectorLayer";
 import type VectorSource from "ol/source/Vector";

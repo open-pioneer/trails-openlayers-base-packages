@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { type MapModel } from "@open-pioneer/map";
 import type { EventsKey } from "ol/events";
 import type BaseLayer from "ol/layer/Base";
@@ -119,8 +120,12 @@ export function useNearestStops(
     const departureStatusRef = useRef<Map<string, NearestStopDeparturesState["status"]>>(new Map());
 
     // Spiegelt den aktiven Zustand für die Klick-Handler der bestehenden Auswahl-Hooks.
-    nearestStopsActiveRef.current = nearestStopsActive;
-    nearestStopsPanelRef.current = nearestStopsPanel;
+    // Sync im Effect statt im Render: Die Refs werden ausschließlich in Klick-Handlern nach dem
+    // Commit gelesen, daher bleibt der aktuelle Wert erhalten, ohne ref.current im Render zu mutieren.
+    useEffect(() => {
+        nearestStopsActiveRef.current = nearestStopsActive;
+        nearestStopsPanelRef.current = nearestStopsPanel;
+    }, [nearestStopsActive, nearestStopsPanel, nearestStopsActiveRef]);
 
     const toggleNearestStops = useCallback(() => setNearestStopsActive((active) => !active), []);
 

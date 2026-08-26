@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -45,37 +46,30 @@ function renderOverlay(selectedBusLine?: string) {
     return { ...renderResult, onClose, rerenderWithLine };
 }
 
-function expectVisibleDestinations(visible: string[]) {
-    for (const line of ["11", "14", "22"]) {
-        const destination = `Ziel ${line}`;
-        if (visible.includes(line)) {
-            expect(screen.getByText(destination)).toBeInTheDocument();
-        } else {
-            expect(screen.queryByText(destination)).toBeNull();
-        }
-    }
+function getVisibleDestinations(): string[] {
+    return ["11", "14", "22"].filter((line) => screen.queryByText(`Ziel ${line}`) !== null);
 }
 
 describe("TransitStopDeparturesOverlay – reaktiver Buslinienfilter", () => {
     it("folgt bei geöffnetem Popup dem Wechsel von keiner Linie über 11 zu 14", () => {
         const { rerenderWithLine } = renderOverlay();
-        expectVisibleDestinations(["11", "14", "22"]);
+        expect(getVisibleDestinations()).toEqual(["11", "14", "22"]);
 
         rerenderWithLine("11");
-        expectVisibleDestinations(["11"]);
+        expect(getVisibleDestinations()).toEqual(["11"]);
 
         rerenderWithLine("14");
-        expectVisibleDestinations(["14"]);
+        expect(getVisibleDestinations()).toEqual(["14"]);
     });
 
     it("entfernt den Filter bei Busabwahl und folgt einer erneuten Auswahl", () => {
         const { rerenderWithLine } = renderOverlay("14");
-        expectVisibleDestinations(["14"]);
+        expect(getVisibleDestinations()).toEqual(["14"]);
 
         rerenderWithLine(undefined);
-        expectVisibleDestinations(["11", "14", "22"]);
+        expect(getVisibleDestinations()).toEqual(["11", "14", "22"]);
 
         rerenderWithLine("11");
-        expectVisibleDestinations(["11"]);
+        expect(getVisibleDestinations()).toEqual(["11"]);
     });
 });

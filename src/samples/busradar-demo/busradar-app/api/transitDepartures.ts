@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { buildStopDeparturesUrl } from "./busradarApi";
 
 const DEPARTURE_CACHE_MAX_AGE_MS = 30_000;

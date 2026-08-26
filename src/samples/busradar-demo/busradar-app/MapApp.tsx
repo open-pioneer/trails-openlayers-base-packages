@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Flex } from "@chakra-ui/react";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
@@ -10,7 +11,7 @@ import { Notifier } from "@open-pioneer/notifier";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useRef, useState, useCallback } from "react";
+import { useId, useRef, useState, useCallback, useEffect } from "react";
 import { FiMap } from "react-icons/fi";
 import type { TransitDeparture } from "./api/transitDepartures";
 import { BusradarLegend } from "./components/BusradarLegend";
@@ -37,8 +38,12 @@ export function MapApp() {
     const { nextBasemap, switchToNextBasemap } = useBasemapCycle(map);
     const [layerDrawerIsOpen, setLayerDrawerIsOpen] = useState(true);
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
-    const leftMapPanelIsActiveRef = useRef(false);
-    leftMapPanelIsActiveRef.current = layerDrawerIsOpen;
+    const leftMapPanelIsActiveRef = useRef(layerDrawerIsOpen);
+    // Sync im Effect statt im Render: Die Ref wird nur in Klick-Handlern von useBusradarSelection
+    // nach dem Commit gelesen. Der Initialwert entspricht dem Startzustand des Panels.
+    useEffect(() => {
+        leftMapPanelIsActiveRef.current = layerDrawerIsOpen;
+    }, [layerDrawerIsOpen]);
     // Mutable Detail-Ref der Busradar-Auswahl für Overlay- und Live-Update-Logik.
     const selectedBusradarDetailsRef = useRef<BusradarSelectionDetails | undefined>(undefined);
     // Cross-Ref: im Umkreissuche-Modus treten Bus-/Haltestellen-Klick-Handler zurück (Exklusivität).

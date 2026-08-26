@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { type MapModel } from "@open-pioneer/map";
-import type { FeatureLike } from "ol/Feature";
 import type { EventsKey } from "ol/events";
+import type { FeatureLike } from "ol/Feature";
 import Point from "ol/geom/Point";
 import type BaseLayer from "ol/layer/Base";
 import type VectorLayer from "ol/layer/Vector";

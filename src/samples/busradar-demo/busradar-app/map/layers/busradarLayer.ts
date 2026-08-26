@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import Feature, { type FeatureLike } from "ol/Feature";
 import Point from "ol/geom/Point";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { getDistance } from "ol/sphere";
 import VectorSource from "ol/source/Vector";
+import { getDistance } from "ol/sphere";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import { loadGtfsTripShapePath } from "../../api/busradarTripDetails";
 import { classifyBusradarDelay } from "../../utils/busradarDelay";

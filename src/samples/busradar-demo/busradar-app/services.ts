@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import {
     MapConfig,
     MapConfigProvider,
     MapConfigProviderOptions,
     SimpleLayer
 } from "@open-pioneer/map";
+import { applyStyle } from "ol-mapbox-style";
 import TileLayer from "ol/layer/Tile";
 import VectorTileLayer from "ol/layer/VectorTile";
 import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
-import { applyStyle } from "ol-mapbox-style";
 import {
     BUSRADAR_LAYER_ID,
     BUSRADAR_LAYER_TITLE,
@@ -47,7 +48,7 @@ const BASEMAP_DE_WEB_VECTOR_STYLE =
 // Initial-/Home-Mittelpunkt in EPSG:3857 (Web Mercator), Münster und Umgebung als regionaler
 // Startausschnitt. Bewusst in Projektionskoordinaten hinterlegt, da genau diese Zielwerte
 // vorgegeben sind.
-const HOME_CENTER_X = 849390.00;
+const HOME_CENTER_X = 849390.0;
 const HOME_CENTER_Y = 6792246.75;
 // Initialer/Home-Zoom. Fachlich aus dem gewünschten Maßstab hergeleitet: Maßstab ∝ 1/2^Zoom, und
 // die zuvor beobachtete Startansicht (Zoom 16.10096 ↔ ca. 1:4902) ergibt für den Zielbereich

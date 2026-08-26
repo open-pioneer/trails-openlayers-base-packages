@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { LuX } from "react-icons/lu";
 import type { TransitDeparture } from "../api/transitDepartures";
-import { useDepartureBusSelect } from "../hooks/useDepartureBusSelect";
 import type { BusradarDepartureSelectionStatus } from "../hooks/useBusradarSelection";
+import { useDepartureBusSelect } from "../hooks/useDepartureBusSelect";
 import { useNowSeconds } from "../hooks/useNowSeconds";
 import type { TransitStopSummary } from "../types";
 import { filterUpcomingDepartures } from "../utils/transitDepartures";

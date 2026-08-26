@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import Feature, { type FeatureLike } from "ol/Feature";
 import Point from "ol/geom/Point";
 import type Style from "ol/style/Style";

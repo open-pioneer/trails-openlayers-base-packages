@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { type MapModel } from "@open-pioneer/map";
-import { useIntl } from "open-pioneer:react-hooks";
-import type { FeatureLike } from "ol/Feature";
 import type { EventsKey } from "ol/events";
+import type { FeatureLike } from "ol/Feature";
 import type BaseLayer from "ol/layer/Base";
 import { unByKey } from "ol/Observable";
+import { useIntl } from "open-pioneer:react-hooks";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { loadTransitDepartures, type TransitDeparture } from "../api/transitDepartures";
 import { BUSRADAR_LAYER_ID } from "../map/layers/busradarLayer";

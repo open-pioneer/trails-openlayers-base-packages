@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { describe, expect, it } from "vitest";
 import { BUSRADAR_API_BASE_URL, BUSRADAR_STOPS_URL, buildStopDeparturesUrl } from "./busradarApi";
 
