@@ -3,20 +3,9 @@
 
 import { Resource } from "@open-pioneer/core";
 import type OlView from "ol/View";
+import { PageOrientationType, PageSizeType } from "./index";
 
 const DEFAULT_QUALITY = 0.8;
-
-export type PageSizeType = "a3" | "a4" | "a5";
-
-export function isPageSizeType(value: string): value is PageSizeType {
-    return value === "a3" || value === "a4" || value === "a5";
-}
-
-export type PageOrientationType = "landscape" | "portrait";
-
-export function isPageOrientationType(value: string): value is PageOrientationType {
-    return value === "landscape" || value === "portrait";
-}
 
 interface PageSize {
     short: number; // millimeters

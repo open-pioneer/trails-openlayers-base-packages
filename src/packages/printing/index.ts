@@ -70,6 +70,42 @@ export interface PrintingOptions extends OlMapPrintingOptions {
 export type ViewPaddingBehavior = "auto" | "ignore";
 
 /**
+ * Standard page size formats.
+ */
+export type PageSizeType = "a3" | "a4" | "a5";
+
+/**
+ * Type guard for checking if the value is a {@link PageSizeType}.
+ */
+export function isPageSizeType(value: string): value is PageSizeType {
+    return value === "a3" || value === "a4" || value === "a5";
+}
+
+/**
+ * Orientation of a page.
+ */
+export type PageOrientationType = "landscape" | "portrait";
+
+/**
+ * Type guard for checking if the value is a {@link PageOrientationType}.
+ */
+export function isPageOrientationType(value: string): value is PageOrientationType {
+    return value === "landscape" || value === "portrait";
+}
+
+/**
+ * Output file format.
+ */
+export type FileFormatType = "png" | "pdf";
+
+/**
+ * Type guard for checking if the value is a {@link FileFormatType}.
+ */
+export function isFileFormatType(value: string): value is FileFormatType {
+    return value === "png" || value === "pdf";
+}
+
+/**
  * The printing service provides an image of a map as a canvas element or a data URL for a PNG image.
  *
  * Inject an instance of this service by referencing the interface name `"printing.PrintingService"`.

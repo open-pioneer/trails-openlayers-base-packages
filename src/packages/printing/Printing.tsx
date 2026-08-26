@@ -10,16 +10,18 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
-import type { PrintingService, ViewPaddingBehavior } from "./index";
-import { FileFormatType, isFileFormatType, PrintingController } from "./PrintingController";
 import {
-    getPageDimensions,
-    getViewPadding,
+    FileFormatType,
+    isFileFormatType,
     isPageOrientationType,
     isPageSizeType,
     PageOrientationType,
-    PageSizeType
-} from "./utils";
+    PageSizeType,
+    PrintingService,
+    ViewPaddingBehavior
+} from "./index";
+import { PrintingController } from "./PrintingController";
+import { getPageDimensions, getViewPadding } from "./utils";
 
 const LOG = createLogger("bis-printing");
 

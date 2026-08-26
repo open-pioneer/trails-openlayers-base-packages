@@ -12,21 +12,15 @@ import { Pixel } from "ol/pixel";
 import { getRenderPixel } from "ol/render";
 import RenderEvent from "ol/render/Event";
 import VectorSource from "ol/source/Vector";
-import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import {
-    canvasToPng,
-    createBlockUserOverlay,
-    getPageDimensions,
-    getViewPadding,
+    FileFormatType,
     PageOrientationType,
-    PageSizeType
-} from "./utils";
-
-export type FileFormatType = "png" | "pdf";
-
-export function isFileFormatType(value: string): value is FileFormatType {
-    return value === "png" || value === "pdf";
-}
+    PageSizeType,
+    PrintingService,
+    PrintResult,
+    ViewPaddingBehavior
+} from "./index";
+import { canvasToPng, createBlockUserOverlay, getPageDimensions, getViewPadding } from "./utils";
 
 const DEFAULT_FILE_NAME = "map";
 
