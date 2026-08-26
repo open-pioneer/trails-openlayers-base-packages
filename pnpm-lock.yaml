@@ -1306,6 +1306,70 @@ importers:
         version: 1.5.1
     publishDirectory: dist
 
+  src/samples/busradar-demo/busradar-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 3.36.1
+        version: 3.36.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@open-pioneer/chakra-snippets':
+        specifier: 'catalog:'
+        version: 4.7.0(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:*
+        version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/geolocation':
+        specifier: workspace:*
+        version: link:../../../packages/geolocation
+      '@open-pioneer/map':
+        specifier: workspace:*
+        version: link:../../../packages/map
+      '@open-pioneer/map-navigation':
+        specifier: workspace:*
+        version: link:../../../packages/map-navigation
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../../../packages/map-ui-components
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.7.0(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.7.0(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(react-dom@19.2.8(react@19.2.8))
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.7.0(@types/react@19.2.18)
+      '@open-pioneer/scale-bar':
+        specifier: workspace:*
+        version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-viewer':
+        specifier: workspace:*
+        version: link:../../../packages/scale-viewer
+      fflate:
+        specifier: ^0.8.3
+        version: 0.8.3
+      ol:
+        specifier: 'catalog:'
+        version: 10.10.0
+      ol-mapbox-style:
+        specifier: ^13.3.0
+        version: 13.4.2(ol@10.10.0)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.8
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.8(react@19.2.8)
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.7.0(react@19.2.8)
+    devDependencies:
+      '@open-pioneer/test-utils':
+        specifier: 'catalog:'
+        version: 4.7.0(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+
   src/samples/feature-editing-sample/editing-app:
     dependencies:
       '@chakra-ui/react':

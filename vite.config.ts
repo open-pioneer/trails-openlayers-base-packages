@@ -69,7 +69,8 @@ export default defineConfig(({ mode }) => {
                 // Apps to distribute as .js files for embedded use cases
                 apps: {
                     "showcase": "samples/showcase/showcase-app/app.ts",
-                    "sample-app": "samples/map-sample/ol-app/app.ts"
+                    "sample-app": "samples/map-sample/ol-app/app.ts",
+                    "busradar": "samples/busradar-demo/busradar-app/app.ts"
                 }
             }),
             react()
