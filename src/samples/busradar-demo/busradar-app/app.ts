@@ -10,4 +10,4 @@ const element = createCustomElement({
     appMetadata
 });
 
-customElements.define("basis-opt-app", element);
+customElements.define("busradar-app", element);
