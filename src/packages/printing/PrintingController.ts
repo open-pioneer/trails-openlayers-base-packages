@@ -24,6 +24,10 @@ import {
 
 export type FileFormatType = "png" | "pdf";
 
+export function isFileFormatType(value: string): value is FileFormatType {
+    return value === "png" || value === "pdf";
+}
+
 const DEFAULT_FILE_NAME = "map";
 
 export interface ExportOptions {

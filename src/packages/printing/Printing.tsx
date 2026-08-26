@@ -11,8 +11,15 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import type { PrintingService, ViewPaddingBehavior } from "./index";
-import { FileFormatType, PrintingController } from "./PrintingController";
-import { getPageDimensions, getViewPadding, PageOrientationType, PageSizeType } from "./utils";
+import { FileFormatType, isFileFormatType, PrintingController } from "./PrintingController";
+import {
+    getPageDimensions,
+    getViewPadding,
+    isPageOrientationType,
+    isPageSizeType,
+    PageOrientationType,
+    PageSizeType
+} from "./utils";
 
 const LOG = createLogger("bis-printing");
 
@@ -117,19 +124,19 @@ export const Printing: FC<PrintingProps> = (props) => {
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     function changeSize(size: string) {
-        if (size === "a3" || size === "a4" || size === "a5") {
+        if (isPageSizeType(size)) {
             setSize(size);
         }
     }
 
     function changeOrientation(orientation: string) {
-        if (orientation === "landscape" || orientation === "portrait") {
+        if (isPageOrientationType(orientation)) {
             setOrientation(orientation);
         }
     }
 
     function changeFileFormat(fileFormat: string) {
-        if (fileFormat === "png" || fileFormat === "pdf") {
+        if (isFileFormatType(fileFormat)) {
             setFileFormat(fileFormat);
         }
     }
