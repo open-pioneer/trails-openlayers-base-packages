@@ -16,13 +16,12 @@ import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior
 import {
     canvasToPng,
     createBlockUserOverlay,
+    getScreenSizeForPageSize,
     getViewPadding,
     PRINTING_HIDE_CLASS,
     scalePadding,
     ViewPadding
 } from "./utils";
-
-const MM_PER_INCH = 25.4;
 
 export class PrintingServiceImpl implements PrintingService {
     #intl: ReadonlyReactive<PackageIntl>;
@@ -111,21 +110,33 @@ export class PrintJob {
         this.#viewHeight = this.#olMap.getTargetElement().style.height;
         this.#viewWidth = this.#olMap.getTargetElement().style.width;
 
-        // if no params for target image specified, export current map canvas
+        const screenSize =
+            this.#map &&
+            options.width &&
+            options.height &&
+            options.scale &&
+            options.dpi &&
+            getScreenSizeForPageSize(
+                this.#map,
+                { paperWidth: options.width, paperHeight: options.height },
+                options.scale,
+                options.dpi // map DPI will be set to paper DPI during printing
+            );
+        if (!screenSize) {
+            throw new Error("Cannot get screen size");
+        }
+
         const padding = getViewPadding(olMap.getView());
-        this.#width = options.width
-            ? Math.round((options.width * options.dpi) / MM_PER_INCH) + padding.left + padding.right
-            : this.#olMap.getTargetElement().offsetWidth;
-        this.#height = options.height
-            ? Math.round((options.height * options.dpi) / MM_PER_INCH) +
-              padding.top +
-              padding.bottom
-            : this.#olMap.getTargetElement().offsetHeight;
-        this.#scaleResolution =
-            options.scale != null && this.#map
-                ? this.#map.getViewResolutionForScale(options.scale, options.dpi)
-                : this.#olMap.getView().getResolution();
-        this.#dpi = options.dpi ? options.dpi : DEFAULT_DPI;
+        const targetWidth = screenSize.pixelWidth + padding.left + padding.right;
+        const targetHeight = screenSize.pixelHeight + padding.top + padding.bottom;
+        const targetViewResolution =
+            options.scale && this.#map?.getViewResolutionForScale(options.scale, options.dpi);
+
+        // if no params for target image specified, export current map canvas
+        this.#width = targetWidth ?? this.#olMap.getTargetElement().offsetWidth;
+        this.#height = targetHeight ?? this.#olMap.getTargetElement().offsetHeight;
+        this.#scaleResolution = targetViewResolution ?? this.#olMap.getView().getResolution();
+        this.#dpi = options.dpi ?? DEFAULT_DPI;
     }
 
     async printMap(): Promise<PrintResultImpl> {

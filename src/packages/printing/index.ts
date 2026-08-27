@@ -72,12 +72,12 @@ export type ViewPaddingBehavior = "auto" | "ignore";
 /**
  * Standard page size formats.
  */
-export type PageSizeType = "a3" | "a4" | "a5";
+export type PageFormatType = "a3" | "a4" | "a5";
 
 /**
- * Type guard for checking if the value is a {@link PageSizeType}.
+ * Type guard for checking if the value is a {@link PageFormatType}.
  */
-export function isPageSizeType(value: string): value is PageSizeType {
+export function isPageFormatType(value: string): value is PageFormatType {
     return value === "a3" || value === "a4" || value === "a5";
 }
 

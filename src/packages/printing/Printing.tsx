@@ -14,14 +14,14 @@ import {
     FileFormatType,
     isFileFormatType,
     isPageOrientationType,
-    isPageSizeType,
+    isPageFormatType,
     PageOrientationType,
-    PageSizeType,
+    PageFormatType,
     PrintingService,
     ViewPaddingBehavior
 } from "./index";
 import { PrintingController } from "./PrintingController";
-import { getPageDimensions, getViewPadding } from "./utils";
+import { getPageSize, getScreenSizeForPageSize, getViewPadding } from "./utils";
 
 const LOG = createLogger("bis-printing");
 
@@ -32,7 +32,7 @@ const DEFAULT_SCALES = [
     75000, 50000, 25000, 20000, 15000, 10000, 7500, 5000, 2500, 2000, 1500, 1000, 500, 250, 100
 ];
 const DEFAULT_RESOLUTIONS = [96, 150, 300];
-const DEFAULT_PAGE_SIZES: PageSizeType[] = ["a3", "a4", "a5"];
+const DEFAULT_PAGE_SIZES: PageFormatType[] = ["a3", "a4", "a5"];
 const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
 const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
@@ -66,7 +66,7 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**
      * The set of page sizes that can be selected by the user (default: selection of pre-configured values).
      */
-    pageSizes?: PageSizeType[];
+    pageSizes?: PageFormatType[];
 
     /**
      * The set of page orientations that can be selected by the user (default: selection of pre-configured values).
@@ -116,7 +116,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const [scale, setScale] = useState<number>(initialScale);
     const [resolution, setResolution] = useState<number>(initialResolution);
-    const [size, setSize] = useState<PageSizeType>(initialPageSize);
+    const [size, setSize] = useState<PageFormatType>(initialPageSize);
     const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
     const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
     const [title, setTitle] = useState<string>("");
@@ -126,7 +126,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     function changeSize(size: string) {
-        if (isPageSizeType(size)) {
+        if (isPageFormatType(size)) {
             setSize(size);
         }
     }
@@ -373,7 +373,7 @@ function useController(
     map: MapModel,
     intl: PackageIntl,
     viewPadding: ViewPaddingBehavior,
-    size: PageSizeType,
+    size: PageFormatType,
     orientation: PageOrientationType,
     scale: number
 ) {
@@ -430,25 +430,22 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     const [mapWidth, mapHeight] = mapSize as [number, number];
 
     const viewPadding = getViewPadding(map.olView);
-
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
 
-    const resolution = map.getCenterPointResolution(); // meters per pixel
-    if (!resolution) return fallbackScale;
-
-    const width = resolution * maxPrintWidth; // meters
-    const height = resolution * maxPrintHeight;
-
-    const printDimension = getPageDimensions(INITIAL_PAGE_SIZE, INITIAL_PAGE_ORIENTATION);
-
-    const scaleWidth = width / (printDimension.width / 1000.0);
-    const scaleHeight = height / (printDimension.height / 1000.0);
-
-    const maxFittingScale = Math.min(scaleHeight, scaleWidth);
+    const pageSize = getPageSize(INITIAL_PAGE_SIZE, INITIAL_PAGE_ORIENTATION);
 
     const sortedScales = scales.toSorted((a, b) => b - a); // sort descending
-    return sortedScales.find((scale) => scale <= maxFittingScale) ?? fallbackScale;
+    // return first scale that fits in the map screen
+    for (const scale of sortedScales) {
+        const screenSize = getScreenSizeForPageSize(map, pageSize, scale);
+        if (!screenSize) break;
+
+        const { pixelWidth, pixelHeight } = screenSize;
+        if (pixelWidth <= maxPrintWidth && pixelHeight <= maxPrintHeight) return scale;
+    }
+
+    return fallbackScale;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

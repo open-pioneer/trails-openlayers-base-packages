@@ -15,12 +15,18 @@ import VectorSource from "ol/source/Vector";
 import {
     FileFormatType,
     PageOrientationType,
-    PageSizeType,
+    PageFormatType,
     PrintingService,
     PrintResult,
     ViewPaddingBehavior
 } from "./index";
-import { canvasToPng, createBlockUserOverlay, getPageDimensions, getViewPadding } from "./utils";
+import {
+    canvasToPng,
+    createBlockUserOverlay,
+    getPageSize,
+    getScreenSizeForPageSize,
+    getViewPadding
+} from "./utils";
 
 const DEFAULT_FILE_NAME = "map";
 
@@ -37,7 +43,7 @@ export class PrintingController {
 
     #printingService: PrintingService;
     #viewPadding: ViewPaddingBehavior | undefined;
-    #size: PageSizeType | undefined;
+    #size: PageFormatType | undefined;
     #orientation: PageOrientationType | undefined;
     #scale: number | undefined;
 
@@ -88,7 +94,7 @@ export class PrintingController {
         this.#printAreaLayer.olLayer.changed();
     }
 
-    setSize(size: PageSizeType) {
+    setSize(size: PageFormatType) {
         this.#size = size;
         this.#printAreaLayer.olLayer.changed();
     }
@@ -166,21 +172,14 @@ export class PrintingController {
     #getPixelBounds() {
         if (!this.#size || !this.#orientation || !this.#scale) return;
 
+        const pageSize = getPageSize(this.#size, this.#orientation);
+        const screenSize = getScreenSizeForPageSize(this.#map, pageSize, this.#scale);
+        if (!screenSize) return;
+        const { pixelHeight, pixelWidth } = screenSize;
+
         const mapSize = this.#olMap.getSize();
         if (!mapSize || !mapSize[0] || !mapSize[1]) return;
-
-        const printDimension = getPageDimensions(this.#size, this.#orientation);
         const padding = getViewPadding(this.#olMap.getView());
-
-        const widthInMeters = (printDimension.width * this.#scale) / 1000.0;
-        const heightInMeters = (printDimension.height * this.#scale) / 1000.0;
-
-        const resolution = this.#map.getCenterPointResolution(); // meters per pixel
-        if (!resolution) return;
-
-        const pixelWidth = widthInMeters / resolution;
-        const pixelHeight = heightInMeters / resolution;
-
         const centerPixel = [
             (mapSize[0] + padding.left - padding.right) / 2,
             (mapSize[1] + padding.top - padding.bottom) / 2
@@ -203,15 +202,15 @@ export class PrintingController {
         try {
             this.#begin();
 
-            const { height, width } = getPageDimensions(this.#size, this.#orientation);
+            const { paperHeight, paperWidth } = getPageSize(this.#size, this.#orientation);
 
             this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
                 viewPadding: this.#viewPadding,
                 dpi: options.dpi,
                 scale: this.#scale,
-                height: height,
-                width: width
+                height: paperHeight,
+                width: paperWidth
             });
             const canvas = this.#printMap.getCanvas();
             if (canvas) {

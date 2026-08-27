@@ -2,25 +2,33 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
+import { getScaleForPointResolution, MapModel } from "@open-pioneer/map";
 import type OlView from "ol/View";
-import { PageOrientationType, PageSizeType } from "./index";
+import { PageOrientationType, PageFormatType } from "./index";
 
 const DEFAULT_QUALITY = 0.8;
 
-interface PageSize {
+interface PageFormat {
     short: number; // millimeters
     long: number; // millimeters
 }
 
-const PAGE_SIZE: Record<PageSizeType, PageSize> = {
+const PAGE_SIZE: Record<PageFormatType, PageFormat> = {
     a3: { short: 297, long: 420 },
     a4: { short: 210, long: 297 },
     a5: { short: 148, long: 210 }
 };
 
-export interface PageDimension {
-    height: number;
-    width: number;
+// height and width of a page in millimeters
+export interface PageSize {
+    paperHeight: number;
+    paperWidth: number;
+}
+
+// height and width of a screen extent in pixels
+export interface ScreenSize {
+    pixelHeight: number;
+    pixelWidth: number;
 }
 
 export interface ViewPadding {
@@ -53,15 +61,12 @@ export function createBlockUserOverlay(container: HTMLElement, text: string): Re
     };
 }
 
-export function getPageDimensions(
-    size: PageSizeType,
-    orientation: PageOrientationType
-): PageDimension {
+export function getPageSize(size: PageFormatType, orientation: PageOrientationType): PageSize {
     const { short, long } = PAGE_SIZE[size];
-    const width = orientation === "landscape" ? long : short;
-    const height = orientation === "landscape" ? short : long;
+    const paperWidth = orientation === "landscape" ? long : short;
+    const paperHeight = orientation === "landscape" ? short : long;
 
-    return { height, width };
+    return { paperHeight, paperWidth };
 }
 
 export function scalePadding(rawPadding: ViewPadding): ViewPadding {
@@ -86,4 +91,31 @@ export function getViewPadding(olView: OlView): ViewPadding {
         bottom: rawPadding[2] ?? 0,
         left: rawPadding[3] ?? 0
     };
+}
+
+/**
+ * Returns the size of a page on screen in pixels.
+ *
+ * `pageSize` is the size of a paper page in millimeters.
+ * `scale` is the scale denominator of the printed map.
+ * `targetDpi` is the screen resolution if not DEFAULT_DPI.
+ */
+export function getScreenSizeForPageSize(
+    map: MapModel,
+    pageSize: PageSize,
+    scale: number,
+    targetDpi?: number
+): ScreenSize | undefined {
+    const resolution = map.getCenterPointResolution(); // meters in real world per pixel
+    if (!resolution) return;
+
+    const sc = targetDpi ? getScaleForPointResolution({pointResolution: resolution, dpi: targetDpi}) : scale;
+
+    const realWidth = (pageSize.paperWidth * sc) / 1000.0; // meters in real world
+    const realHeight = (pageSize.paperHeight * sc) / 1000.0;
+
+    const pixelWidth = Math.round(realWidth / resolution); // pixels on screen
+    const pixelHeight = Math.round(realHeight / resolution);
+
+    return { pixelWidth, pixelHeight };
 }
