@@ -13,6 +13,6 @@ permissions:
 
 jobs:
   add-to-board:
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-new-issue.yml@main
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-new-issue.yml@038ec2c85b78d22432bf0264f74a6544278f71f3 # main
     secrets:
       ISSUE_AUTOMATION_TOKEN: ${{ secrets.ISSUE_AUTOMATION_TOKEN }}

@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   publish-snapshot:
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-publish-snapshot.yml@main
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-publish-snapshot.yml@038ec2c85b78d22432bf0264f74a6544278f71f3 # main
     with:
       snapshot-tag: ${{ inputs.snapshot-tag }}
     secrets:

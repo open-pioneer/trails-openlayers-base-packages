@@ -19,7 +19,7 @@ permissions:
 jobs:
   ci:
     name: CI
-    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-ci.yml@main
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-ci.yml@038ec2c85b78d22432bf0264f74a6544278f71f3 # main
     permissions:
       contents: write
       pull-requests: write
