@@ -101,7 +101,7 @@ export function getViewPadding(olView: OlView): ViewPadding {
  *
  * `pageSize` is the size of a paper page in millimeters.
  * `scale` is the scale denominator of the printed map.
- * `targetDpi` is the screen resolution if not DEFAULT_DPI.
+ * `targetDpi` is the screen pixel density in _pixels per inch_ if not {@link DEFAULT_DPI}.
  */
 export function getScreenSizeForPageSize(
     map: MapModel,
@@ -109,16 +109,18 @@ export function getScreenSizeForPageSize(
     scale: number,
     targetDpi?: number
 ): ScreenSize | undefined {
-    const resolution = map.getCenterPointResolution(); // meters in real world per pixel
-    if (!resolution) return;
+    const centerPointResolution = map.getCenterPointResolution(); // meters in real world per pixel
+    if (!centerPointResolution) return;
 
-    const sc = targetDpi ? getScaleForPointResolution({pointResolution: resolution, dpi: targetDpi}) : scale;
+    const sc = targetDpi
+        ? getScaleForPointResolution({ pointResolution: centerPointResolution, dpi: targetDpi })
+        : scale;
 
     const realWidth = (pageSize.paperWidth * sc) / 1000.0; // meters in real world
     const realHeight = (pageSize.paperHeight * sc) / 1000.0;
 
-    const pixelWidth = Math.round(realWidth / resolution); // pixels on screen
-    const pixelHeight = Math.round(realHeight / resolution);
+    const pixelWidth = Math.round(realWidth / centerPointResolution); // pixels on screen
+    const pixelHeight = Math.round(realHeight / centerPointResolution);
 
     return { pixelWidth, pixelHeight };
 }

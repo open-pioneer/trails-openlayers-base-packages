@@ -14,7 +14,7 @@ messages:
     label: "Dateiformat"
     png: "PNG"
     pdf: "PDF"
-  resolution: "Auflösung (DPI)"
+  dpi: "Auflösung (DPI)"
   export: "Karte exportieren"
   input:
     placeholder: "Titel eingeben"

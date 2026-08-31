@@ -14,7 +14,7 @@ messages:
     label: "File format"
     png: "PNG"
     pdf: "PDF"
-  resolution: "Resolution (DPI)"
+  dpi: "Resolution (DPI)"
   export: "Export map"
   input:
     placeholder: "Enter title"

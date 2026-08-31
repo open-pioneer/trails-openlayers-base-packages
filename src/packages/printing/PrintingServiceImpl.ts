@@ -104,7 +104,7 @@ export class PrintJob {
         // save current state of map
         const viewResolution = olMap.getView().getResolution();
         if (viewResolution == null) {
-            throw new Error("Cannot get current map resolution");
+            throw new Error("Cannot get current view resolution");
         }
         this.#viewResolution = viewResolution;
         this.#viewHeight = this.#olMap.getTargetElement().style.height;

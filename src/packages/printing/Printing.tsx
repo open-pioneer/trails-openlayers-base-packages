@@ -31,13 +31,13 @@ const DEFAULT_SCALES = [
     2500000, 2000000, 1500000, 1000000, 750000, 500000, 300000, 250000, 200000, 150000, 100000,
     75000, 50000, 25000, 20000, 15000, 10000, 7500, 5000, 2500, 2000, 1500, 1000, 500, 250, 100
 ];
-const DEFAULT_RESOLUTIONS = [96, 150, 300];
+const DEFAULT_DPIS = [96, 150, 300];
 const DEFAULT_PAGE_SIZES: PageFormatType[] = ["a3", "a4", "a5"];
 const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
 const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
 // TODO make configurable with props in future
-const INITIAL_RESOLUTION = 96;
+const INITIAL_DPI = 96;
 const INITIAL_PAGE_SIZE = "a4";
 const INITIAL_PAGE_ORIENTATION = "landscape";
 const INITIAL_FILE_FORMAT = "pdf";
@@ -61,7 +61,7 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**
      * The set of print resolutions in DPI that can be selected by the user (default: selection of pre-configured values).
      */
-    resolutions?: number[];
+    dpis?: number[];
 
     /**
      * The set of page sizes that can be selected by the user (default: selection of pre-configured values).
@@ -89,7 +89,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const {
         viewPadding = "auto",
         scales = DEFAULT_SCALES,
-        resolutions = DEFAULT_RESOLUTIONS,
+        dpis = DEFAULT_DPIS,
         pageSizes = DEFAULT_PAGE_SIZES,
         pageOrientations = DEFAULT_PAGE_ORIENTATIONS,
         fileFormats = DEFAULT_FILE_FORMATS
@@ -97,10 +97,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const { containerProps } = useCommonComponentProps("printing", props);
 
     const initialScale = useMemo(() => getFittingScale(map, scales), [map, scales]);
-    const initialResolution = useMemo(
-        () => getInitialOption(resolutions, INITIAL_RESOLUTION),
-        [resolutions]
-    );
+    const initialDpi = useMemo(() => getInitialOption(dpis, INITIAL_DPI), [dpis]);
     const initialPageSize = useMemo(
         () => getInitialOption(pageSizes, INITIAL_PAGE_SIZE),
         [pageSizes]
@@ -115,7 +112,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 
     const [scale, setScale] = useState<number>(initialScale);
-    const [resolution, setResolution] = useState<number>(initialResolution);
+    const [dpi, setDpi] = useState<number>(initialDpi);
     const [size, setSize] = useState<PageFormatType>(initialPageSize);
     const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
     const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
@@ -143,10 +140,10 @@ export const Printing: FC<PrintingProps> = (props) => {
         }
     }
 
-    function changeResolution(resolution: string) {
-        const res = parseInt(resolution);
+    function changeDpi(dpi: string) {
+        const res = parseInt(dpi);
         if (res) {
-            setResolution(res);
+            setDpi(res);
         }
     }
 
@@ -168,7 +165,7 @@ export const Printing: FC<PrintingProps> = (props) => {
             .handleMapExport({
                 title: title,
                 fileFormat: fileFormat,
-                dpi: resolution
+                dpi: dpi
             })
             .catch((error) => {
                 const errorMessage = intl.formatMessage({ id: "printingFailed" });
@@ -193,14 +190,14 @@ export const Printing: FC<PrintingProps> = (props) => {
         [intl, scales]
     );
 
-    const resolutionOptions = useMemo(
+    const dpiOptions = useMemo(
         () =>
-            resolutions.map((resolution) => (
-                <option key={resolution} value={resolution}>
-                    {resolution}
+            dpis.map((dpi) => (
+                <option key={dpi} value={dpi}>
+                    {dpi}
                 </option>
             )),
-        [resolutions]
+        [dpis]
     );
 
     const pageSizeOptions = useMemo(
@@ -316,17 +313,17 @@ export const Printing: FC<PrintingProps> = (props) => {
                 <Field.Root asChild>
                     <HStack mb={2}>
                         <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "resolution" })}
+                            {intl.formatMessage({ id: "dpi" })}
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
                                 className="printing-select"
-                                value={resolution}
+                                value={dpi}
                                 onChange={(event) => {
-                                    changeResolution(event.target.value);
+                                    changeDpi(event.target.value);
                                 }}
                             >
-                                {resolutionOptions}
+                                {dpiOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
