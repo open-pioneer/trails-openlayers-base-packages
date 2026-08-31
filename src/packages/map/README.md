@@ -325,7 +325,6 @@ layerFactory.create({
     // Any properties supported by the layer type
     title: "OSM",
     id: "osm",
-    isBaseLayer: true,
     olLayer: new TileLayer({
         source: new OSM()
     })
@@ -348,7 +347,7 @@ import OSM from "ol/source/OSM";
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
-            layers: [
+            baseLayers: [
                 layerFactory.create({
                     // minimal layer configuration
                     type: SimpleLayer,
@@ -356,7 +355,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }),
+                })
+            ],
+            layers: [
                 layerFactory.create({
                     // layer configuration with optional properties
                     type: SimpleLayer,
@@ -369,7 +370,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         foo: "bar"
                     },
                     description: "additional description",
-                    isBaseLayer: false,
                     visible: false
                 })
             ]
@@ -442,7 +442,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     // check layer availability by requesting the provided URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                    isBaseLayer: false,
                     visible: true
                 }),
                 layerFactory.create({
@@ -461,7 +460,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         await wait(3000);
                         return "error";
                     },
-                    isBaseLayer: false,
                     visible: false
                 })
             ]
@@ -604,12 +602,11 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 14
             },
             projection: "EPSG:31466",
-            layers: [
+            baseLayers: [
                 layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
-                    isBaseLayer: true,
                     visible: true,
                     olLayer: new TileLayer({
                         source: createWMTSSource("web")
