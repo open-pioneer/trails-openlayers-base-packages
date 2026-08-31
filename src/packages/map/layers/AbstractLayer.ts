@@ -101,15 +101,9 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#declaredAsBaseLayer = config.isBaseLayer;
         this.#healthCheck = config.healthCheck;
         this.#isBaseLayer = computed(() => {
-            if (this.#declaredAsBaseLayer != null) {
-                return this.#declaredAsBaseLayer;
-            } else {
-                if (!this.nullableMap || !this.nullableMap.layers) {
-                    return false;
-                }
-
-                return this.nullableMap.layers.getBaseLayers().includes(this as Layer);
-            }
+            const effective = this.nullableMap?.layers.getBaseLayers().includes(this as Layer);
+            const declared = this.#declaredAsBaseLayer; // <-- Legacy
+            return effective || declared || false;
         });
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
