@@ -20,6 +20,7 @@ import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
+    DECLARED_AS_BASE_LAYER,
     GET_DEPS,
     getLayerDependencies,
     LAYER_DEPS,
@@ -65,9 +66,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
     #olSource: ReadonlyReactive<OlSource | undefined>;
-    #isBaseLayer: boolean;
+    #declaredAsBaseLayer: boolean | undefined; //original value from LayerConfig, only used internally
     #healthCheck?: string | HealthCheckFunction;
 
+    #isBaseLayer: ReadonlyReactive<boolean>;
     #visible: ReadonlyReactive<boolean>;
     #minResolution: ReadonlyReactive<number>;
     #maxResolution: ReadonlyReactive<number>;
@@ -96,8 +98,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
         this.#olSource = synchronizedOlSource(this.#olLayer);
-        this.#isBaseLayer = config.isBaseLayer ?? false;
+        this.#declaredAsBaseLayer = config.isBaseLayer;
         this.#healthCheck = config.healthCheck;
+        this.#isBaseLayer = computed(() => {
+            const effective = this.nullableMap?.layers.getBaseLayers().includes(this as Layer);
+            const declared = this.#declaredAsBaseLayer; // <-- Legacy
+            return effective || declared || false;
+        });
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
             (cb) => {
@@ -230,7 +237,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Only one base layer can be visible at a time.
      */
     get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
+        return this.#isBaseLayer.value;
     }
 
     /**
@@ -375,6 +382,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             `Layer '${this.id}' has not been attached to a map yet. "
             + "Use the LayerFactory to create an instance or add the layer to the map first.`
         );
+    }
+
+    /**
+     * Always returns original, configured `isBaseLayer` value from LayerConfig instead of computed value from `get isBaseLayer()`
+     *
+     * @internal */
+    get [DECLARED_AS_BASE_LAYER](): boolean | undefined {
+        return this.#declaredAsBaseLayer;
     }
 }
 

@@ -14,6 +14,8 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import View, { ViewOptions } from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
+import { Layer } from "..";
+import { DECLARED_AS_BASE_LAYER } from "../layers/shared/internals";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
@@ -125,9 +127,44 @@ class MapModelFactory {
 
         return batch(() => {
             try {
+                this.#assertUniqueLayerPlacement(mapConfig);
                 if (mapConfig.layers) {
                     for (const layerConfig of mapConfig.layers) {
+                        if (mapConfig.baseLayers && layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            LOG.warn(
+                                `Prefer to configure base layer '${layerConfig.title ?? layerConfig.id}' in the 'MapConfig.baseLayers' property instead of using the 'LayerConfig.isBaseLayer' property.`
+                            );
+                        }
+
                         mapModel.layers.addLayer(layerConfig);
+                    }
+                }
+                if (mapConfig.baseLayers) {
+                    for (const layerConfig of mapConfig.baseLayers) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            if (layerConfig[DECLARED_AS_BASE_LAYER]) {
+                                LOG.warn(
+                                    `Base layer ${layerConfig.title ?? layerConfig.id} is already configured in the 'MapConfig.baseLayers' property. The 'LayerConfig.isBaseLayer' property can be omitted.`
+                                );
+                            } else {
+                                LOG.warn(
+                                    `Base layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.baseLayers' property but 'LayerConfig.isBaseLayer' property is explicitly set to false. This layer will be treated as a base layer. Prefer using only the 'MapConfig.baseLayers' property for base layers.`
+                                );
+                            }
+                        }
+
+                        mapModel.layers.addLayer(layerConfig, { at: "base" });
+                    }
+                }
+                if (mapConfig.topmostLayers) {
+                    for (const layerConfig of mapConfig.topmostLayers) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            LOG.warn(
+                                `Topmost layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.topmostLayers'. The 'LayerConfig.isBaseLayer' property can be omitted.`
+                            );
+                        }
+
+                        mapModel.layers.addLayer(layerConfig, { at: "topmost" });
                     }
                 }
                 return mapModel;
@@ -217,5 +254,33 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
+    }
+
+    #assertUniqueLayerPlacement(mapConfig: MapConfig) {
+        type GroupName = "baseLayers" | "layers" | "topmostLayers";
+
+        const groups = new Map<GroupName, Layer[] | undefined>([
+            ["baseLayers", mapConfig.baseLayers],
+            ["layers", mapConfig.layers],
+            ["topmostLayers", mapConfig.topmostLayers]
+        ]);
+        const groupByLayer = new WeakMap<Layer, GroupName>();
+
+        for (const [groupName, layers] of groups) {
+            if (!layers) {
+                continue;
+            }
+
+            for (const layer of layers) {
+                const previousGroup = groupByLayer.get(layer);
+                if (previousGroup != null) {
+                    throw new Error(
+                        `Layer '${layer.title ?? layer.id}' is configured in both '${previousGroup}' and '${groupName}'. ` +
+                            `A layer may only appear in one layer list.`
+                    );
+                }
+                groupByLayer.set(layer, groupName);
+            }
+        }
     }
 }
