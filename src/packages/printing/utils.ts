@@ -47,6 +47,9 @@ export function canvasToPng(canvas: HTMLCanvasElement, quality?: number) {
 export function createBlockUserOverlay(container: HTMLElement, text: string): Resource {
     const overlay = document.createElement("div");
     overlay.classList.add("printing-overlay", PRINTING_HIDE_CLASS);
+    // set to map size before printing to ensure overlay message is centered
+    overlay.style.width = container.offsetWidth + "px";
+    overlay.style.height = container.offsetHeight + "px";
     container.appendChild(overlay);
 
     const message = document.createElement("div");
