@@ -3,12 +3,14 @@
 "@open-pioneer/map": minor
 ---
 
-Add separate properties for Topmost Layers and Base Layers in MapConfig
+Add new properties for topmost layers and base layers in `MapConfig`.
 
 - With `MapConfig.topmostLayers` topmost layers can now be defined in the initial map setup.
 - Base layers can now be defined in the initial map setup with the `MapConfig.baseLayers` property
 
-```Typescript
+We recommend using the `baseLayers` property instead of `isBaseLayer: true` for new apps.
+
+```typescript
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
@@ -20,18 +22,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 //all base layers
                 layerFactory.create(...)
             ],
-            topmostLayers: [
-                //all operational highlight layers
-                layerFactory.create(...)
-            ],
             layers: [
                 //all other operational layers
                 layerFactory.create(...),
+                layerFactory.create(...)
+            ],
+            topmostLayers: [
+                //all operational highlight layers
                 layerFactory.create(...)
             ]
         };
     }
 }
 ```
-
-Currently, The property `LayerConfig.isBaseLayer` can still be used but using the new property `MapConfig.baseLayers` (as in the example above) should be preferred.

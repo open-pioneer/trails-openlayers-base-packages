@@ -19,6 +19,7 @@ import type { AddLayerOptions } from "../layers/shared/AddLayerOptions";
 import { getRecursiveLayers } from "../layers/shared/getRecursiveLayers";
 import {
     ATTACH_TO_MAP,
+    DECLARED_AS_BASE_LAYER,
     DETACH_FROM_MAP,
     GET_RAW_LAYERS,
     GET_RAW_SUBLAYERS,
@@ -131,7 +132,7 @@ export class LayerCollection {
             checkLayerInstance(layer);
             checkIncorrectAddLayerOptions(layer, options);
 
-            if (layer.isBaseLayer) {
+            if (layer[DECLARED_AS_BASE_LAYER]) {
                 options = options ? { ...options, at: "base" } : { at: "base" };
             }
 
@@ -584,9 +585,9 @@ export class LayerCollection {
 }
 
 function checkIncorrectAddLayerOptions(layer: Layer, options: AddLayerOptions | undefined) {
-    if (layer.isBaseLayer) {
+    if (layer[DECLARED_AS_BASE_LAYER]) {
         if (options?.at === "topmost") {
-            throw new Error(`Cannot add base layer '${layer.id}' at as a topmost layer.`);
+            throw new Error(`Cannot add base layer '${layer.id}' as a topmost layer.`);
         } else if (options?.at && options.at !== "base") {
             throw new Error(
                 `Cannot add base layer '${layer.id}' at a specific position: only operational layers can be added at a specific position.`

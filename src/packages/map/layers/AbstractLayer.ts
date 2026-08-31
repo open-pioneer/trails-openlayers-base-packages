@@ -66,10 +66,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
     #olSource: ReadonlyReactive<OlSource | undefined>;
-    #isBaseLayer: boolean;
     #declaredAsBaseLayer: boolean | undefined; //original value from LayerConfig, only used internally
     #healthCheck?: string | HealthCheckFunction;
 
+    #isBaseLayer: ReadonlyReactive<boolean>;
     #visible: ReadonlyReactive<boolean>;
     #minResolution: ReadonlyReactive<number>;
     #maxResolution: ReadonlyReactive<number>;
@@ -98,9 +98,19 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
         this.#olSource = synchronizedOlSource(this.#olLayer);
-        this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#declaredAsBaseLayer = config.isBaseLayer;
         this.#healthCheck = config.healthCheck;
+        this.#isBaseLayer = computed(() => {
+            if (this.#declaredAsBaseLayer != null) {
+                return this.#declaredAsBaseLayer;
+            } else {
+                if (!this.nullableMap || !this.nullableMap.layers) {
+                    return false;
+                }
+
+                return this.nullableMap.layers.getBaseLayers().includes(this as Layer);
+            }
+        });
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
             (cb) => {
@@ -233,18 +243,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Only one base layer can be visible at a time.
      */
     get isBaseLayer(): boolean {
-        if (this.#isBaseLayer) {
-            return true;
-        } else {
-            if (!this.nullableMap || !this.nullableMap.layers) {
-                return false;
-            }
-
-            return this.nullableMap.layers
-                .getBaseLayers()
-                .map((layer) => layer.id)
-                .includes(this.id);
-        }
+        return this.#isBaseLayer.value;
     }
 
     /**
@@ -395,7 +394,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Always returns original, configured `isBaseLayer` value from LayerConfig instead of computed value from `get isBaseLayer()`
      *
      * @internal */
-    [DECLARED_AS_BASE_LAYER](): boolean | undefined {
+    get [DECLARED_AS_BASE_LAYER](): boolean | undefined {
         return this.#declaredAsBaseLayer;
     }
 }

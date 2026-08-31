@@ -130,10 +130,7 @@ class MapModelFactory {
                 this.#assertUniqueLayerPlacement(mapConfig);
                 if (mapConfig.layers) {
                     for (const layerConfig of mapConfig.layers) {
-                        if (
-                            mapConfig.baseLayers &&
-                            layerConfig[DECLARED_AS_BASE_LAYER]() !== undefined
-                        ) {
+                        if (mapConfig.baseLayers && layerConfig[DECLARED_AS_BASE_LAYER] != null) {
                             LOG.warn(
                                 `Prefer to configure base layer '${layerConfig.title ?? layerConfig.id}' in the 'MapConfig.baseLayers' property instead of using the 'LayerConfig.isBaseLayer' property.`
                             );
@@ -144,12 +141,12 @@ class MapModelFactory {
                 }
                 if (mapConfig.baseLayers) {
                     for (const layerConfig of mapConfig.baseLayers) {
-                        if (layerConfig[DECLARED_AS_BASE_LAYER]() !== undefined) {
-                            if (layerConfig[DECLARED_AS_BASE_LAYER]() === true) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            if (layerConfig[DECLARED_AS_BASE_LAYER]) {
                                 LOG.warn(
                                     `Base layer ${layerConfig.title ?? layerConfig.id} is already configured in the 'MapConfig.baseLayers' property. The 'LayerConfig.isBaseLayer' property can be omitted.`
                                 );
-                            } else if (layerConfig[DECLARED_AS_BASE_LAYER]() === false) {
+                            } else {
                                 LOG.warn(
                                     `Base layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.baseLayers' property but 'LayerConfig.isBaseLayer' property is explicitly set to false. This layer will be treated as a base layer. Prefer using only the 'MapConfig.baseLayers' property for base layers.`
                                 );
@@ -161,7 +158,7 @@ class MapModelFactory {
                 }
                 if (mapConfig.topmostLayers) {
                     for (const layerConfig of mapConfig.topmostLayers) {
-                        if (layerConfig[DECLARED_AS_BASE_LAYER]() !== undefined) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
                             LOG.warn(
                                 `Topmost layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.topmostLayers'. The 'LayerConfig.isBaseLayer' property can be omitted.`
                             );
@@ -260,13 +257,14 @@ class MapModelFactory {
     }
 
     #assertUniqueLayerPlacement(mapConfig: MapConfig) {
-        const groups = new Map<"baseLayers" | "layers" | "topmostLayers", Layer[] | undefined>([
+        type GroupName = "baseLayers" | "layers" | "topmostLayers";
+
+        const groups = new Map<GroupName, Layer[] | undefined>([
             ["baseLayers", mapConfig.baseLayers],
             ["layers", mapConfig.layers],
             ["topmostLayers", mapConfig.topmostLayers]
         ]);
-
-        const groupByLayer = new WeakMap<Layer, string>();
+        const groupByLayer = new WeakMap<Layer, GroupName>();
 
         for (const [groupName, layers] of groups) {
             if (!layers) {
