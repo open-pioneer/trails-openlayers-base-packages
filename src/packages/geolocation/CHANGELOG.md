@@ -1,5 +1,11 @@
 # @open-pioneer/geolocation
 
+## 1.5.0
+
+### Patch Changes
+
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes
