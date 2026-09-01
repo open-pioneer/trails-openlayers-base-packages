@@ -12,7 +12,7 @@ import {
     useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useId, useRef } from "react";
+import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
 import {
     createOptions,
     TocApi,
@@ -20,8 +20,10 @@ import {
     TocDisposedEvent,
     TocModel,
     TocModelProvider,
-    TocReadyEvent
+    TocReadyEvent,
+    TocWidgetOptions
 } from "../model";
+import { TocViewModel } from "../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -158,6 +160,23 @@ function TocContent(props: TocProps & { map: MapModel }) {
     const model = useTocModel(props);
     useTocAPI(model, onReady, onDisposed);
 
+    const [viewModel, setViewModel] = useState<TocViewModel>();
+
+    const getLatestOptions = useEffectEvent(() => options);
+    useEffect(() => {
+        const vm = new TocViewModel(map, getLatestOptions());
+        setViewModel(vm);
+        return () => {
+            setViewModel(undefined);
+            vm.destroy();
+        };
+    }, [map]);
+
+    const options = useTocOptions(props);
+    useEffect(() => {
+        viewModel?.setOptions(options);
+    }, [viewModel, options]);
+
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
         <Box className="toc-basemap-switcher" mb={PADDING}>
@@ -177,7 +196,8 @@ function TocContent(props: TocProps & { map: MapModel }) {
         </Box>
     );
 
-    const layerList = (
+    // TODO: Move viewModel condition to a sensible place
+    const layerList = viewModel && (
         <Box className="toc-operational-layers">
             <TitledSection
                 title={
@@ -189,13 +209,14 @@ function TocContent(props: TocProps & { map: MapModel }) {
                                 })}
                             </Text>
                             <Spacer />
-                            {showTools && <Tools map={map} {...toolsConfig} />}
+                            {showTools && <Tools viewModel={viewModel} {...toolsConfig} />}
                         </Flex>
                     </SectionHeading>
                 }
             >
                 <TopLevelLayerList
                     map={map}
+                    viewModel={viewModel}
                     aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                 />
             </TitledSection>
@@ -243,6 +264,28 @@ function useTocModel(props: TocProps): TocModel {
     ]);
     // oxlint-disable-next-line react/refs
     return tocModelRef.current;
+}
+
+type TocOptionProps = Pick<
+    TocProps,
+    "autoShowParents" | "collapsibleGroups" | "initiallyCollapsed"
+>;
+
+// TODO: Clean this up --> duplicates in old model directory
+function useTocOptions(props: TocOptionProps): TocWidgetOptions {
+    const { autoShowParents, collapsibleGroups, initiallyCollapsed } = props;
+    return useMemo(
+        () => getOptions({ autoShowParents, collapsibleGroups, initiallyCollapsed }),
+        [autoShowParents, collapsibleGroups, initiallyCollapsed]
+    );
+}
+
+function getOptions(props: TocOptionProps): TocWidgetOptions {
+    return {
+        autoShowParents: props.autoShowParents ?? true,
+        collapsibleGroups: props.collapsibleGroups ?? false,
+        initiallyCollapsed: props.initiallyCollapsed ?? false
+    };
 }
 
 function useTocAPI(
