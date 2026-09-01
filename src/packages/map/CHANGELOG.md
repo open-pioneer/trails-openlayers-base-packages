@@ -1,5 +1,48 @@
 # @open-pioneer/map
 
+## 1.5.0
+
+### Minor Changes
+
+- ebda251: The `addLayer` method now also accepts `at: "base"` to add a base layer.
+- ebda251: Add new properties for topmost layers and base layers in `MapConfig`.
+
+    - With `MapConfig.topmostLayers` topmost layers can now be defined in the initial map setup.
+    - Base layers can now be defined in the initial map setup with the `MapConfig.baseLayers` property
+
+    We recommend using the `baseLayers` property instead of `isBaseLayer: true` for new apps.
+
+    ```typescript
+    export class MapConfigProviderImpl implements MapConfigProvider {
+        mapId = MAP_ID;
+
+        async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
+            return {
+                initialView: {...},
+                projection: "EPSG:25832",
+                baseLayers: [
+                    //all base layers
+                    layerFactory.create(...)
+                ],
+                layers: [
+                    //all other operational layers
+                    layerFactory.create(...),
+                    layerFactory.create(...)
+                ],
+                topmostLayers: [
+                    //all operational highlight layers
+                    layerFactory.create(...)
+                ]
+            };
+        }
+    }
+    ```
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes
