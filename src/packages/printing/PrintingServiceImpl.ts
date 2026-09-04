@@ -3,6 +3,7 @@
 
 import { ReadonlyReactive } from "@conterra/reactivity-core";
 import { createManualPromise, Resource } from "@open-pioneer/core";
+import { DEFAULT_DPI, MapModel } from "@open-pioneer/map";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
 import { ScaleLine } from "ol/control";
@@ -12,7 +13,15 @@ import OlMap from "ol/Map";
 import { FlatStyleLike } from "ol/style/flat";
 import { StyleLike } from "ol/style/Style";
 import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
-import { canvasToPng, createBlockUserOverlay, PRINTING_HIDE_CLASS } from "./utils";
+import {
+    canvasToPng,
+    createBlockUserOverlay,
+    getScreenSizeForPageSize,
+    getViewPadding,
+    PRINTING_HIDE_CLASS,
+    scalePadding,
+    ViewPadding
+} from "./utils";
 
 export class PrintingServiceImpl implements PrintingService {
     #intl: ReadonlyReactive<PackageIntl>;
@@ -21,22 +30,30 @@ export class PrintingServiceImpl implements PrintingService {
         this.#intl = options.currentIntl;
     }
 
-    async printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResultImpl> {
-        const job = new PrintJob(olMap, {
+    async printMap(
+        mapParam: MapModel | OlMap,
+        options?: PrintingOptions
+    ): Promise<PrintResultImpl> {
+        // Basic property detection to discriminate between olmap / mapmodel, this is done to preserve backwards compatibility for
+        // callers that only pass an OlMap.
+        let map: MapModel | undefined;
+        let olMap: OlMap;
+        if ("getViewResolutionForScale" in mapParam) {
+            map = mapParam;
+            olMap = map.olMap;
+        } else {
+            olMap = mapParam;
+        }
+
+        const job = new PrintJob(map, olMap, {
             blockUserInteraction: true,
             overlayText: this.#intl.value.formatMessage({ id: "printingMap" }),
             viewPadding: "auto",
+            dpi: DEFAULT_DPI,
             ...options
         });
         return await job.printMap();
     }
-}
-
-interface ViewPadding {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
 }
 
 interface DrawInfo {
@@ -44,23 +61,82 @@ interface DrawInfo {
     style: StyleLike | FlatStyleLike | null | undefined;
 }
 
+// some options such as scale do not have hardcoded defaults; their defaults are computed on demand only.
+type PrintJobOptions = PrintingOptions &
+    Required<Omit<PrintingOptions, "scale" | "height" | "width">>;
+
 // Exported just for test (mocking)
 export class PrintJob {
+    #map: MapModel | undefined;
     #olMap: OlMap;
     #blockUserInteraction: boolean = false;
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
+    #dpi: number | undefined = undefined;
+    #height: number | undefined = undefined; // Pixels!
+    #width: number | undefined = undefined; // Pixels!
 
     #running = false;
     #drawInformation: DrawInfo[] | undefined = [];
     #scaleLine: ScaleLine | undefined = undefined;
     #overlay: Resource | undefined = undefined;
 
-    constructor(olMap: OlMap, options: Required<PrintingOptions>) {
+    /** The original resolution, at the start of the print job. */
+    #viewResolution: number;
+
+    /** The original height, at the start of the print job. */
+    #viewHeight: string;
+
+    /** The original width, at the start of the print job. */
+    #viewWidth: string;
+
+    /** The target resolution for the print job. */
+    #scaleResolution: number | undefined = undefined;
+
+    // NOTE: Map is optional here to support the legacy "OlMap-only" API.
+    constructor(map: MapModel | undefined, olMap: OlMap, options: PrintJobOptions) {
+        this.#map = map;
         this.#olMap = olMap;
         this.#blockUserInteraction = options.blockUserInteraction;
         this.#overlayText = options.overlayText;
         this.#viewPadding = options.viewPadding;
+
+        // save current state of map
+        const viewResolution = olMap.getView().getResolution();
+        if (viewResolution == null) {
+            throw new Error("Cannot get current view resolution");
+        }
+        this.#viewResolution = viewResolution;
+        this.#viewHeight = this.#olMap.getTargetElement().style.height;
+        this.#viewWidth = this.#olMap.getTargetElement().style.width;
+
+        const screenSize =
+            this.#map &&
+            options.width &&
+            options.height &&
+            options.scale &&
+            options.dpi &&
+            getScreenSizeForPageSize(
+                this.#map,
+                { paperWidth: options.width, paperHeight: options.height },
+                options.scale,
+                options.dpi // map DPI will be set to paper DPI during printing
+            );
+        if (!screenSize) {
+            throw new Error("Cannot get screen size");
+        }
+
+        const padding = getViewPadding(olMap.getView());
+        const targetWidth = screenSize.pixelWidth + padding.left + padding.right;
+        const targetHeight = screenSize.pixelHeight + padding.top + padding.bottom;
+        const targetViewResolution =
+            options.scale && this.#map?.getViewResolutionForScale(options.scale, options.dpi);
+
+        // if no params for target image specified, export current map canvas
+        this.#width = targetWidth ?? this.#olMap.getTargetElement().offsetWidth;
+        this.#height = targetHeight ?? this.#olMap.getTargetElement().offsetHeight;
+        this.#scaleResolution = targetViewResolution ?? this.#olMap.getView().getResolution();
+        this.#dpi = options.dpi ?? DEFAULT_DPI;
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -77,7 +153,7 @@ export class PrintJob {
             }
 
             if (this.#viewPadding === "auto") {
-                canvas = this.removePadding(canvas, this.#getViewPadding());
+                canvas = this.removePadding(canvas, getViewPadding(this.#olMap.getView()));
             }
             return new PrintResultImpl(canvas);
         } finally {
@@ -113,6 +189,13 @@ export class PrintJob {
                 this.#overlay = createBlockUserOverlay(container, this.#overlayText);
             }
         }
+
+        // set print size if specified
+        this.#olMap.getTargetElement().style.width = this.#width + "px";
+        this.#olMap.getTargetElement().style.height = this.#height + "px";
+        this.#olMap.updateSize();
+        this.#olMap.getView().setResolution(this.#scaleResolution);
+
         await this.#addScaleLine();
     }
 
@@ -123,6 +206,7 @@ export class PrintJob {
             text: true,
             minWidth: 125
         }));
+        this.#scaleLine.setDpi(this.#dpi);
 
         // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;
@@ -136,7 +220,9 @@ export class PrintJob {
         let bottom = 50;
         let left = 8;
         if (this.#viewPadding === "auto") {
-            const { bottom: paddingBottom, left: paddingLeft } = this.#getViewPadding();
+            const { bottom: paddingBottom, left: paddingLeft } = getViewPadding(
+                this.#olMap.getView()
+            );
             bottom = Math.max(paddingBottom + 8, bottom);
             left += paddingLeft;
         }
@@ -152,11 +238,11 @@ export class PrintJob {
             renderPromise.reject(new Error("Scale line did not render"));
         }, 3000);
 
-        const oldRender = this.#scaleLine.render;
-        this.#scaleLine.render = (...args) => {
-            oldRender.apply(this.#scaleLine, args);
+        this.#olMap.once("rendercomplete", () => {
             renderPromise.resolve();
-        };
+            clearTimeout(timeout);
+        });
+
         this.#olMap?.addControl(this.#scaleLine);
 
         try {
@@ -187,14 +273,23 @@ export class PrintJob {
             }
         };
 
+        exportOptions.width = this.#width;
+        exportOptions.height = this.#height;
+
         // Lazy load html2canvas: it is a large dependency (a few hundred KiB) that is only
         // required when actually printed. This speeds up the initial page load.
         const html2canvas = (await import("html2canvas")).default;
-        const canvas = await html2canvas(element, exportOptions);
-        return canvas;
+
+        return await html2canvas(element, exportOptions);
     }
 
     #reset() {
+        // reset original map size
+        this.#olMap.getTargetElement().style.width = this.#viewWidth;
+        this.#olMap.getTargetElement().style.height = this.#viewHeight;
+        this.#olMap.updateSize();
+        this.#olMap.getView().setResolution(this.#viewResolution);
+
         if (this.#scaleLine) {
             this.#olMap?.removeControl(this.#scaleLine);
             this.#scaleLine = undefined;
@@ -216,15 +311,7 @@ export class PrintJob {
     // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
     // `vi.spyOn(PrintJob.prototype, ...)`: `canvas.getContext()` is unavailable under jsdom.
     private removePadding(canvas: HTMLCanvasElement, rawPadding: ViewPadding): HTMLCanvasElement {
-        // The canvas returned by html2canvas is scaled by the device pixel ratio.
-        // The padding needs to be adjusted (because its in css pixels).
-        const dpr = window.devicePixelRatio || 1;
-        const dprPadding = {
-            top: rawPadding.top * dpr,
-            right: rawPadding.right * dpr,
-            bottom: rawPadding.bottom * dpr,
-            left: rawPadding.left * dpr
-        };
+        const dprPadding = scalePadding(rawPadding);
 
         if (
             dprPadding.left === 0 &&
@@ -257,23 +344,6 @@ export class PrintJob {
             newCanvas.height
         );
         return newCanvas;
-    }
-
-    #getViewPadding(): ViewPadding {
-        const map = this.#olMap;
-        // top, right, bottom, left
-        const rawPadding = (map.getView().padding ?? [0, 0, 0, 0]) as [
-            number,
-            number,
-            number,
-            number
-        ];
-        return {
-            top: rawPadding[0] ?? 0,
-            right: rawPadding[1] ?? 0,
-            bottom: rawPadding[2] ?? 0,
-            left: rawPadding[3] ?? 0
-        };
     }
 }
 

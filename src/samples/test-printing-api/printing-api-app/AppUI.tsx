@@ -32,7 +32,7 @@ export function AppUI() {
         if (!map) {
             return;
         }
-        await printingService.printMap(map.olMap).then(
+        await printingService.printMap(map).then(
             (service) => {
                 const canvas = service.getCanvas();
                 if (mode === "canvas") {

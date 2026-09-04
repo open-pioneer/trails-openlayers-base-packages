@@ -6,8 +6,11 @@ import { HttpService } from "@open-pioneer/http";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
+import { Coordinate } from "ol/coordinate";
 import { LineString, Point } from "ol/geom";
+import { fromLonLat } from "ol/proj";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { DEFAULT_DPI } from "../utils/geometry-utils";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
 import { MapModel } from "./MapModel";
@@ -263,6 +266,100 @@ describe("whenDisplayed", () => {
         await expect(promise).rejects.toMatchInlineSnapshot("[Error: Map model was destroyed.]");
     });
 });
+
+describe("scale", () => {
+    it("round trips setScale() -> scale in EPSG:4326", async () => {
+        model = await createAt("EPSG:4326", [7.5, 51.5]);
+
+        model.setScale(50000);
+        expect(model.scale).toBe(50000);
+    });
+
+    it("round trips every scale-setter default scale in EPSG:4326", async () => {
+        model = await createAt("EPSG:4326", [7.5, 51.5]);
+
+        for (const scale of [17471320, 1091957, 68247, 2132]) {
+            model.setScale(scale);
+            expect(model.scale).toBe(scale);
+        }
+    });
+
+    it("round trips setScale() -> scale in EPSG:3857", async () => {
+        model = await createAt("EPSG:3857", fromLonLat([7.5, 51.5]));
+
+        model.setScale(50000);
+        expect(model.scale).toBe(50000);
+    });
+
+    it("reports the scale as a rounded denominator", async () => {
+        model = await createAt("EPSG:3857", fromLonLat([7.5, 51.5]));
+
+        // A pixel is 0.28mm, so 10m per pixel on the ground is 1:35714.2857...
+        model.olView.setResolution(10 / Math.cos((51.5 * Math.PI) / 180));
+        expect(model.scale).toBe(35714);
+    });
+
+    it("changes the scale when the map is panned in EPSG:4326", async () => {
+        // The point resolution depends on the center, so panning north must change the scale even
+        // though the view resolution stays the same.
+        model = await createAt("EPSG:4326", [7.5, 51.5]);
+
+        const atStart = model.scale;
+        model.olView.setCenter([7.5, 80]);
+
+        expect(model.scale).toBeLessThan(atStart!);
+    });
+});
+
+describe("getCenterPointResolution", () => {
+    it("converts the view resolution to meters per pixel in EPSG:4326", async () => {
+        model = await createAt("EPSG:4326", [7.5, 0]);
+        model.olView.setResolution(0.0001);
+
+        // One degree of arc is 6371008.8 * PI / 180 = 111195.08m on the sphere OpenLayers
+        // measures on, and at the equator a pixel spans one degree in both directions.
+        expect(model.resolution).toBe(0.0001);
+        expect(model.getCenterPointResolution()).toBeCloseTo(11.1195, 4);
+    });
+
+    it("equals resolution * cos(latitude) in EPSG:3857", async () => {
+        model = await createAt("EPSG:3857", fromLonLat([7.5, 60]));
+        model.olView.setResolution(10);
+
+        // Web Mercator inflates distances by 1 / cos(latitude); cos(60 degrees) is 0.5.
+        expect(model.getCenterPointResolution()).toBeCloseTo(5, 9);
+    });
+});
+
+describe("getViewResolutionForScale", () => {
+    it("returns projection units per pixel, not meters per pixel", async () => {
+        model = await createAt("EPSG:4326", [7.5, 51.5]);
+
+        const viewResolution = model.getViewResolutionForScale(50000)!;
+        expect(viewResolution).toBeCloseTo(0.000155, 6);
+        expect(model.getCenterPointResolution()).not.toBeCloseTo(viewResolution, 6);
+    });
+
+    it("scales the resolution down for a higher target dpi", async () => {
+        model = await createAt("EPSG:3857", fromLonLat([7.5, 51.5]));
+
+        const atScreenDpi = model.getViewResolutionForScale(50000)!;
+        const atDoubleDpi = model.getViewResolutionForScale(50000, DEFAULT_DPI * 2)!;
+        expect(atDoubleDpi).toBeCloseTo(atScreenDpi / 2, 9);
+    });
+});
+
+async function createAt(projection: string, center: Coordinate): Promise<MapModel> {
+    const model = await create("foo", {
+        projection,
+        initialView: {
+            kind: "position",
+            center: { x: center[0]!, y: center[1]! },
+            zoom: 10
+        }
+    });
+    return model;
+}
 
 function create(mapId: string, mapConfig: MapConfig) {
     return createMapModel(
