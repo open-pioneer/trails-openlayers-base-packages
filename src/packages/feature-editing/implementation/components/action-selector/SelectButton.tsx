@@ -2,34 +2,58 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Button, Toggle } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
-import type { ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 import { LuMousePointerClick } from "react-icons/lu";
 
 interface SelectButtonProps {
-    readonly isActive: boolean;
-    readonly onClick: () => void;
+    isAvailable: boolean;
+    notAvailableMessage: string | undefined;
+
+    isActive: boolean;
+    onClick: () => void;
 }
 
-export function SelectButton({ isActive, onClick }: SelectButtonProps): ReactElement {
-    const { formatMessage } = useIntl();
+export function SelectButton(props: SelectButtonProps): ReactElement {
+    const {
+        isAvailable,
+        notAvailableMessage: notAvailableMessageProp,
+        isActive: isActiveProp,
+        onClick
+    } = props;
+    const intl = useIntl();
+
+    const isActive = isAvailable && isActiveProp;
+
+    const notAvailableMessage = useMemo(() => {
+        if (isAvailable) {
+            return undefined;
+        }
+        return (
+            notAvailableMessageProp ??
+            intl.formatMessage({ id: "selection.defaultNotAvailableMessage" })
+        );
+    }, [intl, isAvailable, notAvailableMessageProp]);
 
     return (
-        <Toggle.Root pressed={isActive} asChild>
-            <Button
-                className="editor__action-selector-select-button"
-                variant="outline"
-                _hover={{ bg: isActive ? "colorPalette.700" : "colorPalette.subtle" }}
-                _pressed={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
-                // Margin for focus outline
-                marginX="4px"
-                onClick={onClick}
-            >
-                <LuMousePointerClick aria-hidden="true" />
-                {isActive
-                    ? formatMessage({ id: "actionSelector.selectButtonActiveTitle" })
-                    : formatMessage({ id: "actionSelector.selectButtonTitle" })}
-            </Button>
-        </Toggle.Root>
+        <Tooltip disabled={notAvailableMessage == null} content={notAvailableMessage}>
+            <Toggle.Root disabled={!isAvailable} pressed={isActive} asChild>
+                <Button
+                    className="editor__action-selector-select-button"
+                    variant="outline"
+                    _hover={{ bg: isActive ? "colorPalette.700" : "colorPalette.subtle" }}
+                    _pressed={{ bg: "colorPalette.800", color: "colorPalette.contrast" }}
+                    // Margin for focus outline
+                    marginX="4px"
+                    onClick={onClick}
+                >
+                    <LuMousePointerClick aria-hidden="true" />
+                    {isActive
+                        ? intl.formatMessage({ id: "actionSelector.selectButtonActiveTitle" })
+                        : intl.formatMessage({ id: "actionSelector.selectButtonTitle" })}
+                </Button>
+            </Toggle.Root>
+        </Tooltip>
     );
 }
