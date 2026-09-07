@@ -9,6 +9,7 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import {
     FileFormatType,
@@ -23,7 +24,7 @@ import {
 import { PrintingController } from "./PrintingController";
 import { getPageSize, getScreenSizeForPageSize, getViewPadding } from "./utils";
 
-const LOG = createLogger("bis-printing");
+const LOG = createLogger(sourceId);
 
 const PRINT_AREA_BUFFER = 20; // padding between map frame and printing area in pixels
 
