@@ -5,9 +5,10 @@ import { HttpService } from "@open-pioneer/http";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { approximatelyEquals } from "ol/extent";
 import { LineString, Point, Polygon } from "ol/geom";
+import { Stroke, Style } from "ol/style";
 import { afterEach, expect, it, vi } from "vitest";
 import { BaseFeature } from "../utils/BaseFeature";
-import { DESTROY_HIGHLIGHTS, GET_HIGHLIGHT_LAYER, Highlights } from "./Highlights";
+import { DESTROY_HIGHLIGHTS, GET_HIGHLIGHT_LAYER, Highlights, HighlightStyle } from "./Highlights";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -251,6 +252,36 @@ it("should zoom the map to the right extent", async () => {
     expect(approximatelyEquals(expectedExtent, currentExtent, 1)).toBe(true);
 });
 
+it("should set the provided style on the highlight", async () => {
+    const { highlights } = await setup();
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+    expect(feature?.getStyle()).toEqual(greenStyle.Point);
+});
+
+it("should change the style of the highlight", async () => {
+    const { highlights } = await setup();
+
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    const highlight = highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+
+    const blueStyle = createStyle("blue");
+    highlight.setStyle(blueStyle);
+    expect(feature?.getStyle()).toEqual(blueStyle.Point);
+});
+
 async function setup() {
     const { map } = await setupMap({ center: { x: 0, y: 0 }, zoom: 5, layers: [] });
     map.olMap.setSize([500, 500]);
@@ -265,4 +296,18 @@ function getLayerSource(highlights: Highlights) {
     const highlightLayer = highlights[GET_HIGHLIGHT_LAYER]();
     if (!highlightLayer) return;
     return highlightLayer.getSource();
+}
+
+function createStyle(color: string): HighlightStyle {
+    const stroke = new Style({
+        stroke: new Stroke({ color })
+    });
+    return {
+        Point: stroke,
+        MultiPoint: stroke,
+        LineString: stroke,
+        MultiLineString: stroke,
+        Polygon: stroke,
+        MultiPolygon: stroke
+    };
 }

@@ -62,6 +62,7 @@ export type HighlightStyle = {
  */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
+    setStyle(style: HighlightStyle): void;
 }
 
 type HighlightStyleType = keyof HighlightStyle;
@@ -123,7 +124,8 @@ export class Highlights {
                 get isActive() {
                     return false;
                 },
-                destroy() {}
+                destroy() {},
+                setStyle() {}
             };
         }
 
@@ -152,6 +154,14 @@ export class Highlights {
                     source.removeFeature(feature);
                 }
                 highlights.delete(highlight);
+            },
+            setStyle(style: HighlightStyle | undefined) {
+                for (const feature of features) {
+                    const geometry = feature.getGeometry();
+                    if (geometry) {
+                        feature.setStyle(getOwnStyle(geometry.getType(), style));
+                    }
+                }
             }
         };
 
