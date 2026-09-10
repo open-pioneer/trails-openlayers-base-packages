@@ -7,20 +7,20 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^4.7.0
-  "@open-pioneer/core": ^4.7.0
-  "@open-pioneer/http": ^4.7.0
-  "@open-pioneer/integration": ^4.7.0
-  "@open-pioneer/local-storage": ^4.7.0
-  "@open-pioneer/notifier": ^4.7.0
-  "@open-pioneer/react-utils": ^4.7.0
-  "@open-pioneer/reactivity": ^4.7.0
-  "@open-pioneer/runtime": ^4.7.0
-  "@open-pioneer/test-utils": ^4.7.0
-  "@open-pioneer/chakra-snippets": ^4.7.0
+  "@open-pioneer/base-theme": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/core": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/http": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/integration": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/local-storage": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/notifier": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/react-utils": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/reactivity": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/runtime": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/test-utils": 4.8.0-dev.20260910101405 # ^4.8.0
+  "@open-pioneer/chakra-snippets": 4.8.0-dev.20260910101405 # ^4.8.0
 
   # Frontend dependencies
-  "@chakra-ui/react": ^3.36.1
+  "@chakra-ui/react": ^3.37.0
   "@conterra/reactivity-core": ^0.8.8
   "@conterra/reactivity-events": ^0.8.8
   "@emotion/cache": ^11.14.0
@@ -93,9 +93,9 @@ overrides:
   "geotiff@>=3.0.5 <3.1.0-beta.0": "^3.1.0-beta.0"
 
   # Ensure patched packages have the expected version (patch was tested with this version):
-  "@chakra-ui/react": "3.36.1"
-  "@ark-ui/react": "5.37.2"
-  "@zag-js/interact-outside": "1.41.2"
+  "@chakra-ui/react": "3.37.0"
+  "@ark-ui/react": "5.39.0"
+  "@zag-js/interact-outside": "1.43.3"
 
   # https://github.com/advisories/GHSA-g7r4-m6w7-qqqr
   # https://github.com/advisories/GHSA-gv7w-rqvm-qjhr
@@ -132,10 +132,12 @@ overrides:
 allowUnusedPatches: true
 patchedDependencies:
   # Ensure all portals are mounted under `.pioneer-root` div
-  "@ark-ui/react@*": "patches/@ark-ui__react.patch"
+  "@ark-ui/react": patches/@ark-ui__react.patch
 
-  # Fixes 'interact-outside' logic not tabbing between elements within the same shadow dom.
+  # Fixes 'interact-outside' logic not working when tabbing between elements within the same shadow dom.
   # Can be removed if https://github.com/chakra-ui/zag/issues/3088 is fixed.
+  # This can be tested by opening the chakra ui showcase (tab "overlays"), opening the "Popover (Without Portal)" using keyboard controls,
+  # and pressing tab to leave the popover again. The popover should close.
   "@zag-js/interact-outside": patches/@zag-js__interact-outside.patch
 
 peerDependencyRules:
