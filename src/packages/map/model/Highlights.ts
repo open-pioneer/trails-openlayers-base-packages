@@ -61,8 +61,11 @@ export type HighlightStyle = {
  * @group Map Model
  */
 export interface Highlight extends Resource {
+    /** Returns `true` if the highlight has not been destroyed yet. */
     readonly isActive: boolean;
-    setStyle(style: HighlightStyle): void;
+
+    /** Updates the style of the highlight. Use `undefined` to revert to the default style. */
+    setStyle(style: HighlightStyle | undefined): void;
 }
 
 type HighlightStyleType = keyof HighlightStyle;
