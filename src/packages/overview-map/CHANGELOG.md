@@ -1,5 +1,15 @@
 # @open-pioneer/overview-map
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+
+### Patch Changes
+
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes

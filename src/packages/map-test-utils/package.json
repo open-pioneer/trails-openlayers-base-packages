@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-test-utils",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "This package is an internal support package for testing map-related UI components.",
     "keywords": [
         "open-pioneer-trails"
