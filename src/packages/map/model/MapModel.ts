@@ -40,7 +40,7 @@ import {
 } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { MapAttributions } from "./MapAttributions";
-import { ExtentConfig } from "./MapConfig";
+import { ExtentConfig, InitialPositionConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
 
 const LOG = createLogger(sourceId);
@@ -154,7 +154,7 @@ export class MapModel {
     readonly #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
-    #displayStatus: DisplayStatus;
+    #displayStatus = reactive<DisplayStatus>("waiting");
     #displayWaiter: ManualPromise<void> | undefined;
 
     /**
@@ -164,6 +164,7 @@ export class MapModel {
         options: {
             id: string;
             olMap: OlMap;
+            initialPosition: InitialPositionConfig | undefined;
             initialExtent: ExtentConfig | undefined;
             showDefaultAttributions: boolean;
             currentIntl: ReadonlyReactive<PackageIntl>;
@@ -197,10 +198,10 @@ export class MapModel {
             httpService: options.httpService
         };
 
-        this.#displayStatus = "waiting";
-        this.#initializeView().then(
+        this.#displayStatus.value = "waiting";
+        this.#initializeView(options.initialPosition).then(
             () => {
-                this.#displayStatus = "ready";
+                this.#displayStatus.value = "ready";
                 this.#displayWaiter?.resolve();
                 this.#displayWaiter = undefined;
             },
@@ -209,7 +210,7 @@ export class MapModel {
                     LOG.error(`Failed to initialize map`, error);
                 }
 
-                this.#displayStatus = "error";
+                this.#displayStatus.value = "error";
                 this.#displayWaiter?.reject(new Error(`Failed to initialize map.`));
                 this.#displayWaiter = undefined;
             }
@@ -286,7 +287,7 @@ export class MapModel {
      * @internal
      */
     get [DISPLAY_STATUS](): DisplayStatus {
-        return this.#displayStatus;
+        return this.#displayStatus.value;
     }
 
     /**
@@ -544,10 +545,10 @@ export class MapModel {
         if (this.#isDestroyed) {
             return Promise.reject(new Error("Map model was destroyed."));
         }
-        if (this.#displayStatus === "error") {
+        if (this.#displayStatus.value === "error") {
             return Promise.reject(new Error(`Failed to initialize map.`));
         }
-        if (this.#displayStatus === "ready") {
+        if (this.#displayStatus.value === "ready") {
             return Promise.resolve();
         }
         return (this.#displayWaiter ??= createManualPromise()).promise;
@@ -560,7 +561,7 @@ export class MapModel {
      * AbortError is thrown when cancelled via `this.#abortController`, for example
      * when the map model is destroyed before it has ever been displayed.
      */
-    async #initializeView(): Promise<void> {
+    async #initializeView(initialPosition: InitialPositionConfig | undefined): Promise<void> {
         try {
             await waitForMapSize(this.olMap, this.#abortController.signal); // may throw on cancel
         } catch (e) {
@@ -588,6 +589,11 @@ export class MapModel {
                 view.setCenter(olCenter);
                 view.setResolution(resolution);
             } else {
+                if (initialPosition) {
+                    view.setZoom(initialPosition.zoom);
+                    view.setCenter([initialPosition.center.x, initialPosition.center.y]);
+                }
+
                 // Initial extent was NOT set from the outside.
                 // We detect whatever the view is displaying and consider it to be the initial extent.
                 const olExtent = view.calculateExtent();
@@ -626,21 +632,21 @@ interface ViewBindings {
 function createViewBindings(view: OlView): ViewBindings {
     return {
         resolution: synchronized(
-            () => view.getResolution(),
+            () => view.getResolution() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);
             }
         ),
         center: synchronized(
-            () => view.getCenter(),
+            () => view.getCenter() ?? undefined,
             (cb) => {
                 const key = view.on("change:center", cb);
                 return () => unByKey(key);
             }
         ),
         zoom: synchronized(
-            () => view.getZoom(),
+            () => view.getZoom() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);

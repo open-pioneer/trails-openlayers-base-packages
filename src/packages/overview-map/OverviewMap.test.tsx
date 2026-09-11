@@ -86,7 +86,7 @@ it("should successfully add OverviewMap control to the map controls", async () =
 });
 
 async function setup() {
-    const { map } = await setupMap();
+    const { map } = await setupMap({ mockMapRender: true });
     return { map };
 }
 

@@ -41,7 +41,8 @@ it("should successfully show info for the user if a layer is not visible", async
                 visible: true,
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: true
     });
 
     render(

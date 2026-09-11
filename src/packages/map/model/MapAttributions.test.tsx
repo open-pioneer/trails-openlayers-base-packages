@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { effect } from "@conterra/reactivity-core";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { expect, it, vi } from "vitest";
-import { AttributionItem, MapModel } from "../model/MapModel";
 import { MapContainer, MapContainerProps } from "../ui/MapContainer";
+import { AttributionItem, MapModel } from "./MapModel";
 
 it("renders attributions for layers in the map", async () => {
     const { map } = await setupMap({
@@ -181,13 +181,13 @@ function createAttributionLayer(attributions: string) {
     return new VectorLayer({ source: vectorSource });
 }
 
-async function renderMap(props?: MapContainerProps & { map: MapModel }) {
+async function renderMap(props: MapContainerProps & { map: MapModel }) {
     const getMapContainer = (props?: MapContainerProps) => {
         return <MapContainer {...props} data-testid="map" />;
     };
     const renderResult = render(getMapContainer(props), {
         wrapper: (props) => <PackageContextProvider {...props} />
     });
-    await waitForMapMount("map");
+    await waitForMapRender(props.map);
     return renderResult;
 }

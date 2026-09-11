@@ -199,7 +199,7 @@ async function waitForHistoryComponent() {
 }
 
 async function setup() {
-    const { map } = await setupMap();
+    const { map } = await setupMap({ mockMapRender: true });
 
     function Wrapper(props: { children?: ReactNode }) {
         return <PackageContextProvider {...props} />;
