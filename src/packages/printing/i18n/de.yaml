@@ -1,7 +1,7 @@
 messages:
   formLabel: "Kartendruck konfigurieren"
   title: "Titel"
-  pageSize:
+  pageFormat:
     label: "Seitengröße"
     a3: "DIN A3"
     a4: "DIN A4"

@@ -13,7 +13,7 @@ interface PageFormat {
     long: number; // millimeters
 }
 
-const PAGE_SIZE: Record<PageFormatType, PageFormat> = {
+const PAGE_FORMAT: Record<PageFormatType, PageFormat> = {
     a3: { short: 297, long: 420 },
     a4: { short: 210, long: 297 },
     a5: { short: 148, long: 210 }
@@ -64,8 +64,8 @@ export function createBlockUserOverlay(container: HTMLElement, text: string): Re
     };
 }
 
-export function getPageSize(size: PageFormatType, orientation: PageOrientationType): PageSize {
-    const { short, long } = PAGE_SIZE[size];
+export function getPageSize(format: PageFormatType, orientation: PageOrientationType): PageSize {
+    const { short, long } = PAGE_FORMAT[format];
     const paperWidth = orientation === "landscape" ? long : short;
     const paperHeight = orientation === "landscape" ? short : long;
 

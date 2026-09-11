@@ -43,7 +43,7 @@ export class PrintingController {
 
     #printingService: PrintingService;
     #viewPadding: ViewPaddingBehavior | undefined;
-    #size: PageFormatType | undefined;
+    #pageFormat: PageFormatType | undefined;
     #orientation: PageOrientationType | undefined;
     #scale: number | undefined;
 
@@ -94,8 +94,8 @@ export class PrintingController {
         this.#printAreaLayer.olLayer.changed();
     }
 
-    setSize(size: PageFormatType) {
-        this.#size = size;
+    setPageFormat(pageFormat: PageFormatType) {
+        this.#pageFormat = pageFormat;
         this.#printAreaLayer.olLayer.changed();
     }
 
@@ -170,9 +170,9 @@ export class PrintingController {
     }
 
     #getPixelBounds() {
-        if (!this.#size || !this.#orientation || !this.#scale) return;
+        if (!this.#pageFormat || !this.#orientation || !this.#scale) return;
 
-        const pageSize = getPageSize(this.#size, this.#orientation);
+        const pageSize = getPageSize(this.#pageFormat, this.#orientation);
         const screenSize = getScreenSizeForPageSize(this.#map, pageSize, this.#scale);
         if (!screenSize) return;
         const { pixelHeight, pixelWidth } = screenSize;
@@ -195,14 +195,14 @@ export class PrintingController {
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.#size || !this.#orientation || !this.#scale) {
+        if (!this.#pageFormat || !this.#orientation || !this.#scale) {
             throw new Error("Printing params undefined");
         }
 
         try {
             this.#begin();
 
-            const { paperHeight, paperWidth } = getPageSize(this.#size, this.#orientation);
+            const { paperHeight, paperWidth } = getPageSize(this.#pageFormat, this.#orientation);
 
             this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
@@ -293,7 +293,7 @@ export class PrintingController {
         const pdf = new jsPDF({
             orientation: this.#orientation,
             unit: "mm",
-            format: this.#size
+            format: this.#pageFormat
         });
 
         // Simple layout: 50 pixels for the header and

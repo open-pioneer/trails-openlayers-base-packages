@@ -33,13 +33,13 @@ const DEFAULT_SCALES = [
     75000, 50000, 25000, 20000, 15000, 10000, 7500, 5000, 2500, 2000, 1500, 1000, 500, 250, 100
 ];
 const DEFAULT_DPIS = [96, 150, 300];
-const DEFAULT_PAGE_SIZES: PageFormatType[] = ["a3", "a4", "a5"];
+const DEFAULT_PAGE_FORMATS: PageFormatType[] = ["a3", "a4", "a5"];
 const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
 const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
 // TODO make configurable with props in future
 const INITIAL_DPI = 96;
-const INITIAL_PAGE_SIZE = "a4";
+const INITIAL_PAGE_FORMAT = "a4";
 const INITIAL_PAGE_ORIENTATION = "landscape";
 const INITIAL_FILE_FORMAT = "pdf";
 
@@ -65,9 +65,9 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
     dpis?: number[];
 
     /**
-     * The set of page sizes that can be selected by the user (default: selection of pre-configured values).
+     * The set of page formats that can be selected by the user (default: selection of pre-configured values).
      */
-    pageSizes?: PageFormatType[];
+    pageFormats?: PageFormatType[];
 
     /**
      * The set of page orientations that can be selected by the user (default: selection of pre-configured values).
@@ -91,7 +91,7 @@ export const Printing: FC<PrintingProps> = (props) => {
         viewPadding = "auto",
         scales = DEFAULT_SCALES,
         dpis = DEFAULT_DPIS,
-        pageSizes = DEFAULT_PAGE_SIZES,
+        pageFormats = DEFAULT_PAGE_FORMATS,
         pageOrientations = DEFAULT_PAGE_ORIENTATIONS,
         fileFormats = DEFAULT_FILE_FORMATS
     } = props;
@@ -99,9 +99,9 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const initialScale = useMemo(() => getFittingScale(map, scales), [map, scales]);
     const initialDpi = useMemo(() => getInitialOption(dpis, INITIAL_DPI), [dpis]);
-    const initialPageSize = useMemo(
-        () => getInitialOption(pageSizes, INITIAL_PAGE_SIZE),
-        [pageSizes]
+    const initialPageFormat = useMemo(
+        () => getInitialOption(pageFormats, INITIAL_PAGE_FORMAT),
+        [pageFormats]
     );
     const initialPageOrientation = useMemo(
         () => getInitialOption(pageOrientations, INITIAL_PAGE_ORIENTATION),
@@ -114,18 +114,18 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const [scale, setScale] = useState<number>(initialScale);
     const [dpi, setDpi] = useState<number>(initialDpi);
-    const [size, setSize] = useState<PageFormatType>(initialPageSize);
+    const [pageFormat, setPageFormat] = useState<PageFormatType>(initialPageFormat);
     const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
     const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
-    const controller = useController(map, intl, viewPadding, size, orientation, scale);
+    const controller = useController(map, intl, viewPadding, pageFormat, orientation, scale);
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
-    function changeSize(size: string) {
-        if (isPageFormatType(size)) {
-            setSize(size);
+    function changePageFormat(pageFormat: string) {
+        if (isPageFormatType(pageFormat)) {
+            setPageFormat(pageFormat);
         }
     }
 
@@ -201,14 +201,14 @@ export const Printing: FC<PrintingProps> = (props) => {
         [dpis]
     );
 
-    const pageSizeOptions = useMemo(
+    const pageFormatOptions = useMemo(
         () =>
-            pageSizes.map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                    {intl.formatMessage({ id: "pageSize." + pageSize })}
+            pageFormats.map((pageFormat) => (
+                <option key={pageFormat} value={pageFormat}>
+                    {intl.formatMessage({ id: "pageFormat." + pageFormat })}
                 </option>
             )),
-        [intl, pageSizes]
+        [intl, pageFormats]
     );
 
     const pageOrientationOptions = useMemo(
@@ -260,17 +260,17 @@ export const Printing: FC<PrintingProps> = (props) => {
                 <Field.Root asChild>
                     <HStack mb={2}>
                         <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "pageSize.label" })}
+                            {intl.formatMessage({ id: "pageFormat.label" })}
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
                                 className="printing-select"
-                                value={size}
+                                value={pageFormat}
                                 onChange={(event) => {
-                                    changeSize(event.target.value);
+                                    changePageFormat(event.target.value);
                                 }}
                             >
-                                {pageSizeOptions}
+                                {pageFormatOptions}
                             </NativeSelectField>
                         </NativeSelectRoot>
                     </HStack>
@@ -371,7 +371,7 @@ function useController(
     map: MapModel,
     intl: PackageIntl,
     viewPadding: ViewPaddingBehavior,
-    size: PageFormatType,
+    pageFormat: PageFormatType,
     orientation: PageOrientationType,
     scale: number
 ) {
@@ -396,8 +396,8 @@ function useController(
     }, [controller, viewPadding]);
 
     useEffect(() => {
-        controller?.setSize(size);
-    }, [controller, size]);
+        controller?.setPageFormat(pageFormat);
+    }, [controller, pageFormat]);
 
     useEffect(() => {
         controller?.setOrientation(orientation);
@@ -431,7 +431,7 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
 
-    const pageSize = getPageSize(INITIAL_PAGE_SIZE, INITIAL_PAGE_ORIENTATION);
+    const pageSize = getPageSize(INITIAL_PAGE_FORMAT, INITIAL_PAGE_ORIENTATION);
 
     const sortedScales = scales.toSorted((a, b) => b - a); // sort descending
     // return first scale that fits in the map screen
