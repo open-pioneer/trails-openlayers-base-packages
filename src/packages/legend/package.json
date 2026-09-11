@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/legend",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "This package provides a legend UI component that allows a user to see legend information for layers in the map.",
     "keywords": [
         "open-pioneer-trails"
