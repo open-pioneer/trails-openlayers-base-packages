@@ -20,7 +20,7 @@ exports[`should successfully create a scale Setter component 1`] = `
     id="menu:_r_0_:trigger"
     type="button"
   >
-    1 : 336,409
+    1 : 336,410
     <svg
       aria-hidden="true"
       class="chakra-icon css-1qiwd9j"
@@ -63,7 +63,7 @@ exports[`should successfully create a scale setter component with additional css
     id="menu:_r_1_:trigger"
     type="button"
   >
-    1 : 336,409
+    1 : 336,410
     <svg
       aria-hidden="true"
       class="chakra-icon css-1qiwd9j"
