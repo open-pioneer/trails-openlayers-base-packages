@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
-import { mockMapRender, setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     act,
