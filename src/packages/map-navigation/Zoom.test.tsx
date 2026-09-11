@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { MapContainer } from "@open-pioneer/map";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -69,7 +69,7 @@ it("should zoom in and zoom out when clicked", async () => {
         </PackageContextProvider>
     );
 
-    await waitForMapMount("map");
+    await waitForMapRender(map);
 
     const zoomInButton = await screen.findByTestId<HTMLButtonElement>("zoom-in");
     const zoomOutButton = await screen.findByTestId<HTMLButtonElement>("zoom-out");
