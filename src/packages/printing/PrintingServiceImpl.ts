@@ -111,26 +111,27 @@ export class PrintJob {
         this.#viewWidth = this.#olMap.getTargetElement().style.width;
 
         const screenSize =
-            this.#map &&
-            options.width &&
-            options.height &&
-            options.scale &&
-            options.dpi &&
-            getScreenSizeForPageSize(
-                this.#map,
-                { paperWidth: options.width, paperHeight: options.height },
-                options.scale,
-                options.dpi // map DPI will be set to paper DPI during printing
-            );
-        if (!screenSize) {
-            throw new Error("Cannot get screen size");
-        }
+            (this.#map &&
+                options.width != null &&
+                options.height != null &&
+                options.scale != null &&
+                options.dpi != null &&
+                getScreenSizeForPageSize(
+                    this.#map,
+                    { paperWidth: options.width, paperHeight: options.height },
+                    options.scale,
+                    options.dpi // map DPI will be set to paper DPI during printing
+                )) ||
+            undefined;
 
         const padding = getViewPadding(olMap.getView());
-        const targetWidth = screenSize.pixelWidth + padding.left + padding.right;
-        const targetHeight = screenSize.pixelHeight + padding.top + padding.bottom;
+        const targetWidth = screenSize && screenSize.pixelWidth + padding.left + padding.right;
+        const targetHeight = screenSize && screenSize.pixelHeight + padding.top + padding.bottom;
         const targetViewResolution =
-            options.scale && this.#map?.getViewResolutionForScale(options.scale, options.dpi);
+            (options.scale != null &&
+                options.dpi != null &&
+                this.#map?.getViewResolutionForScale(options.scale, options.dpi)) ||
+            undefined;
 
         // if no params for target image specified, export current map canvas
         this.#width = targetWidth ?? this.#olMap.getTargetElement().offsetWidth;
