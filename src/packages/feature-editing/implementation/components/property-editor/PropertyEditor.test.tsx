@@ -465,9 +465,10 @@ describe("validation", () => {
         nameInput.focus();
 
         await waitFor(() => {
-            expect(
-                screen.getByRole("textbox", { name: /name/i, description: /custom error text/i })
-            ).toBeInTheDocument();
+            const errorElementId = nameInput.getAttribute("aria-errormessage");
+            expect(errorElementId).toBeTruthy();
+            const errorElement = document.getElementById(errorElementId!);
+            expect(errorElement).toHaveTextContent("custom error text");
         });
     });
 });

@@ -120,6 +120,7 @@ function useSearchApi(
     });
 
     const apiRef = useRef<SearchApi>(null);
+    // oxlint-disable-next-line react/refs
     if (!apiRef.current) {
         // NOTE: The API object is only created once.
         // This is why the functions must currently be stable!

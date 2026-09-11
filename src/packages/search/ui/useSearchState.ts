@@ -304,6 +304,7 @@ type GetSearchSourceId = (source: SearchSource) => string;
 function useSearchSourceId(): GetSearchSourceId {
     const sourceIds = useRef<WeakMap<SearchSource, string>>(undefined);
     const counter = useRef(0);
+    // oxlint-disable-next-line react/refs
     if (!sourceIds.current) {
         sourceIds.current = new WeakMap();
     }

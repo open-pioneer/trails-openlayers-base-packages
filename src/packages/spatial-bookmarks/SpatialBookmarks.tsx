@@ -161,7 +161,10 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
 
     const content = (
         <>
-            {uiMode === "list" && listContent()}
+            {uiMode === "list" &&
+                // Looks like a false positive..
+                // oxlint-disable-next-line react/refs
+                listContent()}
             {uiMode === "create" && createContent()}
             {uiMode === "delete" && deleteContent()}
         </>
