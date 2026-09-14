@@ -328,18 +328,19 @@ const featureWriter: FeatureWriter = {
 
 The `FeatureEditor` component accepts the following props:
 
-| Prop                             | Type                                     | Required | Description                                                                                                                     |
-| -------------------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                      |
-| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                  |
-| `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                        |
-| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                      |
-| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                 |
-| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                            |
-| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                |
-| `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification. |
-| `failureNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display failure notifications. By default, never disappears. Use `false` to completely hide the notification. |
-| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                                         |
+| Prop                             | Type                                     | Required | Description                                                                                                                       |
+| -------------------------------- | ---------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                        |
+| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                    |
+| `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                          |
+| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                        |
+| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                   |
+| `getSelectionAvailability`       | `(context) => SelectionAvailability`     | No       | Custom function to enable or disable the selection interaction. By default: disabled when there are no visible selectable layers. |
+| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                              |
+| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                  |
+| `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification.   |
+| `failureNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display failure notifications. By default, never disappears. Use `false` to completely hide the notification.   |
+| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                                           |
 
 ### Interaction Options
 
@@ -354,6 +355,47 @@ The FeatureEditor also accepts OpenLayers interaction options for fine-grained c
 | `highlightingOptions` | `HighlightOptions`    | Options for feature highlighting   |
 
 The drawing options will be merged with those of the selected feature template (if any are given), with the ones of the template taking precedence.
+
+### Customizing the Availability of the Selection Interaction
+
+Editing an existing feature requires the user to select it on the map first.
+By default, the selection is only available if at least one of the selectable layers is visible; otherwise the selection button is disabled and a hint is shown to the user.
+
+Use the `getSelectionAvailability` prop to implement a different rule, for example if selection should also require a certain zoom level:
+
+```tsx
+import type {
+    SelectionAvailability,
+    SelectionAvailabilityContext
+} from "@open-pioneer/feature-editing";
+
+// Use a function that does not change its value on every render.
+const getSelectionAvailability = useCallback(
+    ({ mapModel, layers }: SelectionAvailabilityContext): SelectionAvailability => {
+        if (!layers.some((layer) => layer.visible)) {
+            return { status: "unavailable", reason: "Please activate an editable layer." };
+        }
+        if ((mapModel.zoomLevel ?? 0) < 12) {
+            return { status: "unavailable", reason: "Please zoom in to select a feature." };
+        }
+        return { status: "available" };
+    },
+    []
+);
+
+<FeatureEditor
+    templates={templates}
+    writer={featureWriter}
+    getSelectionAvailability={getSelectionAvailability}
+/>;
+```
+
+The `context` contains the `mapModel` and the `layers` that would be used for the selection interaction (i.e. `selectableLayers`, or the layers derived from the templates).
+The function is evaluated reactively: if it accesses reactive values (such as `layer.visible` or the map's zoom level),
+the availability is recomputed automatically when those values change.
+When `status` is `"unavailable"`, the optional `reason` is presented to the user.
+
+Use `useCallback` or any alternative measure to ensure that the function does not change too frequently.
 
 ### Resolving Form Templates
 

@@ -10,6 +10,10 @@ import type { EditingStep } from "../model/EditingStep";
 import type { FeatureTemplate, FormTemplate } from "../model/FeatureTemplate";
 import type { FeatureWriter } from "../model/FeatureWriter";
 import type { InteractionOptions } from "../model/InteractionOptions";
+import {
+    SelectionAvailability,
+    SelectionAvailabilityContext
+} from "../model/SelectionAvailability";
 
 /**
  * React component that provides a complete editing interface for creating and modifying map
@@ -90,6 +94,21 @@ export interface FeatureEditorProps
      * @default selectableLayers
      */
     readonly snappableLayers?: Layer[];
+
+    /**
+     * A _reactive_ function that returns the selection interaction's availability state.
+     *
+     * The selection interaction is used by the editor to pick a feature from the map for editing.
+     *
+     * This function **SHOULD** be rather stable: you should use `useCallback` or equivalent mechanisms to avoid
+     * passing in a new function every time.
+     *
+     * Default: the selection interaction is available if there are any editable layers (as configured by {@link selectableLayers} or its default value)
+     * that are _visible_.
+     */
+    readonly getSelectionAvailability?: (
+        context: SelectionAvailabilityContext
+    ) => SelectionAvailability;
 
     /**
      * Whether to show the action bar with undo/redo/finish/reset controls during drawing.

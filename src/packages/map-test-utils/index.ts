@@ -231,7 +231,20 @@ export function createTestLayer<LayerType extends Layer, Config extends MapPacka
     mapOptions?: Pick<SimpleMapOptions, "fetch">
 ): LayerType;
 
-/** Creates a new, basic SimpleLayer for testing. */
+/**
+ *
+ * Creates a new, basic SimpleLayer for testing.
+ *
+ * For example:
+ *
+ * ```ts
+ * const layer1 = createTestLayer();
+ * const layer2 = createTestLayer({
+ *   title: "My test layer",
+ *   olLayer: ...
+ * })
+ * ```
+ **/
 export function createTestLayer(
     config?: SimpleLayerConfig,
     mapOptions?: Pick<SimpleMapOptions, "fetch">
