@@ -8,7 +8,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import TileLayer from "ol/layer/Tile";
-import { get, getPointResolution } from "ol/proj";
+import { get } from "ol/proj";
 import { OSM } from "ol/source";
 import View from "ol/View";
 import { ReactNode } from "react";
@@ -99,7 +99,6 @@ it("should successfully update the map scale and label when selection changes", 
     const { map, Wrapper } = await setup({
         layers: defaultBasemapConfig
     });
-    const olMap = map.olMap;
 
     render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
@@ -108,23 +107,15 @@ it("should successfully update the map scale and label when selection changes", 
     if (setterOptions[0] == undefined) {
         throw new Error("Expected an option to be available");
     }
+    const selectedScale = getValueForOption(setterOptions[0]!);
+    expect(selectedScale).toBe(17471320); // the largest of the default scales
+
     await user.click(setterOptions[0]!);
 
-    const DEFAULT_DPI = 25.4 / 0.28;
-    const INCHES_PER_METRE = 39.37;
-    const resolution = olMap.getView().getResolution();
-    const center = olMap.getView().getCenter();
-
-    expect(resolution).toBeDefined();
-    expect(center).toBeDefined();
-    const pointResolution = getPointResolution(
-        olMap.getView().getProjection(),
-        resolution!,
-        center!
-    );
-    const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-    const setterValue = getValueForOption(setterOptions[0]!);
-    expect(scale).toBe(setterValue);
+    // Selecting a scale must display exactly that scale again: setScale() computes a view
+    // resolution from the scale, and map.scale converts it back.
+    await waitFor(() => expect(setterButton.textContent).toBe("1 : 17,471,320"));
+    expect(map.scale).toBe(17471320);
 });
 
 it("should successfully update the label when map scale changes after creation", async () => {
@@ -142,7 +133,7 @@ it("should successfully update the label when map scale changes after creation",
     }
 
     const initialLabel = setterButton.textContent;
-    expect(initialLabel).toBeTruthy();
+    expect(initialLabel).toMatchInlineSnapshot(`"1 : 336.410"`);
 
     olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
 
@@ -153,20 +144,8 @@ it("should successfully update the label when map scale changes after creation",
         }
     });
 
-    const DEFAULT_DPI = 25.4 / 0.28;
-    const INCHES_PER_METRE = 39.37;
-    const resolution = olMap.getView().getResolution();
-    const center = olMap.getView().getCenter();
-
-    expect(resolution).toBeDefined();
-    expect(center).toBeDefined();
-    const pointResolution = getPointResolution(
-        olMap.getView().getProjection(),
-        resolution!,
-        center!
-    );
-    const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString("de"));
+    // Zooming out one level doubles the view resolution and therefore the scale denominator.
+    expect(setterButton.textContent).toBe("1 : 672.820");
 });
 
 it("should use default scales when nothing is set", async () => {
