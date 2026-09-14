@@ -1,5 +1,16 @@
 # @open-pioneer/result-list
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes
