@@ -232,29 +232,17 @@ export class PrintJob {
 
         const renderPromise = createManualPromise<void>();
 
-        // We expect the scale line to be rendered by the open layers map.
-        // This is a sanity check that throws an error when that either doesn't happen
-        // or if it takes an extremely large time.
-        const timeout = setTimeout(() => {
-            renderPromise.reject(new Error("Scale line did not render"));
-        }, 3000);
-
         this.#olMap.once("rendercomplete", () => {
             renderPromise.resolve();
-            clearTimeout(timeout);
         });
 
         this.#olMap?.addControl(this.#scaleLine);
 
-        try {
-            // Wait until render (+ one additional frame just to be sure).
-            await renderPromise.promise;
-            await new Promise((resolve) => {
-                requestAnimationFrame(resolve);
-            });
-        } finally {
-            clearTimeout(timeout);
-        }
+        // Wait until render (+ one additional frame just to be sure).
+        await renderPromise.promise;
+        await new Promise((resolve) => {
+            requestAnimationFrame(resolve);
+        });
     }
 
     // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
