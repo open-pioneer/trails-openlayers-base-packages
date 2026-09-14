@@ -2,15 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Flex, useDisclosure } from "@chakra-ui/react";
+import { createLogger } from "@open-pioneer/core";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { useCallback, useMemo, type ReactElement } from "react";
+import { sourceId } from "open-pioneer:source-info";
+import { useCallback, useEffect, useMemo, useState, type ReactElement } from "react";
 import { FeatureEditorProps, FormTemplateContext } from "../../../api/editor/editor";
 import { CreationStep, UpdateStep } from "../../../api/model/EditingStep";
 import { FeatureTemplate, FormTemplate } from "../../../api/model/FeatureTemplate";
 import {
-    DeclarativeFormContext,
+    AnyPropertyFormContext,
     CustomFormContextImpl,
+    DeclarativeFormContext,
     FormContext
 } from "../../context/PropertyFormContext";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
@@ -21,6 +24,8 @@ import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { PropertyField } from "./PropertyField";
 import { PropertyForm } from "./PropertyForm";
 
+const LOG = createLogger(sourceId);
+
 export function PropertyEditor(props: {
     editingStep: CreationStep | UpdateStep;
     callbacks: EditingCallbacks;
@@ -30,16 +35,23 @@ export function PropertyEditor(props: {
     const { editingStep, callbacks, templates, resolveFormTemplate } = props;
     const formTemplate = useFormTemplate(templates, resolveFormTemplate, editingStep);
 
-    const context = useMemo(() => {
+    const [context, setContext] = useState<AnyPropertyFormContext>();
+    useEffect(() => {
         if (!formTemplate) {
             return undefined;
         }
 
+        let ctx;
         if (formTemplate.kind === "declarative") {
-            return new DeclarativeFormContext(editingStep, callbacks, formTemplate);
+            ctx = new DeclarativeFormContext(editingStep, callbacks, formTemplate);
         } else {
-            return new CustomFormContextImpl(editingStep, callbacks, formTemplate);
+            ctx = new CustomFormContextImpl(editingStep, callbacks, formTemplate);
         }
+        setContext(ctx);
+        return () => {
+            ctx.destroy();
+            setContext(undefined);
+        };
     }, [formTemplate, editingStep, callbacks]);
 
     return (
@@ -134,6 +146,17 @@ function EditorControls(): ReactElement {
         closeCancelConfirmationDialog();
     });
 
+    const onCancelClick = useEvent(() => {
+        if (!context.didEdit) {
+            LOG.debug(
+                "Skipping cancel confirmation dialog because the user did not edit the feature"
+            );
+            onConfirmCancelClick();
+        } else {
+            openCancelDialog();
+        }
+    });
+
     return (
         <>
             <ButtonRow
@@ -141,7 +164,7 @@ function EditorControls(): ReactElement {
                 showDeleteButton={context.mode === "update"}
                 onSave={onSaveClick}
                 onDelete={openDeleteDialog}
-                onCancel={openCancelDialog}
+                onCancel={onCancelClick}
             />
             <DeleteConfirmationDialog
                 isOpen={deleteDialogIsOpen}

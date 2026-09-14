@@ -6,10 +6,14 @@ import {
     reactive,
     reactiveMap,
     ReadonlyReactive,
+    watchValue,
     type ReactiveMap
 } from "@conterra/reactivity-core";
+import { destroyResources, Resource, createLogger, shallowEqual } from "@open-pioneer/core";
 import type { Layer } from "@open-pioneer/map";
 import type { Feature } from "ol";
+import { unByKey } from "ol/Observable";
+import { sourceId } from "open-pioneer:source-info";
 import { createContext } from "react";
 import type { CustomFormContext, Mode } from "../../api/editor/context";
 import { PropertyFunctionOr } from "../../api/fields/BaseFieldConfig";
@@ -22,11 +26,15 @@ import type {
 } from "../../api/model/FeatureTemplate";
 import { EditingCallbacks } from "../editor/useEditingCallbacks";
 
-export abstract class BaseFormContext {
+const LOG = createLogger(sourceId);
+
+export abstract class BaseFormContext implements Resource {
     readonly #propertiesMap: ReactiveMap<string, unknown>;
     readonly #modificationStep: ModificationStep;
     readonly #formTemplate: FormTemplate;
     readonly #propsAsObject: ReadonlyReactive<Record<string, unknown>>;
+    readonly #didEdit = reactive(false);
+    #watchEditResources: Resource[] = [];
 
     readonly callbacks: EditingCallbacks;
 
@@ -41,11 +49,25 @@ export abstract class BaseFormContext {
 
         const entries = BaseFormContext.#getPropertyEntries(modificationStep.feature);
         this.#propertiesMap = reactiveMap(entries);
-        this.#propsAsObject = computed(() => {
-            const entries = this.properties.entries();
-            const object = Object.fromEntries(entries);
-            return object;
-        });
+        this.#propsAsObject = computed(
+            () => {
+                const entries = this.properties.entries();
+                const object = Object.fromEntries(entries);
+                return object;
+            },
+            { equal: shallowEqual }
+        );
+
+        if (modificationStep.id === "creation") {
+            // The user did just draw the initial geometry; so we always have an "edit".
+            this.#didEdit.value = true;
+        } else if (modificationStep.id === "update") {
+            this.#watchForAnyEdit();
+        }
+    }
+
+    destroy() {
+        destroyResources(this.#watchEditResources);
     }
 
     getPropertiesAsObject(): Record<string, unknown> {
@@ -62,6 +84,10 @@ export abstract class BaseFormContext {
 
     get editingStep(): ModificationStep {
         return this.#modificationStep;
+    }
+
+    get didEdit(): boolean {
+        return this.#didEdit.value;
     }
 
     get properties(): ReactiveMap<string, unknown> {
@@ -87,6 +113,39 @@ export abstract class BaseFormContext {
         const properties = feature.getProperties();
         const geometryName = feature.getGeometryName();
         return Object.entries(properties).filter(([key, _]) => key !== geometryName);
+    }
+
+    #watchForAnyEdit() {
+        const feature = this.#modificationStep.feature;
+        const geometry = feature.getGeometry();
+
+        const geometryChanged = () => {
+            LOG.debug("Geometry changed. The feature has been edited.");
+            this.#didEdit.value = true;
+            destroyResources(this.#watchEditResources);
+        };
+        const geometryKey1 = feature.on("change:geometry", geometryChanged);
+        const geometryKey2 = geometry?.on("change", geometryChanged);
+
+        this.#watchEditResources.push(
+            {
+                destroy() {
+                    unByKey(geometryKey1);
+                    geometryKey2 && unByKey(geometryKey2);
+                }
+            },
+            watchValue(
+                () => this.getPropertiesAsObject(),
+                (_props) => {
+                    LOG.debug("Properties changed. The feature has been edited.");
+                    this.#didEdit.value = true;
+                    destroyResources(this.#watchEditResources);
+                },
+                {
+                    dispatch: "sync"
+                }
+            )
+        );
     }
 }
 

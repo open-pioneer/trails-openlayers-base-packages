@@ -134,7 +134,7 @@ describe("create mode workflow", () => {
         expect(onSave).toHaveBeenCalledOnce();
     });
 
-    it("shows cancel confirmation dialog before canceling and allows canceling without saving", async () => {
+    it("shows cancel confirmation dialog before canceling and allows canceling without saving for create operations", async () => {
         const user = userEvent.setup();
         const template = createTemplate();
         const feature = new Feature();
@@ -167,6 +167,100 @@ describe("create mode workflow", () => {
 
         expect(onCancel).toHaveBeenCalledOnce();
         expect(onSave).not.toHaveBeenCalled();
+    });
+
+    it("does not show the cancel dialog when the feature has not been edited for update operations", async () => {
+        const user = userEvent.setup();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "update",
+            feature,
+            layer: {} as any
+        };
+        const onSave = vi.fn();
+        const onCancel = vi.fn();
+        renderEditor({
+            step,
+            resolveFormTemplate: () => createTemplate(),
+            callbacks: { onSave, onCancel }
+        });
+
+        const cancelButton = await screen.findByRole("button", { name: /cancelButtonTitle/i });
+        await user.click(cancelButton);
+
+        // No dialog: the feature was never modified.
+        await waitFor(() => {
+            expect(onCancel).toHaveBeenCalled();
+        });
+    });
+
+    it("shows the cancel dialog when a property has been edited for update operations", async () => {
+        const user = userEvent.setup();
+        const feature = new Feature();
+        feature.setGeometry(new Point([0, 0]));
+
+        const step: ModificationStep = {
+            id: "update",
+            feature,
+            layer: {} as any
+        };
+        const onSave = vi.fn();
+        const onCancel = vi.fn();
+        renderEditor({
+            step,
+            resolveFormTemplate: () => createTemplate(),
+            callbacks: { onSave, onCancel }
+        });
+
+        // Update name
+        const nameInput = screen.getByLabelText(/name/i);
+        await user.clear(nameInput);
+        await user.type(nameInput, "Updated Name");
+
+        const cancelButton = await screen.findByRole("button", { name: /cancelButtonTitle/i });
+        await user.click(cancelButton);
+
+        // Cancel shows the dialog now
+        expect(onCancel).not.toHaveBeenCalled();
+        const confirmCancelButton = await screen.findByRole("button", {
+            name: /confirmCancelButtonTitle/i
+        });
+        expect(confirmCancelButton).toBeInTheDocument();
+    });
+
+    it("shows the cancel dialog when the geometry has been edited for update operations", async () => {
+        const user = userEvent.setup();
+        const feature = new Feature();
+        const point = new Point([0, 0]);
+        feature.setGeometry(point);
+
+        const step: ModificationStep = {
+            id: "update",
+            feature,
+            layer: {} as any
+        };
+        const onSave = vi.fn();
+        const onCancel = vi.fn();
+        renderEditor({
+            step,
+            resolveFormTemplate: () => createTemplate(),
+            callbacks: { onSave, onCancel }
+        });
+
+        // Simulate geometry edit
+        point.setCoordinates([1, 2]);
+
+        const cancelButton = await screen.findByRole("button", { name: /cancelButtonTitle/i });
+        await user.click(cancelButton);
+
+        // Cancel shows the dialog now
+        expect(onCancel).not.toHaveBeenCalled();
+        const confirmCancelButton = await screen.findByRole("button", {
+            name: /confirmCancelButtonTitle/i
+        });
+        expect(confirmCancelButton).toBeInTheDocument();
     });
 
     it("can close cancel confirmation dialog and continue editing", async () => {
