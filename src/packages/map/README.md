@@ -220,7 +220,7 @@ The following map options are supported:
 
 - `initialView`,
 - `projection`,
-- `layers` (see [Layer configuration](#layer-configuration)),
+- `layers`, `baseLayers` and `topmostLayers` (see [Layer configuration](#layer-configuration)),
 - `advanced`
 
 Always use the provided map model to access the map initially.
@@ -247,6 +247,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:3857",
             layers: [
+                // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
                 // ...
             ]
         };
@@ -275,6 +281,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             projection: "EPSG:3857",
             layers: [
                 // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
+                // ...
             ]
         };
     }
@@ -298,6 +310,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             layers: [
                 // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
+                // ...
             ]
         };
     }
@@ -314,6 +332,12 @@ For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers La
 
 Layers are constructed via the `LayerFactory`.
 You can access the layer factory from within a `MapConfigProvider` or inject it via `"map.LayerFactory"`.
+
+The [Map configuration](#map-configuration) takes three separate lists of layers:
+
+- `baseLayers`: A base layer is always displayed beneath all other layers; only one base layer can be visible at once
+- `layers`: all operational layer; layers will be displayed in their listed order
+- `topmostLayers`: operational layers that are always displayed above all other layers (e.g. a highlight layer); multiple topmost layers will be displayed in their listed order
 
 Example: Create a layer using the layer factory.
 
@@ -343,6 +367,8 @@ import {
 } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import { Vector as VectorLayer } from "ol/layer";
+import { Vector as VectorSource } from "ol/source";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
@@ -371,6 +397,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     },
                     description: "additional description",
                     visible: false
+                })
+            ],
+            topmostLayers: [
+                //simple feature layer that will always be kept at the top
+                layerFactory.create({
+                    type: SimpleLayer,
+                    title: "Highlight Feature Layer",
+                    olLayer: new VectorLayer<VectorSource, Feature>({
+                        source: new VectorSource()
+                    })
                 })
             ]
         };
