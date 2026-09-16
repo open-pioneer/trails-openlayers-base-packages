@@ -109,7 +109,9 @@ class MapModelFactory {
 
         LOG.debug(`Constructing OpenLayers map with options`, mapOptions);
 
-        if (import.meta.env.VITEST) {
+        // Only patch for unit tests (within node). Vitest's browser mode runs like in production.
+        // oxlint-disable-next-line typescript/no-explicit-any
+        if (import.meta.env.VITEST && !(globalThis as any).__vitest_browser__) {
             patchOpenLayersClassesForTesting();
         }
 

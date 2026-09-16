@@ -98,7 +98,8 @@ export interface SimpleMapOptions {
 
     /**
      * If true, the map is rendered in a dummy div instead of the real OpenLayers canvas.
-     * This is useful for tests that need the maps view to be initialized, but don't need to actually render the map.
+     * This is useful for tests that need the map's view to be initialized, but don't need to actually render the map.
+     *
      * False by default.
      */
     mockMapRender?: boolean;
@@ -236,7 +237,7 @@ export async function setupMap(
 }
 
 /**
- *  Renders an OL map into a pseudo (non-visible) div so the map's view gets initialized
+ * Renders an OL map into a pseudo (non-visible) div so the map's view gets initialized.
  */
 export function mockMapRender(map: MapModel) {
     const dummyContainer = document.createElement("div");
@@ -329,7 +330,7 @@ function createLayerFactory(httpService?: HttpService): LayerFactory {
 
 function mockLayers() {
     // Overwrite render so it doesn't actually do anything during tests.
-    // Would otherwise error because <canvas /> is not fully implemented in happy dom.
+    // Would otherwise error because <canvas /> is not fully implemented in happy-dom.
     const div = document.createElement("div");
     VectorLayer.prototype.render = () => {
         return div;
@@ -346,4 +347,8 @@ function useOrCreateLayer(config: LayerConfig): Layer {
     // using map as discriminator (no prototype for Layer)
 }
 
-mockLayers();
+// Do not mock layer rendering when running in vitest's browser mode.
+// oxlint-disable-next-line typescript/no-explicit-any
+if (!(globalThis as any).__vitest_browser__) {
+    mockLayers();
+}
