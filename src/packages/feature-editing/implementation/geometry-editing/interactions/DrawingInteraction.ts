@@ -13,6 +13,7 @@ import { Vector as VectorSource } from "ol/source";
 import type { DrawingOptions } from "../../../api/model/InteractionOptions";
 import type { DrawingTracker, DrawingActionHandler } from "../controller/DrawingSession";
 import { TooltipMessages } from "../controller/EditingController";
+import { createHelpTooltip } from "../overlays";
 import { BaseInteraction } from "./BaseInteraction";
 
 export interface DrawingParameters {
@@ -109,20 +110,6 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         geometryType: GeometryType
     ): Overlay | undefined {
         const message = tooltipMessages.getDrawingMessages().get(geometryType);
-        if (!message) {
-            return undefined;
-        }
-
-        const helpOverlay = mapModel.overlays.add({
-            className: "editing-tooltip printing-hide",
-            position: "follow-pointer",
-            tag: "editing-draw-overlay",
-            offset: [15, 0],
-            positioning: "center-left",
-            ariaRole: "tooltip",
-            content: message
-        });
-
-        return helpOverlay;
+        return createHelpTooltip(mapModel, "editing-draw-overlay", message);
     }
 }

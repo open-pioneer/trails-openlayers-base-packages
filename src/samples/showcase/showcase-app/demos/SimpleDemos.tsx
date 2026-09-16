@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { TooltipPropsProvider } from "@chakra-ui/react";
 import { computed } from "@conterra/reactivity-core";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
@@ -52,7 +53,11 @@ export function createGeolocationDemo({ currentIntl }: SharedDemoOptions): Demo 
                 description: (
                     <FormattedRichMessage intl={currentIntl} id="demos.geolocation.description" />
                 ),
-                tools: <Geolocation />
+                tools: (
+                    <TooltipPropsProvider value={{ positioning: { placement: "left" } }}>
+                        <Geolocation />
+                    </TooltipPropsProvider>
+                )
             };
         }
     };
@@ -68,13 +73,13 @@ export function createMapNavigationDemo({ currentIntl }: SharedDemoOptions): Dem
                     <FormattedRichMessage intl={currentIntl} id="demos.mapNavigation.description" />
                 ),
                 tools: (
-                    <>
+                    <TooltipPropsProvider value={{ positioning: { placement: "left" } }}>
                         <ZoomIn />
                         <ZoomOut />
                         <HistoryBackward />
                         <HistoryForward />
                         <InitialExtent />
-                    </>
+                    </TooltipPropsProvider>
                 )
             };
         }
@@ -90,7 +95,14 @@ export function createMeasurementDemo({ currentIntl }: SharedDemoOptions): Demo 
                 description: (
                     <FormattedRichMessage intl={currentIntl} id="demos.measurement.description" />
                 ),
-                mainWidget: <Measurement />
+                mainWidget: <Measurement />,
+
+                tools: (
+                    <TooltipPropsProvider value={{ positioning: { placement: "left" } }}>
+                        <ZoomIn />
+                        <ZoomOut />
+                    </TooltipPropsProvider>
+                )
             };
         }
     };

@@ -6,6 +6,7 @@ import { computed, Reactive, reactive, ReadonlyReactive, watch } from "@conterra
 import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
 import { Layer, MapModel, Overlay } from "@open-pioneer/map";
+import { TooltipBox } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { FormattedRichMessage } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -176,9 +177,6 @@ class EditingController {
             });
 
             this.#mapModel.olMap.addInteraction(this.#selectInteraction);
-            this.#updateEditSelectTooltip.overlay.element.classList.remove(
-                "editing-tooltip-hidden"
-            );
 
             this.#editUpdateSelectHandler = this.#selectInteraction.on("select", (e) => {
                 const selected = e.selected;
@@ -250,12 +248,15 @@ class EditingController {
 
     _createEditingSelectTooltip(): Tooltip {
         const overlay = this.#mapModel.overlays.add({
-            content: this.#intl.formatMessage({
-                id: "demos.editing.update.tooltip.select"
-            }),
+            content: (
+                <TooltipBox>
+                    {this.#intl.formatMessage({ id: "demos.editing.update.tooltip.select" })}
+                </TooltipBox>
+            ),
             offset: [15, 0],
             positioning: "center-left",
-            className: "editing-tooltip editing-tooltip-hidden",
+            ariaRole: "tooltip",
+            className: "editing-tooltip",
             position: "follow-pointer"
         });
 

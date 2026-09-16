@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { Layer, MapModel, Overlay } from "@open-pioneer/map";
+import { Layer, Overlay } from "@open-pioneer/map";
 import type { Feature } from "ol";
 import type { EventsKey } from "ol/events";
 import { Select } from "ol/interaction";
@@ -9,6 +9,7 @@ import { Layer as OlLayer } from "ol/layer";
 import { unByKey } from "ol/Observable";
 import type { SelectionOptions } from "../../../api/model/InteractionOptions";
 import { TooltipMessages } from "../controller/EditingController";
+import { createHelpTooltip } from "../overlays";
 import { BaseInteraction } from "./BaseInteraction";
 
 export interface SelectionParameters {
@@ -55,7 +56,11 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
             }
         });
 
-        this.#tooltip = this.#createHelpTooltip(this.mapModel, tooltipMessages);
+        this.#tooltip = createHelpTooltip(
+            this.mapModel,
+            "editing-selection-overlay",
+            tooltipMessages.getSelectionMessage()
+        );
 
         this.map.addInteraction(select);
 
@@ -78,20 +83,6 @@ export class SelectionInteraction extends BaseInteraction<SelectionParameters, S
         const { featureLayerAssociation_ } = select as unknown as InternalSelect;
         const { ol_uid } = feature as InternalFeature;
         return ol_uid != null ? featureLayerAssociation_?.[ol_uid] : undefined;
-    }
-
-    #createHelpTooltip(mapModel: MapModel, tooltipMessages: TooltipMessages): Overlay | undefined {
-        const helpOverlay = mapModel.overlays.add({
-            className: "editing-tooltip printing-hide",
-            position: "follow-pointer",
-            tag: "editing-selection-overlay",
-            offset: [15, 0],
-            positioning: "center-left",
-            ariaRole: "tooltip",
-            content: tooltipMessages.getSelectionMessage()
-        });
-
-        return helpOverlay;
     }
 
     static readonly #DEFAULT_HIT_TOLERANCE = 22;
