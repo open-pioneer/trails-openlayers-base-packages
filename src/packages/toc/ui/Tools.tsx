@@ -7,7 +7,6 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo, useId } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
-import { TocModel, useTocModel } from "../model";
 import { TocLayerNode } from "../new-model/TocLayerNode";
 import { TocViewModel } from "../new-model/TocViewModel";
 import { ToolsConfig } from "./Toc";
@@ -18,7 +17,6 @@ export interface ToolsProps extends ToolsConfig {
 
 export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     const intl = useIntl();
-    const tocModel = useTocModel();
 
     const {
         showHideAllLayers = true,
@@ -63,7 +61,7 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                                             id: "tools.collapseAllGroups"
                                         })}
                                         onClick={() => {
-                                            collapseAllGroups(tocModel);
+                                            collapseAllGroups(viewModel);
                                         }}
                                         value="collapseAllGroups"
                                     >
@@ -117,7 +115,15 @@ function hideAllLayers(viewModel: TocViewModel) {
     }
 }
 
-// TODO: use new view model
-function collapseAllGroups(tocModel: TocModel) {
-    tocModel.getItems().forEach((item) => item.setExpanded(false));
+function collapseAllGroups(viewModel: TocViewModel) {
+    const collapse = (node: TocLayerNode) => {
+        node.setExpanded(false);
+        for (const child of node.shownChildren) {
+            collapse(child);
+        }
+    };
+
+    for (const node of viewModel.shownChildren) {
+        collapse(node);
+    }
 }
