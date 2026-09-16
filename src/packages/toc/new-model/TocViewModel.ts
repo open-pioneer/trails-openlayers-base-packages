@@ -48,6 +48,8 @@ export interface SharedData {
 
 /**
  * Source of truth for all major UI state.
+ *
+ * @internal
  */
 export class TocViewModel {
     #map: MapModel;

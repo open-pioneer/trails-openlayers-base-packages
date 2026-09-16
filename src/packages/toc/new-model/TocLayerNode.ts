@@ -8,6 +8,10 @@ import { SyncedChildNodes } from "./SyncedChildNodes";
 import { SharedData, TocWidgetOptions } from "./TocViewModel";
 
 /**
+ * Represents a single layer in the toc.
+ *
+ * Currently, all layers have an associated layer node, even if they are not shown in the toc.
+ *
  * @internal
  */
 export class TocLayerNode {
