@@ -45,7 +45,7 @@ describe("node structure", () => {
 
         const node = model.getNodeById("internal-layer");
         expect(node).toBeDefined();
-        expect(node!.show).toBe(false);
+        expect(node!.isShown).toBe(false);
     });
 });
 
@@ -91,7 +91,7 @@ describe("shown nodes", () => {
         });
         const group = model.getNodeById("group")!;
 
-        expect(group.showChildren).toBe(false);
+        expect(group.shouldShowChildren).toBe(false);
         expect(group.children.length).toBe(2);
         expect(group.shownChildren).toEqual([]);
     });

@@ -41,7 +41,7 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
     const layer = node.layer;
 
     const intl = useIntl();
-    const display = useReactiveSnapshot(() => node.show, [node]);
+    const display = useReactiveSnapshot(() => node.isShown, [node]);
     const [tocOptions, tocItemElemRef] = useTocItem(node, display);
     const { isExpanded, isVisible } = useReactiveSnapshot(() => {
         return {
@@ -69,7 +69,7 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
     const nestedChildren = useNestedChildren(layerGroupId, title, node, intl);
     //all children hidden => do not render collapse button and child entries
     const hasNestedChildren = useReactiveSnapshot(() => {
-        return node.showChildren && node.hasShownChildren;
+        return node.shouldShowChildren && node.hasShownChildren;
     }, [node]);
 
     if (!display) {

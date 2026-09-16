@@ -55,7 +55,7 @@ export class TocViewModel {
     #shared: SharedData;
     #syncedChildren: SyncedChildNodes;
 
-    #shownChildren = computed(() => this.children.filter((c) => c.show));
+    #shownChildren = computed(() => this.children.filter((c) => c.isShown));
 
     constructor(map: MapModel, options: TocWidgetOptions) {
         this.#map = map;
