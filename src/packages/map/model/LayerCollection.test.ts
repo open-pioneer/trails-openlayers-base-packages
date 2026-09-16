@@ -645,12 +645,34 @@ describe("adding and removing layers", () => {
         expectLayerOrder(layers);
 
         const oldZIndex = layerTopMost2.olLayer.getZIndex();
-        model.layers.removeLayerById(layerTopMost.id); // Remove (first) topmost
+        model.layers.removeLayer(layerTopMost.id); // Remove (first) topmost
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost2);
         await waitForUpdatedZIndex(layerTopMost2, oldZIndex);
         // Validate relative order: dummy1 should be below topmost2
         expectLayerOrder(layers);
+    });
+
+    it("throws if topmost layer is also declared as a base layer", async () => {
+        model = await create("foo", {
+            layers: [
+                createTestLayer({
+                    type: SimpleLayer,
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: dummyLayer()
+                })
+            ]
+        });
+
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
+            title: "topmost1",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        expect(() => model?.layers.addLayer(layerTopMost, { at: "topmost" })).toThrow("base layer");
     });
 
     it("throws error if reference layer is not a top level operational layer", async () => {
@@ -696,7 +718,7 @@ describe("adding and removing layers", () => {
         });
         expect(() => {
             model!.layers.addLayer(otherLayer, { at: "below", reference: baseLayer });
-        }).toThrowError("base layer");
+        }).toThrow("base layer");
 
         const otherLayer2 = createTestLayer({
             type: SimpleLayer,
@@ -706,7 +728,7 @@ describe("adding and removing layers", () => {
         });
         expect(() => {
             model!.layers.addLayer(otherLayer2, { at: "above", reference: childLayer });
-        }).toThrowError("child layer");
+        }).toThrow("child layer");
     });
 
     it("supports removing a layer from the model (old API)", async () => {
@@ -847,7 +869,7 @@ describe("adding and removing layers", () => {
         expectLayerOrder(layers);
 
         const oldZIndexTopMostAbove = layerTopMostAbove.olLayer.getZIndex();
-        model.layers.removeLayerById(layerTopMostBelow.id);
+        model.layers.removeLayer(layerTopMostBelow.id);
         layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers[layers.length - 1]).toBe(layerTopMost);
         expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
@@ -954,13 +976,13 @@ describe("base layers", () => {
         expect(layers.getActiveBaseLayer()).toBe(b1);
 
         // Switches to b2
-        layers.removeLayerById(b1.id);
+        layers.removeLayer(b1.id);
         expect(layers.getBaseLayers().length).toBe(1);
         expect(layers.getActiveBaseLayer()).toBe(b2);
         expect(events).toBe(1);
 
         // Switches to undefined
-        layers.removeLayerById(b2.id);
+        layers.removeLayer(b2.id);
         expect(layers.getActiveBaseLayer()).toBe(undefined);
         expect(events).toBe(2);
     });

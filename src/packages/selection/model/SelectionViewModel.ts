@@ -11,13 +11,13 @@ import {
     throwAbortError
 } from "@open-pioneer/core";
 import { MapModel, Overlay } from "@open-pioneer/map";
+import { TooltipBox } from "@open-pioneer/map-ui-components";
 import { Extent } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { sourceId } from "open-pioneer:source-info";
 import { createElement } from "react";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "../api";
 import { ExtentSelectionInteraction } from "../interactions/ExtentSelectionInteraction";
-import { SelectionTooltipContent } from "../ui/SelectionTooltipContent";
 
 const LOG = createLogger(sourceId);
 
@@ -244,9 +244,13 @@ export class SelectionViewModel {
                 () => this.ariaMessage,
                 (message) => {
                     // Aria message doubles as tooltip text at this time
-                    const tooltipContent = createElement(SelectionTooltipContent, {
-                        content: message
-                    });
+                    const tooltipContent = createElement(
+                        TooltipBox,
+                        {
+                            maxW: "none"
+                        },
+                        message
+                    );
                     tooltip.setContent(tooltipContent);
                 },
                 { immediate: true }

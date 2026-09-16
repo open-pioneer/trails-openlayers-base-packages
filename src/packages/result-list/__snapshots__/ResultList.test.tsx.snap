@@ -97,6 +97,7 @@ exports[`expect result list to be created successfully 1`] = `
           <th
             aria-sort="none"
             class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
             tabindex="0"
           >
             Spalte A
@@ -112,6 +113,7 @@ exports[`expect result list to be created successfully 1`] = `
           <th
             aria-sort="none"
             class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
             tabindex="0"
           >
             Spalte B
@@ -127,6 +129,7 @@ exports[`expect result list to be created successfully 1`] = `
           <th
             aria-sort="none"
             class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
             tabindex="0"
           >
             Spalte C
@@ -142,6 +145,7 @@ exports[`expect result list to be created successfully 1`] = `
           <th
             aria-sort="none"
             class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
             tabindex="0"
           >
             Spalte D
@@ -157,6 +161,7 @@ exports[`expect result list to be created successfully 1`] = `
           <th
             aria-sort="none"
             class="result-list-header chakra-table__columnHeader css-rpy3z3"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
             tabindex="0"
           >
             Spalte E
@@ -179,6 +184,7 @@ exports[`expect result list to be created successfully 1`] = `
         >
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-selection-buttons-size) * 1px);"
           >
             <div
               class="result-list-select-row-container css-1baulvz"
@@ -221,26 +227,31 @@ exports[`expect result list to be created successfully 1`] = `
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
           >
             Test
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
           >
             123
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
           >
             4.567
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
           >
             displayBoolean.true
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
           >
             Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit
           </td>
@@ -250,6 +261,7 @@ exports[`expect result list to be created successfully 1`] = `
         >
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-selection-buttons-size) * 1px);"
           >
             <div
               class="result-list-select-row-container css-1baulvz"
@@ -292,26 +304,31 @@ exports[`expect result list to be created successfully 1`] = `
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
           >
             Test123
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
           >
             434
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
           >
             78.567
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
           >
             displayBoolean.false
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
           >
             Mittwoch, 12. Mai 2021 um 23:50:21 Koordinierte Weltzeit
           </td>
@@ -321,6 +338,7 @@ exports[`expect result list to be created successfully 1`] = `
         >
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-selection-buttons-size) * 1px);"
           >
             <div
               class="result-list-select-row-container css-1baulvz"
@@ -363,26 +381,31 @@ exports[`expect result list to be created successfully 1`] = `
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
           >
             Testabc
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
           >
             666
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
           >
             8.597
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
           >
             displayBoolean.true
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
           >
             Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
           </td>
@@ -392,6 +415,7 @@ exports[`expect result list to be created successfully 1`] = `
         >
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-selection-buttons-size) * 1px);"
           >
             <div
               class="result-list-select-row-container css-1baulvz"
@@ -434,18 +458,23 @@ exports[`expect result list to be created successfully 1`] = `
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
           />
         </tr>
         <tr
@@ -453,6 +482,7 @@ exports[`expect result list to be created successfully 1`] = `
         >
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-selection-buttons-size) * 1px);"
           >
             <div
               class="result-list-select-row-container css-1baulvz"
@@ -495,18 +525,23 @@ exports[`expect result list to be created successfully 1`] = `
           </td>
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_a-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_b-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_c-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_d-size) * 1px);"
           />
           <td
             class="result-list-table-row chakra-table__cell css-1luypx0"
+            style="width: calc(var(--header-result-list-col_e-size) * 1px);"
           />
         </tr>
       </tbody>

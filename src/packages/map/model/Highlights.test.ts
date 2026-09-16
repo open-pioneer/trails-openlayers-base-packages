@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, SimpleMapOptions, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { approximatelyEquals } from "ol/extent";
 import { LineString, Point, Polygon } from "ol/geom";
+import { Stroke, Style } from "ol/style";
 import { afterEach, expect, it, vi } from "vitest";
 import { BaseFeature } from "../utils/BaseFeature";
-import { DESTROY_HIGHLIGHTS, GET_HIGHLIGHT_LAYER, Highlights } from "./Highlights";
+import { DESTROY_HIGHLIGHTS, GET_HIGHLIGHT_LAYER, Highlights, HighlightStyle } from "./Highlights";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -73,8 +74,9 @@ it("should successfully add polygon geometries", async () => {
 });
 
 it("should successfully zoom and add geometries", async () => {
-    const { map, highlights } = await setup();
+    const { map, highlights } = await setup({ mockMapRender: true });
     const olMap = map.olMap;
+    await waitForMapRender(map);
 
     const point = new Point([852011.307424, 6788511.322702]);
     const zoomLevel = olMap.getView().getZoom();
@@ -94,8 +96,9 @@ it("should successfully zoom and add geometries", async () => {
 });
 
 it("should successfully zoom and add BaseFeatures", async () => {
-    const { map, highlights } = await setup();
+    const { map, highlights } = await setup({ mockMapRender: true });
     const olMap = map.olMap;
+    await waitForMapRender(map);
 
     const point = new Point([852011.307424, 6788511.322702]);
     const feature = { id: "test", geometry: point } as BaseFeature;
@@ -116,8 +119,9 @@ it("should successfully zoom and add BaseFeatures", async () => {
 });
 
 it("should successfully zoom and add only BaseFeatures with geometry", async () => {
-    const { map, highlights } = await setup();
+    const { map, highlights } = await setup({ mockMapRender: true });
     const olMap = map.olMap;
+    await waitForMapRender(map);
 
     const point = new Point([852011.307424, 6788511.322702]);
     const feature = { id: "test", geometry: point } as BaseFeature;
@@ -251,8 +255,74 @@ it("should zoom the map to the right extent", async () => {
     expect(approximatelyEquals(expectedExtent, currentExtent, 1)).toBe(true);
 });
 
-async function setup() {
-    const { map } = await setupMap({ center: { x: 0, y: 0 }, zoom: 5, layers: [] });
+it("should set the provided style on the highlight", async () => {
+    const { highlights } = await setup();
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+    expect(feature?.getStyle()).toEqual(greenStyle.Point);
+});
+
+it("should change the style of the highlight", async () => {
+    const { highlights } = await setup();
+
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    const highlight = highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+
+    const blueStyle = createStyle("blue");
+    highlight.setStyle(blueStyle);
+    expect(feature?.getStyle()).toEqual(blueStyle.Point);
+});
+
+it("should set the provided style on the highlight", async () => {
+    const { highlights } = await setup();
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+    expect(feature?.getStyle()).toEqual(greenStyle.Point);
+});
+
+it("should change the style of the highlight", async () => {
+    const { highlights } = await setup();
+
+    const point = new Point([852011.307424, 6788511.322702]);
+
+    const greenStyle = createStyle("green");
+    const highlight = highlights.add([point], { highlightStyle: greenStyle });
+
+    const source = getLayerSource(highlights);
+    const feature = source?.getFeatures()[0];
+    expect(feature).toBeDefined();
+
+    const blueStyle = createStyle("blue");
+    highlight.setStyle(blueStyle);
+    expect(feature?.getStyle()).toEqual(blueStyle.Point);
+});
+
+async function setup(options?: SimpleMapOptions & { returnMap?: true; mockMapRender?: boolean }) {
+    const { map } = await setupMap({
+        ...options,
+        center: { x: 0, y: 0 },
+        zoom: 5,
+        layers: [],
+        mockMapRender: true
+    });
     map.olMap.setSize([500, 500]);
 
     const highlights = (_highlights = new Highlights(map, {
@@ -265,4 +335,18 @@ function getLayerSource(highlights: Highlights) {
     const highlightLayer = highlights[GET_HIGHLIGHT_LAYER]();
     if (!highlightLayer) return;
     return highlightLayer.getSource();
+}
+
+function createStyle(color: string): HighlightStyle {
+    const stroke = new Style({
+        stroke: new Stroke({ color })
+    });
+    return {
+        Point: stroke,
+        MultiPoint: stroke,
+        LineString: stroke,
+        MultiLineString: stroke,
+        Polygon: stroke,
+        MultiPolygon: stroke
+    };
 }

@@ -1,4 +1,4 @@
-[![Build and deploy](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/test-and-build.yml)
+[![Build and deploy](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/ci.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/ci.yml)
 [![Audit dependencies (daily)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml)
 
 # OpenLayers Base Packages

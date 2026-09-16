@@ -92,7 +92,7 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    await waitFor(() => expect(finishedTooltip.innerHTML).toBe("<span>68.45 m</span>"));
+    await waitFor(() => expect(finishedTooltip.textContent).toBe("68.45 m"));
 
     controller.stopMeasurement();
 });
@@ -109,7 +109,7 @@ it("should respect the map's current projection (EPSG:4326)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    await waitFor(() => expect(finishedTooltip.innerHTML).toEqual("<span>100.13 m</span>"));
+    await waitFor(() => expect(finishedTooltip.textContent).toEqual("100.13 m"));
 
     controller.stopMeasurement();
 });
@@ -125,16 +125,16 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 
     // Tooltip is created
     const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
-    await waitFor(() => expect(activeTooltip.innerHTML).toEqual("<span>0 m</span>"));
+    await waitFor(() => expect(activeTooltip.textContent).toEqual("0 m"));
 
     // Append another coordinate, expect distance to be computed
     draw.appendCoordinates([[851873.959638, 6788406.97408]]);
-    await waitFor(() => expect(activeTooltip.innerHTML).toEqual("<span>0.37 m</span>"));
+    await waitFor(() => expect(activeTooltip.textContent).toEqual("0.37 m"));
 
     // Finish drawing: tooltip should have a different class but same content
     draw.finishDrawing();
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    await waitFor(() => expect(finishedTooltip.innerHTML).toEqual("<span>0.37 m</span>"));
+    await waitFor(() => expect(finishedTooltip.textContent).toEqual("0.37 m"));
 
     controller.stopMeasurement();
 });

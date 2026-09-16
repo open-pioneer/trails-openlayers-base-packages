@@ -61,7 +61,11 @@ export type HighlightStyle = {
  * @group Map Model
  */
 export interface Highlight extends Resource {
+    /** Returns `true` if the highlight has not been destroyed yet. */
     readonly isActive: boolean;
+
+    /** Updates the style of the highlight. Use `undefined` to revert to the default style. */
+    setStyle(style: HighlightStyle | undefined): void;
 }
 
 type HighlightStyleType = keyof HighlightStyle;
@@ -123,7 +127,8 @@ export class Highlights {
                 get isActive() {
                     return false;
                 },
-                destroy() {}
+                destroy() {},
+                setStyle() {}
             };
         }
 
@@ -152,6 +157,14 @@ export class Highlights {
                     source.removeFeature(feature);
                 }
                 highlights.delete(highlight);
+            },
+            setStyle(style: HighlightStyle | undefined) {
+                for (const feature of features) {
+                    const geometry = feature.getGeometry();
+                    if (geometry) {
+                        feature.setStyle(getOwnStyle(geometry.getType(), style));
+                    }
+                }
             }
         };
 

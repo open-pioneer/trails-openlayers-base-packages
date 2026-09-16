@@ -3,20 +3,6 @@
     border: 3px solid var(--chakra-colors-trails-solid) !important;
 }
 
-.selection-tooltip {
-    position: relative;
-    background: rgb(from var(--chakra-colors-bg) r g b / 80%);
-    border-radius: 4px;
-    color: var(--chakra-colors-fg);
-    padding: 4px 8px;
-    opacity: 1;
-    white-space: nowrap;
-    font-size: 12px;
-    cursor: default;
-    user-select: none;
-    font-weight: bold;
-}
-
 .map-container .selection-active {
     cursor: crosshair;
 }

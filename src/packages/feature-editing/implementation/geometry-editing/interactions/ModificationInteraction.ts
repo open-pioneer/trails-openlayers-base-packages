@@ -8,6 +8,7 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 import { Modify } from "ol/interaction";
 import type { ModificationOptions } from "../../../api/model/InteractionOptions";
 import type { TooltipMessages } from "../controller/EditingController";
+import { createHelpTooltip } from "../overlays";
 import { BaseInteraction } from "./BaseInteraction";
 
 export interface ModificationParameters {
@@ -75,17 +76,6 @@ export class ModificationInteraction extends BaseInteraction<ModificationParamet
             geometryType === "Point"
                 ? modificationMessages.get("Point")
                 : modificationMessages.get("default");
-
-        const helpOverlay = mapModel.overlays.add({
-            className: "editing-tooltip printing-hide",
-            position: "follow-pointer",
-            tag: "editing-modification-overlay",
-            offset: [15, 0],
-            positioning: "center-left",
-            ariaRole: "tooltip",
-            content: message
-        });
-
-        return helpOverlay;
+        return createHelpTooltip(mapModel, "editing-modification-overlay", message);
     }
 }

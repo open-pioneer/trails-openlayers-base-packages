@@ -8,7 +8,6 @@ export default defineBuildConfig({
     ui: {
         references: ["notifier.NotificationService", "map.LayerFactory"]
     },
-    styles: "./implementation/featureEditing.css",
     entryPoints: ["index.ts"],
     publishConfig: {
         strict: true

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Box, BoxProps } from "@chakra-ui/react";
+import { isAbortError, createLogger } from "@open-pioneer/core";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import {
     CommonComponentProps,
@@ -11,7 +12,10 @@ import {
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import OlBaseLayer from "ol/layer/Base";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { FC, useEffect, useMemo, useRef } from "react";
+
+const LOG = createLogger(sourceId);
 
 /**
  * These are properties supported by the {@link OverviewMap}.
@@ -52,16 +56,34 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
     useEffect(() => {
         if (overviewMapControlElem.current && olLayer) {
             const olMap = map.olMap;
-            const overviewMapControl: OlOverviewMap = new OlOverviewMap({
-                className: "ol-overviewmap",
-                layers: [olLayer],
-                collapsible: false,
-                collapsed: false,
-                target: overviewMapControlElem.current
-            });
-            olMap.addControl(overviewMapControl);
+            const element = overviewMapControlElem.current;
+
+            let overviewMapControl: OlOverviewMap | undefined;
+            let cancelled = false;
+            map.whenDisplayed()
+                .then(() => {
+                    if (cancelled) return;
+                    overviewMapControl = new OlOverviewMap({
+                        className: "ol-overviewmap",
+                        layers: [olLayer],
+                        collapsible: false,
+                        collapsed: false,
+                        target: element
+                    });
+                    olMap.addControl(overviewMapControl);
+                })
+                .catch((error) => {
+                    if (!isAbortError(error) && !cancelled) {
+                        LOG.error("Error displaying overview map control:", error);
+                    }
+                });
+
             return () => {
-                olMap.removeControl(overviewMapControl);
+                if (overviewMapControl) {
+                    olMap.removeControl(overviewMapControl);
+                    overviewMapControl.dispose();
+                }
+                cancelled = true;
             };
         }
     }, [map, olLayer]);

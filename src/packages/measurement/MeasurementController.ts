@@ -261,7 +261,10 @@ export class MeasurementController {
     #updateTooltip() {
         const overlay = this.#helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.#activeMeasurement);
-        const newContent = createElement(MeasurementTooltipContent, { content: helpMessage });
+        const newContent = createElement(MeasurementTooltipContent, {
+            kind: "help",
+            content: helpMessage
+        });
         overlay.setContent(newContent);
     }
 
@@ -373,7 +376,9 @@ class MeasurementInstance {
             output = formatLength(geometry, projection, this.#messages);
         }
         if (output) {
-            this.#tooltip.setContent(createElement(MeasurementTooltipContent, { content: output }));
+            this.#tooltip.setContent(
+                createElement(MeasurementTooltipContent, { kind: this.#state, content: output })
+            );
         }
     }
 
@@ -424,7 +429,7 @@ function createHelpTooltip(map: MapModel): Overlay {
         offset: [15, 0],
         positioning: "center-left",
         ariaRole: "tooltip",
-        content: createElement(MeasurementTooltipContent)
+        content: createElement(MeasurementTooltipContent, { kind: "help" })
     });
 
     return helpOverlay;
@@ -432,7 +437,9 @@ function createHelpTooltip(map: MapModel): Overlay {
 
 function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
     const overlay = map.overlays.add({
-        content: createElement(MeasurementTooltipContent),
+        content: createElement(MeasurementTooltipContent, {
+            kind: isFinished ? "finished" : "active"
+        }),
         offset: !isFinished ? DEFAULT_MEASUREMENT_OFFSET : FINISHED_MEASUREMENT_OFFSET,
         positioning: "bottom-center",
         className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,

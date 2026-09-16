@@ -29,7 +29,7 @@ const defaultBasemapConfig = [
 ];
 
 it("should successfully create a scale Setter component", async () => {
-    const { map, Wrapper } = await setup();
+    const { map, Wrapper } = await setup({ mockMapRender: true });
 
     render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
@@ -42,7 +42,7 @@ it("should successfully create a scale Setter component", async () => {
 });
 
 it("should successfully create a scale setter component with additional css classes and box properties", async () => {
-    const { map, Wrapper } = await setup();
+    const { map, Wrapper } = await setup({ mockMapRender: true });
     render(<ScaleSetter map={map} className="test test1 test2" data-testid="scale-setter" />, {
         wrapper: Wrapper
     });
@@ -97,7 +97,8 @@ it("should successfully render the scale in the correct locale", async () => {
 it("should successfully update the map scale and label when selection changes", async () => {
     const user = userEvent.setup();
     const { map, Wrapper } = await setup({
-        layers: defaultBasemapConfig
+        layers: defaultBasemapConfig,
+        mockMapRender: true
     });
     const olMap = map.olMap;
 
@@ -129,7 +130,8 @@ it("should successfully update the map scale and label when selection changes", 
 
 it("should successfully update the label when map scale changes after creation", async () => {
     const { map, Wrapper, changeLocale } = await setup({
-        layers: defaultBasemapConfig
+        layers: defaultBasemapConfig,
+        mockMapRender: true
     });
     changeLocale("de");
 
@@ -246,8 +248,8 @@ async function getMenuOptions(
     return items;
 }
 
-async function setup(opts?: { layers?: LayerConfig[] }) {
-    const { map } = await setupMap({ layers: opts?.layers });
+async function setup(opts?: { layers?: LayerConfig[]; mockMapRender?: boolean }) {
+    const { map } = await setupMap({ layers: opts?.layers, mockMapRender: opts?.mockMapRender });
     const locale = reactive<string>();
     const Wrapper = (props: { children?: ReactNode }) => {
         const currentLocale = useReactiveValue(locale);

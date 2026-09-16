@@ -17,6 +17,7 @@
         "@open-pioneer/legend": "workspace:*",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/map-navigation": "workspace:*",
+        "@open-pioneer/map-ui-components": "workspace:*",
         "@open-pioneer/measurement": "workspace:*",
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/ogc-features": "workspace:*",
