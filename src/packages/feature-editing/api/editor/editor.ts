@@ -106,7 +106,7 @@ export interface FeatureEditorProps
      * Default: the selection interaction is available if there are any editable layers (as configured by {@link selectableLayers} or its default value)
      * that are _visible_.
      */
-    readonly getSelectionAvailability?: (
+    readonly resolveSelectionAvailability?: (
         context: SelectionAvailabilityContext
     ) => SelectionAvailability;
 

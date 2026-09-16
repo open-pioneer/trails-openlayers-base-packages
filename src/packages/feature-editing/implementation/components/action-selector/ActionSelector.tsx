@@ -21,7 +21,7 @@ export interface ActionSelectorProps {
     mapModel: MapModel;
     templates: FeatureTemplate[];
     selectableLayers: Layer[] | undefined;
-    getSelectionAvailability: FeatureEditorProps["getSelectionAvailability"];
+    resolveSelectionAvailability: FeatureEditorProps["resolveSelectionAvailability"];
     showActionBar: boolean;
     editingStep: EditingStep;
     drawingState: DrawingState;
@@ -43,7 +43,7 @@ export function ActionSelector({
     mapModel,
     templates,
     selectableLayers,
-    getSelectionAvailability,
+    resolveSelectionAvailability,
     showActionBar,
     editingStep,
     drawingState,
@@ -53,7 +53,7 @@ export function ActionSelector({
         mapModel,
         templates,
         selectableLayers,
-        getSelectionAvailability
+        resolveSelectionAvailability
     );
 
     // Reset editing step "initial" when the selection becomes unavailable.

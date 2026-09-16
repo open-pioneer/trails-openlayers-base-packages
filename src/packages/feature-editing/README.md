@@ -335,7 +335,7 @@ The `FeatureEditor` component accepts the following props:
 | `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                          |
 | `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                        |
 | `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                   |
-| `getSelectionAvailability`       | `(context) => SelectionAvailability`     | No       | Custom function to enable or disable the selection interaction. By default: disabled when there are no visible selectable layers. |
+| `resolveSelectionAvailability`   | `(context) => SelectionAvailability`     | No       | Custom function to enable or disable the selection interaction. By default: disabled when there are no visible selectable layers. |
 | `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                              |
 | `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                  |
 | `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification.   |
@@ -361,7 +361,7 @@ The drawing options will be merged with those of the selected feature template (
 Editing an existing feature requires the user to select it on the map first.
 By default, the selection is only available if at least one of the selectable layers is visible; otherwise the selection button is disabled and a hint is shown to the user.
 
-Use the `getSelectionAvailability` prop to implement a different rule, for example if selection should also require a certain zoom level:
+Use the `resolveSelectionAvailability` prop to implement a different rule, for example if selection should also require a certain zoom level:
 
 ```tsx
 import type {
@@ -370,7 +370,7 @@ import type {
 } from "@open-pioneer/feature-editing";
 
 // Use a function that does not change its value on every render.
-const getSelectionAvailability = useCallback(
+const customResolveSelectionAvailability = useCallback(
     ({ mapModel, layers }: SelectionAvailabilityContext): SelectionAvailability => {
         if (!layers.some((layer) => layer.visible)) {
             return { status: "unavailable", reason: "Please activate an editable layer." };
@@ -386,7 +386,7 @@ const getSelectionAvailability = useCallback(
 <FeatureEditor
     templates={templates}
     writer={featureWriter}
-    getSelectionAvailability={getSelectionAvailability}
+    resolveSelectionAvailability={customResolveSelectionAvailability}
 />;
 ```
 

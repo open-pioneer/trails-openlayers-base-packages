@@ -294,7 +294,7 @@ describe("Editor interaction", () => {
                     templates={allTemplates}
                     writer={mockWriter}
                     onEditingStepChange={onEditingStepChange}
-                    getSelectionAvailability={() => {
+                    resolveSelectionAvailability={() => {
                         return errorMessage.value
                             ? { status: "unavailable", reason: errorMessage.value }
                             : { status: "available" };

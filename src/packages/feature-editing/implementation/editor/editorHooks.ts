@@ -77,7 +77,7 @@ export function useSelectionAvailability(
     mapModel: MapModel,
     templates: FeatureTemplate[],
     selectableLayers: Layer[] | undefined,
-    getCustomSelectionAvailability?: FeatureEditorProps["getSelectionAvailability"]
+    customSelectionAvailability?: FeatureEditorProps["resolveSelectionAvailability"]
 ): SelectionAvailability {
     const intl = useIntl();
     const defaultLayers = useDefaultLayers(mapModel, templates);
@@ -85,7 +85,7 @@ export function useSelectionAvailability(
 
     // Reactive function, useCallback is used for stability. See useReactiveSnapshot below,
     // the function is a dependency of the snapshot, too.
-    const getDefaultSelectionAvailability = useCallback(
+    const defaultSelectionAvailability = useCallback(
         ({ layers }: SelectionAvailabilityContext): SelectionAvailability => {
             const isAvailable = layers.some((layer) => layer.visible);
             if (!isAvailable) {
@@ -100,15 +100,15 @@ export function useSelectionAvailability(
         },
         [intl]
     );
-    const getAvailability = getCustomSelectionAvailability ?? getDefaultSelectionAvailability;
+    const resolveAvailability = customSelectionAvailability ?? defaultSelectionAvailability;
 
     // Watches the function's result using the reactivity API.
     // TODO(refactor): this is extremely awkward because _most_ data in this package lives in the react layer.
     // Ideally, both the `layers` and the selection availability strategy would live purely in the model,
     // and we would not have to dance around with hooks and watches.
     return useReactiveSnapshot(() => {
-        return getAvailability({ mapModel, layers });
-    }, [mapModel, layers, getAvailability]);
+        return resolveAvailability({ mapModel, layers });
+    }, [mapModel, layers, resolveAvailability]);
 }
 
 export function useSnappingSources(

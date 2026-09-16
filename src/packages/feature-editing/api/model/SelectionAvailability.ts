@@ -6,7 +6,7 @@ import { Layer, MapModel } from "@open-pioneer/map";
 import { type FeatureEditorProps } from "../editor/editor";
 
 /**
- * The context made available to implementations of the {@link FeatureEditorProps.getSelectionAvailability | getSelectionAvailability} property.
+ * The context made available to implementations of the {@link FeatureEditorProps.resolveSelectionAvailability | resolveSelectionAvailability} property.
  *
  * @group Model
  */

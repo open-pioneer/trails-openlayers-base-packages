@@ -23,7 +23,7 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
         resolveFormTemplate,
         selectableLayers,
         snappableLayers = selectableLayers,
-        getSelectionAvailability,
+        resolveSelectionAvailability,
         showActionBar = true,
         successNotifierDisplayDuration,
         failureNotifierDisplayDuration,
@@ -92,7 +92,7 @@ export function FeatureEditor(props: FeatureEditorProps): ReactElement {
                     mapModel={mapModel}
                     templates={templates}
                     selectableLayers={selectableLayers}
-                    getSelectionAvailability={getSelectionAvailability}
+                    resolveSelectionAvailability={resolveSelectionAvailability}
                     showActionBar={showActionBar}
                     onActionChange={onActionChange}
                     drawingState={drawingState}
