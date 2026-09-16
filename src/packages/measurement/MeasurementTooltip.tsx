@@ -14,23 +14,16 @@ import { ReactNode } from "react";
  */
 export type MeasurementTooltipKind = "help" | "active" | "finished";
 
+/**
+ * Renders the content of a measurement tooltip.
+ */
 export function MeasurementTooltipContent(props: {
     kind: MeasurementTooltipKind;
     content?: ReactNode;
 }) {
     const { kind, content } = props;
-    return (
-        <TooltipBox className={TOOLTIP_CLASS_NAMES[kind]} css={TOOLTIP_STYLES[kind]}>
-            {content}
-        </TooltipBox>
-    );
+    return <TooltipBox css={TOOLTIP_STYLES[kind]}>{content}</TooltipBox>;
 }
-
-const TOOLTIP_CLASS_NAMES: Record<MeasurementTooltipKind, string> = {
-    help: "measurement-tooltip",
-    active: "measurement-tooltip measurement-active-tooltip",
-    finished: "measurement-tooltip measurement-finished-tooltip"
-};
 
 /**
  * Styles shared by the tooltips that are attached to a measurement geometry.

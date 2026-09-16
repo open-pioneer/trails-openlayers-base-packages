@@ -5,7 +5,21 @@ import { MapModel, Overlay } from "@open-pioneer/map";
 import { TooltipBox } from "@open-pioneer/map-ui-components";
 import { createElement, ReactNode } from "react";
 
-export function createHelpTooltip(mapModel: MapModel, tag: string, content: ReactNode): Overlay {
+/**
+ * Creates a help tooltip that follows the mouse pointer.
+ *
+ * Returns `undefined` if there is no content to display: an empty tooltip would
+ * still be rendered as a visible (but empty) box.
+ */
+export function createHelpTooltip(
+    mapModel: MapModel,
+    tag: string,
+    content: ReactNode
+): Overlay | undefined {
+    if (!content) {
+        return undefined;
+    }
+
     const helpOverlay = mapModel.overlays.add({
         className: "editing-tooltip printing-hide",
         position: "follow-pointer",

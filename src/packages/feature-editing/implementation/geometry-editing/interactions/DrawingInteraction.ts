@@ -110,10 +110,6 @@ export class DrawingInteraction extends BaseInteraction<DrawingParameters, Drawi
         geometryType: GeometryType
     ): Overlay | undefined {
         const message = tooltipMessages.getDrawingMessages().get(geometryType);
-        if (!message) {
-            return undefined;
-        }
-
         return createHelpTooltip(mapModel, "editing-draw-overlay", message);
     }
 }
