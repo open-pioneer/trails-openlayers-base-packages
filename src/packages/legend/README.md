@@ -34,12 +34,11 @@ import { CustomLegend } from "./CustomLegend"; // import react component to show
 async getMapConfig({ layerFactory }): Promise<MapConfig> {
     return {
         // ...
-        layers: [
+        baseLayers: [
             layerFactory.create({
                 type: SimpleLayer,
                 id: "topplus_open",
                 title: "TopPlus Open",
-                isBaseLayer: true,
                 visible: true,
                 olLayer: createTopPlusOpenLayer("web"),
                 attributes: {
@@ -49,6 +48,8 @@ async getMapConfig({ layerFactory }): Promise<MapConfig> {
                     }
                 }
             }),
+        ]
+        layers: [
             layerFactory.create({
                 type: SimpleLayer,
                 title: "Kindertagesstätten",
