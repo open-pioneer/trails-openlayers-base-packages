@@ -3,7 +3,12 @@
 
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, Layer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import {
+    createTestLayer,
+    createTestOlLayer,
+    setupMap,
+    waitForMapRender
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
@@ -17,10 +22,11 @@ const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
 const BASEMAP_SWITCHER_TRIGGER_CLASS = ".basemap-switcher-select-trigger";
 
 it("should successfully create a toc component", async () => {
-    const { map, Wrapper } = await setupTocContext();
+    const { map, Wrapper } = await setupTocContext({ mockMapRender: true });
     render(<Toc map={map} data-testid="toc" />, {
         wrapper: Wrapper
     });
+    await waitForMapRender(map);
 
     const tocDiv = await findToc();
     const { basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
@@ -46,7 +52,7 @@ it("should successfully create a toc component", async () => {
 });
 
 it("should successfully create a toc component with additional css classes", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} className="test" data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -56,7 +62,7 @@ it("should successfully create a toc component with additional css classes", asy
 });
 
 it("should embed the basemap switcher by default", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -67,7 +73,7 @@ it("should embed the basemap switcher by default", async () => {
 });
 
 it("should not show the basemap switcher if 'showBasemapSwitcher' is set to false", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} showBasemapSwitcher={false} data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -78,13 +84,15 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' is set to fals
 });
 
 it("should support overriding basemap-switcher properties", async () => {
-    const { map, Wrapper } = await setupTocContext([
-        {
-            title: "OSM",
-            olLayer: createTestOlLayer(),
-            isBaseLayer: true
-        }
-    ]);
+    const { map, Wrapper } = await setupTocContext({
+        layers: [
+            {
+                title: "OSM",
+                olLayer: createTestOlLayer(),
+                isBaseLayer: true
+            }
+        ]
+    });
     render(
         <Toc
             map={map}
@@ -247,7 +255,7 @@ describe("toc api", () => {
                 })
             ]
         });
-        const { map, Wrapper } = await setupTocContext([group]);
+        const { map, Wrapper } = await setupTocContext({ layers: [group] });
         let readyEvent: TocReadyEvent | undefined;
         const onReadyHandler = (e: TocReadyEvent) => {
             readyEvent = e;
@@ -294,9 +302,12 @@ describe("toc api", () => {
     });
 });
 
-async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
+async function setupTocContext(opts?: {
+    layers?: (SimpleLayerConfig | Layer)[];
+    mockMapRender?: boolean;
+}) {
     const { map } = await setupMap({
-        layers: layers ?? [
+        layers: opts?.layers ?? [
             {
                 title: "Base layer",
                 id: "base-layer",
@@ -313,7 +324,8 @@ async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
                 id: "layer-2",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: opts?.mockMapRender
     });
     const Wrapper = (props: { children?: ReactNode }) => {
         return <PackageContextProvider>{props.children}</PackageContextProvider>;
