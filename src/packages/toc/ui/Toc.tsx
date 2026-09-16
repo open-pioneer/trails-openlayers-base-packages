@@ -215,7 +215,6 @@ function TocContent(props: TocProps & { map: MapModel }) {
                 }
             >
                 <TopLevelLayerList
-                    map={map}
                     viewModel={viewModel}
                     aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                 />

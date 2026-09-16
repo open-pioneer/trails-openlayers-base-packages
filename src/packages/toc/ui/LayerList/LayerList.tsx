@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { List, ListRootProps, Text } from "@chakra-ui/react";
-import { AnyLayer, MapModel } from "@open-pioneer/map";
+import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useMemo } from "react";
@@ -12,7 +12,6 @@ import { displayItemForLayer } from "../../utils/displayLayer";
 import { LayerItem } from "./LayerItem";
 
 interface TopLevelLayerListProps {
-    map: MapModel;
     viewModel: TocViewModel;
 
     /** The label of the list group (<ul>) */
@@ -23,7 +22,7 @@ interface TopLevelLayerListProps {
  * Lists the operational layers in the map.
  */
 export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevelLayerListProps) {
-    const { map, viewModel, "aria-label": ariaLabel } = props;
+    const { viewModel, "aria-label": ariaLabel } = props;
     const intl = useIntl();
     const nodes = useReactiveSnapshot(() => viewModel.children, [viewModel]);
     const empty = useReactiveSnapshot(() => isEmpty(nodes.map((node) => node.layer)), [nodes]); // TODO: hacky -- make this a getter on the node?
@@ -66,6 +65,5 @@ export const LayerList = memo(function LayerList(props: { nodes: TocLayerNode[] 
  */
 function isEmpty(layers: AnyLayer[]): boolean {
     const isEmpty = !layers.length || layers.every((l) => !displayItemForLayer(l));
-
     return isEmpty;
 }
