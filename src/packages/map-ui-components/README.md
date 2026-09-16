@@ -12,6 +12,11 @@ To create a simple icon button with a tooltip and an `aria-label`, use the `Tool
 
 This component is used to add an icon button to the map.
 
+## Tooltip box
+
+A simple `Box`-component that is styled like a chakra tooltip.
+We use this component to place tooltip-like messages on the map.
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

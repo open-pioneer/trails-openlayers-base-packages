@@ -473,12 +473,18 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../map-ui-components
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.8.0-dev.20260910101405(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
         version: 10.10.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:*
@@ -509,6 +515,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
         version: 4.8.0-dev.20260910101405(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))
@@ -812,6 +821,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../map-ui-components
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.8.0-dev.20260910101405(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0))(react-dom@19.3.0(react@19.3.0))
@@ -1184,6 +1196,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:*
         version: link:../map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../map-ui-components
       '@open-pioneer/notifier':
         specifier: 'catalog:'
         version: 4.8.0-dev.20260910101405(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))
@@ -1571,6 +1586,9 @@ importers:
       '@open-pioneer/map-navigation':
         specifier: workspace:*
         version: link:../../../packages/map-navigation
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:*
+        version: link:../../../packages/map-ui-components
       '@open-pioneer/measurement':
         specifier: workspace:*
         version: link:../../../packages/measurement

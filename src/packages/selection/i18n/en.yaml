@@ -1,6 +1,6 @@
 messages:
   selectSource: "Select source"
-  tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
+  tooltip: "Click on the map, hold down the mouse button and draw a rectangle."
   disabledTooltip: "The current selection source is not available"
   noSourceTooltip: "No selection source selected. Please choose a selection source to start."
   sourceNotAvailable: "Source not available"
