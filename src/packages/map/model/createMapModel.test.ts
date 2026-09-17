@@ -5,7 +5,10 @@ import { constant } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
-import { it, expect, vi, afterEach } from "vitest";
+import { Tile } from "ol/layer";
+import OlBaseLayer from "ol/layer/Base";
+import { OSM } from "ol/source";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SimpleLayer } from "../layers/SimpleLayer";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
@@ -84,6 +87,56 @@ it("supports adding base layers to the model in MapConfig", async () => {
     expect(baseLayers).toHaveLength(2);
     expect(model.layers.getActiveBaseLayer()).toBe(layerBase);
 });
+
+describe("fallback layer", () => {
+    // Does not make a lot of sense, but this was present since the very beginning.
+    it("creates a fallback OSM layer if the user does not specify any layers", async () => {
+        const model = await create("foo", {});
+        expect(model.layers.getRecursiveLayers()).toEqual([]); // no "real" layers
+
+        const olLayers = model.olMap.getLayers().getArray();
+        expect(olLayers.length).toBeGreaterThan(0);
+
+        const osm = findOsmLayer(olLayers);
+        expect(osm).toBeDefined();
+    });
+
+    it("does not create a fallback OSM layer if the baseLayers option is used", async () => {
+        const model = await create("foo", {
+            baseLayers: []
+        });
+
+        const olLayers = model.olMap.getLayers().getArray();
+        const osm = findOsmLayer(olLayers);
+        expect(osm).toBeUndefined();
+    });
+
+    it("does not create a fallback OSM layer if the layers option is used", async () => {
+        const model = await create("foo", {
+            layers: []
+        });
+
+        const olLayers = model.olMap.getLayers().getArray();
+        const osm = findOsmLayer(olLayers);
+        expect(osm).toBeUndefined();
+    });
+
+    it("does not create a fallback OSM layer if the topmostLayers option is used", async () => {
+        const model = await create("foo", {
+            topmostLayers: []
+        });
+
+        const olLayers = model.olMap.getLayers().getArray();
+        const osm = findOsmLayer(olLayers);
+        expect(osm).toBeUndefined();
+    });
+});
+
+function findOsmLayer(olLayers: OlBaseLayer[]) {
+    return olLayers.find(
+        (olLayer) => olLayer instanceof Tile && olLayer.getSource() instanceof OSM
+    );
+}
 
 function create(mapId: string, mapConfig: MapConfig) {
     return createMapModel(
