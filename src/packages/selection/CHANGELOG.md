@@ -1,5 +1,31 @@
 # @open-pioneer/selection
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- fab4c36: Add the map model to the context of the selection source's `select` method.
+- a9c1213: Rework the tooltips rendered on the map: help tooltips now look like chakra's tooltips, and the measurement tooltips (active and finished measurements) are also derived from chakra's tooltip styles.
+
+    The built-in styles of these tooltips are no longer shipped as plain css, chakra style props are used instead.
+    The existing css classes (`editing-tooltip`, `measurement-tooltip`, `measurement-active-tooltip`, `measurement-finished-tooltip`, `selection-tooltip`) remain on the overlay's element.
+
+- a186f5d: Update core packages to 4.8.0.
+- fab4c36: Add support for an `id` property on the selection source interface to identify sources. The property remains optional for the time being to preserve backwards compatibility.
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- fab4c36: Cancel selection requests that are no longer needed.
+  If the user starts another selection while a request is still running, the previous request is cancelled
+  and only the results of the most recent selection are used.
+- fab4c36: Use `synchronized` to watch the vector layer's visibility.
+- fab4c36: Refactor the internal state management of the selection component: the widget state now lives in a
+  long lived, reactive view model instead of react state. This is an internal change; the component's
+  properties, events and behavior are unchanged.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes

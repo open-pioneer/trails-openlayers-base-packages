@@ -1,6 +1,6 @@
 {
     "name": "openlayers-base-packages",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "private": true,
     "license": "Apache-2.0",
     "type": "module",
@@ -66,5 +66,5 @@
         "node": ">= 24",
         "pnpm": ">= 10"
     },
-    "packageManager": "pnpm@11.26.0"
+    "packageManager": "pnpm@12.4.2"
 }

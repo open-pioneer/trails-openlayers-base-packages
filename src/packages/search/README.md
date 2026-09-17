@@ -174,6 +174,11 @@ import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 class MySearchSource implements SearchSource {
+    // The optional id of this source. It must be unique among the sources used by the same
+    // search component and it must not change. If no id is defined, the search component
+    // generates one internally.
+    id = "my-sample-rest-service";
+
     // The label of this source, used as a title for this source's results.
     label = "My sample REST-Service";
 

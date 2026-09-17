@@ -40,10 +40,12 @@ export async function createMapModel(
     currentIntl: ReadonlyReactive<PackageIntl>,
     httpService: HttpService
 ): Promise<MapModel> {
-    return await new MapModelFactory(mapId, mapConfig, currentIntl, httpService).createMapModel();
+    const builder = new MapModelBuilder(mapId, mapConfig, currentIntl, httpService);
+    const mapModel = await builder.buildMapModel();
+    return mapModel;
 }
 
-class MapModelFactory {
+class MapModelBuilder {
     #mapId: string;
     #mapConfig: MapConfig;
     #currentIntl: ReadonlyReactive<PackageIntl>;
@@ -61,7 +63,7 @@ class MapModelFactory {
         this.#httpService = httpService;
     }
 
-    async createMapModel() {
+    async buildMapModel() {
         const mapId = this.#mapId;
         const mapConfig = this.#mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
@@ -95,7 +97,12 @@ class MapModelFactory {
         this.#initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
 
-        if (!mapOptions.layers && !mapConfig.layers) {
+        if (
+            !mapOptions.layers &&
+            !mapConfig.layers &&
+            !mapConfig.baseLayers &&
+            !mapConfig.topmostLayers
+        ) {
             mapOptions.layers = [
                 new TileLayer({
                     source: new OSM()

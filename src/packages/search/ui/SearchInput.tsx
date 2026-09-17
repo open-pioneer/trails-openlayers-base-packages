@@ -4,9 +4,6 @@
 import {
     CloseButton,
     Combobox,
-    ComboboxInputValueChangeDetails,
-    ComboboxValueChangeDetails,
-    createListCollection,
     Icon,
     InputGroup,
     Portal,
@@ -14,71 +11,67 @@ import {
     VisuallyHidden
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { useEvent } from "@open-pioneer/react-utils";
+import { DISPATCH_SYNC, useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, UIEvent, useMemo, useRef } from "react";
+import { memo, UIEvent, useRef } from "react";
 import { LuSearch } from "react-icons/lu";
-import { SearchClearEvent, SearchSelectEvent } from "../api";
+import { SearchViewModel } from "../model";
 import { SearchResults } from "./SearchResults";
-import { SearchOption, SearchResultsState } from "./useSearchState";
+import { getOptionValue, useComboboxCollection } from "./useComboboxCollection";
+import { useSearchSourceId } from "./useSearchSourceId";
 
 export interface SearchInputProps {
-    input: string;
-    selectedOption?: SearchOption;
-    results: SearchResultsState;
+    viewModel: SearchViewModel;
     placeholder?: string;
-
-    onClear?: (event: SearchClearEvent) => void;
-    onSelect?: (event: SearchSelectEvent) => void;
-    onInputChanged: (newInput: string) => void;
-    onOptionConfirmed: (option: SearchOption) => void;
 }
 
 export function SearchInput(props: SearchInputProps) {
-    const {
-        input,
-        selectedOption,
-        results,
-        placeholder,
-        onClear,
-        onSelect,
-        onInputChanged,
-        onOptionConfirmed
-    } = props;
+    const { viewModel, placeholder } = props;
     const intl = useIntl();
     const controlRef = useRef<HTMLInputElement>(null);
 
-    // Create the collection for the combobox and keep it synced with search results.
-    const collection = useSearchCollection(results);
-
-    // Event hooks for handling input changes and selecting options
-    const { handleInputChange, handleSelectChange } = useSearchHandlers(
-        onInputChanged,
-        onOptionConfirmed,
-        onSelect
+    const inputValue = useReactiveSnapshot(() => viewModel.inputValue, [viewModel], DISPATCH_SYNC);
+    const { pending, selectedResult } = useReactiveSnapshot(
+        () => ({ pending: viewModel.pending, selectedResult: viewModel.selectedResult }),
+        [viewModel]
     );
+
+    // Create combobox options from the current search results, plus a list collection that holds them.
+    const getSourceId = useSearchSourceId();
+    const optionsCollection = useComboboxCollection(viewModel, getSourceId);
+    const selectedValue = selectedResult
+        ? getOptionValue(getSourceId, selectedResult.source, selectedResult.result)
+        : undefined;
 
     return (
         <Combobox.Root
-            collection={collection}
+            collection={optionsCollection}
             onInputValueChange={(e) => {
-                handleInputChange(e);
+                // Only update the input if the user actually typed something.
+                // This keeps the input content if the user focuses another element or if the menu is closed.
+                if (e.reason === "input-change" || e.reason === "interact-outside") {
+                    viewModel.setInputValue(e.inputValue);
+                }
             }}
             onValueChange={(e) => {
-                handleSelectChange(e);
+                const selectedItem = e.items.length ? e.items[0] : null;
+                if (!selectedItem) {
+                    return;
+                }
+                viewModel.selectResult(selectedItem.source, selectedItem.result, "user");
             }}
-            inputValue={input}
-            value={selectedOption?.value ? [selectedOption.value] : []}
+            inputValue={inputValue}
+            value={selectedValue ? [selectedValue] : []}
             className="search-combobox-component"
             aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
             placeholder={placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
-            openOnClick={input.length > 0}
+            openOnClick={inputValue.length > 0}
             closeOnSelect={true}
             lazyMount={true}
             unmountOnExit={true}
             selectionBehavior="preserve"
         >
-            <AccessibleBoxHelper search={results} />
+            <AccessibleBoxHelper pending={pending} />
             <Combobox.Control>
                 <InputGroup
                     startElement={
@@ -90,13 +83,12 @@ export function SearchInput(props: SearchInputProps) {
                     <Combobox.Input ref={controlRef} />
                 </InputGroup>
                 <Combobox.IndicatorGroup>
-                    {results.kind === "loading" ? (
+                    {pending ? (
                         <Spinner size="xs" borderWidth="1px" />
-                    ) : input.length ? (
+                    ) : inputValue.length ? (
                         <ClearIndicator
                             clearValue={() => {
-                                onInputChanged("");
-                                onClear?.({ trigger: "user" });
+                                viewModel.clear("user");
                                 controlRef.current?.focus();
                             }}
                         />
@@ -106,7 +98,11 @@ export function SearchInput(props: SearchInputProps) {
 
             <Portal>
                 <Combobox.Positioner>
-                    <SearchResults collection={collection} input={input} results={results} />
+                    <SearchResults
+                        collection={optionsCollection}
+                        input={inputValue}
+                        pending={pending}
+                    />
                 </Combobox.Positioner>
             </Portal>
         </Combobox.Root>
@@ -116,19 +112,16 @@ export function SearchInput(props: SearchInputProps) {
 /**
  * Report loading status for screen readers.
  */
-const AccessibleBoxHelper = memo(function AccessibleBoxHelper(props: {
-    search: SearchResultsState;
-}) {
-    const { search } = props;
+const AccessibleBoxHelper = memo(function AccessibleBoxHelper(props: { pending: boolean }) {
+    const { pending } = props;
     const intl = useIntl();
 
-    let content;
-    if (search.kind === "loading") {
+    let content: string;
+    if (pending) {
         content = intl.formatMessage({ id: "loadingText" });
-    } else if (search.kind === "ready") {
+    } else {
         content = intl.formatMessage({ id: "resultLoaded" });
     }
-
     return <VisuallyHidden aria-live="polite">{content}</VisuallyHidden>;
 });
 
@@ -156,47 +149,3 @@ const ClearIndicator = memo(function ClearIndicator(props: { clearValue: () => v
         </Tooltip>
     );
 });
-
-function useSearchCollection(results: SearchResultsState) {
-    return useMemo(() => {
-        if (results.kind === "ready") {
-            const options = results.results.flatMap((group) => group.options);
-            return createListCollection({
-                items: options,
-                groupBy: (item) => item.group.id,
-                itemToString: (item) => item?.label || "",
-                itemToValue: (item) => item?.value || ""
-            });
-        }
-        return createListCollection<SearchOption>({ items: [] });
-    }, [results]);
-}
-
-function useSearchHandlers(
-    onInputChanged: (newValue: string) => void,
-    onOptionConfirmed: (option: SearchOption) => void,
-    onSelect: ((event: SearchSelectEvent) => void) | undefined
-) {
-    const handleInputChange = useEvent((e: ComboboxInputValueChangeDetails) => {
-        // Only update the input if the user actually typed something.
-        // This keeps the input content if the user focuses another element or if the menu is closed.
-        if (e.reason === "input-change" || e.reason === "interact-outside") {
-            onInputChanged(e.inputValue);
-        }
-    });
-
-    const handleSelectChange = useEvent((e: ComboboxValueChangeDetails<SearchOption>) => {
-        const selectedItem = e.items.length ? e.items[0] : null;
-        if (!selectedItem) {
-            return;
-        }
-        onOptionConfirmed(selectedItem);
-        onSelect?.({
-            source: selectedItem.source,
-            result: selectedItem.result,
-            trigger: "user"
-        });
-    });
-
-    return { handleInputChange, handleSelectChange };
-}
