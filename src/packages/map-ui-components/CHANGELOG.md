@@ -1,5 +1,17 @@
 # @open-pioneer/map-ui-components
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- a186f5d: Update core packages to 4.8.0.
+- a9c1213: Add `TooltipBox` component, a small helper component that is styled like a chakra Tooltip.
+
+### Patch Changes
+
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes

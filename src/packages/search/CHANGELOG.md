@@ -1,5 +1,21 @@
 # @open-pioneer/search
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- a186f5d: Update core packages to 4.8.0.
+- 0cfbf39: Add support for an `id` property on the search source interface to identify sources. The property remains optional for the time being to preserve backwards compatibility.
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- 0cfbf39: Refactor the internal state management of the search component: the widget state now lives in a
+  long lived, reactive view model instead of react state. This is an internal change; the component's
+  properties, events and behavior are unchanged.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes
