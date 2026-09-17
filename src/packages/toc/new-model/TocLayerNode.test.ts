@@ -19,82 +19,193 @@ it("sets children and parent nodes correctly", async () => {
     expect(parentNode.children).toContain(childNode);
 });
 
-it("bubbles layer visibility only if autoShowParents is true", async () => {
-    const { parentNode, sharedData } = await setup({
-        widgetOptions: {
-            autoShowParents: false,
-            collapsibleGroups: true,
-            initiallyCollapsed: false
-        }
+describe("visibility", () => {
+    it("bubbles layer visibility only if autoShowParents is true", async () => {
+        const { parentNode, sharedData } = await setup({
+            widgetOptions: {
+                autoShowParents: false,
+                collapsibleGroups: true,
+                initiallyCollapsed: false
+            }
+        });
+        const childNode = parentNode.children[0]!;
+        parentNode.setVisible(false);
+        childNode.setVisible(false);
+
+        //initially autoShowParents is false, so parent should not be visible
+        childNode.layer.setVisible(true);
+        expect(parentNode.isVisible).toBe(false);
+
+        //reset visibility
+        parentNode.setVisible(false);
+        childNode.setVisible(false);
+
+        //now we set autoShowParents to true, so parent should be visible
+        sharedData.options.autoShowParents = true;
+        childNode.setVisible(true);
+        expect(parentNode.isVisible).toBe(true);
     });
-    const childNode = parentNode.children[0]!;
-    parentNode.setVisible(false);
-    childNode.setVisible(false);
-
-    //initially autoShowParents is false, so parent should not be visible
-    childNode.layer.setVisible(true);
-    expect(parentNode.isVisible).toBe(false);
-
-    //reset visibility
-    parentNode.setVisible(false);
-    childNode.setVisible(false);
-
-    //now we set autoShowParents to true, so parent should be visible
-    sharedData.options.autoShowParents = true;
-    childNode.setVisible(true);
-    expect(parentNode.isVisible).toBe(true);
 });
 
-it("bubbles expanded state", async () => {
-    //setup with nested group
-    const { parentNode, sharedData } = await setup({
-        parentLayer: createTestLayer({
-            type: GroupLayer,
-            id: "group-1",
-            title: "Group 1",
-            layers: [
-                createTestLayer({
-                    type: GroupLayer,
-                    id: "subgroup-1",
-                    title: "Subgroup 1",
-                    layers: [
-                        createTestLayer({
-                            id: "subgroup-member-1",
-                            title: "Subgroup member 1",
-                            olLayer: createTestOlLayer()
-                        })
-                    ]
-                })
-            ]
-        }),
-        widgetOptions: {
-            autoShowParents: true,
-            collapsibleGroups: true,
-            initiallyCollapsed: true //collapse all groups initially
-        }
-    });
-    const subgroupNode = sharedData.nodesById.get("subgroup-1")!;
+describe("expanded", () => {
+    it("bubbles expanded state", async () => {
+        //setup with nested group
+        const { parentNode, sharedData } = await setup({
+            parentLayer: createTestLayer({
+                type: GroupLayer,
+                id: "group-1",
+                title: "Group 1",
+                layers: [
+                    createTestLayer({
+                        type: GroupLayer,
+                        id: "subgroup-1",
+                        title: "Subgroup 1",
+                        layers: [
+                            createTestLayer({
+                                id: "subgroup-member-1",
+                                title: "Subgroup member 1",
+                                olLayer: createTestOlLayer()
+                            })
+                        ]
+                    })
+                ]
+            }),
+            widgetOptions: {
+                autoShowParents: true,
+                collapsibleGroups: true,
+                initiallyCollapsed: true //collapse all groups initially
+            }
+        });
+        const subgroupNode = sharedData.nodesById.get("subgroup-1")!;
 
-    //should not bubble
-    subgroupNode.setExpanded(true, false);
-    expect(subgroupNode.isExpanded).toBeTruthy();
-    expect(parentNode.isExpanded).toBeFalsy();
-    //should bubble collapse if bubble option explicitly true
-    parentNode.setExpanded(true);
-    expect(parentNode.isExpanded).toBeTruthy();
-    subgroupNode.setExpanded(false, true); //explicit bubble
-    expect(subgroupNode.isExpanded).toBeFalsy();
-    expect(parentNode.isExpanded).toBeFalsy();
-    //should bubble expand implicitly
-    subgroupNode.setExpanded(false, true); //reset
-    subgroupNode.setExpanded(true); //implicit bubble
-    expect(subgroupNode.isExpanded).toBeTruthy();
-    expect(parentNode.isExpanded).toBeTruthy();
-    //should bubble expand explicitly as well
-    subgroupNode.setExpanded(false, true); //reset
-    subgroupNode.setExpanded(true, true); //implicit bubble
-    expect(subgroupNode.isExpanded).toBeTruthy();
-    expect(parentNode.isExpanded).toBeTruthy();
+        //should not bubble
+        subgroupNode.setExpanded(true, false);
+        expect(subgroupNode.isExpanded).toBeTruthy();
+        expect(parentNode.isExpanded).toBeFalsy();
+        //should bubble collapse if bubble option explicitly true
+        parentNode.setExpanded(true);
+        expect(parentNode.isExpanded).toBeTruthy();
+        subgroupNode.setExpanded(false, true); //explicit bubble
+        expect(subgroupNode.isExpanded).toBeFalsy();
+        expect(parentNode.isExpanded).toBeFalsy();
+        //should bubble expand implicitly
+        subgroupNode.setExpanded(false, true); //reset
+        subgroupNode.setExpanded(true); //implicit bubble
+        expect(subgroupNode.isExpanded).toBeTruthy();
+        expect(parentNode.isExpanded).toBeTruthy();
+        //should bubble expand explicitly as well
+        subgroupNode.setExpanded(false, true); //reset
+        subgroupNode.setExpanded(true, true); //implicit bubble
+        expect(subgroupNode.isExpanded).toBeTruthy();
+        expect(parentNode.isExpanded).toBeTruthy();
+    });
+});
+
+describe("isShown", () => {
+    it("is true by default", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        expect(parentNode.isShown).toBe(true);
+        expect(childNode.isShown).toBe(true);
+    });
+
+    it("is false if the layer's listMode is 'hide'", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        childNode.layer.updateAttributes({ toc: { listMode: "hide" } });
+        expect(childNode.isShown).toBe(false);
+    });
+
+    it("is false if the layer is internal", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        childNode.layer.setInternal(true);
+        expect(childNode.isShown).toBe(false);
+    });
+
+    it("is true if the layer is internal but listMode explicitly overrides it", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        childNode.layer.setInternal(true);
+        childNode.layer.updateAttributes({ toc: { listMode: "show" } });
+        expect(childNode.isShown).toBe(true);
+    });
+
+    it("is false if the parent does not show its children", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
+        expect(childNode.isShown).toBe(false);
+
+        // and also if the parent itself is hidden
+        parentNode.layer.updateAttributes({ toc: { listMode: "hide" } });
+        expect(childNode.isShown).toBe(false);
+    });
+});
+
+describe("shouldShowChildren", () => {
+    it("is true by default", async () => {
+        const { parentNode } = await setup();
+        expect(parentNode.shouldShowChildren).toBe(true);
+    });
+
+    it("is false if the node itself is not shown", async () => {
+        const { parentNode } = await setup();
+
+        parentNode.layer.updateAttributes({ toc: { listMode: "hide" } });
+        expect(parentNode.isShown).toBe(false);
+        expect(parentNode.shouldShowChildren).toBe(false);
+    });
+
+    it("is false if listMode is 'hide-children'", async () => {
+        const { parentNode } = await setup();
+
+        parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
+        expect(parentNode.isShown).toBe(true);
+        expect(parentNode.shouldShowChildren).toBe(false);
+    });
+});
+
+describe("shownChildren and hasShownChildren", () => {
+    it("contains all children by default", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        expect(parentNode.shownChildren).toEqual([childNode]);
+        expect(parentNode.hasShownChildren).toBe(true);
+    });
+
+    it("is empty if the node has no children", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        expect(childNode.shownChildren).toEqual([]);
+        expect(childNode.hasShownChildren).toBe(false);
+    });
+
+    it("excludes children that are not shown themselves", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        childNode.layer.updateAttributes({ toc: { listMode: "hide" } });
+        expect(parentNode.shownChildren).toEqual([]);
+        expect(parentNode.hasShownChildren).toBe(false);
+    });
+
+    it("is empty if the listMode  is 'hide-children'", async () => {
+        const { parentNode } = await setup();
+        const childNode = parentNode.children[0]!;
+
+        parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
+        expect(childNode.isShown).toBe(false); // sanity check
+        expect(parentNode.shownChildren).toEqual([]);
+        expect(parentNode.hasShownChildren).toBe(false);
+    });
 });
 
 describe("issues", () => {

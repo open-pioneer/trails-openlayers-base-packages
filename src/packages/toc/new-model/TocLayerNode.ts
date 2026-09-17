@@ -59,7 +59,7 @@ export class TocLayerNode {
     #shownChildren = computed(() => this.children.filter((c) => c.isShown), {
         equal: shallowEqual
     });
-    #hasShownChildren = computed(() => this.children.some((c) => c.isShown));
+    #hasShownChildren = computed(() => this.#shownChildren.value.length > 0);
 
     #expanded: Reactive<boolean>;
 
