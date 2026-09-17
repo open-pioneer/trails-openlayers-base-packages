@@ -572,10 +572,10 @@ function findInteraction<T extends Interaction>(
  */
 function getTooltipMessage(map: MapModel): string | undefined {
     const content = findTooltip(map)?.content;
-    if (!isValidElement<{ content?: string }>(content)) {
+    if (!isValidElement<{ children?: string }>(content)) {
         return undefined;
     }
-    return content.props.content;
+    return content.props.children;
 }
 
 function findTooltip(map: MapModel) {

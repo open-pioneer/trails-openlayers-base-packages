@@ -160,7 +160,7 @@ export function MapContainer(props: MapContainerProps) {
                 {ready && map && (
                     <MapContainerReady
                         map={map}
-                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion react/refs
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
                         viewPaddingChangeBehavior={viewPaddingChangeBehavior}
@@ -277,13 +277,14 @@ function useSyncViewPadding(
     map: MapModel
 ) {
     const mapView = useReactiveSnapshot(() => map.olView, [map]);
+    const displayStatus = useReactiveSnapshot(() => map[DISPLAY_STATUS], [map]);
 
     // Tracks target state for in-progress animations.
     const targetViewPoint = useRef<TargetViewPoint>(undefined);
 
     useEffect(() => {
         const olMap = map.olMap;
-        if (!mapView) {
+        if (!mapView || displayStatus !== "ready") {
             return;
         }
 
@@ -347,7 +348,7 @@ function useSyncViewPadding(
             }
             case "none":
         }
-    }, [viewPadding, viewPaddingChangeBehavior, map, mapView]);
+    }, [viewPadding, viewPaddingChangeBehavior, map, mapView, displayStatus]);
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {

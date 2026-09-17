@@ -4,15 +4,17 @@
 import { watch, watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
-import Layer from "ol/layer/Layer";
+import OlLayer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
+import { LayerCollection } from "../model/LayerCollection";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { ATTACH_TO_MAP, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
+import { Layer } from "./unions";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
 
@@ -116,7 +118,7 @@ it("tracks the layer source's state", async () => {
     let source = new Source({
         state: "ready"
     });
-    const olLayer = new Layer({
+    const olLayer = new OlLayer({
         source
     });
     const { layer } = createLayer({
@@ -229,6 +231,27 @@ describe("health checks", () => {
             ],
           ]
         `);
+    });
+
+    it("computes isBaseLayer correctly if layer was added but not declared as base layer", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            olLayer: createTestOlLayer()
+        });
+        const layerAddAsBase = new LayerImpl({
+            id: "testId2",
+            title: "B",
+            olLayer: createTestOlLayer()
+        });
+
+        await setupMap({
+            layers: [layer],
+            baseLayers: [layerAddAsBase]
+        });
+
+        expect(layer.isBaseLayer).toBe(false);
+        expect(layerAddAsBase.isBaseLayer).toBe(true);
     });
 
     it("when specified as function", async () => {
@@ -496,7 +519,12 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
     const mapModel = {
         [LAYER_DEPS]: {
             httpService
-        }
+        },
+        layers: {
+            getBaseLayers(): Layer[] {
+                return [];
+            }
+        } satisfies Partial<LayerCollection> as unknown as LayerCollection
     } satisfies Partial<MapModel> as unknown as MapModel;
 
     const layer = new LayerImpl(layerConfig);
@@ -512,7 +540,7 @@ function createLayerWithHealthCheck(options?: {
     const source = new Source({
         state: options?.sourceState ?? "ready"
     });
-    const olLayer = new Layer({
+    const olLayer = new OlLayer({
         source
     });
     const config: SimpleLayerConfig = {

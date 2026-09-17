@@ -5,9 +5,11 @@ import { createManualPromise, getErrorChain } from "@open-pioneer/core";
 import {
     createTestLayer,
     createTestOlLayer,
+    mockMapRender,
     setupMap,
     SetupMapResult,
-    SimpleMapOptions
+    SimpleMapOptions,
+    waitForMapRender
 } from "@open-pioneer/map-test-utils";
 import { View } from "ol";
 import { Attribution } from "ol/control";
@@ -176,11 +178,13 @@ it("should successfully create View with 'position' property", async () => {
             x: 123,
             y: 456
         },
-        zoom: 5
+        zoom: 5,
+        mockMapRender: true
     });
 
-    const map = (await registry.expectMapModel(mapId))?.olMap;
-    const view = map?.getView();
+    const mapModel = await registry.expectMapModel(mapId);
+    await waitForMapRender(mapModel);
+    const view = mapModel.olMap?.getView();
 
     expect(view?.getCenter()).toContain(123);
     expect(view?.getZoom()).toBe(5);
@@ -188,41 +192,47 @@ it("should successfully create View with 'position' property", async () => {
 
 it("should successfully create View with 'extent' property", async () => {
     const extent = {
-        xMax: 653028,
-        xMin: 5986277,
-        yMax: 1674447,
-        yMin: 1674447
+        xMax: 857541,
+        xMin: 847541,
+        yMax: 6893584,
+        yMin: 6793584
     };
 
     const { mapId, registry } = await createMapSetup({
-        extent: extent
+        extent: extent,
+        mockMapRender: true
     });
+    const mapModel = await registry.expectMapModel(mapId);
+    await waitForMapRender(mapModel);
 
     const xMin = extent.xMin + (extent.xMax - extent.xMin) / 2;
-    const map = (await registry.expectMapModel(mapId))?.olMap;
+    const map = mapModel.olMap;
     const view = map?.getView();
 
     expect(view?.getCenter()).toContain(xMin);
-    expect(view?.getZoom()).toBe(0);
+    expect(view?.getZoom()).toBeCloseTo(7, 0);
 });
 
 it("should successfully create View with 'extent' property without a MapConfigProvider", async () => {
     const extent = {
-        xMax: 653028,
-        xMin: 5986277,
-        yMax: 1674447,
-        yMin: 1674447
+        xMax: 857541,
+        xMin: 847541,
+        yMax: 6893584,
+        yMin: 6793584
     };
 
     const { mapModel } = await createMapSetupWithoutMCP({
         initialView: { extent, kind: "extent" }
     });
 
+    mockMapRender(mapModel);
+    await waitForMapRender(mapModel);
+
     const xMin = extent.xMin + (extent.xMax - extent.xMin) / 2;
     const view = mapModel.olMap.getView();
 
     expect(view?.getCenter()).toContain(xMin);
-    expect(view?.getZoom()).toBe(0);
+    expect(view?.getZoom()).toBeCloseTo(7, 0);
 });
 
 it("should successfully create View with default projection", async () => {

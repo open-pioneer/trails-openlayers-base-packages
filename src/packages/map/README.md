@@ -220,7 +220,7 @@ The following map options are supported:
 
 - `initialView`,
 - `projection`,
-- `layers` (see [Layer configuration](#layer-configuration)),
+- `layers`, `baseLayers` and `topmostLayers` (see [Layer configuration](#layer-configuration)),
 - `advanced`
 
 Always use the provided map model to access the map initially.
@@ -247,6 +247,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:3857",
             layers: [
+                // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
                 // ...
             ]
         };
@@ -275,6 +281,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             projection: "EPSG:3857",
             layers: [
                 // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
+                // ...
             ]
         };
     }
@@ -298,6 +310,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             layers: [
                 // ...
+            ],
+            baseLayers: [
+                // ...
+            ],
+            topmostLayers: [
+                // ...
             ]
         };
     }
@@ -315,6 +333,12 @@ For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers La
 Layers are constructed via the `LayerFactory`.
 You can access the layer factory from within a `MapConfigProvider` or inject it via `"map.LayerFactory"`.
 
+The [Map configuration](#map-configuration) takes three separate lists of layers:
+
+- `baseLayers`: A base layer is always displayed beneath all other layers; only one base layer can be visible at once
+- `layers`: all operational layer; layers will be displayed in their listed order
+- `topmostLayers`: operational layers that are always displayed above all other layers (e.g. a highlight layer); multiple topmost layers will be displayed in their listed order
+
 Example: Create a layer using the layer factory.
 
 ```ts
@@ -325,7 +349,6 @@ layerFactory.create({
     // Any properties supported by the layer type
     title: "OSM",
     id: "osm",
-    isBaseLayer: true,
     olLayer: new TileLayer({
         source: new OSM()
     })
@@ -344,11 +367,13 @@ import {
 } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import { Vector as VectorLayer } from "ol/layer";
+import { Vector as VectorSource } from "ol/source";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
-            layers: [
+            baseLayers: [
                 layerFactory.create({
                     // minimal layer configuration
                     type: SimpleLayer,
@@ -356,7 +381,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }),
+                })
+            ],
+            layers: [
                 layerFactory.create({
                     // layer configuration with optional properties
                     type: SimpleLayer,
@@ -369,8 +396,17 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         foo: "bar"
                     },
                     description: "additional description",
-                    isBaseLayer: false,
                     visible: false
+                })
+            ],
+            topmostLayers: [
+                //simple feature layer that will always be kept at the top
+                layerFactory.create({
+                    type: SimpleLayer,
+                    title: "Highlight Feature Layer",
+                    olLayer: new VectorLayer<VectorSource, Feature>({
+                        source: new VectorSource()
+                    })
                 })
             ]
         };
@@ -442,7 +478,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     // check layer availability by requesting the provided URL
                     healthCheck:
                         "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                    isBaseLayer: false,
                     visible: true
                 }),
                 layerFactory.create({
@@ -461,7 +496,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         await wait(3000);
                         return "error";
                     },
-                    isBaseLayer: false,
                     visible: false
                 })
             ]
@@ -604,12 +638,11 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 14
             },
             projection: "EPSG:31466",
-            layers: [
+            baseLayers: [
                 layerFactory.create({
                     type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
-                    isBaseLayer: true,
                     visible: true,
                     olLayer: new TileLayer({
                         source: createWMTSSource("web")

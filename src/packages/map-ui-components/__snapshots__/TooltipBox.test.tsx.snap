@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders its content in a box styled like a tooltip 1`] = `
+<div
+  class="tooltip-box css-1gfiu7m"
+  data-testid="tooltip-box"
+>
+  Tooltip Content
+</div>
+`;

@@ -8,6 +8,11 @@ messages:
     resetButtonTooltip: Zeichnung zurücksetzen
     undoButtonTooltip: Rückgängig machen
     redoButtonTooltip: Wiederholen
+
+  selection:
+    defaultNotAvailableMessage: "Es können keine Geoobjekte ausgewählt werden."
+    noVisibleLayers: "In der Karte sind derzeit keine editierbaren Layer sichtbar."
+
   propertyEditor:
     defaultEditHeading: Geoobjekt bearbeiten
     defaultCreateHeading: Geoobjekt erstellen
@@ -26,11 +31,13 @@ messages:
     message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?
     deleteButtonTitle: Geoobjekt löschen
     cancelButtonTitle: Abbrechen
+
   cancelConfirmationDialog:
     title: Änderungen verwerfen
     message: Sind Sie sicher, dass Sie Ihre Änderungen verwerfen möchten?
     confirmCancelButtonTitle: Änderungen verwerfen
     abortCancelButtonTitle: Weiter bearbeiten
+
   notifier:
     creationSuccess: Geoobjekt erstellt
     creationFailure: Das Geoobjekt konnte nicht erstellt werden.
@@ -38,6 +45,7 @@ messages:
     updateFailure: Das Geoobjekt konnte nicht aktualisiert werden.
     deletionSuccess: Geoobjekt gelöscht
     deletionFailure: Das Geoobjekt konnte nicht gelöscht werden.
+
   tooltips:
     drawingMessagePoint: Klicken Sie in die Karte, um den Punkt zu zeichnen.
     drawingMessageLineString: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Doppelklicken, um die Zeichnung zu beenden.

@@ -55,6 +55,16 @@ export interface SimpleMapOptions {
      */
     layers?: LayerConfig[];
 
+    /**
+     * Base layers for the map.
+     */
+    baseLayers?: LayerConfig[];
+
+    /**
+     * Layers that are displayed on top of all other layers.
+     */
+    topmostLayers?: LayerConfig[];
+
     /** See {@link MapConfig.showAttributions} */
     showAttributions?: boolean;
 
@@ -85,6 +95,14 @@ export interface SimpleMapOptions {
      * Use `false` to test the async loading behavior of the registry.
      */
     returnMap?: boolean;
+
+    /**
+     * If true, the map is rendered in a dummy div instead of the real OpenLayers canvas.
+     * This is useful for tests that need the map's view to be initialized, but don't need to actually render the map.
+     *
+     * False by default.
+     */
+    mockMapRender?: boolean;
 }
 const DUMMY_HTTP_SERVICE = {
     async fetch() {
@@ -94,6 +112,19 @@ const DUMMY_HTTP_SERVICE = {
     }
 } satisfies Partial<HttpService> as HttpService;
 const DUMMY_LAYER_FACTORY = createLayerFactory();
+
+/**
+ * Waits until the OpenLayers map is initialized/displayed and is visible in the DOM.
+ */
+export async function waitForMapRender(map: MapModel) {
+    await map.whenDisplayed();
+    await waitFor(async () => {
+        const container = map.container?.querySelector(".ol-viewport");
+        if (!container) {
+            throw new Error("map not mounted");
+        }
+    });
+}
 
 /**
  * Waits until the OpenLayers map has been mounted in the parent with the given id.
@@ -147,7 +178,7 @@ export interface SetupMapResult {
  * Returns the map registry and the id of the configured map.
  */
 export async function setupMap(
-    options?: SimpleMapOptions & { returnMap?: true }
+    options?: SimpleMapOptions & { returnMap?: true; mockMapRender?: boolean }
 ): Promise<SetupMapResult & { map: MapModel }>;
 export async function setupMap(options?: SimpleMapOptions): Promise<SetupMapResult>;
 export async function setupMap(
@@ -157,13 +188,9 @@ export async function setupMap(
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
-        layers: options?.layers?.map(
-            (config) =>
-                "map" in config
-                    ? config
-                    : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
-            // using map as discriminator (no prototype for Layer)
-        ) ?? [createTestLayer()],
+        layers: options?.layers?.map((config) => useOrCreateLayer(config)) ?? [createTestLayer()],
+        baseLayers: options?.baseLayers?.map((config) => useOrCreateLayer(config)) ?? [],
+        topmostLayers: options?.topmostLayers?.map((config) => useOrCreateLayer(config)) ?? [],
         showAttributions: options?.showAttributions,
         advanced: options?.advanced
     };
@@ -196,13 +223,29 @@ export async function setupMap(
 
     let map: MapModel | undefined;
     const promise = registry.createMapModel(mapId, mapConfig);
-    if (options?.returnMap !== false) {
+    if (options?.returnMap !== false || options?.mockMapRender) {
         map = await promise;
+
+        if (options?.mockMapRender) {
+            mockMapRender(map);
+        }
     } else {
         // Ignore error on this promise (prevents unhandled error in tests)
         promise.catch(() => undefined);
     }
     return { mapId, registry, layerFactory, map };
+}
+
+/**
+ * Renders an OL map into a pseudo (non-visible) div so the map's view gets initialized.
+ */
+export function mockMapRender(map: MapModel) {
+    const dummyContainer = document.createElement("div");
+    dummyContainer.style.width = "100px";
+    dummyContainer.style.height = "100px";
+    dummyContainer.setAttribute("data-testid", "map");
+    document.body.appendChild(dummyContainer);
+    map.olMap.setTarget(dummyContainer);
 }
 
 function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
@@ -225,7 +268,20 @@ export function createTestLayer<LayerType extends Layer, Config extends MapPacka
     mapOptions?: Pick<SimpleMapOptions, "fetch">
 ): LayerType;
 
-/** Creates a new, basic SimpleLayer for testing. */
+/**
+ *
+ * Creates a new, basic SimpleLayer for testing.
+ *
+ * For example:
+ *
+ * ```ts
+ * const layer1 = createTestLayer();
+ * const layer2 = createTestLayer({
+ *   title: "My test layer",
+ *   olLayer: ...
+ * })
+ * ```
+ **/
 export function createTestLayer(
     config?: SimpleLayerConfig,
     mapOptions?: Pick<SimpleMapOptions, "fetch">
@@ -285,13 +341,27 @@ function createLayerFactory(httpService?: HttpService): LayerFactory {
     });
 }
 
-function mockVectorLayer() {
+function mockLayers() {
     // Overwrite render so it doesn't actually do anything during tests.
-    // Would otherwise error because <canvas /> is not fully implemented in happy dom.
+    // Would otherwise error because <canvas /> is not fully implemented in happy-dom.
     const div = document.createElement("div");
     VectorLayer.prototype.render = () => {
         return div;
     };
+    TileLayer.prototype.render = () => {
+        return div;
+    };
 }
 
-mockVectorLayer();
+function useOrCreateLayer(config: LayerConfig): Layer {
+    return "map" in config
+        ? config
+        : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) });
+    // using map as discriminator (no prototype for Layer)
+}
+
+// Do not mock layer rendering when running in vitest's browser mode.
+// oxlint-disable-next-line typescript/no-explicit-any
+if (!(globalThis as any).__vitest_browser__) {
+    mockLayers();
+}
