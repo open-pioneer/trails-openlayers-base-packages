@@ -9,25 +9,21 @@ import {
     Flex,
     Icon,
     IconButton,
-    List,
     Spacer,
     Text,
     VisuallyHidden
 } from "@chakra-ui/react";
-import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
 import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import type { IconType } from "react-icons/lib";
-import { LuChevronDown, LuChevronRight, LuInfo, LuTriangleAlert } from "react-icons/lu";
+import { LuChevronDown, LuChevronRight } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
-import { displayItemForLayer } from "../../utils/displayLayer";
+import { TocLayerNode } from "../../new-model/TocLayerNode";
 import { slug } from "../../utils/slug";
-import { LayerTocAttributes, ListMode } from "../Toc";
-import { useChildLayers, useLoadState, useSublayerError, useVisibleInScale } from "./hooks";
+import { useLayerItemIssues } from "./LayerItemIssues";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 
@@ -36,38 +32,41 @@ import { LayerList } from "./LayerList";
  *
  * The item may have further nested list items if there are sublayers present.
  */
-export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
-    const { layer } = props;
+export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }): ReactNode {
+    const { node } = props;
+    const layer = node.layer;
 
     const intl = useIntl();
-    const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
-    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
-    const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
+    const display = useReactiveSnapshot(() => node.isShown, [node]);
+    const [tocOptions, tocItemElemRef] = useTocItem(node, display);
+    const { isExpanded, isVisible } = useReactiveSnapshot(() => {
+        return {
+            isExpanded: node.isExpanded,
+            isVisible: node.isVisible
+        };
+    }, [node]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
     const layerGroupId = useId();
-    const listMode = useListMode(layer)?.listMode;
-    const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
+    const { title, description } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
-            description: layer.description,
-            isVisible: layer.visible,
-            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
+            description: layer.description
         };
     }, [layer]);
 
-    const { problemIndicator, problemLabel, disabled, opacity } = useItemProblem(
-        layer,
-        intl,
-        listMode
-    );
+    const {
+        indicator: issueIndicator,
+        label: issueLabel,
+        muted,
+        disabled
+    } = useLayerItemIssues(node);
 
-    const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
+    const nestedChildren = useNestedChildren(layerGroupId, title, node, intl);
     //all children hidden => do not render collapse button and child entries
-    let hasNestedChildren = !!nestedChildren;
-    if (allChildrenHidden || listMode === "hide-children") {
-        hasNestedChildren = false;
-    }
+    const hasNestedChildren = useReactiveSnapshot(() => {
+        return node.shouldShowChildren && node.hasShownChildren;
+    }, [node]);
 
     if (!display) {
         return null;
@@ -94,8 +93,8 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     <CollapseButton
                         layerTitle={title}
                         layerGroupId={layerGroupId}
-                        expanded={expanded}
-                        onClick={() => tocItem.setExpanded(!expanded)}
+                        expanded={isExpanded}
+                        onClick={() => node.setExpanded(!isExpanded)}
                         hasNestedChildren={hasNestedChildren}
                     />
                 )}
@@ -103,32 +102,26 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <Checkbox.Root
                     checked={isVisible}
                     disabled={disabled}
-                    onCheckedChange={(event) =>
-                        updateLayerVisibility(
-                            layer,
-                            event.checked === true,
-                            tocOptions.autoShowParents
-                        )
-                    }
+                    onCheckedChange={(event) => node.setVisible(event.checked === true)}
                 >
                     <Checkbox.HiddenInput />
                     <Checkbox.Control>
                         <Checkbox.Indicator />
                     </Checkbox.Control>
                     <Checkbox.Label>
-                        <Text as="span" opacity={opacity}>
+                        <Text as="span" opacity={muted ? 0.5 : undefined}>
                             {title}
                         </Text>
                         {/* Same content as tooltip */}
-                        <VisuallyHidden as="div">{problemLabel}</VisuallyHidden>
+                        {issueLabel && <VisuallyHidden as="div">{issueLabel}</VisuallyHidden>}
                     </Checkbox.Label>
                 </Checkbox.Root>
-                {problemIndicator}
+                {issueIndicator}
                 <Spacer />
-                <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
+                <LayerItemMenu title={title} description={description} disabled={disabled} />
             </Flex>
             {hasNestedChildren && (
-                <Collapsible.Root open={expanded} className="toc-collapsible-item">
+                <Collapsible.Root open={isExpanded} className="toc-collapsible-item">
                     <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
             )}
@@ -176,30 +169,14 @@ function CollapseButton(props: {
     );
 }
 
-function ProblemIndicator(props: { message: ReactNode; Icon: IconType; color?: string }) {
-    const { message, Icon, color } = props;
-    return (
-        <Tooltip
-            content={message}
-            positioning={{ placement: "right" }}
-            contentProps={{ className: "toc-layer-item-problem-indicator-tooltip" }}
-        >
-            <span className="toc-layer-item-problem-indicator">
-                {/* aria-hidden: layer item has an aria label that includes the problem as well */}
-                <Icon aria-hidden={true} color={color} />
-            </span>
-        </Tooltip>
-    );
-}
-
 // Creates a toc item and registers it with the shared toc model.
-function useTocItem(layer: AnyLayer, display: boolean) {
+function useTocItem(node: TocLayerNode, display: boolean) {
     const tocModel = useTocModel();
     const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
     const tocItemElemRef = useRef<HTMLDivElement>(null);
     const tocItem = useMemo((): TocItemImpl => {
-        return new TocItemImpl(layer, tocModel, !options.initiallyCollapsed);
-    }, [layer, options.initiallyCollapsed, tocModel]);
+        return new TocItemImpl(node);
+    }, [node]);
 
     // Register the item on the shared toc model
     useEffect(() => {
@@ -214,125 +191,32 @@ function useTocItem(layer: AnyLayer, display: boolean) {
         };
     }, [tocModel, tocItem, display]);
 
-    return [tocItem, tocModel, options, tocItemElemRef] as const;
-}
-
-function useItemProblem(layer: AnyLayer, intl: PackageIntl, listMode: ListMode | undefined) {
-    const loadState = useLoadState(layer);
-    const sublayerError = useSublayerError(layer);
-    const visibleInScale = useVisibleInScale(layer);
-    const isOwnError = loadState === "error";
-    const hasChildError = !!sublayerError;
-
-    return useMemo(() => {
-        let problemIndicator;
-        let problemLabel;
-        let opacity;
-        let disabled;
-        if (isOwnError || hasChildError) {
-            const label = getProblemLabel(intl, isOwnError, listMode, sublayerError);
-            const color = isOwnError ? "red" : "orange";
-            problemIndicator = (
-                <ProblemIndicator message={label} Icon={LuTriangleAlert} color={color} />
-            );
-            problemLabel = label;
-            // Only disable the checkbox for the layer that is the actual source
-            // of the error, so a group with a broken child can still be toggled.
-            disabled = isOwnError;
-        } else if (!visibleInScale) {
-            const label = intl.formatMessage({ id: "layerNotVisible" });
-            problemIndicator = <ProblemIndicator message={label} Icon={LuInfo} />;
-            problemLabel = label;
-            opacity = 0.5;
-        }
-        return { problemIndicator, problemLabel, opacity, disabled };
-    }, [isOwnError, hasChildError, visibleInScale, intl, listMode, sublayerError]);
-}
-
-/**
- * Builds the message shown in the problem indicator.
- *
- * When the layer's own load state is in error, a generic message is used.
- * If the list mode is "hide-children" the aggregated sublayer errors are listed so the user can
- * still see which children failed, since their own indicators are not rendered.
- */
-function getProblemLabel(
-    intl: PackageIntl,
-    isOwnError: boolean,
-    listMode: ListMode | undefined,
-    sublayerError: AggregateError | undefined
-): ReactNode {
-    if (isOwnError) {
-        return intl.formatMessage({ id: "layerNotAvailable" });
-    }
-    if (listMode === "hide-children" && sublayerError) {
-        return (
-            <>
-                <Text>{intl.formatMessage({ id: "childLayerNotAvailableDetails" })}</Text>
-                <List.Root ml={2}>
-                    {sublayerError.errors.map((error: Error, index) => (
-                        // oxlint-disable-next-line react/no-array-index-key
-                        <List.Item key={index}>{error.message}</List.Item>
-                    ))}
-                </List.Root>
-            </>
-        );
-    }
-    return intl.formatMessage({ id: "childLayerNotAvailable" });
-}
-
-function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
-    return useReactiveSnapshot(
-        () => layer.attributes.toc as LayerTocAttributes | undefined,
-        [layer]
-    );
+    return [options, tocItemElemRef] as const;
 }
 
 function useNestedChildren(
     layerGroupId: string,
     title: string,
-    layer: AnyLayer,
+    node: TocLayerNode,
     intl: PackageIntl
 ) {
-    const childLayers = useChildLayers(layer);
+    const childNodes = useReactiveSnapshot(() => node.children, [node]);
     const children = useMemo(() => {
-        if (childLayers?.length) {
+        if (childNodes?.length) {
             return (
                 <LayerList
                     id={layerGroupId}
-                    layers={childLayers}
+                    nodes={childNodes}
                     ml={4}
                     aria-label={intl.formatMessage({ id: "childgroupLabel" }, { title: title })}
                 />
             );
         }
         return undefined;
-    }, [layerGroupId, intl, title, childLayers]);
+    }, [layerGroupId, intl, title, childNodes]);
     return children;
-}
-
-function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
-    layer.setVisible(visible);
-    if (visible && autoShowParents && layer.parent) {
-        updateLayerVisibility(layer.parent, true, true);
-    }
 }
 
 function getClassNameForLayer(layer: AnyLayer) {
     return `layer-${slug(layer.id)}`;
-}
-
-/**
- * Checks if at least on child layer of the given layer exists and should be displayed.
- * @returns true if at least one child layer's display mode is not `hide`
- */
-function hasShownChildren(layer: AnyLayer): boolean {
-    if (!layer.children || layer.children.getItems().length === 0) {
-        return false;
-    } else {
-        return layer.children.getItems().some((childLayer) => {
-            const isDisplayed = displayItemForLayer(childLayer);
-            return isDisplayed;
-        });
-    }
 }

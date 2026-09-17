@@ -1,34 +1,34 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { Box, IconButton, Menu, Portal, Icon } from "@chakra-ui/react";
+import { Box, Icon, IconButton, Menu, Portal } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo, useId } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
-import { TocModel, useTocModel } from "../model";
+import { TocLayerNode } from "../new-model/TocLayerNode";
+import { TocViewModel } from "../new-model/TocViewModel";
 import { ToolsConfig } from "./Toc";
 
 export interface ToolsProps extends ToolsConfig {
-    map: MapModel;
+    viewModel: TocViewModel; // TODO: Consider using useContext for the view model and the map?
 }
 
 export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     const intl = useIntl();
-    const tocModel = useTocModel();
-    const collapsibleGroups = useReactiveSnapshot(
-        () => tocModel.options.collapsibleGroups,
-        [tocModel]
-    );
+
     const {
-        map,
         showHideAllLayers = true,
-        showCollapseAllGroups: showCollapseAllGroupsProp = collapsibleGroups
+        showCollapseAllGroups: showCollapseAllGroupsProp = true,
+        viewModel
     } = props;
 
     // Only respected if groups are collapsible
+    const collapsibleGroups = useReactiveSnapshot(
+        () => viewModel.options.collapsibleGroups,
+        [viewModel]
+    );
     const showCollapseAllGroups = collapsibleGroups && showCollapseAllGroupsProp;
     const hasContent = showHideAllLayers || showCollapseAllGroups;
 
@@ -48,7 +48,7 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                                             id: "tools.hideAllLayers"
                                         })}
                                         onClick={() => {
-                                            hideAllLayers(map);
+                                            hideAllLayers(viewModel);
                                         }}
                                         value="hideAllLayers"
                                     >
@@ -61,7 +61,7 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                                             id: "tools.collapseAllGroups"
                                         })}
                                         onClick={() => {
-                                            collapseAllGroups(tocModel);
+                                            collapseAllGroups(viewModel);
                                         }}
                                         value="collapseAllGroups"
                                     >
@@ -102,23 +102,28 @@ function TriggerButton(props: { triggerId: string }) {
     );
 }
 
-function hideAllLayers(map: MapModel | undefined) {
-    const hide = (layer: AnyLayer) => {
-        layer.setVisible(false);
-
-        const children = layer.children?.getItems();
-        if (children) {
-            for (const child of children) {
-                hide(child);
-            }
+function hideAllLayers(viewModel: TocViewModel) {
+    const hide = (node: TocLayerNode) => {
+        node.setVisible(false);
+        for (const child of node.shownChildren) {
+            hide(child);
         }
     };
 
-    map?.layers.getOperationalLayers().forEach((layer) => {
-        hide(layer);
-    });
+    for (const node of viewModel.shownChildren) {
+        hide(node);
+    }
 }
 
-function collapseAllGroups(tocModel: TocModel) {
-    tocModel.getItems().forEach((item) => item.setExpanded(false));
+function collapseAllGroups(viewModel: TocViewModel) {
+    const collapse = (node: TocLayerNode) => {
+        node.setExpanded(false);
+        for (const child of node.shownChildren) {
+            collapse(child);
+        }
+    };
+
+    for (const node of viewModel.shownChildren) {
+        collapse(node);
+    }
 }

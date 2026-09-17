@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { nextTick } from "@conterra/reactivity-core";
-import { GroupLayer } from "@open-pioneer/map";
+import { GroupLayer, WMSLayer } from "@open-pioneer/map";
 import {
     createTestLayer,
     createTestOlLayer,
@@ -24,15 +24,16 @@ import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
-import { expect, it } from "vitest";
+import { expect, it, onTestFinished, vi } from "vitest";
 import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
+import { TocViewModel } from "../../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList";
 
 const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
 const CONTENT_PROBLEM_INDICATOR_SELECTOR = `.toc-layer-item-content ${PROBLEM_INDICATOR_SELECTOR}`;
 
 it("should show layers in the correct order", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -51,7 +52,7 @@ it("should show layers in the correct order", async () => {
     });
 
     await waitForMapRender(map);
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -70,7 +71,7 @@ it("should show layers in the correct order", async () => {
 });
 
 it("does not display base layers", async function () {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -86,7 +87,7 @@ it("does not display base layers", async function () {
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -95,7 +96,7 @@ it("does not display base layers", async function () {
 });
 
 it("shows a single entry for layer groups inside a SimpleLayer", async function () {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -110,7 +111,7 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -119,11 +120,11 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
 });
 
 it("shows a fallback message if there are no layers", async function () {
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: []
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -131,7 +132,7 @@ it("shows a fallback message if there are no layers", async function () {
 });
 
 it("reacts to changes in the layer composition", async function () {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -142,7 +143,7 @@ it("reacts to changes in the layer composition", async function () {
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -167,7 +168,7 @@ it("reacts to changes in the layer composition", async function () {
 });
 
 it("displays the layer's current title", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -184,7 +185,7 @@ it("displays the layer's current title", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -197,7 +198,7 @@ it("displays the layer's current title", async () => {
 });
 
 it("displays the layer's current visibility", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -213,7 +214,7 @@ it("displays the layer's current visibility", async () => {
     }
     expect(layer.visible).toBe(true);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -230,7 +231,7 @@ it("displays the layer's current visibility", async () => {
 
 it("changes the layer's visibility when toggling the checkbox", async () => {
     const user = userEvent.setup();
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -245,7 +246,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -267,7 +268,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
 });
 
 it("includes the layer id in the item's class list", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "some layer id",
@@ -279,7 +280,7 @@ it("includes the layer id in the item's class list", async () => {
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -289,7 +290,7 @@ it("includes the layer id in the item's class list", async () => {
 });
 
 it("renders buttons for all layer's with description property", async () => {
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -303,7 +304,7 @@ it("renders buttons for all layer's with description property", async () => {
         ]
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -312,7 +313,7 @@ it("renders buttons for all layer's with description property", async () => {
 });
 
 it("changes the description popover's visibility when toggling the button", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -332,7 +333,7 @@ it("changes the description popover's visibility when toggling the button", asyn
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -362,7 +363,7 @@ it("changes the description popover's visibility when toggling the button", asyn
 });
 
 it("reacts to changes in the layer description", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer1",
@@ -385,7 +386,7 @@ it("reacts to changes in the layer description", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -409,7 +410,7 @@ it("reacts to changes in the layer description", async () => {
 it("reacts to changes of the layer load state", async () => {
     const source = new OSM();
 
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer1",
@@ -424,7 +425,7 @@ it("reacts to changes of the layer load state", async () => {
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -465,7 +466,7 @@ it("reacts to changes of the layer load state", async () => {
 });
 
 it("updates problem indicators when there are visibility issues", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer1",
@@ -484,7 +485,7 @@ it("updates problem indicators when there are visibility issues", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
     {
@@ -509,14 +510,14 @@ it("supports a hierarchy of layers", async () => {
     const user = userEvent.setup();
 
     const { group, subgroup, submember } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [group],
         tocOptions: {
             autoShowParents: true
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -555,14 +556,14 @@ it("supports disabling autoShowParents", async () => {
     const user = userEvent.setup();
 
     const { group, subgroup, submember } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [group],
         tocOptions: {
             autoShowParents: false
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -587,14 +588,14 @@ it("supports disabling autoShowParents", async () => {
 it("should collapse and expand list items", async () => {
     const user = userEvent.setup();
     const { group } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [group],
         tocOptions: {
             collapsibleGroups: true
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -619,7 +620,7 @@ it("should collapse and expand list items", async () => {
 
 it("renders collapse buttons (only) for groups", async () => {
     const { group } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [
             {
                 title: "SimpleLayer",
@@ -633,7 +634,7 @@ it("renders collapse buttons (only) for groups", async () => {
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -654,7 +655,7 @@ it("renders collapse buttons (only) for groups", async () => {
 
 it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
     const { group } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [group],
         tocOptions: {
             collapsibleGroups: false,
@@ -662,7 +663,7 @@ it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -680,7 +681,7 @@ it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`
 it("supports initial collapsed groups", async () => {
     const user = userEvent.setup();
     const { group } = createGroupHierarchy();
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [group],
         tocOptions: {
             collapsibleGroups: true,
@@ -688,7 +689,7 @@ it("supports initial collapsed groups", async () => {
         }
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -708,7 +709,7 @@ it("supports initial collapsed groups", async () => {
 });
 
 it("displays the layer item only if the layer is not internal", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -724,7 +725,7 @@ it("displays the layer item only if the layer is not internal", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -740,7 +741,7 @@ it("displays the layer item only if the layer is not internal", async () => {
 });
 
 it("displays the layer item only if the list mode is not `hide`", async () => {
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -761,7 +762,7 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -822,11 +823,11 @@ it("does not display layer item for child layer if the group's listMode is `hide
         }
     });
 
-    const { map, Wrapper } = await setup({
+    const { viewModel, Wrapper } = await setup({
         layers: [groupLayer]
     });
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -863,13 +864,13 @@ it("propagates child layer errors to the group's problem indicator", async () =>
         layers: [childLayer]
     });
 
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [groupLayer],
         mockMapRender: true
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -943,13 +944,13 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
         }
     });
 
-    const { map, Wrapper } = await setup({
+    const { map, viewModel, Wrapper } = await setup({
         layers: [groupLayer],
         mockMapRender: true
     });
     await waitForMapRender(map);
 
-    const { container } = render(<TopLevelLayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
         wrapper: Wrapper
     });
 
@@ -967,7 +968,7 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
     expect(getAccessibleLabel(groupItem)).toMatchInlineSnapshot(`
       "  Group
           childLayerNotAvailableDetails
-            Source of layer 'child' is in error state"
+            Broken Child: Source of layer 'child' is in error state"
     `);
 
     await act(async () => {
@@ -975,6 +976,73 @@ it("shows an aggregated child error message on the parent when list mode is 'hid
         await nextTick();
     });
     expect(groupItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).toBeNull();
+});
+
+it("disables sublayers if their parent layer failed to load", async () => {
+    const fetch = vi.fn(async () => {
+        throw new Error("Service unreachable");
+    });
+    const wmsLayer = createTestLayer(
+        {
+            type: WMSLayer,
+            id: "wms",
+            title: "WMS",
+            description: "WMS description",
+            url: "https://fake.wms.invalid/service",
+            sublayers: [
+                {
+                    id: "sub",
+                    name: "sub",
+                    title: "Sublayer",
+                    description: "Sublayer description"
+                }
+            ]
+        },
+        { fetch }
+    );
+
+    const { map, viewModel, Wrapper } = await setup({
+        layers: [wmsLayer],
+        mockMapRender: true
+    });
+    await waitForMapRender(map);
+    await waitFor(() => {
+        expect(wmsLayer.loadState).toBe("error");
+    });
+
+    const { container } = render(<TopLevelLayerList viewModel={viewModel} />, {
+        wrapper: Wrapper
+    });
+
+    const wmsItem = findLayerItem(container, "wms")!;
+    const sublayerItem = findLayerItem(container, "sub")!;
+    expect(wmsItem).toBeTruthy();
+    expect(sublayerItem).toBeTruthy();
+
+    // The sublayer inherits the error of its parent: checkbox and details button are disabled.
+    const sublayerCheckbox = sublayerItem.querySelector<HTMLInputElement>(
+        ".toc-layer-item-content input[type='checkbox']"
+    )!;
+    const sublayerDetailsButton = sublayerItem.querySelector<HTMLButtonElement>(
+        ".toc-layer-item-content .toc-layer-item-details-button"
+    )!;
+    expect(sublayerCheckbox.disabled).toBe(true);
+    expect(sublayerDetailsButton.disabled).toBe(true);
+    expect(sublayerItem.querySelector(CONTENT_PROBLEM_INDICATOR_SELECTOR)).not.toBeNull();
+    expect(getAccessibleLabel(sublayerItem)).toMatchInlineSnapshot(`
+      "  Sublayer
+        layerNotAvailable"
+    `);
+
+    // The parent only reports its own error (no additional warning about its children).
+    const wmsDetailsButton = wmsItem.querySelector<HTMLButtonElement>(
+        ".toc-layer-item-content .toc-layer-item-details-button"
+    )!;
+    expect(wmsDetailsButton.disabled).toBe(true);
+    expect(getAccessibleLabel(wmsItem)).toMatchInlineSnapshot(`
+      "  WMS
+        layerNotAvailable"
+    `);
 });
 
 /** Returns the layer list's current list items. */
@@ -1065,12 +1133,15 @@ async function setup(opts?: {
         mockMapRender: opts?.mockMapRender
     });
 
-    const testModel = new TocModel({
+    const tocOptions: TocWidgetOptions = {
         autoShowParents: true,
         collapsibleGroups: false,
         initiallyCollapsed: false,
         ...opts?.tocOptions
-    });
+    };
+    const testModel = new TocModel(tocOptions);
+    const viewModel = new TocViewModel(map, tocOptions);
+    onTestFinished(() => viewModel.destroy());
 
     function Wrapper(props: { children?: ReactNode }) {
         return (
@@ -1080,5 +1151,5 @@ async function setup(opts?: {
         );
     }
 
-    return { map, Wrapper };
+    return { map, viewModel, Wrapper };
 }
