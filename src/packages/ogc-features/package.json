@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/ogc-features",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "This package provides utilities to work with OGC API Features services.",
     "keywords": [
         "open-pioneer-trails"

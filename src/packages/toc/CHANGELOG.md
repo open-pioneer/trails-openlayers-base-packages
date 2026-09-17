@@ -1,5 +1,18 @@
 # @open-pioneer/toc
 
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- a186f5d: Update core packages to 4.8.0.
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- 0d9a9d0: Adapt to timing changes during map initialization.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes
