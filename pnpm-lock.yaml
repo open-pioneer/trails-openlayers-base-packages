@@ -203,6 +203,9 @@ catalogs:
     '@open-pioneer/core':
       specifier: ^4.8.0
       version: 4.8.0
+    '@open-pioneer/create-license-report':
+      specifier: 0.1.0-dev-license-report.20260918143642
+      version: 0.1.0-dev-license-report.20260918143642
     '@open-pioneer/http':
       specifier: ^4.8.0
       version: 4.8.0
@@ -394,6 +397,9 @@ importers:
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
         version: 0.5.0-dev-removed-pnpm-deps.20260917121732
+      '@open-pioneer/create-license-report':
+        specifier: 'catalog:'
+        version: 0.1.0-dev-license-report.20260918143642
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
         version: 7.0.1(@open-pioneer/runtime@4.8.0(@types/react@19.3.0))(rollup@4.63.2)(sass@1.104.0)(supports-color@7.2.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(sass@1.104.0)(tsx@4.23.13)(yaml@2.9.0))
@@ -2628,8 +2634,17 @@ packages:
     engines: {node: '>= 20', pnpm: '>= 11'}
     hasBin: true
 
+  '@open-pioneer/cli-common@0.1.0-dev-license-report.20260918143642':
+    resolution: {integrity: sha512-1Pu3OAiddFmG+ck30rlz0qc6Djtvw76P7Xrvdm6Rx7bnt3JE0icuc3o8qpubptYr1kYmKi7D3OW4eICAaKW7oQ==}
+    engines: {node: '>= 20'}
+
   '@open-pioneer/core@4.8.0':
     resolution: {integrity: sha512-yuppCDmlBgwaM0lb5WVzGY8aU4TqLjUscy98Gs34ci1IxNb13pMTKONptzskwltnbU/ZMvKGloMG9Pz59+3WvA==}
+
+  '@open-pioneer/create-license-report@0.1.0-dev-license-report.20260918143642':
+    resolution: {integrity: sha512-qiJ/c/1aoARFthZLoiqXzcVvtYwBMc2v7BJHbZLyS+zE0AQ7poH7jtNIwypWiK/iX7hCURynhOmHOwXBv2bfjw==}
+    engines: {node: '>= 20', pnpm: '>= 11'}
+    hasBin: true
 
   '@open-pioneer/http@4.8.0':
     resolution: {integrity: sha512-WJgdoHvz96wC6jJuFg/15wKRX9Kkx5DM+g7oeC6OCLaFifeON1fOjjMDJr/L7/IU3qbWqt77JIyA96o9UAt+Fw==}
@@ -3824,6 +3839,10 @@ packages:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
 
+  array-find-index@1.0.2:
+    resolution: {integrity: sha512-M1HQyIXcBGtVywBt8WVdim+lrNaK7VHp99Qt5pSNziXznKHViIBbXWtfRTpEFpF/c4FdfxNAsCCwPp5phBYJtw==}
+    engines: {node: '>=0.10.0'}
+
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
@@ -4973,6 +4992,27 @@ packages:
   spawndamnit@3.0.1:
     resolution: {integrity: sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==}
 
+  spdx-compare@1.0.0:
+    resolution: {integrity: sha512-C1mDZOX0hnu0ep9dfmuoi03+eOdDoz2yvK79RxbcrVEG1NO1Ph35yW102DHWKN4pk80nwCgeMmSY5L25VE4D9A==}
+
+  spdx-exceptions@2.5.0:
+    resolution: {integrity: sha512-PiU42r+xO4UbUS1buo3LPJkjlO7430Xn5SVAhdpzzsPHsjbYVflnnFdATgabnLude+Cqu25p6N+g2lw/PFsa4w==}
+
+  spdx-expression-parse@3.0.1:
+    resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
+
+  spdx-expression-parse@4.0.0:
+    resolution: {integrity: sha512-Clya5JIij/7C6bRR22+tnGXbc4VKlibKSVj2iHvVeX5iMW7s1SIQlqu699JkODJJIhh/pUu8L0/VLh8xflD+LQ==}
+
+  spdx-license-ids@3.0.23:
+    resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
+
+  spdx-ranges@2.1.1:
+    resolution: {integrity: sha512-mcdpQFV7UDAgLpXEE/jOMqvK4LBoO0uTQg0uvXUewmEFhpiZx5yJSZITHB8w1ZahKdhfZqP5GPEOKLyEq5p8XA==}
+
+  spdx-satisfies@6.0.0:
+    resolution: {integrity: sha512-oOWQocnRbFVtBnBITfFgzjhnOklHossTvI+6C1hB2slvp3HgTsfru5wuo8HY2rQpwSm5JuIhNzIuqOfR5IuojQ==}
+
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
@@ -6070,10 +6110,23 @@ snapshots:
       commander: 15.0.0
       js-yaml: 5.4.1
 
+  '@open-pioneer/cli-common@0.1.0-dev-license-report.20260918143642':
+    dependencies:
+      chalk: 6.0.0
+
   '@open-pioneer/core@4.8.0':
     dependencies:
       '@conterra/reactivity-events': 0.8.8
       fast-equals: 6.0.3
+
+  '@open-pioneer/create-license-report@0.1.0-dev-license-report.20260918143642':
+    dependencies:
+      '@open-pioneer/cli-common': 0.1.0-dev-license-report.20260918143642
+      commander: 15.0.0
+      js-yaml: 5.4.1
+      spdx-expression-parse: 4.0.0
+      spdx-satisfies: 6.0.0
+      zod: 4.6.5
 
   '@open-pioneer/http@4.8.0(@types/react@19.3.0)':
     dependencies:
@@ -7331,6 +7384,8 @@ snapshots:
 
   aria-query@5.3.2: {}
 
+  array-find-index@1.0.2: {}
+
   array-union@2.1.0: {}
 
   assertion-error@2.0.1: {}
@@ -8548,6 +8603,34 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
+
+  spdx-compare@1.0.0:
+    dependencies:
+      array-find-index: 1.0.2
+      spdx-expression-parse: 3.0.1
+      spdx-ranges: 2.1.1
+
+  spdx-exceptions@2.5.0: {}
+
+  spdx-expression-parse@3.0.1:
+    dependencies:
+      spdx-exceptions: 2.5.0
+      spdx-license-ids: 3.0.23
+
+  spdx-expression-parse@4.0.0:
+    dependencies:
+      spdx-exceptions: 2.5.0
+      spdx-license-ids: 3.0.23
+
+  spdx-license-ids@3.0.23: {}
+
+  spdx-ranges@2.1.1: {}
+
+  spdx-satisfies@6.0.0:
+    dependencies:
+      spdx-compare: 1.0.0
+      spdx-expression-parse: 3.0.1
+      spdx-ranges: 2.1.1
 
   sprintf-js@1.0.3: {}
 

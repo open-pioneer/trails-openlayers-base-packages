@@ -31,6 +31,7 @@
         "@open-pioneer/build-support": "catalog:",
         "@open-pioneer/changesets-release-line": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
+        "@open-pioneer/create-license-report": "catalog:",
         "@open-pioneer/vite-plugin-pioneer": "catalog:",
         "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",
