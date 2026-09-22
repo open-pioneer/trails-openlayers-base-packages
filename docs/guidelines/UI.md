@@ -42,7 +42,12 @@ Guidelines for React components developed in this repository.
 ## Mobile / Responsive Design
 
 - Use flexbox layout to resolve simple responsive design issues
-- Test with different screen sizes: ensure sensible behavior
+- Test with different screen sizes: ensure sensible behavior#
+
+## Map Overlays
+
+- Use the `TooltipBox` component to show a "Help"-Tooltip over the map (combining `mapModel.overlay` with `TooltipBox` from @open-pioneer/map-ui-components).
+  This component is styled like a Chakra Tooltip, but can be rendered at any position.
 
 ## Documentation and Examples
 
