@@ -97,6 +97,9 @@ overrides:
   "@ark-ui/react": "5.39.0"
   "@zag-js/interact-outside": "1.43.3"
 
+  # Downgrade, 3.2.2 is not signed: https://github.com/mafintosh/why-is-node-running/issues/90
+  "why-is-node-running@3.2.2": "3.2.1"
+
   # https://github.com/advisories/GHSA-g7r4-m6w7-qqqr
   # https://github.com/advisories/GHSA-gv7w-rqvm-qjhr
   "esbuild@<=0.28.0": "^0.28.1"
