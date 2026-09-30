@@ -59,16 +59,8 @@ overrideLicenses:
     licenseFiles:
       - custom: "./licenses/toggle_selection_mit"
 
-  # Readme contains original MIT license which got lost during fork / development at some point
-  # Retrieved on 2023-09-27 from https://github.com/mapbox/jsonlint
-  # See also commit: https://github.com/mapbox/jsonlint/commit/21c821af6c176bc0b8d240d715d416223d1deb7b
-  - name: "@mapbox/jsonlint-lines-primitives"
-    version: "2.0.2"
-    license: "MIT"
-    licenseFiles:
-      - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
-
   # License md present but package.json license field invalid.
+  # NOTE: Still present in the dependency tree as a prod dependency, but not detected by `pnpm licenses list` for unknown reasons.
   - name: "rgbcolor"
     version: "1.0.1"
     license: "MIT"

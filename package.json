@@ -13,7 +13,7 @@
         "build": "vite build",
         "build-packages": "pnpm run -r --aggregate-output build",
         "build-docs": "typedoc",
-        "build-license-report": "tsx ./support/create-license-report.ts ",
+        "build-license-report": "create-license-report -c support/license-config.yaml",
         "preview": "vite preview",
         "lint": "oxlint .",
         "lint:fix": "oxlint --fix .",
