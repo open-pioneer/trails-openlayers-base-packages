@@ -57,6 +57,7 @@ export class TocViewModel {
     #shared: SharedData;
     #syncedChildren: SyncedChildNodes;
 
+    #items = computed(() => Array.from(this.#shared.nodesById.values()));
     #shownChildren = computed(() => this.children.filter((c) => c.isShown));
 
     constructor(map: MapModel, options: TocWidgetOptions) {
@@ -88,6 +89,20 @@ export class TocViewModel {
      */
     getNodeById(id: string): TocLayerNode | undefined {
         return this.#shared.nodesById.get(id);
+    }
+
+    /**
+     * Returns the toc node that corresponds with the `layerId`.
+     */
+    getNodeByLayerId(layerId: string): TocLayerNode | undefined {
+        return this.getNodeById(layerId); // happens to be the same at the moment
+    }
+
+    /**
+     * Returns all nodes.
+     */
+    getItems(): TocLayerNode[] {
+        return this.#items.value;
     }
 
     /**

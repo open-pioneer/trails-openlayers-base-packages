@@ -47,14 +47,16 @@ export const LayerItem = memo(function LayerItem(props: {
 
     const intl = useIntl();
     const display = useReactiveSnapshot(() => node.isShown, [node]);
-    const [tocOptions, tocItemElemRef] = useTocItem(node, display);
+    const [tocItemElemRef] = useItemElementRef(node, display);
     const { isExpanded, isVisible } = useReactiveSnapshot(() => {
         return {
             isExpanded: node.isExpanded,
             isVisible: node.isVisible
         };
     }, [node]);
-    const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
+    const isCollapsible = useReactiveSnapshot(() => {
+        return node.options.collapsibleGroups ?? false;
+    }, [node]);
 
     const layerGroupId = useId();
     const { title, description } = useReactiveSnapshot(() => {
@@ -184,29 +186,22 @@ function CollapseButton(props: {
     );
 }
 
-// Creates a toc item and registers it with the shared toc model.
-function useTocItem(node: TocLayerNode, display: boolean) {
-    const tocModel = useTocModel();
-    const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
+// Creates a toc item element ref and register / deregister it on the node.
+// ToDo: Refactor?
+function useItemElementRef(node: TocLayerNode, display: boolean) {
     const tocItemElemRef = useRef<HTMLDivElement>(null);
-    const tocItem = useMemo((): TocItemImpl => {
-        return new TocItemImpl(node);
-    }, [node]);
 
-    // Register the item on the shared toc model
     useEffect(() => {
         if (!display) {
             return; //prevent registering if item is not displayed
         }
-        tocItem.setHtmlElement(tocItemElemRef.current ?? undefined);
-        tocModel.registerItem(tocItem);
+        node.setHtmlElement(tocItemElemRef.current ?? undefined);
         return () => {
-            tocItem.setHtmlElement(undefined);
-            tocModel.unregisterItem(tocItem);
+            node.setHtmlElement(undefined);
         };
-    }, [tocModel, tocItem, display]);
+    }, [node, display]);
 
-    return [options, tocItemElemRef] as const;
+    return [tocItemElemRef] as const;
 }
 
 function useNestedChildren(props: {

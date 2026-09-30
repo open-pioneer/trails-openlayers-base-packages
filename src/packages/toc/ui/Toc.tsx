@@ -13,17 +13,9 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
-import {
-    createOptions,
-    TocApi,
-    TocApiImpl,
-    TocDisposedEvent,
-    TocModel,
-    TocModelProvider,
-    TocReadyEvent,
-    TocWidgetOptions
-} from "../model";
-import { TocViewModel } from "../new-model/TocViewModel";
+import { TocApi, TocApiImpl, TocDisposedEvent, TocReadyEvent } from "../api";
+import { createOptions, TocModel } from "../model"; // todo remove if hook is deleted
+import { TocViewModel, TocWidgetOptions } from "../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -137,29 +129,7 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const map = useMapModelValue(props);
-
-    return (
-        <Flex {...containerProps} direction="column" gap={PADDING}>
-            <TocContent {...props} map={map} />
-        </Flex>
-    );
-};
-
-/** This component is rendered once we have a reference to the loaded map model. */
-function TocContent(props: TocProps & { map: MapModel }) {
-    const {
-        map,
-        showTools = false,
-        toolsConfig,
-        showBasemapSwitcher = true,
-        basemapSwitcherProps,
-        onReady,
-        onDisposed
-    } = props;
-    const intl = useIntl();
-    const model = useTocModel(props);
-    useTocAPI(model, onReady, onDisposed);
-
+    // ToDo: Move to hook?
     const [viewModel, setViewModel] = useState<TocViewModel>();
 
     const getLatestOptions = useEffectEvent(() => options);
@@ -176,6 +146,30 @@ function TocContent(props: TocProps & { map: MapModel }) {
     useEffect(() => {
         viewModel?.setOptions(options);
     }, [viewModel, options]);
+
+    return (
+        viewModel && (
+            <Flex {...containerProps} direction="column" gap={PADDING}>
+                <TocContent {...props} map={map} viewModel={viewModel} />
+            </Flex>
+        )
+    );
+};
+
+/** This component is rendered once we have a reference to the loaded map model. */
+function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }) {
+    const {
+        map,
+        viewModel,
+        showTools = false,
+        toolsConfig,
+        showBasemapSwitcher = true,
+        basemapSwitcherProps,
+        onReady,
+        onDisposed
+    } = props;
+    const intl = useIntl();
+    useTocAPI(viewModel, onReady, onDisposed);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -196,8 +190,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
         </Box>
     );
 
-    // TODO: Move viewModel condition to a sensible place
-    const layerList = viewModel && (
+    const layerList = (
         <Box className="toc-operational-layers">
             <TitledSection
                 title={
@@ -223,13 +216,14 @@ function TocContent(props: TocProps & { map: MapModel }) {
     );
 
     return (
-        <TocModelProvider value={model}>
+        <>
             {basemapSwitcher}
             {layerList}
-        </TocModelProvider>
+        </>
     );
 }
 
+// todo ensure that the new model covers all properties and delete this
 function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
     const tocModelRef = useRef<TocModel>(null);
@@ -288,7 +282,7 @@ function getOptions(props: TocOptionProps): TocWidgetOptions {
 }
 
 function useTocAPI(
-    model: TocModel,
+    model: TocViewModel,
     onReady: TocProps["onReady"] | undefined,
     onDisposed: TocProps["onDisposed"] | undefined
 ) {

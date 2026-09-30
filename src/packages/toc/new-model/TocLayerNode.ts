@@ -4,6 +4,8 @@
 import { computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { shallowEqual } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
+import { TocItemImpl } from "../api/TocItemImpl";
+import { TocItem } from "../api/types";
 import { LayerTocAttributes } from "../ui/Toc";
 import {
     getLayerIssues,
@@ -67,6 +69,10 @@ export class TocLayerNode {
     #immediateIssues = computed(() => getLayerIssues(this.layer), { equal: layerIssuesEqual });
     #issues = computed(() => this.#evaluateIssues(), { equal: nodeIssuesEqual });
 
+    #tocItem: TocItem;
+
+    #htmlElement: Reactive<HTMLElement | undefined>;
+
     constructor(layer: AnyLayer, parent: TocLayerNode | undefined, shared: SharedData) {
         this.parent = parent;
         this.layer = layer;
@@ -87,6 +93,11 @@ export class TocLayerNode {
             createChildNode: (layer) => new TocLayerNode(layer, this, this.#shared),
             getLayers
         });
+
+        // Create toc item to be used in API
+        this.#tocItem = new TocItemImpl(this);
+
+        this.#htmlElement = reactive(undefined);
 
         // Register this node in global node index.
         const nodesById = this.#shared.nodesById;
@@ -193,6 +204,20 @@ export class TocLayerNode {
     }
 
     /**
+     * Returns a {@link TocItem} representation of this node.
+     */
+    get tocItem(): TocItem {
+        return this.#tocItem;
+    }
+
+    /**
+     * Returns the HTML element associated with this node, if any.
+     */
+    get htmlElement(): HTMLElement | undefined {
+        return this.#htmlElement.value;
+    }
+
+    /**
      * Toggles the visibility of the layer associated with this node.
      *
      * If `autoShowParents` is enabled (the default), then parents of a layer
@@ -222,6 +247,10 @@ export class TocLayerNode {
         if (bubble) {
             this.parent?.setExpanded(expanded, bubble);
         }
+    }
+
+    setHtmlElement(element: HTMLElement | undefined) {
+        this.#htmlElement.value = element;
     }
 
     /**
