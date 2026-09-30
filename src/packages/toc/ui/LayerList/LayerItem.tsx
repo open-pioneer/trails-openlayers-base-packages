@@ -9,6 +9,7 @@ import {
     Flex,
     Icon,
     IconButton,
+    ListRootProps,
     Spacer,
     Text,
     VisuallyHidden
@@ -25,15 +26,23 @@ import { TocLayerNode } from "../../new-model/TocLayerNode";
 import { slug } from "../../utils/slug";
 import { useLayerItemIssues } from "./LayerItemIssues";
 import { LayerItemMenu } from "./LayerItemMenu";
-import { LayerList } from "./LayerList";
 
 /**
  * Renders a single layer as a list item.
  *
  * The item may have further nested list items if there are sublayers present.
  */
-export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }): ReactNode {
-    const { node } = props;
+export const LayerItem = memo(function LayerItem(props: {
+    /**
+     * The layer node to render.
+     */
+    node: TocLayerNode;
+    /**
+     * Callback to render a nested list for child layer nodes of this LayerItem.
+     */
+    renderNestedList: (nodes: TocLayerNode[], listProps: ListRootProps) => ReactNode;
+}): ReactNode {
+    const { node, renderNestedList } = props;
     const layer = node.layer;
 
     const intl = useIntl();
@@ -62,7 +71,13 @@ export const LayerItem = memo(function LayerItem(props: { node: TocLayerNode }):
         disabled
     } = useLayerItemIssues(node);
 
-    const nestedChildren = useNestedChildren(layerGroupId, title, node, intl);
+    const nestedChildren = useNestedChildren({
+        layerGroupId,
+        title,
+        node,
+        intl,
+        renderNestedList
+    });
     //all children hidden => do not render collapse button and child entries
     const hasNestedChildren = useReactiveSnapshot(() => {
         return node.shouldShowChildren && node.hasShownChildren;
@@ -194,26 +209,25 @@ function useTocItem(node: TocLayerNode, display: boolean) {
     return [options, tocItemElemRef] as const;
 }
 
-function useNestedChildren(
-    layerGroupId: string,
-    title: string,
-    node: TocLayerNode,
-    intl: PackageIntl
-) {
+function useNestedChildren(props: {
+    layerGroupId: string;
+    title: string;
+    node: TocLayerNode;
+    intl: PackageIntl;
+    renderNestedList: (nodes: TocLayerNode[], listProps: ListRootProps) => ReactNode;
+}) {
+    const { layerGroupId, title, node, intl, renderNestedList } = props;
     const childNodes = useReactiveSnapshot(() => node.children, [node]);
     const children = useMemo(() => {
         if (childNodes?.length) {
-            return (
-                <LayerList
-                    id={layerGroupId}
-                    nodes={childNodes}
-                    ml={4}
-                    aria-label={intl.formatMessage({ id: "childgroupLabel" }, { title: title })}
-                />
-            );
+            return renderNestedList(childNodes, {
+                id: layerGroupId,
+                ml: 4,
+                "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
+            });
         }
         return undefined;
-    }, [layerGroupId, intl, title, childNodes]);
+    }, [layerGroupId, intl, title, childNodes, renderNestedList]);
     return children;
 }
 

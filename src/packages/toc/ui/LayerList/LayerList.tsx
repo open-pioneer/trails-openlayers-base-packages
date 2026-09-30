@@ -5,7 +5,7 @@ import { List, ListRootProps, Text } from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, useMemo } from "react";
+import { memo, ReactNode, useMemo } from "react";
 import { TocLayerNode } from "../../new-model/TocLayerNode";
 import { TocViewModel } from "../../new-model/TocViewModel";
 import { displayItemForLayer } from "../../utils/displayLayer";
@@ -43,7 +43,10 @@ export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevel
 export const LayerList = memo(function LayerList(props: { nodes: TocLayerNode[] } & ListRootProps) {
     const { nodes, ...listProps } = props;
     const items = useMemo(
-        () => nodes.map((node) => <LayerItem key={node.id} node={node} />),
+        () =>
+            nodes.map((node) => (
+                <LayerItem key={node.id} node={node} renderNestedList={renderNestedList} />
+            )),
         [nodes]
     );
 
@@ -59,6 +62,15 @@ export const LayerList = memo(function LayerList(props: { nodes: TocLayerNode[] 
         </List.Root>
     );
 });
+
+/**
+ * Renders a nested layer list for child layers of a LayerItem.
+ *
+ * Used as a callback in LayerItem to avoid a circular import between LayerList and LayerItem.
+ */
+function renderNestedList(childNodes: TocLayerNode[], listProps: ListRootProps): ReactNode {
+    return <LayerList nodes={childNodes} {...listProps} />;
+}
 
 /**
  * Checks if there is any layer that should be displayed in the Toc
