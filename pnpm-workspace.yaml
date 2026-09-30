@@ -27,7 +27,7 @@ catalog:
   "@emotion/react": ^11.14.0
   "@emotion/styled": ^11.14.1
   "@esri/arcgis-html-sanitizer": "^4.1.0"
-  "@formatjs/intl": ^4.2.1
+  "@formatjs/intl": ^6.1.2
   "@tanstack/react-table": ^8.21.3
   html2canvas: ^1.4.1
   jspdf: ^4.2.1
