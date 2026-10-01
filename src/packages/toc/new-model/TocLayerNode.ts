@@ -4,8 +4,7 @@
 import { computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { shallowEqual } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
-import { TocItemImpl } from "../api/TocItemImpl";
-import { TocItem } from "../api/types";
+import { TocItemImpl, TocItem } from "../api";
 import { LayerTocAttributes } from "../ui/Toc";
 import {
     getLayerIssues,

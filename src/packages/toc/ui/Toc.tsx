@@ -276,7 +276,7 @@ function useTocOptions(props: TocOptionProps): TocWidgetOptions {
 function getOptions(props: TocOptionProps): TocWidgetOptions {
     return {
         autoShowParents: props.autoShowParents ?? true,
-        collapsibleGroups: props.collapsibleGroups ?? false,
+        collapsibleGroups: props.collapsibleGroups ?? props.initiallyCollapsed ?? false,
         initiallyCollapsed: props.initiallyCollapsed ?? false
     };
 }

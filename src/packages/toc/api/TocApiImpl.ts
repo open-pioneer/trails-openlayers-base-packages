@@ -24,7 +24,7 @@ export class TocApiImpl implements TocApi {
         return this.#tocViewModel
             .getItems()
             .map((node) => this.#toItem(node))
-            .filter((item) => item !== undefined);
+            .filter((item) => item != null);
     }
 
     // Internal layers and layers hidden via `listMode` are not part of the
