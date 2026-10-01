@@ -26,6 +26,7 @@ import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it, onTestFinished, vi } from "vitest";
 import { TocViewModel, TocWidgetOptions } from "../../new-model/TocViewModel";
+import { LayerItem } from "./LayerItem";
 import { TopLevelLayerList } from "./LayerList";
 
 const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
@@ -650,6 +651,49 @@ it("renders collapse buttons (only) for groups", async () => {
     expect(subgroupCollapseButton).toBeDefined();
     const nongroupCollapseButton = queryAllByRole<HTMLElement>(nongroupItem, "button");
     expect(nongroupCollapseButton.length).toBe(0); //has no child layers -> should not render collapse button
+});
+
+it("calls renderNestedList with the node's children and listProps for a node with children", async () => {
+    const { group } = createGroupHierarchy();
+    const { viewModel, Wrapper } = await setup({ layers: [group] });
+
+    const groupNode = viewModel.getNodeByLayerId("group")!;
+    expect(groupNode).toBeDefined();
+    const expectedChildren = groupNode.children;
+    expect(expectedChildren.length).toBeGreaterThan(0);
+
+    const renderNestedList = vi.fn(() => <div data-testid="mock-nested-list" />);
+    const { container } = render(
+        <LayerItem node={groupNode} renderNestedList={renderNestedList} />,
+        { wrapper: Wrapper }
+    );
+
+    expect(renderNestedList).toHaveBeenCalledTimes(1);
+    // The the (mock) nested list returned by the callback is actually rendered in the DOM.
+    expect(container.querySelector('[data-testid="mock-nested-list"]')).not.toBeNull();
+});
+
+it("does not call renderNestedList for a leaf node (no children)", async () => {
+    const { viewModel, Wrapper } = await setup({
+        layers: [
+            {
+                title: "Leaf",
+                id: "leaf",
+                olLayer: createTestOlLayer()
+            }
+        ]
+    });
+
+    const leafNode = viewModel.getNodeByLayerId("leaf")!;
+    expect(leafNode).toBeDefined();
+    expect(leafNode.children.length).toBe(0);
+
+    const renderNestedList = vi.fn(() => <div data-testid="mock-nested-list" />);
+    render(<LayerItem node={leafNode} renderNestedList={renderNestedList} />, {
+        wrapper: Wrapper
+    });
+
+    expect(renderNestedList).not.toHaveBeenCalled();
 });
 
 it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
