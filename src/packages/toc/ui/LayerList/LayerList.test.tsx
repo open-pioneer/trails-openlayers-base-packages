@@ -24,7 +24,7 @@ import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
-import { expect, it, onTestFinished, vi } from "vitest";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 import { TocViewModel, TocWidgetOptions } from "../../model/TocViewModel";
 import { LayerItem } from "./LayerItem";
 import { TopLevelLayerList } from "./LayerList";
@@ -662,15 +662,14 @@ it("calls renderNestedList with the node's children and listProps for a node wit
     const expectedChildren = groupNode.children;
     expect(expectedChildren.length).toBeGreaterThan(0);
 
-    const renderNestedList = vi.fn(() => <div data-testid="mock-nested-list" />);
-    const { container } = render(
-        <LayerItem node={groupNode} renderNestedList={renderNestedList} />,
-        { wrapper: Wrapper }
-    );
+    const { container } = render(<LayerItem node={groupNode} renderNestedList={MockNestedList} />, {
+        wrapper: Wrapper
+    });
 
-    expect(renderNestedList).toHaveBeenCalledTimes(1);
     // The the (mock) nested list returned by the callback is actually rendered in the DOM.
-    expect(container.querySelector('[data-testid="mock-nested-list"]')).not.toBeNull();
+    await waitFor(() => {
+        expect(container.querySelector('[data-testid="mock-nested-list"]')).not.toBeNull();
+    });
 });
 
 it("does not call renderNestedList for a leaf node (no children)", async () => {
@@ -688,12 +687,14 @@ it("does not call renderNestedList for a leaf node (no children)", async () => {
     expect(leafNode).toBeDefined();
     expect(leafNode.children.length).toBe(0);
 
-    const renderNestedList = vi.fn(() => <div data-testid="mock-nested-list" />);
-    render(<LayerItem node={leafNode} renderNestedList={renderNestedList} />, {
+    const { container } = render(<LayerItem node={leafNode} renderNestedList={MockNestedList} />, {
         wrapper: Wrapper
     });
 
-    expect(renderNestedList).not.toHaveBeenCalled();
+    // The the (mock) nested list is not rendered in the DOM because the node has no children.
+    await waitFor(() => {
+        expect(container.querySelector('[data-testid="mock-nested-list"]')).toBeNull();
+    });
 });
 
 it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
@@ -1088,6 +1089,35 @@ it("disables sublayers if their parent layer failed to load", async () => {
     `);
 });
 
+describe("htmlElement for list item", () => {
+    it("html element is set or unset when toggle layer diSplay in toc", async () => {
+        const { group } = createGroupHierarchy();
+        const { viewModel, Wrapper } = await setup({ layers: [group] });
+
+        const groupNode = viewModel.getNodeByLayerId("group")!;
+
+        render(<LayerItem node={groupNode} renderNestedList={MockNestedList} />, {
+            wrapper: Wrapper
+        });
+        // Group layer is not internal, so the htmlElement should be set.
+        await waitFor(() => {
+            expect(groupNode.htmlElement).toBeDefined();
+        });
+
+        group.setInternal(true);
+        // The htmlElement should be unset when the layer is internal (and thus not displayed in the TOC).
+        await waitFor(() => {
+            expect(groupNode.htmlElement).toBeUndefined();
+        });
+
+        group.setInternal(false);
+        // The htmlElement should be set again when the layer is no longer internal (and thus displayed in the TOC).
+        await waitFor(() => {
+            expect(groupNode.htmlElement).toBeDefined();
+        });
+    });
+});
+
 /** Returns the layer list's current list items. */
 function getCurrentItems(container: HTMLElement) {
     return queryAllByRole(container, "listitem");
@@ -1190,4 +1220,8 @@ async function setup(opts?: {
     }
 
     return { map, viewModel, Wrapper };
+}
+
+function MockNestedList() {
+    return <div data-testid="mock-nested-list" />;
 }
