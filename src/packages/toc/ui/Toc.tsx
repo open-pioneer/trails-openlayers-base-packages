@@ -14,7 +14,6 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
 import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
-import { createOptions, TocModel } from "../model"; // todo remove if hook is deleted
 import { TocViewModel, TocWidgetOptions } from "../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -207,64 +206,6 @@ function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }
     );
 }
 
-// todo ensure that the new model covers all properties and delete this
-function useTocModel(props: TocProps): TocModel {
-    const initialProps = useRef(props);
-    const tocModelRef = useRef<TocModel>(null);
-    // oxlint-disable-next-line react/refs
-    if (!tocModelRef.current) {
-        tocModelRef.current = new TocModel(
-            createOptions(
-                // oxlint-disable-next-line react/refs
-                initialProps.current.autoShowParents,
-                // oxlint-disable-next-line react/refs
-                initialProps.current.collapsibleGroups,
-                // oxlint-disable-next-line react/refs,
-                initialProps.current.initiallyCollapsed
-            )
-        );
-    }
-
-    // Sync props to model
-    useEffect(() => {
-        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tocModelRef.current!.updateOptions(
-            createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
-        );
-        // oxlint-disable-next-line react/refs
-    }, [
-        props.autoShowParents,
-        props.collapsibleGroups,
-        props.initiallyCollapsed,
-        // oxlint-disable-next-line react/refs
-        tocModelRef.current.options
-    ]);
-    // oxlint-disable-next-line react/refs
-    return tocModelRef.current;
-}
-
-type TocOptionProps = Pick<
-    TocProps,
-    "autoShowParents" | "collapsibleGroups" | "initiallyCollapsed"
->;
-
-// TODO: Clean this up --> duplicates in old model directory
-function useTocOptions(props: TocOptionProps): TocWidgetOptions {
-    const { autoShowParents, collapsibleGroups, initiallyCollapsed } = props;
-    return useMemo(
-        () => getOptions({ autoShowParents, collapsibleGroups, initiallyCollapsed }),
-        [autoShowParents, collapsibleGroups, initiallyCollapsed]
-    );
-}
-
-function getOptions(props: TocOptionProps): TocWidgetOptions {
-    return {
-        autoShowParents: props.autoShowParents ?? true,
-        collapsibleGroups: props.collapsibleGroups ?? props.initiallyCollapsed ?? false,
-        initiallyCollapsed: props.initiallyCollapsed ?? false
-    };
-}
-
 function useTocViewModel(map: MapModel, tocProps: TocProps): TocViewModel | undefined {
     const [viewModel, setViewModel] = useState<TocViewModel>();
 
@@ -315,4 +256,25 @@ function useTocAPI(
         readyTrigger();
         return disposeTrigger;
     }, [readyTrigger, disposeTrigger]);
+}
+
+type TocOptionProps = Pick<
+    TocProps,
+    "autoShowParents" | "collapsibleGroups" | "initiallyCollapsed"
+>;
+
+function useTocOptions(props: TocOptionProps): TocWidgetOptions {
+    const { autoShowParents, collapsibleGroups, initiallyCollapsed } = props;
+    return useMemo(
+        () => createTocOptions({ autoShowParents, collapsibleGroups, initiallyCollapsed }),
+        [autoShowParents, collapsibleGroups, initiallyCollapsed]
+    );
+}
+
+function createTocOptions(props: TocOptionProps): TocWidgetOptions {
+    return {
+        autoShowParents: props.autoShowParents ?? true,
+        collapsibleGroups: props.collapsibleGroups ?? props.initiallyCollapsed ?? false,
+        initiallyCollapsed: props.initiallyCollapsed ?? false
+    };
 }
