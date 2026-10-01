@@ -137,7 +137,11 @@ export const LayerItem = memo(function LayerItem(props: {
                 <LayerItemMenu title={title} description={description} disabled={disabled} />
             </Flex>
             {hasNestedChildren && (
-                <Collapsible.Root open={isExpanded} className="toc-collapsible-item">
+                <Collapsible.Root
+                    open={isExpanded}
+                    className="toc-collapsible-item"
+                    lazyMount={true}
+                >
                     <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
             )}
@@ -186,7 +190,6 @@ function CollapseButton(props: {
 }
 
 // Creates a toc item element ref and register / deregister it on the node.
-// ToDo: Refactor?
 function useItemElementRef(node: TocLayerNode, display: boolean) {
     const tocItemElemRef = useRef<HTMLDivElement>(null);
 
@@ -211,7 +214,7 @@ function useNestedChildren(props: {
     renderNestedList: (nodes: TocLayerNode[], listProps: ListRootProps) => ReactNode;
 }) {
     const { layerGroupId, title, node, intl, renderNestedList } = props;
-    const childNodes = useReactiveSnapshot(() => node.children, [node]);
+    const childNodes = useReactiveSnapshot(() => node.shownChildren, [node]);
     const children = useMemo(() => {
         if (childNodes?.length) {
             return renderNestedList(childNodes, {

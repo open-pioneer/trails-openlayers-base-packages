@@ -2,13 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { List, ListRootProps, Text } from "@chakra-ui/react";
-import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useMemo } from "react";
 import { TocLayerNode } from "../../model/TocLayerNode";
 import { TocViewModel } from "../../model/TocViewModel";
-import { displayItemForLayer } from "../../utils/displayLayer";
 import { LayerItem } from "./LayerItem";
 
 interface TopLevelLayerListProps {
@@ -24,9 +22,8 @@ interface TopLevelLayerListProps {
 export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevelLayerListProps) {
     const { viewModel, "aria-label": ariaLabel } = props;
     const intl = useIntl();
-    const nodes = useReactiveSnapshot(() => viewModel.children, [viewModel]);
-    const empty = useReactiveSnapshot(() => isEmpty(nodes.map((node) => node.layer)), [nodes]); // TODO: hacky -- make this a getter on the node?
-    if (empty) {
+    const nodes = useReactiveSnapshot(() => viewModel.shownChildren, [viewModel]);
+    if (nodes.length === 0) {
         return (
             <Text className="toc-missing-layers" aria-label={ariaLabel}>
                 {intl.formatMessage({ id: "missingLayers" })}
@@ -70,12 +67,4 @@ export const LayerList = memo(function LayerList(props: { nodes: TocLayerNode[] 
  */
 function renderNestedList(childNodes: TocLayerNode[], listProps: ListRootProps): ReactNode {
     return <LayerList nodes={childNodes} {...listProps} />;
-}
-
-/**
- * Checks if there is any layer that should be displayed in the Toc
- */
-function isEmpty(layers: AnyLayer[]): boolean {
-    const isEmpty = !layers.length || layers.every((l) => !displayItemForLayer(l));
-    return isEmpty;
 }

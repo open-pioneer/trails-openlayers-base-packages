@@ -12,7 +12,7 @@ import { TocViewModel } from "../model/TocViewModel";
 import { ToolsConfig } from "./Toc";
 
 export interface ToolsProps extends ToolsConfig {
-    viewModel: TocViewModel; // TODO: Consider using useContext for the view model and the map?
+    viewModel: TocViewModel;
 }
 
 export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {

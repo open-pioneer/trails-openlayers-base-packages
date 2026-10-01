@@ -120,14 +120,14 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:_r_5_:input"
-            id="checkbox:_r_5_"
+            for="checkbox:_r_4_:input"
+            id="checkbox:_r_4_"
           >
             <input
               aria-invalid="false"
-              aria-labelledby="checkbox:_r_5_:label"
+              aria-labelledby="checkbox:_r_4_:label"
               checked=""
-              id="checkbox:_r_5_:input"
+              id="checkbox:_r_4_:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
@@ -139,7 +139,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:_r_5_:control"
+              id="checkbox:_r_4_:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -157,7 +157,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:_r_5_:label"
+              id="checkbox:_r_4_:label"
             >
               <span>
                 Layer 2
@@ -181,14 +181,14 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:_r_9_:input"
-            id="checkbox:_r_9_"
+            for="checkbox:_r_8_:input"
+            id="checkbox:_r_8_"
           >
             <input
               aria-invalid="false"
-              aria-labelledby="checkbox:_r_9_:label"
+              aria-labelledby="checkbox:_r_8_:label"
               checked=""
-              id="checkbox:_r_9_:input"
+              id="checkbox:_r_8_:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
@@ -200,7 +200,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:_r_9_:control"
+              id="checkbox:_r_8_:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -218,7 +218,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:_r_9_:label"
+              id="checkbox:_r_8_:label"
             >
               <span>
                 Layer 1
