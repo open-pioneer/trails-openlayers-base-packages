@@ -25,8 +25,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it, onTestFinished, vi } from "vitest";
-import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
-import { TocViewModel } from "../../new-model/TocViewModel";
+import { TocViewModel, TocWidgetOptions } from "../../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList";
 
 const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
@@ -1139,16 +1138,11 @@ async function setup(opts?: {
         initiallyCollapsed: false,
         ...opts?.tocOptions
     };
-    const testModel = new TocModel(tocOptions);
     const viewModel = new TocViewModel(map, tocOptions);
     onTestFinished(() => viewModel.destroy());
 
     function Wrapper(props: { children?: ReactNode }) {
-        return (
-            <PackageContextProvider>
-                <TocModelProvider value={testModel}>{props.children}</TocModelProvider>
-            </PackageContextProvider>
-        );
+        return <PackageContextProvider>{props.children}</PackageContextProvider>;
     }
 
     return { map, viewModel, Wrapper };
