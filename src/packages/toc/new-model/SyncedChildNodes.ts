@@ -9,7 +9,7 @@ import { TocLayerNode } from "./TocLayerNode";
 /** @internal */
 export interface SyncedChildOptions {
     /**
-     * Constructs an new child, properly linked with its parent.
+     * Constructs a new child, properly linked with its parent.
      */
     createChildNode: (layer: AnyLayer) => TocLayerNode;
 
