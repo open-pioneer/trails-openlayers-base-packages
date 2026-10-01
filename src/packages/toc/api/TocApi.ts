@@ -3,23 +3,35 @@
 
 import { TocLayerNode } from "../new-model/TocLayerNode";
 import { TocViewModel } from "../new-model/TocViewModel";
-import { TocApi, TocItem } from "./types";
+import { TocItem } from "./TocItem";
 
-export class TocApiImpl implements TocApi {
+/**
+ * API to control the Toc component imperatively
+ */
+export class TocApi {
     #tocViewModel: TocViewModel;
 
     constructor(model: TocViewModel) {
         this.#tocViewModel = model;
     }
 
+    /**
+     * Returns the toc item for the given `id`.
+     */
     getItemById(id: string): TocItem | undefined {
         return this.#toItem(this.#tocViewModel.getNodeById(id));
     }
 
+    /**
+     * Returns the item that corresponds with the `layerId`.
+     */
     getItemByLayerId(layerId: string): TocItem | undefined {
         return this.#toItem(this.#tocViewModel.getNodeByLayerId(layerId));
     }
 
+    /**
+     * Returns the list of all registered items in the Toc.
+     */
     getItems(): TocItem[] {
         return this.#tocViewModel
             .getItems()

@@ -4,7 +4,7 @@
 import { computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { shallowEqual } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
-import { TocItemImpl, TocItem } from "../api";
+import { TocItem } from "../api";
 import { LayerTocAttributes } from "../ui/Toc";
 import {
     getLayerIssues,
@@ -94,7 +94,7 @@ export class TocLayerNode {
         });
 
         // Create toc item to be used in API
-        this.#tocItem = new TocItemImpl(this);
+        this.#tocItem = new TocItem(this);
 
         this.#htmlElement = reactive(undefined);
 

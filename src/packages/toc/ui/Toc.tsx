@@ -13,7 +13,7 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
-import { TocApi, TocApiImpl, TocDisposedEvent, TocReadyEvent } from "../api";
+import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
 import { createOptions, TocModel } from "../model"; // todo remove if hook is deleted
 import { TocViewModel, TocWidgetOptions } from "../new-model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
@@ -294,7 +294,7 @@ function useTocAPI(
     const apiRef = useRef<TocApi>(null);
     // oxlint-disable-next-line react/refs
     if (!apiRef.current) {
-        apiRef.current = new TocApiImpl(model);
+        apiRef.current = new TocApi(model);
     }
 
     const api = apiRef.current;
