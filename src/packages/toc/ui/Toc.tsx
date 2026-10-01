@@ -12,11 +12,12 @@ import {
     useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useId, useRef } from "react";
 import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
-import { TocViewModel, TocWidgetOptions } from "../model/TocViewModel";
+import { TocViewModel } from "../model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
+import { useTocViewModel } from "./useTocViewModel";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -206,27 +207,6 @@ function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }
     );
 }
 
-function useTocViewModel(map: MapModel, tocProps: TocProps): TocViewModel | undefined {
-    const [viewModel, setViewModel] = useState<TocViewModel>();
-
-    const getLatestOptions = useEffectEvent(() => options);
-    useEffect(() => {
-        const vm = new TocViewModel(map, getLatestOptions());
-        setViewModel(vm);
-        return () => {
-            setViewModel(undefined);
-            vm.destroy();
-        };
-    }, [map]);
-
-    const options = useTocOptions(tocProps);
-    useEffect(() => {
-        viewModel?.setOptions(options);
-    }, [viewModel, options]);
-
-    return viewModel;
-}
-
 function useTocAPI(
     model: TocViewModel,
     onReady: TocProps["onReady"] | undefined,
@@ -256,25 +236,4 @@ function useTocAPI(
         readyTrigger();
         return disposeTrigger;
     }, [readyTrigger, disposeTrigger]);
-}
-
-type TocOptionProps = Pick<
-    TocProps,
-    "autoShowParents" | "collapsibleGroups" | "initiallyCollapsed"
->;
-
-function useTocOptions(props: TocOptionProps): TocWidgetOptions {
-    const { autoShowParents, collapsibleGroups, initiallyCollapsed } = props;
-    return useMemo(
-        () => createTocOptions({ autoShowParents, collapsibleGroups, initiallyCollapsed }),
-        [autoShowParents, collapsibleGroups, initiallyCollapsed]
-    );
-}
-
-function createTocOptions(props: TocOptionProps): TocWidgetOptions {
-    return {
-        autoShowParents: props.autoShowParents ?? true,
-        collapsibleGroups: props.collapsibleGroups ?? props.initiallyCollapsed ?? false,
-        initiallyCollapsed: props.initiallyCollapsed ?? false
-    };
 }

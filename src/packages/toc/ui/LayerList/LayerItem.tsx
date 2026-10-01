@@ -19,7 +19,7 @@ import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
+import { memo, ReactNode, useCallback, useId, useMemo } from "react";
 import { LuChevronDown, LuChevronRight } from "react-icons/lu";
 import { TocLayerNode } from "../../model/TocLayerNode";
 import { slug } from "../../utils/slug";
@@ -46,7 +46,7 @@ export const LayerItem = memo(function LayerItem(props: {
 
     const intl = useIntl();
     const display = useReactiveSnapshot(() => node.isShown, [node]);
-    const [tocItemElemRef] = useItemElementRef(node, display);
+    const tocItemElemRef = useItemElementRef(node, display);
     const { isExpanded, isVisible } = useReactiveSnapshot(() => {
         return {
             isExpanded: node.isExpanded,
@@ -191,19 +191,18 @@ function CollapseButton(props: {
 
 // Creates a toc item element ref and register / deregister it on the node.
 function useItemElementRef(node: TocLayerNode, display: boolean) {
-    const tocItemElemRef = useRef<HTMLDivElement>(null);
+    return useCallback(
+        (htmlElement: HTMLElement | null) => {
+            if (!display) return;
+            node.setHtmlElement(htmlElement ?? undefined);
 
-    useEffect(() => {
-        if (!display) {
-            return; //prevent registering if item is not displayed
-        }
-        node.setHtmlElement(tocItemElemRef.current ?? undefined);
-        return () => {
-            node.setHtmlElement(undefined);
-        };
-    }, [node, display]);
-
-    return [tocItemElemRef] as const;
+            return () => {
+                // todo write unit test
+                node.setHtmlElement(undefined);
+            };
+        },
+        [node, display]
+    );
 }
 
 function useNestedChildren(props: {
