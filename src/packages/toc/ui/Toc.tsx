@@ -129,23 +129,7 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const map = useMapModelValue(props);
-    // ToDo: Move to hook?
-    const [viewModel, setViewModel] = useState<TocViewModel>();
-
-    const getLatestOptions = useEffectEvent(() => options);
-    useEffect(() => {
-        const vm = new TocViewModel(map, getLatestOptions());
-        setViewModel(vm);
-        return () => {
-            setViewModel(undefined);
-            vm.destroy();
-        };
-    }, [map]);
-
-    const options = useTocOptions(props);
-    useEffect(() => {
-        viewModel?.setOptions(options);
-    }, [viewModel, options]);
+    const viewModel = useTocViewModel(map, props);
 
     return (
         viewModel && (
@@ -279,6 +263,27 @@ function getOptions(props: TocOptionProps): TocWidgetOptions {
         collapsibleGroups: props.collapsibleGroups ?? props.initiallyCollapsed ?? false,
         initiallyCollapsed: props.initiallyCollapsed ?? false
     };
+}
+
+function useTocViewModel(map: MapModel, tocProps: TocProps): TocViewModel | undefined {
+    const [viewModel, setViewModel] = useState<TocViewModel>();
+
+    const getLatestOptions = useEffectEvent(() => options);
+    useEffect(() => {
+        const vm = new TocViewModel(map, getLatestOptions());
+        setViewModel(vm);
+        return () => {
+            setViewModel(undefined);
+            vm.destroy();
+        };
+    }, [map]);
+
+    const options = useTocOptions(tocProps);
+    useEffect(() => {
+        viewModel?.setOptions(options);
+    }, [viewModel, options]);
+
+    return viewModel;
 }
 
 function useTocAPI(
