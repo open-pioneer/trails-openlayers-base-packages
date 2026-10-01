@@ -7,8 +7,8 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo, useId } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
-import { TocLayerNode } from "../new-model/TocLayerNode";
-import { TocViewModel } from "../new-model/TocViewModel";
+import { TocLayerNode } from "../model/TocLayerNode";
+import { TocViewModel } from "../model/TocViewModel";
 import { ToolsConfig } from "./Toc";
 
 export interface ToolsProps extends ToolsConfig {

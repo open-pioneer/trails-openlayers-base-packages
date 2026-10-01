@@ -6,8 +6,8 @@ import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useMemo } from "react";
-import { TocLayerNode } from "../../new-model/TocLayerNode";
-import { TocViewModel } from "../../new-model/TocViewModel";
+import { TocLayerNode } from "../../model/TocLayerNode";
+import { TocViewModel } from "../../model/TocViewModel";
 import { displayItemForLayer } from "../../utils/displayLayer";
 import { LayerItem } from "./LayerItem";
 

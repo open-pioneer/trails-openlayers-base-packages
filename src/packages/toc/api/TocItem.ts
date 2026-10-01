@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { batch } from "@conterra/reactivity-core";
-import { TocLayerNode } from "../new-model/TocLayerNode";
+import { TocLayerNode } from "../model/TocLayerNode";
 import { ExpandItemOptions } from "./types";
 
 /**

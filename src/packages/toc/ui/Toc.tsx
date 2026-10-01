@@ -14,7 +14,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from "react";
 import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
-import { TocViewModel, TocWidgetOptions } from "../new-model/TocViewModel";
+import { TocViewModel, TocWidgetOptions } from "../model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 

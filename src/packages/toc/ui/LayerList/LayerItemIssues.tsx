@@ -14,8 +14,8 @@ import {
     IssueSeverity,
     LayerIssue,
     PropagatedIssue
-} from "../../new-model/LayerIssue";
-import { NodeIssues, TocLayerNode } from "../../new-model/TocLayerNode";
+} from "../../model/LayerIssue";
+import { NodeIssues, TocLayerNode } from "../../model/TocLayerNode";
 
 export interface LayerItemIssuesResult {
     /** Same content as the indicator, rendered separately for screen readers. */

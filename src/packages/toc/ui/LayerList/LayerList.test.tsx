@@ -25,7 +25,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it, onTestFinished, vi } from "vitest";
-import { TocViewModel, TocWidgetOptions } from "../../new-model/TocViewModel";
+import { TocViewModel, TocWidgetOptions } from "../../model/TocViewModel";
 import { LayerItem } from "./LayerItem";
 import { TopLevelLayerList } from "./LayerList";
 

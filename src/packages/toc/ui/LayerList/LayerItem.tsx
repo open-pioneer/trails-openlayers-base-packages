@@ -21,7 +21,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuChevronDown, LuChevronRight } from "react-icons/lu";
-import { TocLayerNode } from "../../new-model/TocLayerNode";
+import { TocLayerNode } from "../../model/TocLayerNode";
 import { slug } from "../../utils/slug";
 import { useLayerItemIssues } from "./LayerItemIssues";
 import { LayerItemMenu } from "./LayerItemMenu";
