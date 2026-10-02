@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { availableParallelism } from "node:os";
 import { dirname, resolve } from "node:path";
+import { env } from "node:process";
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react";
+import { playwright } from "@vitest/browser-playwright";
 import glob from "fast-glob";
 import { defineConfig } from "vite";
 import { dependencySourcemaps } from "./support/vite/dependency-sourcemaps.ts";
@@ -93,17 +96,67 @@ export default defineConfig(({ mode }) => {
 
         // https://vitest.dev/config/
         test: {
-            globals: true,
-            environment: "happy-dom",
             silent: "passed-only",
-            setupFiles: ["testing/global-setup.ts"],
-            server: {
-                deps: {
-                    // Workaround to fix some import issues, see
-                    // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
-                    inline: [/@open-pioneer[/\\]/, /ol\//]
+            projects: [
+                {
+                    test: {
+                        name: "unit",
+                        globals: true, // todo still needed?
+                        include: ["**/*.{test,spec}.*", "../support/**/*.{test,spec}.*"],
+                        exclude: [
+                            "**/node_modules/**",
+                            "../**/node_modules/**",
+                            "**/*.browser.{test,spec}.*",
+                            "../support/**/*.browser.{test,spec}.*",
+                            "**/*.{test,spec}.*.snap",
+                            "../support/**/*.{test,spec}.*.snap"
+                        ],
+                        environment: "happy-dom", // todo change to "node" if happy-dom is no longer needed
+                        setupFiles: ["testing/global-setup.ts"], // todo clean up if happy-dom is no longer needed
+                        server: {
+                            deps: {
+                                // Workaround to fix some import issues, see
+                                // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
+                                inline: [/@open-pioneer[/\\]/, /ol\//]
+                            }
+                        }
+                    }
+                },
+                {
+                    test: {
+                        name: "browser",
+                        include: ["**/*.browser.{test,spec}.*"],
+                        exclude: ["**/node_modules/**", "../**/node_modules/**"],
+                        server: {
+                            deps: {
+                                // Workaround to fix some import issues, see
+                                // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
+                                inline: [/@open-pioneer[/\\]/]
+                            }
+                        },
+                        testTimeout: 5000,
+
+                        // Browser tests get their own group because Vitest rejects projects with
+                        // different `maxWorkers` in one group; unit and arch tests keep the default.
+                        maxWorkers: browserTestWorkers(),
+                        sequence: { groupOrder: 1 },
+                        browser: {
+                            enabled: true,
+                            provider: playwright(),
+
+                            // Disable creation of screenshots for failing tests
+                            screenshotFailures: false,
+
+                            // https://vitest.dev/config/browser/playwright
+                            instances: [{ browser: "chromium" }],
+                            viewport: {
+                                height: 600,
+                                width: 800
+                            }
+                        }
+                    }
                 }
-            }
+            ]
         }
 
         // disable hot reloading
@@ -114,3 +167,9 @@ export default defineConfig(({ mode }) => {
         }*/
     };
 });
+
+// Reduce parallelism -- too much parallel jobs cause rendering timeouts in headless mode.
+function browserTestWorkers(): number {
+    const minimum = env.CI ? 2 : 1;
+    return Math.max(minimum, Math.floor(availableParallelism() / 4));
+}

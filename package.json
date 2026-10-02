@@ -43,6 +43,8 @@
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
         "@vitejs/plugin-react": "catalog:",
+        "@vitest/browser-playwright": "catalog:",
+        "@vitest/browser-preview": "catalog:",
         "fast-glob": "catalog:",
         "handlebars": "catalog:",
         "happy-dom": "catalog:",
@@ -52,6 +54,7 @@
         "lint-staged": "catalog:",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
+        "playwright": "catalog:",
         "react": "catalog:",
         "resize-observer-polyfill": "catalog:",
         "rimraf": "catalog:",
@@ -61,6 +64,7 @@
         "typescript": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:",
+        "vitest-browser-react": "catalog:",
         "zx": "catalog:"
     },
     "engines": {
