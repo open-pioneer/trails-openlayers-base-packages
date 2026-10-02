@@ -398,7 +398,7 @@ it("does not call renderNestedList for a leaf node (no children)", async () => {
 
 describe("list mode", () => {
     it("displays the layer item only if the layer is not internal", async () => {
-        const { map, node, Wrapper } = await setup({
+        const { node, Wrapper } = await setup({
             layer: {
                 id: "layer",
                 title: "Layer 1",
