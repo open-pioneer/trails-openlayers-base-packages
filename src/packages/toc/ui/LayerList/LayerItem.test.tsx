@@ -30,7 +30,6 @@ import { SharedData, TocWidgetOptions } from "../../model/TocViewModel";
 import { LayerItem } from "./LayerItem";
 
 const PROBLEM_INDICATOR_SELECTOR = ".toc-layer-item-problem-indicator svg";
-const CONTENT_PROBLEM_INDICATOR_SELECTOR = `.toc-layer-item-content ${PROBLEM_INDICATOR_SELECTOR}`;
 
 it("displays the layer's current title", async () => {
     const { node, map, Wrapper } = await setup({
@@ -120,14 +119,16 @@ it("includes the layer id in the item's class list", async () => {
     const { map, node, Wrapper } = await setup({
         mockMapRender: true
     });
+    const layer = node.layer;
     await waitForMapRender(map);
 
     const { container } = render(<LayerItem node={node} renderNestedList={mockNestedList} />, {
         wrapper: Wrapper
     });
 
-    const item = container.querySelector(".layer-test-layer"); //css class for layer id
+    const item = findListItemForLayer(container, layer.id); //css class for layer id
     expect(item).toBeTruthy();
+    expect(item?.classList.contains(`layer-${layer.id}`)).toBe(true);
 });
 
 it("renders buttons if layer has description property", async () => {
@@ -390,9 +391,96 @@ it("does not call renderNestedList for a leaf node (no children)", async () => {
 
     // The (mock) nested list is not rendered in the DOM because the node has no children.
     await waitFor(() => {
-        expect(findLayerItem(container, "leaf")).not.toBeNull();
+        expect(findListItemForLayer(container, "leaf")).not.toBeNull();
     });
     expect(container.querySelector(MOCK_NESTED_LIST_SELECTOR)).toBeNull();
+});
+
+describe("list mode", () => {
+    it("displays the layer item only if the layer is not internal", async () => {
+        const { map, node, Wrapper } = await setup({
+            layer: {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: createTestOlLayer(),
+                internal: false
+            },
+            mockMapRender: true
+        });
+
+        const layer = node.layer;
+
+        const { container } = render(<LayerItem node={node} renderNestedList={mockNestedList} />, {
+            wrapper: Wrapper
+        });
+
+        let layerItem = findListItemForLayer(container, layer.id);
+        expect(layerItem).toBeTruthy();
+
+        await act(async () => {
+            layer.setInternal(true); //make layer internal
+            await nextTick();
+        });
+        layerItem = findListItemForLayer(container, layer.id); //layer item should not be there anymore
+        expect(layerItem).toBeFalsy();
+    });
+
+    it("displays the layer item only if the list mode is not `hide`", async () => {
+        const { node, Wrapper } = await setup({
+            layer: {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: createTestOlLayer(),
+                internal: false,
+                attributes: {
+                    toc: {
+                        listMode: "show"
+                    }
+                }
+            }
+        });
+
+        const layer = node.layer;
+
+        const { container } = render(<LayerItem node={node} renderNestedList={mockNestedList} />, {
+            wrapper: Wrapper
+        });
+
+        let layerItem = findListItemForLayer(container, layer.id);
+        expect(layerItem).toBeTruthy();
+
+        await act(async () => {
+            layer.setInternal(true); //make layer internal
+            await nextTick();
+        });
+        //layer item should still be there because toc specific listMode has precedence over internal attribute
+        layerItem = findListItemForLayer(container, layer.id);
+        expect(layerItem).toBeTruthy();
+
+        await act(async () => {
+            layer.setInternal(false);
+            layer.updateAttributes({
+                toc: {
+                    listMode: "hide-children"
+                }
+            });
+            await nextTick();
+        });
+        //layer item should still be there because `hide-children` should not affect the layer item itself
+        layerItem = findListItemForLayer(container, layer.id);
+        expect(layerItem).toBeTruthy();
+
+        await act(async () => {
+            layer.updateAttributes({
+                toc: {
+                    listMode: "hide"
+                }
+            });
+            await nextTick();
+        });
+        layerItem = findListItemForLayer(container, layer.id);
+        expect(layerItem).toBeFalsy();
+    });
 });
 
 describe("htmlElement for list item", () => {
@@ -452,7 +540,7 @@ function textTree(node: Node, indent = ""): string {
     return lines.join("\n");
 }
 
-function findLayerItem(container: HTMLElement, id: string) {
+function findListItemForLayer(container: HTMLElement, id: string) {
     return container.querySelector(`li.toc-layer-item.layer-${id}`) as HTMLElement | null;
 }
 
