@@ -53,14 +53,14 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * If `true`, groups in the toc can be collapsed and expanded.
      * This property should only be `true` if the map actually contains layer groups.
      *
-     * Defaults to `false`.
+     * Defaults to `true` if {@link initiallyCollapsed} is enabled, `false` otherwise.
      */
     collapsibleGroups?: boolean;
 
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise, only the top level layers will appear in the toc.
+     * Defaults to `false`.
      */
     initiallyCollapsed?: boolean;
 
@@ -140,7 +140,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     );
 };
 
-/** This component is rendered once we have a reference to the loaded map model. */
+/** This component is rendered once we have constructed the view model. */
 function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }) {
     const {
         map,

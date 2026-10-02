@@ -14,7 +14,6 @@ import {
     Text,
     VisuallyHidden
 } from "@chakra-ui/react";
-import { AnyLayer } from "@open-pioneer/map";
 import { classNames } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -26,44 +25,46 @@ import { slug } from "../../utils/slug";
 import { useLayerItemIssues } from "./LayerItemIssues";
 import { LayerItemMenu } from "./LayerItemMenu";
 
+export interface LayerItemProps {
+    /**
+     * The layer node to render.
+     */
+    node: TocLayerNode;
+
+    /**
+     * Callback to render a nested list for child layer nodes of this LayerItem.
+     */
+    renderNestedList: (nodes: TocLayerNode[], listProps: ListRootProps) => ReactNode;
+}
+
 /**
  * Renders a single layer as a list item.
  *
  * The item may have further nested list items if there are sublayers present.
  */
-export const LayerItem = memo(function LayerItem(props: {
-    /**
-     * The layer node to render.
-     */
-    node: TocLayerNode;
-    /**
-     * Callback to render a nested list for child layer nodes of this LayerItem.
-     */
-    renderNestedList: (nodes: TocLayerNode[], listProps: ListRootProps) => ReactNode;
-}): ReactNode {
+export const LayerItem = memo(function LayerItem(props: LayerItemProps): ReactNode {
     const { node, renderNestedList } = props;
-    const layer = node.layer;
 
     const intl = useIntl();
-    const display = useReactiveSnapshot(() => node.isShown, [node]);
-    const tocItemElemRef = useItemElementRef(node, display);
-    const { isExpanded, isVisible } = useReactiveSnapshot(() => {
+    const tocItemElemRef = useItemElementRef(node);
+    const { isShown, isExpanded, isVisible } = useReactiveSnapshot(() => {
         return {
+            isShown: node.isShown,
             isExpanded: node.isExpanded,
             isVisible: node.isVisible
         };
     }, [node]);
     const isCollapsible = useReactiveSnapshot(() => {
-        return node.options.collapsibleGroups ?? false;
+        return node.options.collapsibleGroups;
     }, [node]);
 
     const layerGroupId = useId();
     const { title, description } = useReactiveSnapshot(() => {
         return {
-            title: layer.title,
-            description: layer.description
+            title: node.title,
+            description: node.description
         };
-    }, [layer]);
+    }, [node]);
 
     const {
         indicator: issueIndicator,
@@ -79,19 +80,19 @@ export const LayerItem = memo(function LayerItem(props: {
         intl,
         renderNestedList
     });
-    //all children hidden => do not render collapse button and child entries
     const hasNestedChildren = useReactiveSnapshot(() => {
         return node.shouldShowChildren && node.hasShownChildren;
     }, [node]);
 
-    if (!display) {
+    // Hidden nodes are not rendered by their parents ("shownChildren"), so this is just being defensive.
+    if (!isShown) {
         return null;
     }
 
     return (
         <Box
             as="li"
-            className={classNames("toc-layer-item", getClassNameForLayer(layer))}
+            className={classNames("toc-layer-item", getClassNameForNode(node))}
             ref={tocItemElemRef}
         >
             <Flex
@@ -190,18 +191,15 @@ function CollapseButton(props: {
 }
 
 // Creates a toc item element ref and register / deregister it on the node.
-function useItemElementRef(node: TocLayerNode, display: boolean) {
+function useItemElementRef(node: TocLayerNode) {
     return useCallback(
         (htmlElement: HTMLElement | null) => {
-            if (!display) return;
             node.setHtmlElement(htmlElement ?? undefined);
-
             return () => {
-                // todo write unit test
                 node.setHtmlElement(undefined);
             };
         },
-        [node, display]
+        [node]
     );
 }
 
@@ -215,7 +213,7 @@ function useNestedChildren(props: {
     const { layerGroupId, title, node, intl, renderNestedList } = props;
     const childNodes = useReactiveSnapshot(() => node.shownChildren, [node]);
     const children = useMemo(() => {
-        if (childNodes?.length) {
+        if (childNodes.length) {
             return renderNestedList(childNodes, {
                 id: layerGroupId,
                 ml: 4,
@@ -227,6 +225,6 @@ function useNestedChildren(props: {
     return children;
 }
 
-function getClassNameForLayer(layer: AnyLayer) {
-    return `layer-${slug(layer.id)}`;
+function getClassNameForNode(node: TocLayerNode) {
+    return `layer-${slug(node.layer.id)}`;
 }

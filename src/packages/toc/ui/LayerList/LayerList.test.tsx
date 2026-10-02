@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { ListRootProps } from "@chakra-ui/react";
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, WMSLayer } from "@open-pioneer/map";
 import {
@@ -25,6 +26,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
+import { TocLayerNode } from "../../model/TocLayerNode";
 import { TocViewModel, TocWidgetOptions } from "../../model/TocViewModel";
 import { LayerItem } from "./LayerItem";
 import { TopLevelLayerList } from "./LayerList";
@@ -653,23 +655,30 @@ it("renders collapse buttons (only) for groups", async () => {
     expect(nongroupCollapseButton.length).toBe(0); //has no child layers -> should not render collapse button
 });
 
-it("calls renderNestedList with the node's children and listProps for a node with children", async () => {
+it("calls renderNestedList with the node's shown children and list props", async () => {
     const { group } = createGroupHierarchy();
     const { viewModel, Wrapper } = await setup({ layers: [group] });
 
     const groupNode = viewModel.getNodeByLayerId("group")!;
-    expect(groupNode).toBeDefined();
-    const expectedChildren = groupNode.children;
-    expect(expectedChildren.length).toBeGreaterThan(0);
+    expect(groupNode.shownChildren.length).toBeGreaterThan(0);
 
-    const { container } = render(<LayerItem node={groupNode} renderNestedList={MockNestedList} />, {
+    const { container } = render(<LayerItem node={groupNode} renderNestedList={mockNestedList} />, {
         wrapper: Wrapper
     });
 
-    // The the (mock) nested list returned by the callback is actually rendered in the DOM.
-    await waitFor(() => {
-        expect(container.querySelector('[data-testid="mock-nested-list"]')).not.toBeNull();
+    // The (mock) nested list returned by the callback is actually rendered in the DOM.
+    const nestedList = await waitFor(() => {
+        const nestedList = container.querySelector<HTMLElement>(MOCK_NESTED_LIST_SELECTOR);
+        expect(nestedList).not.toBeNull();
+        return nestedList!;
     });
+
+    // Test that the layer item renders the expected children (using our mock rendering function).
+    const expectedChildren = groupNode.shownChildren;
+    expect(expectedChildren.length).toBeGreaterThan(0);
+    expect(nestedList.dataset.nodeIds).toBe(expectedChildren.map((n) => n.id).join(","));
+    expect(nestedList.getAttribute("aria-label")).toBe("childgroupLabel");
+    expect(nestedList.id).toBeTruthy();
 });
 
 it("does not call renderNestedList for a leaf node (no children)", async () => {
@@ -687,14 +696,15 @@ it("does not call renderNestedList for a leaf node (no children)", async () => {
     expect(leafNode).toBeDefined();
     expect(leafNode.children.length).toBe(0);
 
-    const { container } = render(<LayerItem node={leafNode} renderNestedList={MockNestedList} />, {
+    const { container } = render(<LayerItem node={leafNode} renderNestedList={mockNestedList} />, {
         wrapper: Wrapper
     });
 
-    // The the (mock) nested list is not rendered in the DOM because the node has no children.
+    // The (mock) nested list is not rendered in the DOM because the node has no children.
     await waitFor(() => {
-        expect(container.querySelector('[data-testid="mock-nested-list"]')).toBeNull();
+        expect(findLayerItem(container, "leaf")).not.toBeNull();
     });
+    expect(container.querySelector(MOCK_NESTED_LIST_SELECTOR)).toBeNull();
 });
 
 it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
@@ -1090,13 +1100,13 @@ it("disables sublayers if their parent layer failed to load", async () => {
 });
 
 describe("htmlElement for list item", () => {
-    it("html element is set or unset when toggle layer diSplay in toc", async () => {
+    it("sets and unsets the html element when the layer item is shown or hidden", async () => {
         const { group } = createGroupHierarchy();
         const { viewModel, Wrapper } = await setup({ layers: [group] });
 
         const groupNode = viewModel.getNodeByLayerId("group")!;
 
-        render(<LayerItem node={groupNode} renderNestedList={MockNestedList} />, {
+        render(<LayerItem node={groupNode} renderNestedList={mockNestedList} />, {
             wrapper: Wrapper
         });
         // Group layer is not internal, so the htmlElement should be set.
@@ -1222,6 +1232,16 @@ async function setup(opts?: {
     return { map, viewModel, Wrapper };
 }
 
-function MockNestedList() {
-    return <div data-testid="mock-nested-list" />;
+const MOCK_NESTED_LIST_SELECTOR = '[data-testid="mock-nested-list"]';
+
+/** Replacement for the real nested list; renders its arguments so tests can inspect them in the DOM. */
+function mockNestedList(nodes: TocLayerNode[], listProps: ListRootProps): ReactNode {
+    return (
+        <div
+            data-testid="mock-nested-list"
+            data-node-ids={nodes.map((node) => node.id).join(",")}
+            id={listProps.id}
+            aria-label={listProps["aria-label"]}
+        />
+    );
 }

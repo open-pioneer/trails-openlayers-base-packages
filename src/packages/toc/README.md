@@ -85,7 +85,7 @@ Groups can be made collapsible through user action by setting the `collapsibleGr
 If enabled, a toggle button appears next to parent nodes by which the user can expand or collapse the group.
 
 Using the `initiallyCollapsed` property, groups can be collapsed by default when the TOC is rendered.
-If `collapsibleGroups` is set to `true`, `collapsibleGroups` is automatically set to `true`, too.
+If `initiallyCollapsed` is set to `true`, `collapsibleGroups` is automatically set to `true`, too.
 
 ```tsx
 <Toc

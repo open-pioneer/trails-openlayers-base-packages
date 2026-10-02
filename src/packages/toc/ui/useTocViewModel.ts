@@ -9,6 +9,7 @@ import { TocProps } from "./Toc";
 export function useTocViewModel(map: MapModel, tocProps: TocProps): TocViewModel | undefined {
     const [viewModel, setViewModel] = useState<TocViewModel>();
 
+    const options = useTocOptions(tocProps);
     const getLatestOptions = useEffectEvent(() => options);
     useEffect(() => {
         const vm = new TocViewModel(map, getLatestOptions());
@@ -19,7 +20,6 @@ export function useTocViewModel(map: MapModel, tocProps: TocProps): TocViewModel
         };
     }, [map]);
 
-    const options = useTocOptions(tocProps);
     useEffect(() => {
         viewModel?.setOptions(options);
     }, [viewModel, options]);

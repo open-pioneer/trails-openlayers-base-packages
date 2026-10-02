@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { computed, Reactive, reactive } from "@conterra/reactivity-core";
+import { batch, computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { shallowEqual } from "@open-pioneer/core";
 import { AnyLayer } from "@open-pioneer/map";
 import { TocItem } from "../api";
@@ -63,14 +63,13 @@ export class TocLayerNode {
     #hasShownChildren = computed(() => this.#shownChildren.value.length > 0);
 
     #expanded: Reactive<boolean>;
+    #htmlElement = reactive<HTMLElement>();
 
     // Structural equality: stops the propagation to parent nodes if nothing relevant changed.
-    #immediateIssues = computed(() => getLayerIssues(this.layer), { equal: layerIssuesEqual });
+    #ownIssues = computed(() => getLayerIssues(this.layer), { equal: layerIssuesEqual });
     #issues = computed(() => this.#evaluateIssues(), { equal: nodeIssuesEqual });
 
     #tocItem: TocItem;
-
-    #htmlElement: Reactive<HTMLElement | undefined>;
 
     constructor(layer: AnyLayer, parent: TocLayerNode | undefined, shared: SharedData) {
         this.parent = parent;
@@ -87,7 +86,6 @@ export class TocLayerNode {
                     includeInternalLayers: true
                 }) ?? [];
         }
-
         this.#syncedChildren = new SyncedChildNodes({
             createChildNode: (layer) => new TocLayerNode(layer, this, this.#shared),
             getLayers
@@ -95,8 +93,6 @@ export class TocLayerNode {
 
         // Create toc item to be used in API
         this.#tocItem = new TocItem(this);
-
-        this.#htmlElement = reactive(undefined);
 
         // Register this node in global node index.
         const nodesById = this.#shared.nodesById;
@@ -120,6 +116,20 @@ export class TocLayerNode {
      */
     get id(): string {
         return this.layer.id;
+    }
+
+    /**
+     * Returns the title of this node.
+     */
+    get title(): string {
+        return this.layer.title;
+    }
+
+    /**
+     * Returns the description of this node. May be empty.
+     */
+    get description(): string {
+        return this.layer.description;
     }
 
     /**
@@ -162,7 +172,7 @@ export class TocLayerNode {
     /**
      * Whether this node should be shown in the UI.
      *
-     * See also {@link isShown}.
+     * See also {@link shouldShowChildren}.
      */
     get isShown(): boolean {
         return this.#shown.value;
@@ -211,6 +221,8 @@ export class TocLayerNode {
 
     /**
      * Returns the HTML element associated with this node, if any.
+     *
+     * @internal
      */
     get htmlElement(): HTMLElement | undefined {
         return this.#htmlElement.value;
@@ -223,31 +235,43 @@ export class TocLayerNode {
      * are also made visible when a child is made visible.
      */
     setVisible(visible: boolean) {
-        this.layer.setVisible(visible);
-        if (visible && this.parent && this.options.autoShowParents) {
-            this.parent.setVisible(visible);
-        }
+        batch(() => {
+            this.layer.setVisible(visible);
+            if (visible && this.parent && this.options.autoShowParents) {
+                this.parent.setVisible(visible);
+            }
+        });
     }
 
     /**
      * Toggles the expanded state of this node.
      * Expanded nodes may show their children.
      *
-     * By default, `expanded: true` will bubble to the parents (expanded them as well).
+     * By default, `expanded: true` will bubble to the parents (expanding them as well).
      */
     setExpanded(expanded: boolean, bubble?: boolean | undefined) {
-        this.#expanded.value = expanded;
+        batch(() => {
+            this.#expanded.value = expanded;
 
-        //by default bubble if expand is true
-        if (bubble == null) {
-            bubble = expanded;
-        }
+            //by default bubble if expand is true
+            if (bubble == null) {
+                bubble = expanded;
+            }
 
-        if (bubble) {
-            this.parent?.setExpanded(expanded, bubble);
-        }
+            if (bubble) {
+                this.parent?.setExpanded(expanded, bubble);
+            }
+        });
     }
 
+    /**
+     * Sets the HTML element associated with this node, if any.
+     * Called by the rendering react node.
+     *
+     * TODO: This should not be in the view model layer.
+     *
+     * @internal
+     */
     setHtmlElement(element: HTMLElement | undefined) {
         this.#htmlElement.value = element;
     }
@@ -256,7 +280,7 @@ export class TocLayerNode {
      * Combines direct issues from this instance with the (potential) issues of any child nodes.
      */
     #evaluateIssues(): NodeIssues {
-        const own: LayerIssue[] = [...this.#immediateIssues.value];
+        const own: LayerIssue[] = [...this.#ownIssues.value];
         const propagated: PropagatedIssue[] = [];
 
         // If the layer itself failed to load, the children are unavailable as a consequence

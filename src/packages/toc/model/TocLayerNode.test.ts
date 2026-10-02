@@ -10,124 +10,71 @@ import { describe, expect, it } from "vitest";
 import { TocLayerNode } from "./TocLayerNode";
 import { SharedData, TocWidgetOptions } from "./TocViewModel";
 
-it("sets children and parent nodes correctly", async () => {
-    const { parentNode } = await setup();
-    const childNode = parentNode.children[0]!;
-
-    expect(childNode.parent).toBe(parentNode);
-    expect(parentNode.children).toHaveLength(1);
-    expect(parentNode.children).toContain(childNode);
-});
+// NOTE: node structure, parent / child links and the expansion logic
+// are covered by the view model tests (TocViewModel.test.ts).
 
 describe("visibility", () => {
-    it("bubbles layer visibility only if autoShowParents is true", async () => {
-        const { parentNode, sharedData } = await setup({
-            widgetOptions: {
-                autoShowParents: false,
-                collapsibleGroups: true,
-                initiallyCollapsed: false
-            }
-        });
+    it("shows the parent when a child is shown if autoShowParents is true", () => {
+        const { parentNode } = setup({ widgetOptions: { autoShowParents: true } });
         const childNode = parentNode.children[0]!;
         parentNode.setVisible(false);
         childNode.setVisible(false);
 
-        //initially autoShowParents is false, so parent should not be visible
-        childNode.layer.setVisible(true);
-        expect(parentNode.isVisible).toBe(false);
+        childNode.setVisible(true);
+        expect(childNode.isVisible).toBe(true);
+        expect(parentNode.isVisible).toBe(true);
+    });
 
-        //reset visibility
+    it("does not show the parent when a child is shown if autoShowParents is false", () => {
+        const { parentNode } = setup({ widgetOptions: { autoShowParents: false } });
+        const childNode = parentNode.children[0]!;
         parentNode.setVisible(false);
         childNode.setVisible(false);
 
-        //now we set autoShowParents to true, so parent should be visible
-        sharedData.options.autoShowParents = true;
         childNode.setVisible(true);
+        expect(childNode.isVisible).toBe(true);
+        expect(parentNode.isVisible).toBe(false);
+    });
+
+    it("never changes the parent's visibility when a child is hidden", () => {
+        const { parentNode } = setup({ widgetOptions: { autoShowParents: true } });
+        const childNode = parentNode.children[0]!;
+        parentNode.setVisible(true);
+        childNode.setVisible(true);
+
+        childNode.setVisible(false);
+        expect(childNode.isVisible).toBe(false);
         expect(parentNode.isVisible).toBe(true);
     });
 });
 
-describe("expanded", () => {
-    it("bubbles expanded state", async () => {
-        //setup with nested group
-        const { parentNode, sharedData } = await setup({
-            parentLayer: createTestLayer({
-                type: GroupLayer,
-                id: "group-1",
-                title: "Group 1",
-                layers: [
-                    createTestLayer({
-                        type: GroupLayer,
-                        id: "subgroup-1",
-                        title: "Subgroup 1",
-                        layers: [
-                            createTestLayer({
-                                id: "subgroup-member-1",
-                                title: "Subgroup member 1",
-                                olLayer: createTestOlLayer()
-                            })
-                        ]
-                    })
-                ]
-            }),
-            widgetOptions: {
-                autoShowParents: true,
-                collapsibleGroups: true,
-                initiallyCollapsed: true //collapse all groups initially
-            }
-        });
-        const subgroupNode = sharedData.nodesById.get("subgroup-1")!;
-
-        //should not bubble
-        subgroupNode.setExpanded(true, false);
-        expect(subgroupNode.isExpanded).toBeTruthy();
-        expect(parentNode.isExpanded).toBeFalsy();
-        //should bubble collapse if bubble option explicitly true
-        parentNode.setExpanded(true);
-        expect(parentNode.isExpanded).toBeTruthy();
-        subgroupNode.setExpanded(false, true); //explicit bubble
-        expect(subgroupNode.isExpanded).toBeFalsy();
-        expect(parentNode.isExpanded).toBeFalsy();
-        //should bubble expand implicitly
-        subgroupNode.setExpanded(false, true); //reset
-        subgroupNode.setExpanded(true); //implicit bubble
-        expect(subgroupNode.isExpanded).toBeTruthy();
-        expect(parentNode.isExpanded).toBeTruthy();
-        //should bubble expand explicitly as well
-        subgroupNode.setExpanded(false, true); //reset
-        subgroupNode.setExpanded(true, true); //implicit bubble
-        expect(subgroupNode.isExpanded).toBeTruthy();
-        expect(parentNode.isExpanded).toBeTruthy();
-    });
-});
-
 describe("isShown", () => {
-    it("is true by default", async () => {
-        const { parentNode } = await setup();
+    it("is true by default", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         expect(parentNode.isShown).toBe(true);
         expect(childNode.isShown).toBe(true);
     });
 
-    it("is false if the layer's listMode is 'hide'", async () => {
-        const { parentNode } = await setup();
+    it("is false if the layer's listMode is 'hide'", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         childNode.layer.updateAttributes({ toc: { listMode: "hide" } });
         expect(childNode.isShown).toBe(false);
     });
 
-    it("is false if the layer is internal", async () => {
-        const { parentNode } = await setup();
+    it("is false if the layer is internal", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         childNode.layer.setInternal(true);
         expect(childNode.isShown).toBe(false);
     });
 
-    it("is true if the layer is internal but listMode explicitly overrides it", async () => {
-        const { parentNode } = await setup();
+    it("is true if the layer is internal but listMode explicitly overrides it", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         childNode.layer.setInternal(true);
@@ -135,8 +82,8 @@ describe("isShown", () => {
         expect(childNode.isShown).toBe(true);
     });
 
-    it("is false if the parent does not show its children", async () => {
-        const { parentNode } = await setup();
+    it("is false if the parent does not show its children", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
@@ -149,21 +96,21 @@ describe("isShown", () => {
 });
 
 describe("shouldShowChildren", () => {
-    it("is true by default", async () => {
-        const { parentNode } = await setup();
+    it("is true by default", () => {
+        const { parentNode } = setup();
         expect(parentNode.shouldShowChildren).toBe(true);
     });
 
-    it("is false if the node itself is not shown", async () => {
-        const { parentNode } = await setup();
+    it("is false if the node itself is not shown", () => {
+        const { parentNode } = setup();
 
         parentNode.layer.updateAttributes({ toc: { listMode: "hide" } });
         expect(parentNode.isShown).toBe(false);
         expect(parentNode.shouldShowChildren).toBe(false);
     });
 
-    it("is false if listMode is 'hide-children'", async () => {
-        const { parentNode } = await setup();
+    it("is false if listMode is 'hide-children'", () => {
+        const { parentNode } = setup();
 
         parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
         expect(parentNode.isShown).toBe(true);
@@ -172,24 +119,24 @@ describe("shouldShowChildren", () => {
 });
 
 describe("shownChildren and hasShownChildren", () => {
-    it("contains all children by default", async () => {
-        const { parentNode } = await setup();
+    it("contains all children by default", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         expect(parentNode.shownChildren).toEqual([childNode]);
         expect(parentNode.hasShownChildren).toBe(true);
     });
 
-    it("is empty if the node has no children", async () => {
-        const { parentNode } = await setup();
+    it("is empty if the node has no children", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         expect(childNode.shownChildren).toEqual([]);
         expect(childNode.hasShownChildren).toBe(false);
     });
 
-    it("excludes children that are not shown themselves", async () => {
-        const { parentNode } = await setup();
+    it("excludes children that are not shown themselves", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         childNode.layer.updateAttributes({ toc: { listMode: "hide" } });
@@ -197,8 +144,8 @@ describe("shownChildren and hasShownChildren", () => {
         expect(parentNode.hasShownChildren).toBe(false);
     });
 
-    it("is empty if the listMode  is 'hide-children'", async () => {
-        const { parentNode } = await setup();
+    it("is empty if the listMode  is 'hide-children'", () => {
+        const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 
         parentNode.layer.updateAttributes({ toc: { listMode: "hide-children" } });
@@ -211,14 +158,14 @@ describe("shownChildren and hasShownChildren", () => {
 describe("issues", () => {
     const NO_ISSUES = { own: [], propagated: [] } as const;
 
-    it("has no issues by default", async () => {
-        const { parentNode } = await setup();
+    it("has no issues by default", () => {
+        const { parentNode } = setup();
         expect(parentNode.issues).toEqual(NO_ISSUES);
         expect(parentNode.children[0]!.issues).toEqual(NO_ISSUES);
     });
 
-    it("reports an error issue if the layer failed to load", async () => {
-        const { parentNode, source } = await setupWithBrokenChild();
+    it("reports an error issue if the layer failed to load", () => {
+        const { parentNode, source } = setupWithBrokenChild();
         const childNode = parentNode.children[0]!;
 
         source.setState("error");
@@ -241,8 +188,8 @@ describe("issues", () => {
         expect(parentNode.issues).toEqual(NO_ISSUES);
     });
 
-    it("reports a generic warning on the parent if a shown child has an error", async () => {
-        const { parentNode, source } = await setupWithBrokenChild();
+    it("reports a generic warning on the parent if a shown child has an error", () => {
+        const { parentNode, source } = setupWithBrokenChild();
 
         source.setState("error");
         expect(parentNode.issues).toMatchInlineSnapshot(`
@@ -258,8 +205,8 @@ describe("issues", () => {
         `);
     });
 
-    it("propagates the child's issues (including the source layer) if the child is not shown", async () => {
-        const { parentNode, source } = await setupWithBrokenChild({
+    it("propagates the child's issues (including the source layer) if the child is not shown", () => {
+        const { parentNode, source } = setupWithBrokenChild({
             toc: { listMode: "hide-children" }
         });
         const childNode = parentNode.children[0]!;
@@ -287,8 +234,8 @@ describe("issues", () => {
         expect(parentNode.issues.propagated[0]?.layer).toBe(childNode.layer);
     });
 
-    it("bubbles a single generic warning through all shown ancestors", async () => {
-        const { parentNode, subgroupNode, source } = await setupNestedGroups();
+    it("bubbles a single generic warning through all shown ancestors", () => {
+        const { parentNode, subgroupNode, source } = setupNestedGroups();
 
         source.setState("error");
         expect(kinds(subgroupNode.issues.own)).toEqual(["children-not-available"]);
@@ -300,8 +247,8 @@ describe("issues", () => {
         expect(parentNode.issues).toEqual(NO_ISSUES);
     });
 
-    it("propagates issues of the whole hidden subtree to the closest shown ancestor", async () => {
-        const { parentNode, subgroupNode, childNode, source } = await setupNestedGroups();
+    it("propagates issues of the whole hidden subtree to the closest shown ancestor", () => {
+        const { parentNode, subgroupNode, childNode, source } = setupNestedGroups();
         source.setState("error");
 
         // The subgroup is hidden: its children cannot be shown either, so the child's issue gets propagated twice.
@@ -328,8 +275,8 @@ describe("issues", () => {
         expect(parentNode.issues.propagated.map((i) => i.layer.id)).toEqual(["child"]);
     });
 
-    it("does not propagate infos", async () => {
-        const { parentNode, source } = await setupWithBrokenChild({
+    it("does not propagate infos", () => {
+        const { parentNode, source } = setupWithBrokenChild({
             toc: { listMode: "hide-children" }
         });
         // 'loading' is not an issue at all, but used here to verify that nothing else leaks
@@ -342,16 +289,18 @@ describe("issues", () => {
     }
 });
 
-async function setup(options?: { widgetOptions?: TocWidgetOptions; parentLayer?: GroupLayer }) {
+const DEFAULT_OPTIONS: TocWidgetOptions = {
+    autoShowParents: true,
+    collapsibleGroups: true,
+    initiallyCollapsed: false
+};
+
+function setup(options?: { widgetOptions?: Partial<TocWidgetOptions>; parentLayer?: GroupLayer }) {
     const { widgetOptions, parentLayer = createDefaultLayers() } = options ?? {};
 
     const sharedData: SharedData = {
         nodesById: reactiveMap<string, TocLayerNode>(),
-        options: widgetOptions ?? {
-            autoShowParents: true,
-            collapsibleGroups: true,
-            initiallyCollapsed: false
-        }
+        options: { ...DEFAULT_OPTIONS, ...widgetOptions }
     };
 
     const parentNode = new TocLayerNode(parentLayer, undefined, sharedData);
@@ -365,9 +314,9 @@ async function setup(options?: { widgetOptions?: TocWidgetOptions; parentLayer?:
  *     child (broken via `source`)
  * ```
  */
-async function setupNestedGroups() {
+function setupNestedGroups() {
     const source = new OSM();
-    const { parentNode, sharedData } = await setup({
+    const { parentNode, sharedData } = setup({
         parentLayer: createTestLayer({
             type: GroupLayer,
             id: "group-1",
@@ -393,9 +342,9 @@ async function setupNestedGroups() {
     return { parentNode, subgroupNode, childNode, sharedData, source };
 }
 
-async function setupWithBrokenChild(parentAttributes?: Record<string, unknown>) {
+function setupWithBrokenChild(parentAttributes?: Record<string, unknown>) {
     const source = new OSM();
-    const result = await setup({
+    const result = setup({
         parentLayer: createTestLayer({
             type: GroupLayer,
             id: "group-1",

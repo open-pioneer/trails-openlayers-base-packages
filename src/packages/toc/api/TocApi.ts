@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { TocLayerNode } from "../model/TocLayerNode";
-import { TocViewModel } from "../model/TocViewModel";
-import { TocItem } from "./TocItem";
+import { type TocLayerNode } from "../model/TocLayerNode";
+import { type TocViewModel } from "../model/TocViewModel";
+import { type TocItem } from "./TocItem";
 
 /**
  * API to control the Toc component imperatively
@@ -34,7 +34,7 @@ export class TocApi {
      */
     getItems(): TocItem[] {
         return this.#tocViewModel
-            .getItems()
+            .getNodes()
             .map((node) => this.#toItem(node))
             .filter((item) => item != null);
     }

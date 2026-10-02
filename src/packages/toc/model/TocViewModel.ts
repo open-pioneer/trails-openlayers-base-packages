@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { computed, reactive, Reactive, reactiveMap, ReactiveMap } from "@conterra/reactivity-core";
+import { shallowEqual } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { SyncedChildNodes } from "./SyncedChildNodes";
 import { TocLayerNode } from "./TocLayerNode";
@@ -29,14 +30,14 @@ export interface TocWidgetOptions {
 }
 
 /**
- * Data shared by the view model and all it sub objects.
+ * Data shared by the view model and all its sub objects.
  *
  * @internal
  */
 export interface SharedData {
     /**
      * Id -> Node mapping for all nodes in the model.
-     * These are updated by the synchronization code whenever node are created or destroyed.
+     * These are updated by the synchronization code whenever nodes are created or destroyed.
      */
     nodesById: ReactiveMap<string, TocLayerNode>;
 
@@ -57,8 +58,10 @@ export class TocViewModel {
     #shared: SharedData;
     #syncedChildren: SyncedChildNodes;
 
-    #items = computed(() => Array.from(this.#shared.nodesById.values()));
-    #shownChildren = computed(() => this.children.filter((c) => c.isShown));
+    #items = computed(() => Array.from(this.#shared.nodesById.values()), { equal: shallowEqual });
+    #shownChildren = computed(() => this.children.filter((c) => c.isShown), {
+        equal: shallowEqual
+    });
 
     constructor(map: MapModel, options: TocWidgetOptions) {
         this.#map = map;
@@ -101,7 +104,7 @@ export class TocViewModel {
     /**
      * Returns all nodes.
      */
-    getItems(): TocLayerNode[] {
+    getNodes(): TocLayerNode[] {
         return this.#items.value;
     }
 
