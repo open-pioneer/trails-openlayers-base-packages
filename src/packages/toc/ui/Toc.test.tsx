@@ -13,7 +13,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { TocDisposedEvent, TocReadyEvent } from "../model";
+import { TocDisposedEvent, TocReadyEvent } from "../api";
 import { Toc } from "./Toc";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";

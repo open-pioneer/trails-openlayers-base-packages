@@ -13,17 +13,11 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useId, useRef } from "react";
-import {
-    createOptions,
-    TocApi,
-    TocApiImpl,
-    TocDisposedEvent,
-    TocModel,
-    TocModelProvider,
-    TocReadyEvent
-} from "../model";
+import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
+import { TocViewModel } from "../model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
+import { useTocViewModel } from "./useTocViewModel";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -59,14 +53,14 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * If `true`, groups in the toc can be collapsed and expanded.
      * This property should only be `true` if the map actually contains layer groups.
      *
-     * Defaults to `false`.
+     * Defaults to `true` if {@link initiallyCollapsed} is enabled, `false` otherwise.
      */
     collapsibleGroups?: boolean;
 
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise, only the top level layers will appear in the toc.
+     * Defaults to `false`.
      */
     initiallyCollapsed?: boolean;
 
@@ -135,18 +129,22 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const map = useMapModelValue(props);
+    const viewModel = useTocViewModel(map, props);
 
     return (
-        <Flex {...containerProps} direction="column" gap={PADDING}>
-            <TocContent {...props} map={map} />
-        </Flex>
+        viewModel && (
+            <Flex {...containerProps} direction="column" gap={PADDING}>
+                <TocContent {...props} map={map} viewModel={viewModel} />
+            </Flex>
+        )
     );
 };
 
-/** This component is rendered once we have a reference to the loaded map model. */
-function TocContent(props: TocProps & { map: MapModel }) {
+/** This component is rendered once we have constructed the view model. */
+function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }) {
     const {
         map,
+        viewModel,
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
@@ -155,8 +153,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
         onDisposed
     } = props;
     const intl = useIntl();
-    const model = useTocModel(props);
-    useTocAPI(model, onReady, onDisposed);
+    useTocAPI(viewModel, onReady, onDisposed);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -189,13 +186,13 @@ function TocContent(props: TocProps & { map: MapModel }) {
                                 })}
                             </Text>
                             <Spacer />
-                            {showTools && <Tools map={map} {...toolsConfig} />}
+                            {showTools && <Tools viewModel={viewModel} {...toolsConfig} />}
                         </Flex>
                     </SectionHeading>
                 }
             >
                 <TopLevelLayerList
-                    map={map}
+                    viewModel={viewModel}
                     aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                 />
             </TitledSection>
@@ -203,57 +200,22 @@ function TocContent(props: TocProps & { map: MapModel }) {
     );
 
     return (
-        <TocModelProvider value={model}>
+        <>
             {basemapSwitcher}
             {layerList}
-        </TocModelProvider>
+        </>
     );
 }
 
-function useTocModel(props: TocProps): TocModel {
-    const initialProps = useRef(props);
-    const tocModelRef = useRef<TocModel>(null);
-    // oxlint-disable-next-line react/refs
-    if (!tocModelRef.current) {
-        tocModelRef.current = new TocModel(
-            createOptions(
-                // oxlint-disable-next-line react/refs
-                initialProps.current.autoShowParents,
-                // oxlint-disable-next-line react/refs
-                initialProps.current.collapsibleGroups,
-                // oxlint-disable-next-line react/refs,
-                initialProps.current.initiallyCollapsed
-            )
-        );
-    }
-
-    // Sync props to model
-    useEffect(() => {
-        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tocModelRef.current!.updateOptions(
-            createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
-        );
-        // oxlint-disable-next-line react/refs
-    }, [
-        props.autoShowParents,
-        props.collapsibleGroups,
-        props.initiallyCollapsed,
-        // oxlint-disable-next-line react/refs
-        tocModelRef.current.options
-    ]);
-    // oxlint-disable-next-line react/refs
-    return tocModelRef.current;
-}
-
 function useTocAPI(
-    model: TocModel,
+    model: TocViewModel,
     onReady: TocProps["onReady"] | undefined,
     onDisposed: TocProps["onDisposed"] | undefined
 ) {
     const apiRef = useRef<TocApi>(null);
     // oxlint-disable-next-line react/refs
     if (!apiRef.current) {
-        apiRef.current = new TocApiImpl(model);
+        apiRef.current = new TocApi(model);
     }
 
     const api = apiRef.current;

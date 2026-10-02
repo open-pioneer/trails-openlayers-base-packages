@@ -7,7 +7,7 @@ export {
     type TocDisposedEvent,
     type TocItem,
     type TocReadyEvent
-} from "./model";
+} from "./api";
 export {
     Toc,
     type TocProps,

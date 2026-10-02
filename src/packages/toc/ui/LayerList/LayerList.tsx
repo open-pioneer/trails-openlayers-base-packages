@@ -2,16 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { List, ListRootProps, Text } from "@chakra-ui/react";
-import { AnyLayer, MapModel, Layer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, useMemo } from "react";
-import { displayItemForLayer } from "../../utils/displayLayer";
-import { useLayers } from "./hooks";
+import { memo, ReactNode, useMemo } from "react";
+import { TocLayerNode } from "../../model/TocLayerNode";
+import { TocViewModel } from "../../model/TocViewModel";
 import { LayerItem } from "./LayerItem";
 
 interface TopLevelLayerListProps {
-    map: MapModel;
+    viewModel: TocViewModel;
 
     /** The label of the list group (<ul>) */
     "aria-label"?: string;
@@ -21,11 +20,10 @@ interface TopLevelLayerListProps {
  * Lists the operational layers in the map.
  */
 export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevelLayerListProps) {
-    const { map, "aria-label": ariaLabel } = props;
+    const { viewModel, "aria-label": ariaLabel } = props;
     const intl = useIntl();
-    const layers = useLayers(map);
-    const empty = useReactiveSnapshot(() => isEmpty(layers), [layers]);
-    if (empty) {
+    const nodes = useReactiveSnapshot(() => viewModel.shownChildren, [viewModel]);
+    if (nodes.length === 0) {
         return (
             <Text className="toc-missing-layers" aria-label={ariaLabel}>
                 {intl.formatMessage({ id: "missingLayers" })}
@@ -33,17 +31,20 @@ export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevel
         );
     }
 
-    return <LayerList layers={layers} aria-label={ariaLabel} />;
+    return <LayerList nodes={nodes} aria-label={ariaLabel} />;
 });
 
 /**
  * Renders the given layers as a list (<ul>).
  */
-export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } & ListRootProps) {
-    const { layers, ...listProps } = props;
+export const LayerList = memo(function LayerList(props: { nodes: TocLayerNode[] } & ListRootProps) {
+    const { nodes, ...listProps } = props;
     const items = useMemo(
-        () => layers.map((layer) => <LayerItem key={layer.id} layer={layer} />),
-        [layers]
+        () =>
+            nodes.map((node) => (
+                <LayerItem key={node.id} node={node} renderNestedList={renderNestedList} />
+            )),
+        [nodes]
     );
 
     return (
@@ -60,10 +61,10 @@ export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } &
 });
 
 /**
- * Checks if there is any layer that should be displayed in the Toc
+ * Renders a nested layer list for child layers of a LayerItem.
+ *
+ * Used as a callback in LayerItem to avoid a circular import between LayerList and LayerItem.
  */
-function isEmpty(layers: Layer[]): boolean {
-    const isEmpty = !layers.length || layers.every((l) => !displayItemForLayer(l));
-
-    return isEmpty;
+function renderNestedList(childNodes: TocLayerNode[], listProps: ListRootProps): ReactNode {
+    return <LayerList nodes={childNodes} {...listProps} />;
 }

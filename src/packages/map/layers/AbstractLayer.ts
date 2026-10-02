@@ -163,7 +163,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#visibleInScale = computed(() => {
             const map = this.nullableMap; // handle case where not in the map yet
             if (!map) {
-                return true; // or false? doesn't really matter
+                return true;
             }
 
             const zoom = map.zoomLevel;

@@ -84,6 +84,9 @@ The TOC renders the hierarchy of layers as a tree structure of nested lists ("gr
 Groups can be made collapsible through user action by setting the `collapsibleGroups` property to `true`.
 If enabled, a toggle button appears next to parent nodes by which the user can expand or collapse the group.
 
+Using the `initiallyCollapsed` property, groups can be collapsed by default when the TOC is rendered.
+If `initiallyCollapsed` is set to `true`, `collapsibleGroups` is automatically set to `true`, too.
+
 ```tsx
 <Toc
     map={map}
