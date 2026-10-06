@@ -1,5 +1,28 @@
 # @open-pioneer/toc
 
+## 1.6.0
+
+### Minor Changes
+
+- 9919cf4: Setting `initiallyCollapsed` to `true` now automatically sets `collapsibleGroups` to `true` as well.
+
+### Patch Changes
+
+- 9919cf4: Only hide layers that are actually shown in the component when triggering the "hide all layers" action.
+  Before this change, layers not shown in the TOC (`internal`, `listMode: hide`, etc.) were also hidden.
+- 9919cf4: Errors from child layers that are grouped with their parent are now prefixed with the child layer's title.
+- 9919cf4: The behavior of `initiallyCollapsed` if `collapsibleGroups` is set to `false` has been fixed.
+  Previously, using `initiallyCollapsed` elements could be collapsed even though collapsing was disabled.
+  `initiallyCollapsed` now only takes effect when `collapsibleGroups` is `true`.
+  To hide elements, use list mode instead.
+- 9919cf4: Nested children are not rendered until they become visible for the first time (lazy mount).
+  This improves performance in applications with lots of nested layers.
+
+    As a side effect, the `tocItem.htmlElement` of those children will not be initialized until they have been mounted.
+    Please file an issue if you encounter any problems with this change.
+
+- 9919cf4: Refactor state management. Toc state is now held by a view model (and its nodes), backed by the reactivity API.
+
 ## 1.5.0
 
 ### Minor Changes
