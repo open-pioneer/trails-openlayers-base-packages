@@ -91,21 +91,25 @@ export class PrintingController {
 
     setViewPadding(padding: ViewPaddingBehavior) {
         this.#viewPadding = padding;
-        this.#printAreaLayer.olLayer.changed();
+        this.#updatePrintArea();
     }
 
     setPageFormat(pageFormat: PageFormatType) {
         this.#pageFormat = pageFormat;
-        this.#printAreaLayer.olLayer.changed();
+        this.#updatePrintArea();
     }
 
     setOrientation(orientation: PageOrientationType) {
         this.#orientation = orientation;
-        this.#printAreaLayer.olLayer.changed();
+        this.#updatePrintArea();
     }
 
     setScale(scale: number) {
         this.#scale = scale;
+        this.#updatePrintArea();
+    }
+
+    #updatePrintArea(): void {
         this.#printAreaLayer.olLayer.changed();
     }
 
