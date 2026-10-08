@@ -39,9 +39,9 @@ export interface ExportOptions {
 export class PrintingController {
     #map: MapModel;
     #olMap: OlMap;
+    #printingService: PrintingService;
     #i18n: I18n;
 
-    #printingService: PrintingService;
     #viewPadding: ViewPaddingBehavior | undefined;
     #pageFormat: PageFormatType | undefined;
     #orientation: PageOrientationType | undefined;
