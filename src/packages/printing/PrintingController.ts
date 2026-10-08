@@ -149,18 +149,20 @@ export class PrintingController {
         pixelExtent: number[],
         reverse: boolean = false
     ) {
+        const [minX, minY, maxX, maxY] = pixelExtent;
+    
         // start in top left edge
         context.moveTo(
-            ...(getRenderPixel(renderEvent, [pixelExtent[0], pixelExtent[1]] as Pixel) as [
+            ...(getRenderPixel(renderEvent, [minX, minY] as Pixel) as [
                 number,
                 number
             ])
         );
 
         const points = [
-            [pixelExtent[2], pixelExtent[1]],
-            [pixelExtent[2], pixelExtent[3]],
-            [pixelExtent[0], pixelExtent[3]]
+            [maxX, minY],
+            [maxX, maxY],
+            [minX, maxY]
         ];
         if (reverse) points.reverse(); // anti-clockwise drawing
 
