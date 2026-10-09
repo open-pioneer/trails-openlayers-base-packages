@@ -5,6 +5,7 @@ import { Resource } from "@open-pioneer/core";
 import { getScaleForPointResolution, MapModel } from "@open-pioneer/map";
 import type OlView from "ol/View";
 import { PageOrientationType, PageFormatType } from "./index";
+import type OlMap from "ol/Map";
 
 const DEFAULT_QUALITY = 0.8;
 
@@ -94,6 +95,81 @@ export function getViewPadding(olView: OlView): ViewPadding {
         bottom: rawPadding[2] ?? 0,
         left: rawPadding[3] ?? 0
     };
+}
+
+export function getMapCenterPixel(olMap: OlMap): number[] | undefined {
+    const mapSize = olMap.getSize();
+    if (!mapSize || !mapSize[0] || !mapSize[1]) return;
+
+    const padding = getViewPadding(olMap.getView());
+
+    const x = (mapSize[0] + padding.left - padding.right) / 2;
+    const y = (mapSize[1] + padding.top - padding.bottom) / 2;
+
+    return [x, y];
+}
+
+export function drawPrintArea(context: CanvasRenderingContext2D, printArea: number[]) {
+    context.reset();
+
+    context.save();
+
+    context.beginPath();
+
+    // outside polygon, clockwise
+    const outer = [0, 0, context.canvas.width, context.canvas.height];
+    drawRectangle(context, outer);
+
+    // inner polygon, counter-clockwise
+    drawRectangle(context, printArea, true);
+
+    context.closePath();
+
+    context.fillStyle = "rgba(0, 5, 25, 0.70)";
+    context.fill();
+
+    context.restore();
+}
+
+export function drawRectangle(
+    context: CanvasRenderingContext2D,
+    pixelExtent: number[],
+    reverse: boolean = false
+) {
+    const [minX, minY, maxX, maxY] = pixelExtent;
+    if (minX == null || minY == null || maxX == null || maxY == null) return;
+
+    // start in top left edge
+    context.moveTo(minX, minY);
+
+    const points = [
+        [maxX, minY],
+        [maxX, maxY],
+        [minX, maxY]
+    ];
+    if (reverse) points.reverse(); // anti-clockwise drawing
+
+    for (const point of points) {
+        if (point[0] == null || point[1] == null) return;
+        context.lineTo(point[0], point[1]);
+    }
+}
+
+export function getPixelBounds(map: MapModel, pageFormat: PageFormatType, orientation: PageOrientationType, scale: number): number[] | undefined {
+    const pageSize = getPageSize(pageFormat, orientation);
+    const screenSize = getScreenSizeForPageSize(map, pageSize, scale);
+    if (!screenSize) return;
+
+    const centerPixel = getMapCenterPixel(map.olMap);
+    if (!centerPixel || !centerPixel[0] || !centerPixel[1]) return;
+
+    const { pixelHeight, pixelWidth } = screenSize;
+    const minX = centerPixel[0] - pixelWidth / 2;
+    const minY = centerPixel[1] - pixelHeight / 2;
+    const maxX = centerPixel[0] + pixelWidth / 2;
+    const maxY = centerPixel[1] + pixelHeight / 2;
+
+    return [minX, minY, maxX, maxY];
 }
 
 /**

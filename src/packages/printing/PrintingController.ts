@@ -23,9 +23,9 @@ import {
 import {
     canvasToPng,
     createBlockUserOverlay,
+    drawPrintArea,
     getPageSize,
-    getScreenSizeForPageSize,
-    getViewPadding
+    getPixelBounds
 } from "./utils";
 
 const DEFAULT_FILE_NAME = "map";
@@ -79,7 +79,7 @@ export class PrintingController {
         this.#map.layers.addLayer(this.#printAreaLayer, { at: "topmost" });
 
         this.#postrenderListener = vectorLayer.on("postrender", (event) => {
-            this.#drawPrintArea(event);
+            this.#showPrintArea(event);
         });
     }
 
@@ -113,91 +113,35 @@ export class PrintingController {
         this.#printAreaLayer.olLayer.changed();
     }
 
-    #drawPrintArea(renderEvent: RenderEvent) {
-        const printArea = this.#getPixelBounds();
-        if (!printArea) return;
-
+    #showPrintArea(renderEvent: RenderEvent) {
         const context = renderEvent.context;
-        if (!context || !(context instanceof CanvasRenderingContext2D)) return;
+        if (!this.#isCanvasRenderingContext2D(context)) return;
 
-        context.reset();
-
-        const mapSize = this.#olMap.getSize();
-        if (!mapSize || !mapSize[0] || !mapSize[1]) return;
-        const mapHeight = mapSize[1];
-        const mapWidth = mapSize[0];
-        if (!mapWidth || !mapHeight) return;
-
-        context.save();
-
-        context.beginPath();
-
-        // outside polygon, clockwise
-        const outer = [0, 0, mapWidth, mapHeight];
-        this.#drawCanvasRectangle(context, renderEvent, outer);
-
-        // inner polygon, counter-clockwise
-        this.#drawCanvasRectangle(context, renderEvent, printArea, true);
-
-        context.closePath();
-
-        context.fillStyle = "rgba(0, 5, 25, 0.70)";
-        context.fill();
-
-        context.restore();
-    }
-
-    #drawCanvasRectangle(
-        context: CanvasRenderingContext2D,
-        renderEvent: RenderEvent,
-        pixelExtent: number[],
-        reverse: boolean = false
-    ) {
-        const [minX, minY, maxX, maxY] = pixelExtent;
-    
-        // start in top left edge
-        context.moveTo(
-            ...(getRenderPixel(renderEvent, [minX, minY] as Pixel) as [
-                number,
-                number
-            ])
-        );
-
-        const points = [
-            [maxX, minY],
-            [maxX, maxY],
-            [minX, maxY]
-        ];
-        if (reverse) points.reverse(); // anti-clockwise drawing
-
-        for (const point of points) {
-            context.lineTo(...(getRenderPixel(renderEvent, point as Pixel) as [number, number]));
-        }
-    }
-
-    #getPixelBounds() {
         if (!this.#pageFormat || !this.#orientation || !this.#scale) return;
+        const printArea = getPixelBounds(this.#map, this.#pageFormat, this.#orientation, this.#scale);
+        if (!printArea) return;
+        const printAreaCanvas = this.#viewportToCanvas(printArea, renderEvent);
 
-        const pageSize = getPageSize(this.#pageFormat, this.#orientation);
-        const screenSize = getScreenSizeForPageSize(this.#map, pageSize, this.#scale);
-        if (!screenSize) return;
-        const { pixelHeight, pixelWidth } = screenSize;
+        drawPrintArea(context, printAreaCanvas);
+    }
 
-        const mapSize = this.#olMap.getSize();
-        if (!mapSize || !mapSize[0] || !mapSize[1]) return;
-        const padding = getViewPadding(this.#olMap.getView());
-        const centerPixel = [
-            (mapSize[0] + padding.left - padding.right) / 2,
-            (mapSize[1] + padding.top - padding.bottom) / 2
+    #viewportToCanvas(printArea: number[], renderEvent: RenderEvent) {
+        const [minX, minY, maxX, maxY] = printArea;
+
+        const min = getRenderPixel(renderEvent, [minX, minY] as Pixel) as [
+            number,
+            number
         ];
-        if (!centerPixel[0] || !centerPixel[1]) return;
+        const max = getRenderPixel(renderEvent, [maxX, maxY] as Pixel) as [
+            number,
+            number
+        ];
 
-        const minx = centerPixel[0] - pixelWidth / 2;
-        const miny = centerPixel[1] - pixelHeight / 2;
-        const maxx = centerPixel[0] + pixelWidth / 2;
-        const maxy = centerPixel[1] + pixelHeight / 2;
+        return [min[0], min[1], max[0], max[1]];
+    }
 
-        return [minx, miny, maxx, maxy];
+    #isCanvasRenderingContext2D(context: unknown): context is CanvasRenderingContext2D {
+        return context != null && context instanceof CanvasRenderingContext2D;
     }
 
     async handleMapExport(options: ExportOptions) {
