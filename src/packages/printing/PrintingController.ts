@@ -163,14 +163,10 @@ export class PrintingController {
                 width: paperWidth
             });
             const canvas = this.#printMap.getCanvas();
-            if (canvas) {
-                if (options.fileFormat == "png") {
-                    await this.exportMapInPNG(canvas, options);
-                } else {
-                    await this.exportMapInPDF(canvas, options);
-                }
+            if (options.fileFormat == "png") {
+                await this.exportMapInPNG(canvas, options);
             } else {
-                throw new Error("Canvas export failed");
+                await this.exportMapInPDF(canvas, options);
             }
         } finally {
             this.#reset();
