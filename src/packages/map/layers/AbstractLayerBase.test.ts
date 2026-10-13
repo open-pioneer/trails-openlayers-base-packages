@@ -4,7 +4,7 @@
 /**
  * @vitest-environment node
  */
-import { reactive, watch } from "@conterra/reactivity-core";
+import { reactive, watch, watchValue } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
@@ -12,7 +12,12 @@ import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { GroupLayer } from "./GroupLayer";
-import { ATTACH_TO_GROUP, ATTACH_TO_MAP, DETACH_FROM_GROUP } from "./shared/internals";
+import {
+    ATTACH_TO_GROUP,
+    ATTACH_TO_MAP,
+    CHECK_EFFECTIVE_VISIBILITY,
+    DETACH_FROM_GROUP
+} from "./shared/internals";
 import { SublayersCollection } from "./shared/SublayersCollection";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
@@ -249,20 +254,20 @@ it("supports initial empty attribute object and empty attribute object after upd
     expect(changedAttributes).toBe(2);
 });
 
-describe("effective visibility", () => {
-    it("is effectively visible when visible without any parents", () => {
+describe("visibility in hierarchy", () => {
+    it("is visible in hierarchy when visible without any parents", () => {
         const layer = new LayerImpl({
             id: "a",
             title: "A"
         });
         expect(layer.visible).toBe(true);
-        expect(layer.effectivelyVisible).toBe(true);
+        expect(layer.visibleInHierarchy).toBe(true);
 
         layer.setVisible(false);
-        expect(layer.effectivelyVisible).toBe(false);
+        expect(layer.visibleInHierarchy).toBe(false);
     });
 
-    it("is not effectively visible when the parent layer is invisible", () => {
+    it("is not visible in hierarchy when the parent layer is invisible", () => {
         const parentLayer = new LayerImpl({
             id: "parent",
             title: "Parent"
@@ -274,13 +279,13 @@ describe("effective visibility", () => {
         attachToParent(childLayer, parentLayer);
         expect(childLayer.parent).toBe(parentLayer);
         expect(parentLayer.visible).toBe(true);
-        expect(childLayer.effectivelyVisible).toBe(true);
+        expect(childLayer.visibleInHierarchy).toBe(true);
 
         parentLayer.setVisible(false);
-        expect(childLayer.effectivelyVisible).toBe(false);
+        expect(childLayer.visibleInHierarchy).toBe(false);
     });
 
-    it("is not effectively visible when the grandparent layer is invisible", () => {
+    it("is not visible in hierarchy when the grandparent layer is invisible", () => {
         const grandparentLayer = new LayerImpl({
             id: "grandparent",
             title: "Grandparent"
@@ -295,16 +300,16 @@ describe("effective visibility", () => {
         });
         attachToParent(parentLayer, grandparentLayer);
         attachToParent(childLayer, parentLayer);
-        expect(childLayer.effectivelyVisible).toBe(true);
+        expect(childLayer.visibleInHierarchy).toBe(true);
 
         grandparentLayer.setVisible(false);
         expect(parentLayer.visible).toBe(true);
-        expect(parentLayer.effectivelyVisible).toBe(false);
+        expect(parentLayer.visibleInHierarchy).toBe(false);
         expect(childLayer.visible).toBe(true);
-        expect(childLayer.effectivelyVisible).toBe(false);
+        expect(childLayer.visibleInHierarchy).toBe(false);
 
         grandparentLayer.setVisible(true);
-        expect(childLayer.effectivelyVisible).toBe(true);
+        expect(childLayer.visibleInHierarchy).toBe(true);
     });
 
     it("updates when the parent changes", () => {
@@ -323,10 +328,89 @@ describe("effective visibility", () => {
             title: "Child"
         });
         attachToParent(childLayer, visibleParent);
-        expect(childLayer.effectivelyVisible).toBe(true);
+        expect(childLayer.visibleInHierarchy).toBe(true);
 
         detachFromParent(childLayer);
         attachToParent(childLayer, invisibleParent);
+        expect(childLayer.visibleInHierarchy).toBe(false);
+    });
+});
+
+describe("effective visibility", () => {
+    it("is effectively visible when visible without any parents", () => {
+        const layer = new LayerImpl({
+            id: "a",
+            title: "A"
+        });
+        expect(layer.effectivelyVisible).toBe(true);
+
+        layer.setVisible(false);
+        expect(layer.effectivelyVisible).toBe(false);
+    });
+
+    it("is not effectively visible when a parent layer is invisible", () => {
+        const grandparentLayer = new LayerImpl({
+            id: "grandparent",
+            title: "Grandparent"
+        });
+        const parentLayer = new LayerImpl({
+            id: "parent",
+            title: "Parent"
+        });
+        const childLayer = new LayerImpl({
+            id: "child",
+            title: "Child"
+        });
+        attachToParent(parentLayer, grandparentLayer);
+        attachToParent(childLayer, parentLayer);
+        expect(childLayer.effectivelyVisible).toBe(true);
+
+        grandparentLayer.setVisible(false);
+        expect(childLayer.effectivelyVisible).toBe(false);
+    });
+
+    it("is not effectively visible if the layer has a display problem", () => {
+        const layer = new LayerImpl({
+            id: "a",
+            title: "A"
+        });
+
+        const changes: boolean[] = [];
+        const handle = watchValue(
+            () => layer.effectivelyVisible,
+            (effectivelyVisible) => {
+                changes.push(effectivelyVisible);
+            },
+            SYNC_DISPATCH
+        );
+
+        layer.setDisplayProblem(true);
+        expect(layer.visible).toBe(true);
+        expect(layer.effectivelyVisible).toBe(false);
+        expect(changes).toEqual([false]);
+
+        layer.setDisplayProblem(false);
+        expect(layer.effectivelyVisible).toBe(true);
+        expect(changes).toEqual([false, true]);
+        handle.destroy();
+    });
+
+    it("is not effectively visible when a parent layer has a display problem", () => {
+        const parentLayer = new LayerImpl({
+            id: "parent",
+            title: "Parent"
+        });
+        const childLayer = new LayerImpl({
+            id: "child",
+            title: "Child"
+        });
+        attachToParent(childLayer, parentLayer);
+        expect(childLayer.effectivelyVisible).toBe(true);
+
+        parentLayer.setDisplayProblem(true);
+        expect(parentLayer.visibleInHierarchy).toBe(true);
+        expect(childLayer.visibleInHierarchy).toBe(true);
+        expect(parentLayer.effectivelyVisible).toBe(false);
         expect(childLayer.effectivelyVisible).toBe(false);
     });
 });
@@ -349,6 +433,9 @@ abstract class SharedParent extends AbstractLayerBase {
     #sublayers: SublayersCollection<any> | undefined;
 
     #visible = reactive(true);
+
+    // Simulates a display problem
+    #hasDisplayProblem = reactive(false);
 
     constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
         super(options);
@@ -379,6 +466,14 @@ abstract class SharedParent extends AbstractLayerBase {
 
     setVisible(v: boolean): void {
         this.#visible.value = v;
+    }
+
+    setDisplayProblem(blocked: boolean): void {
+        this.#hasDisplayProblem.value = blocked;
+    }
+
+    protected override [CHECK_EFFECTIVE_VISIBILITY](): boolean {
+        return super[CHECK_EFFECTIVE_VISIBILITY]() && !this.#hasDisplayProblem.value;
     }
 }
 
