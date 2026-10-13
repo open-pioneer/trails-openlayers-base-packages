@@ -231,7 +231,7 @@ export abstract class AbstractLayerBase {
      * A layer is _effectively visible_ if it is {@link visible} and all its parents are effectively visible.
      * In other words, a layer is not effectively visible as soon as a single one of its parent layers is invisible.
      *
-     * Use this property to test whether a layer will actually be rendered on the screen.
+     * Use this property to test whether a layer is hidden by one of its parents (e.g. an invisible group layer).
      */
     get effectivelyVisible(): boolean {
         return this.#effectivelyVisible.value;
