@@ -4,14 +4,15 @@
 /**
  * @vitest-environment node
  */
-import { watch } from "@conterra/reactivity-core";
+import { reactive, watch } from "@conterra/reactivity-core";
 import { on } from "@conterra/reactivity-events";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { ATTACH_TO_MAP } from "./shared/internals";
+import { GroupLayer } from "./GroupLayer";
+import { ATTACH_TO_GROUP, ATTACH_TO_MAP, DETACH_FROM_GROUP } from "./shared/internals";
 import { SublayersCollection } from "./shared/SublayersCollection";
 
 const SYNC_DISPATCH = { dispatch: "sync" } as const;
@@ -248,9 +249,106 @@ it("supports initial empty attribute object and empty attribute object after upd
     expect(changedAttributes).toBe(2);
 });
 
+describe("effective visibility", () => {
+    it("is effectively visible when visible without any parents", () => {
+        const layer = new LayerImpl({
+            id: "a",
+            title: "A"
+        });
+        expect(layer.visible).toBe(true);
+        expect(layer.effectivelyVisible).toBe(true);
+
+        layer.setVisible(false);
+        expect(layer.effectivelyVisible).toBe(false);
+    });
+
+    it("is not effectively visible when the parent layer is invisible", () => {
+        const parentLayer = new LayerImpl({
+            id: "parent",
+            title: "Parent"
+        });
+        const childLayer = new LayerImpl({
+            id: "child",
+            title: "Child"
+        });
+        attachToParent(childLayer, parentLayer);
+        expect(childLayer.parent).toBe(parentLayer);
+        expect(parentLayer.visible).toBe(true);
+        expect(childLayer.effectivelyVisible).toBe(true);
+
+        parentLayer.setVisible(false);
+        expect(childLayer.effectivelyVisible).toBe(false);
+    });
+
+    it("is not effectively visible when the grandparent layer is invisible", () => {
+        const grandparentLayer = new LayerImpl({
+            id: "grandparent",
+            title: "Grandparent"
+        });
+        const parentLayer = new LayerImpl({
+            id: "parent",
+            title: "Parent"
+        });
+        const childLayer = new LayerImpl({
+            id: "child",
+            title: "Child"
+        });
+        attachToParent(parentLayer, grandparentLayer);
+        attachToParent(childLayer, parentLayer);
+        expect(childLayer.effectivelyVisible).toBe(true);
+
+        grandparentLayer.setVisible(false);
+        expect(parentLayer.visible).toBe(true);
+        expect(parentLayer.effectivelyVisible).toBe(false);
+        expect(childLayer.visible).toBe(true);
+        expect(childLayer.effectivelyVisible).toBe(false);
+
+        grandparentLayer.setVisible(true);
+        expect(childLayer.effectivelyVisible).toBe(true);
+    });
+
+    it("updates when the parent changes", () => {
+        const visibleParent = new LayerImpl({
+            id: "parent1",
+            title: "Parent1"
+        });
+        const invisibleParent = new LayerImpl({
+            id: "parent2",
+            title: "Parent2"
+        });
+        invisibleParent.setVisible(false);
+
+        const childLayer = new LayerImpl({
+            id: "child",
+            title: "Child"
+        });
+        attachToParent(childLayer, visibleParent);
+        expect(childLayer.effectivelyVisible).toBe(true);
+
+        detachFromParent(childLayer);
+        attachToParent(childLayer, invisibleParent);
+        expect(childLayer.effectivelyVisible).toBe(false);
+    });
+});
+
+/**
+ * Sets `parent` as the parent of `child`.
+ *
+ * The parent is not a real group layer, but the base class only needs it for the `parent` link.
+ */
+function attachToParent(child: LayerImpl, parent: LayerImpl): void {
+    child[ATTACH_TO_GROUP](parent as unknown as GroupLayer);
+}
+
+function detachFromParent(child: LayerImpl): void {
+    child[DETACH_FROM_GROUP]();
+}
+
 abstract class SharedParent extends AbstractLayerBase {
     // xxx lying to the compiler (not a real sublayer)
     #sublayers: SublayersCollection<any> | undefined;
+
+    #visible = reactive(true);
 
     constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
         super(options);
@@ -264,7 +362,7 @@ abstract class SharedParent extends AbstractLayerBase {
     }
 
     get visible(): boolean {
-        throw new Error("Method not implemented.");
+        return this.#visible.value;
     }
 
     get legend(): string | undefined {
@@ -279,8 +377,8 @@ abstract class SharedParent extends AbstractLayerBase {
         return this.#sublayers;
     }
 
-    setVisible(_: boolean): void {
-        throw new Error("Method not implemented.");
+    setVisible(v: boolean): void {
+        this.#visible.value = v;
     }
 }
 

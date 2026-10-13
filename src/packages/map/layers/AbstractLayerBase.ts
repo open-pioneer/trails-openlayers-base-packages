@@ -42,7 +42,7 @@ export interface AbstractLayerBaseOptions {
  */
 export abstract class AbstractLayerBase {
     #map = reactive<MapModel>();
-    #parent: AnyLayer | undefined;
+    #parent = reactive<AnyLayer>();
 
     #id: string;
     #title: Reactive<string>;
@@ -51,6 +51,14 @@ export abstract class AbstractLayerBase {
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #isDestroyed = reactive(false);
     #internal: Reactive<boolean>;
+
+    #effectivelyVisible = computed(() => {
+        const parent = this.parent;
+        if (parent && !parent.effectivelyVisible) {
+            return false;
+        }
+        return this.visible;
+    });
 
     #destroyed = emitter();
 
@@ -165,7 +173,7 @@ export abstract class AbstractLayerBase {
      * The property shall be undefined if the layer is not a sublayer or member of a group layer.
      */
     get parent(): AnyLayer | undefined {
-        return this.#parent;
+        return this.#parent.value;
     }
 
     /**
@@ -218,6 +226,18 @@ export abstract class AbstractLayerBase {
     abstract get legend(): string | undefined;
 
     /**
+     * Returns true if this layer is effectively visible.
+     *
+     * A layer is _effectively visible_ if it is {@link visible} and all its parents are effectively visible.
+     * In other words, a layer is not effectively visible as soon as a single one of its parent layers is invisible.
+     *
+     * Use this property to test whether a layer will actually be rendered on the screen.
+     */
+    get effectivelyVisible(): boolean {
+        return this.#effectivelyVisible.value;
+    }
+
+    /**
      * Attaches the layer to its owning map.
      *
      * @internal
@@ -238,12 +258,12 @@ export abstract class AbstractLayerBase {
      * @internal
      */
     [ATTACH_TO_GROUP](parent: GroupLayer): void {
-        if (this.#parent) {
+        if (this.#parent.value) {
             throw new Error(
-                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
+                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.value.id}'`
             );
         }
-        this.#parent = parent;
+        this.#parent.value = parent;
     }
 
     /**
@@ -263,7 +283,7 @@ export abstract class AbstractLayerBase {
      * @internal
      */
     [DETACH_FROM_GROUP](): void {
-        this.#parent = undefined;
+        this.#parent.value = undefined;
     }
 
     /**
