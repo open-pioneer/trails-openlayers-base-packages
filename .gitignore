@@ -27,3 +27,6 @@ node_modules
 *.sw?
 *.local
 *.iml
+
+# Agent worktrees (see AGENTS.md)
+.worktrees
