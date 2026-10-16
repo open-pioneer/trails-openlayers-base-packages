@@ -360,6 +360,7 @@ The drawing options will be merged with those of the selected feature template (
 
 Editing an existing feature requires the user to select it on the map first.
 By default, the selection is only available if at least one of the selectable layers is visible; otherwise the selection button is disabled and a hint is shown to the user.
+The default rule uses the layer's `effectivelyVisible` property, so a layer inside an invisible group layer does not count as visible.
 
 Use the `resolveSelectionAvailability` prop to implement a different rule, for example if selection should also require a certain zoom level:
 
@@ -372,7 +373,7 @@ import type {
 // Use a function that does not change its value on every render.
 const customResolveSelectionAvailability = useCallback(
     ({ mapModel, layers }: SelectionAvailabilityContext): SelectionAvailability => {
-        if (!layers.some((layer) => layer.visible)) {
+        if (!layers.some((layer) => layer.effectivelyVisible)) {
             return { status: "unavailable", reason: "Please activate an editable layer." };
         }
         if ((mapModel.zoomLevel ?? 0) < 12) {
