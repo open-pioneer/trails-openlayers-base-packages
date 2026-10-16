@@ -186,8 +186,8 @@ catalogs:
       specifier: ^6.1.2
       version: 6.1.2
     '@open-pioneer/build-package-cli':
-      specifier: 4.0.2-dev.20260930082624
-      version: 4.0.2-dev.20260930082624
+      specifier: 4.0.2-dev.20261016113421
+      version: 4.0.2-dev.20261016113421
     '@open-pioneer/build-support':
       specifier: ^4.0.1
       version: 4.0.1
@@ -198,14 +198,14 @@ catalogs:
       specifier: ^0.2.1
       version: 0.2.1
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: 0.5.0-dev.20260930082624
-      version: 0.5.0-dev.20260930082624
+      specifier: 0.5.0-dev.20261016113421
+      version: 0.5.0-dev.20261016113421
     '@open-pioneer/core':
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
     '@open-pioneer/create-license-report':
-      specifier: 0.1.0-dev.20260930082624
-      version: 0.1.0-dev.20260930082624
+      specifier: 0.1.0-dev.20261016113421
+      version: 0.1.0-dev.20261016113421
     '@open-pioneer/http':
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
@@ -228,8 +228,8 @@ catalogs:
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
     '@open-pioneer/vite-plugin-pioneer':
-      specifier: ^7.0.1
-      version: 7.0.1
+      specifier: 7.1.0-dev.20261016113421
+      version: 7.1.0-dev.20261016113421
     '@tanstack/react-table':
       specifier: ^8.21.3
       version: 8.21.3
@@ -387,7 +387,7 @@ importers:
         version: 2.31.1(@types/node@24.13.6)
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
-        version: 4.0.2-dev.20260930082624(sass@1.105.0)(supports-color@7.2.0)(typescript@6.0.3)
+        version: 4.0.2-dev.20261016113421(sass@1.105.0)(supports-color@7.2.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
         version: 4.0.1
@@ -396,13 +396,13 @@ importers:
         version: 0.2.1
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.5.0-dev.20260930082624
+        version: 0.5.0-dev.20261016113421
       '@open-pioneer/create-license-report':
         specifier: 'catalog:'
-        version: 0.1.0-dev.20260930082624
+        version: 0.1.0-dev.20261016113421
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
-        version: 7.0.1(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.105.0)(supports-color@7.2.0)(vite@8.3.1(@types/node@24.13.6)(esbuild@0.28.2)(sass@1.105.0)(tsx@4.23.15)(yaml@2.9.0))
+        version: 7.1.0-dev.20261016113421(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.105.0)(supports-color@7.2.0)(vite@8.3.1(@types/node@24.13.6)(esbuild@0.28.2)(sass@1.105.0)(tsx@4.23.15)(yaml@2.9.0))
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.2
@@ -2598,8 +2598,12 @@ packages:
     resolution: {integrity: sha512-yYL29m0mz8ssAzjPE+DUTNe6KTAT4DWOynZ03pfuZpK9b1+zYyok0X+wfpKdXxXafsH8CP8ZEcPnUtbhZFq5vg==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/build-package-cli@4.0.2-dev.20260930082624':
-    resolution: {integrity: sha512-0ewTZyqanmAS7uVErD8lvmTFGpYIK9aWg8Mu0Kz7/qI53AvsSgSJd3I0iJ354b1kKDS4JWCBArPEsZSt+ZDEDg==}
+  '@open-pioneer/build-common@5.1.0-dev-i18n-test-utils.20261016104117':
+    resolution: {integrity: sha512-lgnbsR+iizl0m3g09n7wyvHcC9Y087A3CR/m8ohDS9uFXaQKEnw5HtKbuUoOcUI89V3LPkTZkNGkLo6nxq0v5A==}
+    engines: {node: '>= 20'}
+
+  '@open-pioneer/build-package-cli@4.0.2-dev.20261016113421':
+    resolution: {integrity: sha512-FqWuaW2Otsh5YB3FjU7VD1tSaa9xBsEFMOWwytYwKa64eb8/JLl/JXGyYq+SV/IkW+ssWRlI211EbXmzzVRxPw==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2626,8 +2630,8 @@ packages:
     resolution: {integrity: sha512-RSzzv2kRD2a7Cb3Dg0Zqn0GpPO1BD2y5MfP6yNsWCWtkOh+EsEkjGc+IrngtAn/l6AeTWE+Utg7ioICNo4GzTQ==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20260930082624':
-    resolution: {integrity: sha512-ivXcvS3cIen0YkbA2DRmAI0bPOxJKyb6sI+Fk1PqbN/5UQ73oQWP7U74JqZ39FGOcvbN3UsGIuhJpZh5mFNDvw==}
+  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261016113421':
+    resolution: {integrity: sha512-5B9aHGn2SdT/1s8dCArp7QzGq5CirXaNHVAJFN4WUKNBbjgf6ZRu/rwACDBudK8Hr2ZUrgpF6s9qx/rWItBRRQ==}
     engines: {node: '>= 20', pnpm: '>= 11'}
     hasBin: true
 
@@ -2638,8 +2642,8 @@ packages:
   '@open-pioneer/core@4.9.0-dev.20261002130116':
     resolution: {integrity: sha512-qbP86JJy6puLhan5AvgRO/7dAANuFKrr9/ORryWFESMsZgYok5vVQ3Hfpxk/ijJGwIatefwUXqYp0by6CuQaZg==}
 
-  '@open-pioneer/create-license-report@0.1.0-dev.20260930082624':
-    resolution: {integrity: sha512-LZ8ru/agjTe38Fyf8C2t1S7XR3a/IXPWoA3s/2kmLhkv+SE4pirM6TVc4DSd+oc+heCnQR8+swa25wbguCRCGQ==}
+  '@open-pioneer/create-license-report@0.1.0-dev.20261016113421':
+    resolution: {integrity: sha512-9vfSf7yCj4B9PhtXls+Uzsvi2sgBNU813+LqrYR8Gtupr7XcKCnPrgHjWsOn5U06wXlF7xMtBlNTJG6WFD8CqQ==}
     engines: {node: '>= 20', pnpm: '>= 11'}
     hasBin: true
 
@@ -2664,8 +2668,8 @@ packages:
   '@open-pioneer/test-utils@4.9.0-dev.20261002130116':
     resolution: {integrity: sha512-im52nuQwfu2gUv92yybF8kfb29sQVc//lfxT4KNJqPJX3BVrfwU17rw7GzJyUEV1WAsfSb8MIzVmR6xasx19Cw==}
 
-  '@open-pioneer/vite-plugin-pioneer@7.0.1':
-    resolution: {integrity: sha512-rKB+caikN/mBXH5QRZt5TTzXfEUy3uFHhzr/Wtep9CjTW4L/HWV2EP9VmJI3atjJnLAYKcuv+qBcgoakuoA1sQ==}
+  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261016113421':
+    resolution: {integrity: sha512-iU5DWBGEcmxnmKWR7ztVJkCGSn8BJ4PjRQCmGMAzQDCC0v5wyyjRaO9Lzl4U10TJXMvwnmcdNNdq+vRsUEGeoA==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@open-pioneer/runtime': '*'
@@ -4083,8 +4087,8 @@ packages:
     resolution: {integrity: sha512-Ap6G0WQwcU/LHsvLwON1fAQX9Zp0A2Y6Y/cJBl9r/JbW90Zyg4/zbG6zzKa2OTALELarYHmKu0GhpM5EO+7T0g==}
     engines: {node: '>=0.10'}
 
-  esrap@2.3.7:
-    resolution: {integrity: sha512-n2nf7fZR3c9yXf0BPEuHuXqT+KW0SJVj4cN5FMEkpCZ3scLjOQWpiccyCxVzCC2q1wubTghuEGzngJY/7Ah0Ow==}
+  esrap@2.4.0:
+    resolution: {integrity: sha512-CQPcneEHw/czj32uwQC52nYnax8H4SXt25FCM+LIwGZ49cMIxpOj3bP8wmzcI+Z0HIy5KkClaPhRLfCySzwHPA==}
     peerDependencies:
       '@typescript-eslint/types': ^8.2.0
     peerDependenciesMeta:
@@ -6015,7 +6019,17 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@open-pioneer/build-package-cli@4.0.2-dev.20260930082624(sass@1.105.0)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-common@5.1.0-dev-i18n-test-utils.20261016104117(rollup@4.63.2)':
+    dependencies:
+      '@open-pioneer/build-support': 4.0.1
+      '@rollup/pluginutils': 5.4.0(rollup@4.63.2)
+      semver: 7.8.5
+      zod: 4.6.5
+      zod-validation-error: 5.0.0(zod@4.6.5)
+    transitivePeerDependencies:
+      - rollup
+
+  '@open-pioneer/build-package-cli@4.0.2-dev.20261016113421(sass@1.105.0)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@open-pioneer/build-package': 5.0.2-dev-license-report.20260918143642(sass@1.105.0)(supports-color@7.2.0)(typescript@6.0.3)
       chalk: 6.0.0
@@ -6065,7 +6079,7 @@ snapshots:
 
   '@open-pioneer/changesets-release-line@0.2.1': {}
 
-  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20260930082624':
+  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261016113421':
     dependencies:
       '@open-pioneer/cli-common': 0.1.0-dev-license-report.20260918143642
       commander: 15.0.0
@@ -6080,7 +6094,7 @@ snapshots:
       '@conterra/reactivity-events': 0.8.8
       fast-equals: 6.0.4
 
-  '@open-pioneer/create-license-report@0.1.0-dev.20260930082624':
+  '@open-pioneer/create-license-report@0.1.0-dev.20261016113421':
     dependencies:
       '@open-pioneer/cli-common': 0.1.0-dev-license-report.20260918143642
       commander: 15.0.0
@@ -6160,12 +6174,12 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@open-pioneer/vite-plugin-pioneer@7.0.1(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.105.0)(supports-color@7.2.0)(vite@8.3.1(@types/node@24.13.6)(esbuild@0.28.2)(sass@1.105.0)(tsx@4.23.15)(yaml@2.9.0))':
+  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261016113421(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.105.0)(supports-color@7.2.0)(vite@8.3.1(@types/node@24.13.6)(esbuild@0.28.2)(sass@1.105.0)(tsx@4.23.15)(yaml@2.9.0))':
     dependencies:
-      '@open-pioneer/build-common': 5.0.1(rollup@4.63.2)
+      '@open-pioneer/build-common': 5.1.0-dev-i18n-test-utils.20261016104117(rollup@4.63.2)
       '@open-pioneer/runtime': 4.9.0-dev.20261002130116(@types/react@19.3.0)
       debug: 4.4.3(supports-color@7.2.0)
-      esrap: 2.3.7
+      esrap: 2.4.0
       js-yaml: 5.4.2
       oxc-resolver: 11.24.2
       sass: 1.105.0
@@ -7609,7 +7623,7 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  esrap@2.3.7:
+  esrap@2.4.0:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 

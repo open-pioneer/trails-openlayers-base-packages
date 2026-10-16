@@ -42,12 +42,12 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.31.1
-  "@open-pioneer/build-package-cli": 4.0.2-dev.20260930082624 # ^4.0.2
+  "@open-pioneer/build-package-cli": 4.0.2-dev.20261016113421 # ^4.0.2
   "@open-pioneer/build-support": ^4.0.1
   "@open-pioneer/changesets-release-line": ^0.2.1
-  "@open-pioneer/check-pnpm-duplicates": 0.5.0-dev.20260930082624 # ^0.5.0
-  "@open-pioneer/create-license-report": "0.1.0-dev.20260930082624" # ^0.1.0
-  "@open-pioneer/vite-plugin-pioneer": ^7.0.1
+  "@open-pioneer/check-pnpm-duplicates": 0.5.0-dev.20261016113421 # ^0.5.0
+  "@open-pioneer/create-license-report": 0.1.0-dev.20261016113421 # ^0.1.0
+  "@open-pioneer/vite-plugin-pioneer": 7.1.0-dev.20261016113421 # ^7.1.0
   "@testing-library/dom": ^10.4.2
   "@testing-library/jest-dom": ^7.0.1
   "@testing-library/react": ^16.3.3
@@ -195,26 +195,6 @@ minimumReleaseAge: 4320 # 3 days in minutes
 minimumReleaseAgeExclude:
   - "@open-pioneer/*"
   - "@conterra/*"
-  - "@oxlint/binding-android-arm-eabi@1.83.0"
-  - "@oxlint/binding-android-arm64@1.83.0"
-  - "@oxlint/binding-darwin-arm64@1.83.0"
-  - "@oxlint/binding-darwin-x64@1.83.0"
-  - "@oxlint/binding-freebsd-x64@1.83.0"
-  - "@oxlint/binding-linux-arm-gnueabihf@1.83.0"
-  - "@oxlint/binding-linux-arm-musleabihf@1.83.0"
-  - "@oxlint/binding-linux-arm64-gnu@1.83.0"
-  - "@oxlint/binding-linux-arm64-musl@1.83.0"
-  - "@oxlint/binding-linux-ppc64-gnu@1.83.0"
-  - "@oxlint/binding-linux-riscv64-gnu@1.83.0"
-  - "@oxlint/binding-linux-riscv64-musl@1.83.0"
-  - "@oxlint/binding-linux-s390x-gnu@1.83.0"
-  - "@oxlint/binding-linux-x64-gnu@1.83.0"
-  - "@oxlint/binding-linux-x64-musl@1.83.0"
-  - "@oxlint/binding-openharmony-arm64@1.83.0"
-  - "@oxlint/binding-win32-arm64-msvc@1.83.0"
-  - "@oxlint/binding-win32-ia32-msvc@1.83.0"
-  - "@oxlint/binding-win32-x64-msvc@1.83.0"
-  - oxlint@1.83.0
 
 # Workaround for current problems regarding our vite plugin + vite's optimizeDeps feature
 shamefullyHoist: true
