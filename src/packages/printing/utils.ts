@@ -103,8 +103,8 @@ export function getMapCenterPixel(olMap: OlMap): number[] | undefined {
 
     const padding = getViewPadding(olMap.getView());
 
-    const x = (mapSize[0] + padding.left - padding.right) / 2;
-    const y = (mapSize[1] + padding.top - padding.bottom) / 2;
+    const x = Math.round((mapSize[0] + padding.left - padding.right) / 2);
+    const y = Math.round((mapSize[1] + padding.top - padding.bottom) / 2);
 
     return [x, y];
 }
@@ -164,10 +164,10 @@ export function getPixelBounds(map: MapModel, pageFormat: PageFormatType, orient
     if (!centerPixel || !centerPixel[0] || !centerPixel[1]) return;
 
     const { pixelHeight, pixelWidth } = screenSize;
-    const minX = centerPixel[0] - pixelWidth / 2;
-    const minY = centerPixel[1] - pixelHeight / 2;
-    const maxX = centerPixel[0] + pixelWidth / 2;
-    const maxY = centerPixel[1] + pixelHeight / 2;
+    const minX = Math.round(centerPixel[0] - pixelWidth / 2);
+    const minY = Math.round(centerPixel[1] - pixelHeight / 2);
+    const maxX = Math.round(centerPixel[0] + pixelWidth / 2);
+    const maxY = Math.round(centerPixel[1] + pixelHeight / 2);
 
     return [minX, minY, maxX, maxY];
 }
