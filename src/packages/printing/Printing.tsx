@@ -264,7 +264,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
-                                className="printing-select"
+                                className="printing-select-pageformat"
                                 value={pageFormat}
                                 onChange={(event) => {
                                     changePageFormat(event.target.value);
@@ -282,7 +282,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
-                                className="printing-select"
+                                className="printing-select-orientation"
                                 value={orientation}
                                 onChange={(event) => {
                                     changeOrientation(event.target.value);
@@ -300,7 +300,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
-                                className="printing-select"
+                                className="printing-select-fileformat"
                                 value={fileFormat}
                                 onChange={(event) => {
                                     changeFileFormat(event.target.value);
@@ -318,7 +318,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
-                                className="printing-select"
+                                className="printing-select-dpi"
                                 value={dpi}
                                 onChange={(event) => {
                                     changeDpi(event.target.value);
@@ -336,7 +336,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                         </Field.Label>
                         <NativeSelectRoot>
                             <NativeSelectField
-                                className="printing-select"
+                                className="printing-select-scale"
                                 value={scale}
                                 onChange={(event) => {
                                     changeScale(event.target.value);
@@ -457,7 +457,7 @@ function getInitialOption(options: any[], initialOption: any) {
         if (options[0]) {
             return options[0];
         } else {
-            throw new Error("No fallback option found in options. Is the list empty?");
+            LOG.error("No fallback option found in options. Is the list empty?");
         }
     }
 }

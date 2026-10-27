@@ -3,9 +3,9 @@
 
 import { Resource } from "@open-pioneer/core";
 import { getScaleForPointResolution, MapModel } from "@open-pioneer/map";
+import type OlMap from "ol/Map";
 import type OlView from "ol/View";
 import { PageOrientationType, PageFormatType } from "./index";
-import type OlMap from "ol/Map";
 
 const DEFAULT_QUALITY = 0.8;
 
@@ -155,7 +155,12 @@ export function drawRectangle(
     }
 }
 
-export function getPixelBounds(map: MapModel, pageFormat: PageFormatType, orientation: PageOrientationType, scale: number): number[] | undefined {
+export function getPixelBounds(
+    map: MapModel,
+    pageFormat: PageFormatType,
+    orientation: PageOrientationType,
+    scale: number
+): number[] | undefined {
     const pageSize = getPageSize(pageFormat, orientation);
     const screenSize = getScreenSizeForPageSize(map, pageSize, scale);
     if (!screenSize) return;

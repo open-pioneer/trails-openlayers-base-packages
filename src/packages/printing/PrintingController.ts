@@ -115,32 +115,35 @@ export class PrintingController {
 
     #showPrintArea(renderEvent: RenderEvent) {
         const context = renderEvent.context;
-        if (!this.#isCanvasRenderingContext2D(context)) return;
+        if (!this.isCanvasRenderingContext2D(context)) return;
 
         if (!this.#pageFormat || !this.#orientation || !this.#scale) return;
-        const printArea = getPixelBounds(this.#map, this.#pageFormat, this.#orientation, this.#scale);
+        const printArea = getPixelBounds(
+            this.#map,
+            this.#pageFormat,
+            this.#orientation,
+            this.#scale
+        );
         if (!printArea) return;
-        const printAreaCanvas = this.#viewportToCanvas(printArea, renderEvent);
+        const printAreaCanvas = this.viewportToCanvas(printArea, renderEvent);
 
         drawPrintArea(context, printAreaCanvas);
     }
 
-    #viewportToCanvas(printArea: number[], renderEvent: RenderEvent) {
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate drawing logic from CanvasRenderingContext2D implementation which is not available in tests.
+    private viewportToCanvas(printArea: number[], renderEvent: RenderEvent) {
         const [minX, minY, maxX, maxY] = printArea;
 
-        const min = getRenderPixel(renderEvent, [minX, minY] as Pixel) as [
-            number,
-            number
-        ];
-        const max = getRenderPixel(renderEvent, [maxX, maxY] as Pixel) as [
-            number,
-            number
-        ];
+        const min = getRenderPixel(renderEvent, [minX, minY] as Pixel) as [number, number];
+        const max = getRenderPixel(renderEvent, [maxX, maxY] as Pixel) as [number, number];
 
         return [min[0], min[1], max[0], max[1]];
     }
 
-    #isCanvasRenderingContext2D(context: unknown): context is CanvasRenderingContext2D {
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate drawing logic from CanvasRenderingContext2D implementation which is not available in tests.
+    private isCanvasRenderingContext2D(context: unknown): context is CanvasRenderingContext2D {
         return context != null && context instanceof CanvasRenderingContext2D;
     }
 
