@@ -205,9 +205,9 @@ export class PrintJob {
             className: "printing-scale-bar ol-scale-bar",
             bar: true,
             text: true,
-            minWidth: 125
+            minWidth: 125,
+            dpi: this.#dpi
         }));
-        this.#scaleLine.setDpi(this.#dpi);
 
         // oxlint-disable-next-line @typescript-eslint/no-explicit-any
         const scaleLineElement = (scaleLine as any).element as HTMLElement;
