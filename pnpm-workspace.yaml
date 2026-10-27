@@ -32,7 +32,7 @@ catalog:
   html2canvas: ^1.4.1
   jspdf: ^4.2.1
   ol-mapbox-style: ^13.8.0
-  ol: ^10.11.0
+  ol: ^10.10.0
   proj4: ^2.22.0
   react-dom: ^19.3.1
   react-icons: ^5.7.0
