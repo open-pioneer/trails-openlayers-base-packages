@@ -538,9 +538,9 @@ const template: FeatureTemplate = {
 For complete control over form layout and behavior, use a dynamic form template with the `usePropertyFormContext` hook:
 
 ```tsx
+import { Field, Input, VStack } from "@chakra-ui/react";
 import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { Field, Input, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
 
 function CustomSurveyForm() {
