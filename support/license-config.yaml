@@ -10,6 +10,7 @@ allowedLicenses:
   - "CC0-1.0"
   - "WTFPL"
   - "Unlicense"
+  - "(MPL-2.0 OR Apache-2.0)"
 
 # Some licenses are detected incorrectly.
 # Their information can be overwritten here.
