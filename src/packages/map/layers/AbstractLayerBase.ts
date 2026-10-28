@@ -242,7 +242,7 @@ export abstract class AbstractLayerBase {
      * Returns true if this layer is visible within its layer hierarchy.
      *
      * A layer is _visible in its hierarchy_ if it is {@link visible} and all its parents are visible as well.
-     * In other words, a layer is not visible in its hierarchy as soon as a single one of its parent layers is invisible.
+     * In other words, a layer is not visible in its hierarchy as soon as any of its parent layers are invisible.
      *
      * See also {@link effectivelyVisible}.
      */
@@ -255,9 +255,8 @@ export abstract class AbstractLayerBase {
      *
      * A layer is _effectively visible_ if nothing prevents it from being rendered on the map:
      *
-     * - the layer itself is {@link visible},
-     * - all its parents are effectively visible (see also {@link effectivelyVisible}) and
-     * - no further condition of the specific layer type prevents it from being rendered.
+     * - the layer and all its parents are {@link visible} (see also {@link visibleInHierarchy}),
+     * - no further conditions of the specific layer types prevents the layer or its parents from being rendered.
      *   For example, operational layers are only effectively visible if they are visible in the current map scale.
      *
      * Use this property to test whether a layer is currently displayed on the map.
