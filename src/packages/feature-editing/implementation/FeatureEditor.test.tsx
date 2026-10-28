@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { reactive } from "@conterra/reactivity-core";
-import { LayerFactory } from "@open-pioneer/map";
+import { GroupLayer, LayerFactory } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import type { NotificationService } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -274,6 +274,49 @@ describe("Editor interaction", () => {
 
         // Enabled again when at least one layer is visible
         layers[0]!.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("disables the select button when the layers are not effectively visible", async () => {
+        const { map, layerFactory } = await setupMap();
+
+        // The layer itself is visible, but its parent group is not.
+        const layer = createTestLayer({
+            title: "Child",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            title: "Group",
+            visible: false,
+            layers: [layer]
+        });
+        expect(layer.visible).toBe(true);
+        expect(layer.effectivelyVisible).toBe(false);
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+
+        // Parent group hidden -> disabled, even though the layer is visible on its own
+        expect(selectButton).toBeDisabled();
+
+        // Enabled once the group (and therefore the layer) becomes effectively visible
+        group.setVisible(true);
         await waitFor(() => {
             expect(selectButton).toBeEnabled();
         });

@@ -390,7 +390,7 @@ describe("health checks", () => {
 });
 
 describe("visibility restrictions", () => {
-    it("support {min,max}Zoom and {min,max}Resolution properties", async () => {
+    it("exposes {min,max}Zoom and {min,max}Resolution as aliases for the OpenLayers properties", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -413,7 +413,7 @@ describe("visibility restrictions", () => {
         expect(layer.olLayer.getMaxResolution()).toBe(600);
     });
 
-    it("support reactivity of attributes", async () => {
+    it("updates the properties reactively", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -446,7 +446,7 @@ describe("visibility restrictions", () => {
         }
     });
 
-    it("support the minZoom/maxZoom attribute", async () => {
+    it("computes visibleInScale from minZoom/maxZoom", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -474,7 +474,7 @@ describe("visibility restrictions", () => {
         expect(layer.visibleInScale).toBe(true);
     });
 
-    it("support the minResolution/maxResolution attribute", async () => {
+    it("computes visibleInScale from minResolution/maxResolution", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -492,6 +492,30 @@ describe("visibility restrictions", () => {
         await vi.waitFor(() => {
             expect(layer.visibleInScale).toBe(true);
         });
+    });
+
+    it("makes the layer effectively invisible when it is not visible in scale", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minZoom: 10,
+            maxZoom: 16,
+            olLayer: createTestOlLayer()
+        });
+        const { map } = await setupMap({
+            layers: [layer]
+        });
+
+        expect(layer.visible).toBe(true);
+        expect(layer.visibleInHierarchy).toBe(true);
+        expect(layer.visibleInScale).toBe(false);
+        expect(layer.effectivelyVisible).toBe(false);
+
+        map.olMap.getView().setZoom(11);
+        await vi.waitFor(() => {
+            expect(layer.visibleInScale).toBe(true);
+        });
+        expect(layer.effectivelyVisible).toBe(true);
     });
 });
 

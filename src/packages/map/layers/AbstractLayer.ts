@@ -20,6 +20,7 @@ import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
+    CHECK_EFFECTIVE_VISIBILITY,
     DECLARED_AS_BASE_LAYER,
     GET_DEPS,
     getLayerDependencies,
@@ -293,6 +294,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get visibleInScale(): boolean {
         return this.#visibleInScale.value;
+    }
+
+    /**
+     * @internal
+     */
+    protected override [CHECK_EFFECTIVE_VISIBILITY](): boolean {
+        return super[CHECK_EFFECTIVE_VISIBILITY]() && this.visibleInScale;
     }
 
     /**
