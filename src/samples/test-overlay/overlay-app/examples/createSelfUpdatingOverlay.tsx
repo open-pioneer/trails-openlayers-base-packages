@@ -19,7 +19,7 @@ export function createSelfUpdatingOverlay(map: MapModel) {
 }
 
 function SelfUpdatingOverlay() {
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(() => new Date());
 
     useEffect(() => {
         const interval = setInterval(() => setDate(new Date()), 1000);
