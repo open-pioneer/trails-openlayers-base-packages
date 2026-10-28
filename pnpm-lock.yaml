@@ -186,8 +186,8 @@ catalogs:
       specifier: ^6.1.4
       version: 6.1.4
     '@open-pioneer/build-package-cli':
-      specifier: 4.0.2-dev.20261016113421
-      version: 4.0.2-dev.20261016113421
+      specifier: 4.0.2-dev.20261026104943
+      version: 4.0.2-dev.20261026104943
     '@open-pioneer/build-support':
       specifier: ^4.0.1
       version: 4.0.1
@@ -198,14 +198,14 @@ catalogs:
       specifier: ^0.2.1
       version: 0.2.1
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: 0.5.0-dev.20261016113421
-      version: 0.5.0-dev.20261016113421
+      specifier: 0.5.0-dev.20261026104943
+      version: 0.5.0-dev.20261026104943
     '@open-pioneer/core':
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
     '@open-pioneer/create-license-report':
-      specifier: 0.1.0-dev.20261016113421
-      version: 0.1.0-dev.20261016113421
+      specifier: 0.1.0-dev.20261026104943
+      version: 0.1.0-dev.20261026104943
     '@open-pioneer/http':
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
@@ -228,8 +228,8 @@ catalogs:
       specifier: 4.9.0-dev.20261002130116
       version: 4.9.0-dev.20261002130116
     '@open-pioneer/vite-plugin-pioneer':
-      specifier: 7.1.0-dev.20261016113421
-      version: 7.1.0-dev.20261016113421
+      specifier: 7.1.0-dev.20261026104943
+      version: 7.1.0-dev.20261026104943
     '@tanstack/react-table':
       specifier: ^8.21.3
       version: 8.21.3
@@ -387,7 +387,7 @@ importers:
         version: 2.31.1(@types/node@24.19.2)
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
-        version: 4.0.2-dev.20261016113421(sass@1.106.1)(supports-color@7.2.0)(typescript@6.0.3)
+        version: 4.0.2-dev.20261026104943(sass@1.106.1)(supports-color@7.2.0)(typescript@6.0.3)
       '@open-pioneer/build-support':
         specifier: 'catalog:'
         version: 4.0.1
@@ -396,13 +396,13 @@ importers:
         version: 0.2.1
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.5.0-dev.20261016113421
+        version: 0.5.0-dev.20261026104943
       '@open-pioneer/create-license-report':
         specifier: 'catalog:'
-        version: 0.1.0-dev.20261016113421
+        version: 0.1.0-dev.20261026104943
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
-        version: 7.1.0-dev.20261016113421(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.106.1)(supports-color@7.2.0)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass@1.106.1)(tsx@4.23.15)(yaml@2.9.1))
+        version: 7.1.0-dev.20261026104943(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.106.1)(supports-color@7.2.0)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass@1.106.1)(tsx@4.23.15)(yaml@2.9.1))
       '@testing-library/dom':
         specifier: 'catalog:'
         version: 10.4.2
@@ -2602,8 +2602,8 @@ packages:
     resolution: {integrity: sha512-lgnbsR+iizl0m3g09n7wyvHcC9Y087A3CR/m8ohDS9uFXaQKEnw5HtKbuUoOcUI89V3LPkTZkNGkLo6nxq0v5A==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/build-package-cli@4.0.2-dev.20261016113421':
-    resolution: {integrity: sha512-FqWuaW2Otsh5YB3FjU7VD1tSaa9xBsEFMOWwytYwKa64eb8/JLl/JXGyYq+SV/IkW+ssWRlI211EbXmzzVRxPw==}
+  '@open-pioneer/build-package-cli@4.0.2-dev.20261026104943':
+    resolution: {integrity: sha512-pKcNbZZSpS393XrFDHIpTpM8gddeWaLYFww9EOm+zaE5xHq8yd09y+hfamdTLIYEZGLYyRUJZilfm4YCmP3KIQ==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2630,8 +2630,8 @@ packages:
     resolution: {integrity: sha512-RSzzv2kRD2a7Cb3Dg0Zqn0GpPO1BD2y5MfP6yNsWCWtkOh+EsEkjGc+IrngtAn/l6AeTWE+Utg7ioICNo4GzTQ==}
     engines: {node: '>= 20'}
 
-  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261016113421':
-    resolution: {integrity: sha512-5B9aHGn2SdT/1s8dCArp7QzGq5CirXaNHVAJFN4WUKNBbjgf6ZRu/rwACDBudK8Hr2ZUrgpF6s9qx/rWItBRRQ==}
+  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261026104943':
+    resolution: {integrity: sha512-T2Yuape2Wt6u2RQkEt4mMiC4/CGl2p9pGhgF5OaDXlWYU0Py4WibbqP2t/9OtBNvG3n2nBBOrPtOLOtq6mVYrQ==}
     engines: {node: '>= 20', pnpm: '>= 11'}
     hasBin: true
 
@@ -2642,8 +2642,8 @@ packages:
   '@open-pioneer/core@4.9.0-dev.20261002130116':
     resolution: {integrity: sha512-qbP86JJy6puLhan5AvgRO/7dAANuFKrr9/ORryWFESMsZgYok5vVQ3Hfpxk/ijJGwIatefwUXqYp0by6CuQaZg==}
 
-  '@open-pioneer/create-license-report@0.1.0-dev.20261016113421':
-    resolution: {integrity: sha512-9vfSf7yCj4B9PhtXls+Uzsvi2sgBNU813+LqrYR8Gtupr7XcKCnPrgHjWsOn5U06wXlF7xMtBlNTJG6WFD8CqQ==}
+  '@open-pioneer/create-license-report@0.1.0-dev.20261026104943':
+    resolution: {integrity: sha512-DgadpJZE00pwJ0WMSb4282TIikmew0deXLyMwV6iiGxW5sCGDDpfM7UUq04PFbKozCAV3ITnX3p8mHaWG4/Fbw==}
     engines: {node: '>= 20', pnpm: '>= 11'}
     hasBin: true
 
@@ -2668,8 +2668,8 @@ packages:
   '@open-pioneer/test-utils@4.9.0-dev.20261002130116':
     resolution: {integrity: sha512-im52nuQwfu2gUv92yybF8kfb29sQVc//lfxT4KNJqPJX3BVrfwU17rw7GzJyUEV1WAsfSb8MIzVmR6xasx19Cw==}
 
-  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261016113421':
-    resolution: {integrity: sha512-iU5DWBGEcmxnmKWR7ztVJkCGSn8BJ4PjRQCmGMAzQDCC0v5wyyjRaO9Lzl4U10TJXMvwnmcdNNdq+vRsUEGeoA==}
+  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261026104943':
+    resolution: {integrity: sha512-mUs9vomDwPnI6n+0Iw76H09JJZ/3wweU8z6StbCmomVfzSxzb+yE4EoNz1BbkuMHWeo3Qdw5UqwfjdRPXfGNcw==}
     engines: {node: '>= 20'}
     peerDependencies:
       '@open-pioneer/runtime': '*'
@@ -6028,7 +6028,7 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@open-pioneer/build-package-cli@4.0.2-dev.20261016113421(sass@1.106.1)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@open-pioneer/build-package-cli@4.0.2-dev.20261026104943(sass@1.106.1)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@open-pioneer/build-package': 5.0.2-dev-license-report.20260918143642(sass@1.106.1)(supports-color@7.2.0)(typescript@6.0.3)
       chalk: 6.0.0
@@ -6078,7 +6078,7 @@ snapshots:
 
   '@open-pioneer/changesets-release-line@0.2.1': {}
 
-  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261016113421':
+  '@open-pioneer/check-pnpm-duplicates@0.5.0-dev.20261026104943':
     dependencies:
       '@open-pioneer/cli-common': 0.1.0-dev-license-report.20260918143642
       commander: 15.0.0
@@ -6093,7 +6093,7 @@ snapshots:
       '@conterra/reactivity-events': 0.8.8
       fast-equals: 6.0.4
 
-  '@open-pioneer/create-license-report@0.1.0-dev.20261016113421':
+  '@open-pioneer/create-license-report@0.1.0-dev.20261026104943':
     dependencies:
       '@open-pioneer/cli-common': 0.1.0-dev-license-report.20260918143642
       commander: 15.0.0
@@ -6173,7 +6173,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261016113421(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.106.1)(supports-color@7.2.0)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass@1.106.1)(tsx@4.23.15)(yaml@2.9.1))':
+  '@open-pioneer/vite-plugin-pioneer@7.1.0-dev.20261026104943(@open-pioneer/runtime@4.9.0-dev.20261002130116(@types/react@19.3.0))(rollup@4.63.2)(sass@1.106.1)(supports-color@7.2.0)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass@1.106.1)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@open-pioneer/build-common': 5.1.0-dev-i18n-test-utils.20261016104117(rollup@4.63.2)
       '@open-pioneer/runtime': 4.9.0-dev.20261002130116(@types/react@19.3.0)
