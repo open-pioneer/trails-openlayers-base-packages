@@ -60,7 +60,7 @@ catalog:
   "@vitejs/plugin-react": "^6.1.2"
   "@tony.ganchev/eslint-plugin-header": ^3.4.4
   fast-glob: ^3.3.3
-  happy-dom: ^20.14.6
+  happy-dom: ^21.0.4
   husky: ^9.1.7
   js-yaml: ^5.5.0
   jsdom: ^30.1.3
@@ -120,9 +120,6 @@ overrides:
   # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
   "immutable@>=5.0.0 <5.1.8": "^5.1.8"
 
-  # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
-  "dompurify@<=3.4.11": "^3.4.12"
-
   # https://github.com/advisories/GHSA-fxqj-rqcc-2cmp, CVE-2026-69153
   "postcss@<=8.5.22": "^8.5.23"
 
@@ -130,13 +127,20 @@ overrides:
   "nanoid@<3.3.17": "^3.3.17"
 
   # https://github.com/advisories/GHSA-55q2-fjhq-7xh7
-  "dompurify@<=3.4.12": "^3.4.13"
+  # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
+  # https://github.com/advisories/GHSA-cg2g-xh64-v4q7
+  # https://github.com/advisories/GHSA-mrv2-3pqr-j5jr
+  "dompurify@<=3.4.16": "^3.4.17"
 
   # https://github.com/advisories/GHSA-68fv-2mgg-jv7q, CVE-2026-93749
   "source-map-js@>=1.0.0 <1.2.2": "^1.2.2"
 
   # https://github.com/advisories/GHSA-253c-mchw-3w2r
-  "markdown-it@<14.3.1": "^14.3.1"
+  # https://github.com/advisories/GHSA-gfr2-rv44-r23c
+  "markdown-it@<14.3.3": "^14.3.3"
+
+  # https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
+  "zod@>=4.0.0 <4.6.6": "^4.6.6"
 
 allowUnusedPatches: true
 patchedDependencies:
