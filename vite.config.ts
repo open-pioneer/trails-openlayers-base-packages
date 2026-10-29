@@ -102,14 +102,11 @@ export default defineConfig(({ mode }) => {
                     test: {
                         name: "unit",
                         globals: true, // todo still needed?
-                        include: ["**/*.{test,spec}.*", "../support/**/*.{test,spec}.*"],
+                        include: ["**/*.{test,spec}.*"],
                         exclude: [
                             "**/node_modules/**",
-                            "../**/node_modules/**",
                             "**/*.browser.{test,spec}.*",
-                            "../support/**/*.browser.{test,spec}.*",
-                            "**/*.{test,spec}.*.snap",
-                            "../support/**/*.{test,spec}.*.snap"
+                            "**/*.{test,spec}.*.snap"
                         ],
                         environment: "happy-dom", // todo change to "node" if happy-dom is no longer needed
                         setupFiles: ["testing/global-setup.ts"], // todo clean up if happy-dom is no longer needed
@@ -126,7 +123,7 @@ export default defineConfig(({ mode }) => {
                     test: {
                         name: "browser",
                         include: ["**/*.browser.{test,spec}.*"],
-                        exclude: ["**/node_modules/**", "../**/node_modules/**"],
+                        exclude: ["**/node_modules/**"],
                         server: {
                             deps: {
                                 // Workaround to fix some import issues, see
