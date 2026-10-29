@@ -406,6 +406,19 @@ export class MapModel {
     }
 
     /**
+     * Returns the OpenLayers map's viewport element.
+     */
+    get viewport(): HTMLElement {
+        const viewport = this.#olMap.getViewport();
+        if (viewport) {
+            return viewport;
+        } else {
+            // should never happen because we do not support OffscreenCanvas
+            throw new Error("olMap's viewport is undefined.");
+        }
+    }
+
+    /**
      * Returns the current view of the OpenLayers map.
      */
     get olView(): OlView {

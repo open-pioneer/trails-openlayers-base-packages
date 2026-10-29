@@ -211,7 +211,7 @@ export class SelectionViewModel {
      * and marks the viewport with css classes when selection interaction is active or inactive.
      */
     #initViewport(): Resource[] {
-        const viewport = this.#map.olMap.getViewport();
+        const viewport = this.#map.viewport;
         const disableContextMenu = (e: MouseEvent) => {
             e.preventDefault();
             return false;

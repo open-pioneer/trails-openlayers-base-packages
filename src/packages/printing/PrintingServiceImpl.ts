@@ -64,14 +64,18 @@ export class PrintJob {
     }
 
     async printMap(): Promise<PrintResultImpl> {
+        const viewport = this.#olMap.getViewport();
         if (this.#running) {
             throw new Error("Printing already running.");
+        }
+        if (!viewport) {
+            throw new Error("olMap's viewport is undefined.");
         }
 
         try {
             await this.#beginExport();
 
-            let canvas = await this.printToCanvas(this.#olMap.getViewport());
+            let canvas = await this.printToCanvas(viewport);
             if (!canvas) {
                 throw new Error("Canvas export failed");
             }
