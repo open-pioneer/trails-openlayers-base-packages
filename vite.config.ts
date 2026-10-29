@@ -123,7 +123,7 @@ export default defineConfig(({ mode }) => {
                     test: {
                         name: "browser",
                         include: ["**/*.browser.{test,spec}.*"],
-                        exclude: ["**/node_modules/**"],
+                        exclude: ["**/node_modules/**", "**/*.{test,spec}.*.snap"],
                         server: {
                             deps: {
                                 // Workaround to fix some import issues, see
