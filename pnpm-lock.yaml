@@ -291,8 +291,8 @@ catalogs:
       specifier: ^17.6.0
       version: 17.6.0
     ol:
-      specifier: ^10.10.0
-      version: 10.10.0
+      specifier: ^10.11.0
+      version: 10.11.0
     ol-mapbox-style:
       specifier: ^13.8.0
       version: 13.8.0
@@ -302,6 +302,9 @@ catalogs:
     oxlint:
       specifier: ^1.89.0
       version: 1.89.0
+    playwright:
+      specifier: ^1.64.1
+      version: 1.64.1
     proj4:
       specifier: ^2.22.0
       version: 2.22.0
@@ -446,6 +449,9 @@ importers:
       oxlint:
         specifier: 'catalog:'
         version: 1.89.0
+      playwright:
+        specifier: 'catalog:'
+        version: 1.64.1
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -502,7 +508,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -550,7 +556,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -592,7 +598,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -631,7 +637,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -682,7 +688,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -736,7 +742,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -775,7 +781,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -829,7 +835,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       proj4:
         specifier: 'catalog:'
         version: 2.22.0(geotiff@3.1.0-beta.0)
@@ -886,7 +892,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -922,7 +928,7 @@ importers:
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
     devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
@@ -982,7 +988,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1009,7 +1015,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       uuid:
         specifier: 'catalog:'
         version: 14.0.3
@@ -1048,7 +1054,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1096,7 +1102,7 @@ importers:
         version: 4.2.1
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1147,7 +1153,7 @@ importers:
         version: 8.21.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1192,7 +1198,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1231,7 +1237,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1312,7 +1318,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1369,7 +1375,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1426,7 +1432,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1480,7 +1486,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1537,7 +1543,7 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1564,7 +1570,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1645,7 +1651,7 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1690,10 +1696,10 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       ol-mapbox-style:
         specifier: 'catalog:'
-        version: 13.8.0(ol@10.10.0)
+        version: 13.8.0(ol@10.11.0)
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1795,7 +1801,7 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1831,7 +1837,7 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1888,7 +1894,7 @@ importers:
         version: 4.9.0-dev.20261029090037(@types/react@19.3.0)
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -1969,7 +1975,7 @@ importers:
         version: link:../../../packages/search
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -2008,7 +2014,7 @@ importers:
         version: link:../../../packages/selection
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -2047,7 +2053,7 @@ importers:
         version: link:../../../packages/toc
       ol:
         specifier: 'catalog:'
-        version: 10.10.0
+        version: 10.11.0
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -4591,8 +4597,8 @@ packages:
     peerDependencies:
       ol: '*'
 
-  ol@10.10.0:
-    resolution: {integrity: sha512-tLPKn6zl+6uWdPufYlqG/lQzuVUTVmfwahQqVr5+wZNyZecyAtIhMTyOtKpu7ooNDLY2sEjKZNXw9HL+sOjC1A==}
+  ol@10.11.0:
+    resolution: {integrity: sha512-OJ+lrx7kx/1O7Xx18Ff9QkVnwZIEL0OuhJQSy2sYgzzDvyZ2qHvuZEGAajbSstUyBwaS1OtQ4RWnY84tRMDdqg==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -4733,6 +4739,16 @@ packages:
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
+
+  playwright-core@1.64.1:
+    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.64.1:
+    resolution: {integrity: sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   postcss-import@17.0.0:
     resolution: {integrity: sha512-qzVMJhcq39KweT7Fp0HcjE5YxL5yI854Q3CtufxDuZKO9HLQUp2rptB9+U0MIj3pT1ZEVXoqnpeC1mSkfYuz4Q==}
@@ -8116,13 +8132,13 @@ snapshots:
 
   obug@3.0.0: {}
 
-  ol-mapbox-style@13.8.0(ol@10.10.0):
+  ol-mapbox-style@13.8.0(ol@10.11.0):
     dependencies:
       '@maplibre/maplibre-gl-style-spec': 26.4.1
       mapbox-to-css-font: 3.2.0
-      ol: 10.10.0
+      ol: 10.11.0
 
-  ol@10.10.0:
+  ol@10.11.0:
     dependencies:
       '@types/rbush': 4.0.0
       earcut: 3.0.2
@@ -8291,6 +8307,12 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.8.2
       pathe: 2.0.3
+
+  playwright-core@1.64.1: {}
+
+  playwright@1.64.1:
+    dependencies:
+      playwright-core: 1.64.1
 
   postcss-import@17.0.0(postcss@8.5.31):
     dependencies:

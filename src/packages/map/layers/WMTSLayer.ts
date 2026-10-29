@@ -250,7 +250,7 @@ export class WMTSLayer extends AbstractLayer {
             }
 
             const image = tile.getImage();
-            if (!isHtmlImage(image)) {
+            if (!image || !isHtmlImage(image)) {
                 // Could also be canvas or video
                 throw new Error("Only <img> tags are supported as tiles for now.");
             }

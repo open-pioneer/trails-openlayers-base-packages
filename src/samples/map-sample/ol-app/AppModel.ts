@@ -267,7 +267,7 @@ export class AppModel implements Service, AppState {
      * Clears the existing highlight created by earlier calls to this method.
      */
     highlightAndZoom(map: MapModel, geometries: Geometry[]): void {
-        const viewport: HTMLElement = map.olMap.getViewport();
+        const viewport: HTMLElement = map.viewport;
 
         this.clearHighlight();
         this.#featureHighlight = map.highlights.addAndZoom(geometries, {
@@ -282,7 +282,7 @@ export class AppModel implements Service, AppState {
      * Zooms to the given geometries.
      */
     zoom(map: MapModel, geometries: Geometry[]): void {
-        const viewport: HTMLElement = map.olMap.getViewport();
+        const viewport: HTMLElement = map.viewport;
 
         map.zoom(geometries, {
             viewPadding:
