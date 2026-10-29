@@ -97,47 +97,8 @@ overrides:
   "@ark-ui/react": "5.39.0"
   "@zag-js/interact-outside": "1.43.3"
 
-  # Downgrade, 3.2.2 is not signed: https://github.com/mafintosh/why-is-node-running/issues/90
-  "why-is-node-running@3.2.2": "3.2.1"
-
-  # https://github.com/advisories/GHSA-g7r4-m6w7-qqqr
-  # https://github.com/advisories/GHSA-gv7w-rqvm-qjhr
-  "esbuild@<=0.28.0": "^0.28.1"
-
-  # https://github.com/advisories/GHSA-h67p-54hq-rp68, CVE-2026-53550
-  # https://github.com/advisories/GHSA-2883-xcg3-v3hh, CVE-2026-84375
-  "js-yaml@>=4.0.0 <4.3.2": "^4.3.2"
-
-  # https://github.com/advisories/GHSA-52cp-r559-cp3m, CVE-2026-59869
-  # https://github.com/advisories/GHSA-5p4m-2wfm-xmqj
-  # https://github.com/advisories/GHSA-2883-xcg3-v3hh, CVE-2026-84375
-  "js-yaml@>=3.0.0 <3.15.2": "^3.15.2"
-
-  # https://github.com/advisories/GHSA-qhr7-859c-m2p7 CVE-2026-102278
-  "brace-expansion@<1.1.18": "^1.1.20"
-  "brace-expansion@>=3.0.0 <5.0.8": "^5.0.10"
-
-  # https://github.com/advisories/GHSA-xvcm-6775-5m9r, CVE-2026-59880
-  "immutable@>=5.0.0 <5.1.8": "^5.1.8"
-
-  # https://github.com/advisories/GHSA-fxqj-rqcc-2cmp, CVE-2026-69153
-  "postcss@<=8.5.22": "^8.5.23"
-
-  # https://github.com/advisories/GHSA-2v37-7h3g-55p8, CVE-2026-67213
-  "nanoid@<3.3.17": "^3.3.17"
-
-  # https://github.com/advisories/GHSA-55q2-fjhq-7xh7
-  # https://github.com/advisories/GHSA-c2j3-45gr-mqc4
-  # https://github.com/advisories/GHSA-cg2g-xh64-v4q7
   # https://github.com/advisories/GHSA-mrv2-3pqr-j5jr
   "dompurify@<=3.4.16": "^3.4.17"
-
-  # https://github.com/advisories/GHSA-68fv-2mgg-jv7q, CVE-2026-93749
-  "source-map-js@>=1.0.0 <1.2.2": "^1.2.2"
-
-  # https://github.com/advisories/GHSA-253c-mchw-3w2r
-  # https://github.com/advisories/GHSA-gfr2-rv44-r23c
-  "markdown-it@<14.3.3": "^14.3.3"
 
   # https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
   "zod@>=4.0.0 <4.6.6": "^4.6.6"
@@ -163,18 +124,7 @@ audit:
   level: "moderate"
 
 auditConfig:
-  ignoreGhsas:
-    # https://github.com/advisories/GHSA-h67p-54hq-rp68, CVE-2026-53550
-    - GHSA-h67p-54hq-rp68
-
-    # https://github.com/advisories/GHSA-mh99-v99m-4gvg, CVE-2026-14257
-    - GHSA-mh99-v99m-4gvg
-
-    # https://github.com/advisories/GHSA-vfj7-8cjw-p6xm CVE-2026-93687
-    - GHSA-vfj7-8cjw-p6xm
-
-    # https://github.com/advisories/GHSA-hp3w-g68c-fv3c, CVE-2026-97058
-    - GHSA-hp3w-g68c-fv3c
+  ignoreGhsas: []
 
 allowBuilds:
   "@parcel/watcher": true
@@ -185,11 +135,7 @@ allowBuilds:
   unrs-resolver: false
 
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - "undici-types@6.21.0"
-  - "semver@6.3.1"
-  - "chokidar@4.0.3"
-  - "rollup@2.80.0"
+trustPolicyExclude: []
 
 # Install older versions by default
 resolutionMode: "lowest-direct"
