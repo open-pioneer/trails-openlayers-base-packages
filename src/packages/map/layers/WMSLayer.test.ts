@@ -133,7 +133,7 @@ it("uses http service to fetch images", async () => {
 
     const source = layer.olSource!;
     const projection = getProjection("EPSG:3857")!;
-    const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
+    const image = source.getImage([1, 2, 3, 4], 123, 42, projection)!;
     image.load();
 
     vi.advanceTimersByTime(1000);
@@ -191,7 +191,10 @@ describe("service capabilities and custom metadata", () => {
         const source = layer.olSource!;
         const projection = getProjection("EPSG:3857")!;
         const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
-        image.load();
+
+        expect(image).toBeDefined();
+
+        image!.load();
 
         vi.advanceTimersByTime(1000);
         expect(urls).toHaveLength(1); // if capabilities were fetched, the length of urls would be 2
