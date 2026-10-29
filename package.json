@@ -46,7 +46,6 @@
         "@vitest/browser-playwright": "catalog:",
         "@vitest/browser-preview": "catalog:",
         "fast-glob": "catalog:",
-        "handlebars": "catalog:",
         "happy-dom": "catalog:",
         "husky": "catalog:",
         "js-yaml": "catalog:",
@@ -71,5 +70,5 @@
         "node": ">= 24",
         "pnpm": ">= 10"
     },
-    "packageManager": "pnpm@12.8.1"
+    "packageManager": "pnpm@12.15.0"
 }

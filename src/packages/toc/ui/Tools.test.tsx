@@ -7,7 +7,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
-import { Toc } from "./Toc";
+import { LayerTocAttributes, Toc } from "./Toc";
 
 it("Should successfully create a toc with default tool component", async () => {
     const { map } = await setupMap({
@@ -94,6 +94,75 @@ it("Should successfully hide all layers in toc", async () => {
 
     expect(operationalLayers[0]?.visible).toBe(false);
     expect(operationalLayers[1]?.visible).toBe(false);
+});
+
+it("Should only hide layers that are shown in the toc", async () => {
+    const { map } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: createTestOlLayer()
+            },
+            {
+                title: "Internal layer",
+                id: "internal-layer",
+                internal: true,
+                olLayer: createTestOlLayer()
+            },
+            {
+                title: "Hidden layer",
+                id: "hidden-layer",
+                attributes: { toc: { listMode: "hide" } satisfies LayerTocAttributes },
+                olLayer: createTestOlLayer()
+            },
+            createTestLayer({
+                type: GroupLayer,
+                id: "group",
+                title: "Group",
+                attributes: { toc: { listMode: "hide-children" } satisfies LayerTocAttributes },
+                layers: [
+                    createTestLayer({
+                        id: "group-member",
+                        title: "Group member",
+                        olLayer: createTestOlLayer()
+                    })
+                ]
+            })
+        ]
+    });
+    const visibilities = () =>
+        Object.fromEntries(
+            ["layer-1", "internal-layer", "hidden-layer", "group", "group-member"].map((id) => [
+                id,
+                map.layers.getLayerById(id)!.visible
+            ])
+        );
+
+    // All layers are visible at first.
+    expect(Object.values(visibilities()).every((v) => v)).toBe(true);
+
+    render(
+        <PackageContextProvider>
+            <Toc map={map} data-testid="toc" showTools={true} />
+        </PackageContextProvider>
+    );
+
+    const { tools } = await findTools();
+    const menu = await findMenu(tools);
+    const hideAllMenuItem = await waitFor(() => screen.findByLabelText("tools.hideAllLayers"));
+    expect(menu.contains(hideAllMenuItem)).toBe(true);
+    await userEvent.click(hideAllMenuItem);
+
+    // Layers that are not shown in the toc (internal, listMode "hide", children of "hide-children")
+    // are not modified by the tool.
+    expect(visibilities()).toEqual({
+        "layer-1": false,
+        "internal-layer": true,
+        "hidden-layer": true,
+        "group": false,
+        "group-member": true
+    });
 });
 
 it("Should collapse all layer items in toc", async () => {
