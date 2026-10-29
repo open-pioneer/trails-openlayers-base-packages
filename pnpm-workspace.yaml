@@ -7,22 +7,22 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/core": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/http": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/integration": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/local-storage": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/notifier": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/react-utils": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/reactivity": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/runtime": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/test-utils": 4.9.0-dev.20261002130116 # ^4.9.0
-  "@open-pioneer/chakra-snippets": 4.9.0-dev.20261002130116 # ^4.9.0
+  "@open-pioneer/base-theme": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/core": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/http": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/integration": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/local-storage": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/notifier": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/react-utils": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/reactivity": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/runtime": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/test-utils": 4.9.0-dev.20261029090037 # ^4.9.0
+  "@open-pioneer/chakra-snippets": 4.9.0-dev.20261029090037 # ^4.9.0
 
   # Frontend dependencies
   "@chakra-ui/react": ^3.37.0
-  "@conterra/reactivity-core": ^0.8.8
-  "@conterra/reactivity-events": ^0.8.8
+  "@conterra/reactivity-core": ^0.8.9
+  "@conterra/reactivity-events": ^0.8.9
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
   "@emotion/styled": ^11.14.1
@@ -42,12 +42,12 @@ catalog:
 
   # Devtools
   "@changesets/cli": ^2.31.1
-  "@open-pioneer/build-package-cli": 4.0.2-dev.20261026104943 # ^4.0.2
-  "@open-pioneer/build-support": ^4.0.1
-  "@open-pioneer/changesets-release-line": ^0.2.1
-  "@open-pioneer/check-pnpm-duplicates": 0.5.0-dev.20261026104943 # ^0.5.0
-  "@open-pioneer/create-license-report": 0.1.0-dev.20261026104943 # ^0.1.0
-  "@open-pioneer/vite-plugin-pioneer": 7.1.0-dev.20261026104943 # ^7.1.0
+  "@open-pioneer/build-package-cli": 4.0.2-dev.20261029075349 # ^4.0.2
+  "@open-pioneer/build-support": 4.0.2-dev.20261029075349 # ^4.0.2
+  "@open-pioneer/changesets-release-line": 0.2.2-dev.20261029075349 # ^0.2.2
+  "@open-pioneer/check-pnpm-duplicates": 0.5.0-dev.20261029075349 # ^0.5.0
+  "@open-pioneer/create-license-report": 0.1.0-dev.20261029075349 # ^0.1.0
+  "@open-pioneer/vite-plugin-pioneer": 7.1.0-dev.20261029075349 # ^7.1.0
   "@testing-library/dom": ^10.4.2
   "@testing-library/jest-dom": ^7.0.1
   "@testing-library/react": ^16.3.3
@@ -126,13 +126,23 @@ audit:
 auditConfig:
   ignoreGhsas: []
 
-allowBuilds:
-  "@parcel/watcher": true
-  "@swc/core": true
-  esbuild: true
+permissions:
+  "@parcel/watcher":
+    build: true
+  "@swc/core":
+    build: true
+  esbuild:
+    build: true
+  "@conterra/reactivity-core":
+    skills: true
+  "@open-pioneer/reactivity":
+    skills: true
+
   # Seems to work without build scripts; may revisit later if actually needed.
-  core-js: false
-  unrs-resolver: false
+  core-js:
+    build: false
+  unrs-resolver:
+    build: false
 
 trustPolicy: no-downgrade
 trustPolicyExclude: []
