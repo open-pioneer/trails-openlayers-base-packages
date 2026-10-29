@@ -89,7 +89,7 @@ export class OgcFeatureSearchSource implements SearchSource {
         return {
             id: feature.id ?? uuid4v(),
             label: label,
-            geometry: geojson.readGeometry(feature.geometry),
+            geometry: geojson.readGeometry(feature.geometry) ?? undefined,
             properties: feature.properties
         };
     }
