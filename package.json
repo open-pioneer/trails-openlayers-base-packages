@@ -51,6 +51,7 @@
         "lint-staged": "catalog:",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
+        "playwright": "catalog:",
         "react": "catalog:",
         "resize-observer-polyfill": "catalog:",
         "rimraf": "catalog:",
