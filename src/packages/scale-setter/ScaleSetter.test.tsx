@@ -106,7 +106,7 @@ it("should successfully update the map scale and label when selection changes", 
 
     const { setterButton } = await waitForScaleSetter();
     const setterOptions = await getMenuOptions(user, setterButton);
-    if (setterOptions[0] == undefined) {
+    if (setterOptions[0] == null) {
         throw new Error("Expected an option to be available");
     }
     await user.click(setterOptions[0]!);
@@ -139,7 +139,7 @@ it("should successfully update the label when map scale changes after creation",
     render(<ScaleSetter map={map} data-testid="scale-setter" />, { wrapper: Wrapper });
 
     const { setterButton } = await waitForScaleSetter();
-    if (olMap.getView() == undefined || olMap.getView().getZoom() == undefined) {
+    if (olMap.getView() === undefined || olMap.getView().getZoom() === undefined) {
         throw new Error("Map view not rendered");
     }
 

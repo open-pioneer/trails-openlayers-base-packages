@@ -92,7 +92,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 value: layer.id,
                 layer: layer,
                 label: layer.title,
-                disabled: layer.loadState == "error"
+                disabled: layer.loadState === "error"
             };
         });
 

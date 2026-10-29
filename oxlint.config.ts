@@ -26,6 +26,7 @@ export default defineConfig({
         reportUnusedDisableDirectives: "error"
     },
     rules: {
+        "eqeqeq": ["error", "smart"],
         "no-console": "error",
         "no-array-constructor": "error",
         "no-case-declarations": "error",
