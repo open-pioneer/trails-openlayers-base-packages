@@ -142,6 +142,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
                     `Failed to retrieve collection metadata for collection '${this.#collectionUrl}'`,
                     e
                 );
+                this.setState("error");
                 throwAbortError(); // Report error up the stack but only log error once
             }
 
