@@ -1,5 +1,11 @@
 # @open-pioneer/ogc-features
 
+## 1.6.1
+
+### Patch Changes
+
+- eaa94de: The vector source created by `OgcFeaturesVectorSourceFactory` now enters the `error` state when the collection metadata cannot be loaded.
+
 ## 1.6.0
 
 ### Minor Changes
