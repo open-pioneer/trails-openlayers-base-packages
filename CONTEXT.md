@@ -64,11 +64,6 @@ padding and hosts the map anchors.
 There is at most one per map.
 _Avoid_: map view (which is the OpenLayers `View`), map component, map component
 
-**View padding**:
-The space at the edges of the map that other UI covers (`MapPadding`), applied through the map container so that
-zooming and centering respect the visible part of the map.
-_Avoid_: map margin, inset
-
 **Default map**:
 The map model a `<DefaultMapProvider>` supplies to its children, so components need no `map` prop.
 `useMapModelValue(props)` prefers the prop and falls back to the default map.
@@ -98,12 +93,12 @@ A child of a layer that has no `olLayer` of its own (`Sublayer`, today only `WMS
 It shares the base properties of a layer, such as title, visibility and attributes.
 _Avoid_: child layer (when the child is a sublayer), WMS layer name
 
-**Any layer**:
+**AnyLayer**:
 A layer or a sublayer (`AnyLayer`).
 Code that walks the whole tree uses this type; `isLayer()` and `isSublayer()` tell them apart.
 
 **Group layer**:
-A layer whose children are themselves layers (`GroupLayer`), each with its own `olLayer`.
+A layer whose children are themselves layers (`GroupLayer`).
 _Avoid_: layer group, folder
 
 **Base layer**:
@@ -140,13 +135,29 @@ _Avoid_: hidden layer (which is an invisible layer), system layer, technical lay
 
 **Load state**:
 The combined availability of a layer (`LayerLoadState`: `not-loaded`, `loading`, `loaded`, `error`), computed from
-the OpenLayers source state, the health check and the metadata request.
+the OpenLayers source state, the health check and the result of the metadata request (if applicable).
 _Avoid_: layer status, health (as a noun for the combined state)
+
+**Visible**:
+The layer's own visibility switch (`layer.visible`, `setVisible()`).
+It does not say anything about its parents or potential view restrictions (like zoom level).
+_Avoid_: enabled, checked, shown, active (which is the base layer that is currently selected)
 
 **Visible in scale**:
 Whether the current view resolution lies within a layer's resolution and zoom limits (`layer.visibleInScale`).
 The TOC greys out layers that are not.
 _Avoid_: in range, scale-dependent visibility (as a noun)
+
+**Visible in hierarchy**:
+Whether a layer and all its parents are visible (`layer.visibleInHierarchy`).
+A layer inside an invisible group layer is "visible" but not visible in its hierarchy.
+_Avoid_: inherited visibility, parent visibility
+
+**Effectively visible**:
+Whether nothing prevents a layer from being rendered on the map (`layer.effectivelyVisible`): it is visible in its
+hierarchy, and no condition of its layer type blocks it, such as not being visible in scale.
+Components that need to know whether a layer is currently displayed, such as `feature-editing`, test this property.
+_Avoid_: actually visible, rendered, shown on the map, displayed
 
 ### Map content
 
@@ -155,19 +166,9 @@ Geometries drawn on the map to point them out (`MapModel.highlights.add()`, `hig
 `Highlight` resource that is removed with `destroy()`.
 _Avoid_: selection (which is the result of a selection source), marker, focus
 
-**Display target**:
-What `zoom()` and `highlight()` accept: a `BaseFeature` or an OpenLayers `Geometry` (`DisplayTarget`).
-
-**Base feature**:
-The common shape of a feature that passes between packages (`BaseFeature`): id, optional geometry with projection,
-properties and style.
-Search results, selection results and result list rows are base features.
-_Avoid_: item, record, entity, OL feature (which is `ol/Feature`)
-
 **Overlay**:
 A positioned React element over the map (`MapModel.overlays.add()`, `Overlay`), rendered by the map container and
 backed by an OpenLayers `Overlay`.
-Its position is a coordinate or `follow-pointer`.
 _Avoid_: popup, tooltip (which is the Chakra-styled content, see below), marker
 
 **Attribution item**:
@@ -187,11 +188,6 @@ _Avoid_: widget, control (which is an OpenLayers `Control`), plugin, tool (excep
 A `<MapAnchor>` inside the map container that places its children at a predefined or manual position over the map.
 _Avoid_: map control position, corner, slot
 
-**Tool button**:
-The `ToolButton` from `map-ui-components`, an icon button with a translated label and tooltip, used for all buttons
-placed on the map.
-_Avoid_: icon button (for our buttons), action button
-
 **View model**:
 The class that holds the state and the operations of a component outside React (`SearchViewModel`,
 `SelectionViewModel`, `SpatialBookmarksViewModel`, `TocViewModel`).
@@ -199,15 +195,6 @@ The component creates it per map, updates it from props and destroys it on unmou
 Some older components call theirs a controller (`MeasurementController`, `GeolocationController`,
 `PrintingController`); use view model for new code.
 _Avoid_: store, state manager, service (which is a Trails service), hook (which is the React function that creates it)
-**Source**:
-An app-provided object a component queries: a `SearchSource` for `search`, a `SelectionSource` for `selection`.
-Each has a label, an optional id and one async method that takes an `AbortSignal` and the map.
-_Avoid_: provider, backend, adapter, datasource (as one word)
-
-**List mode**:
-Whether the TOC or the legend shows a layer, hides it, or shows it without its children (`ListMode`: `show`,
-`hide`, `hide-children`), read from the layer attributes.
-_Avoid_: display mode, visibility (which is the layer's own visibility)
 
 ### Repository
 

@@ -87,7 +87,7 @@ with `CI=1`, which rejects `.only`.
 
 ## Changesets
 
-Every change to a published package that a consumer can notice gets a changeset under `.changeset/`.
+Every change to a published package that a consumer can notice gets a brief changeset under `.changeset/`.
 The summary lands in the package's `CHANGELOG.md`, so write it for the consumer: name the component, prop, interface
 or option as the consumer sees it, and say what to do when an old name is deprecated.
 Start a breaking change with `**Breaking:**`.
@@ -115,9 +115,9 @@ The rules below are the ones they cannot check, or that you need before writing.
 - **Import other packages by name**, never through a relative path that leaves the package.
   Internal helpers that another package in this repository needs go into an entry point marked `@internal`, as
   `map/internalTestSupport.ts` does.
-- **Primary exports at the top of a file**, helpers and supporting types below in the order a reader meets them.
+- **Primary exports at the top of a file**, helpers and supporting types below in order of descending importance.
 - **A component follows `docs/guidelines/UI.md`.**
-  Props extend `CommonComponentProps` and `MapModelProps`; the root element gets the package or component name as CSS
+  Props usually extend `CommonComponentProps` and `MapModelProps`; the root element gets the package or component name as CSS
   class through `useCommonComponentProps()`; own CSS classes are prefixed with the package name (`measurement-tooltip`);
   Chakra components over plain HTML; no fixed colors, fonts or sizes; `ToolButton` for buttons on the map; icons from
   `react-icons/lu` (Lucide), then Tabler.
@@ -151,6 +151,7 @@ The rules below are the ones they cannot check, or that you need before writing.
   React code calls `useIntl()` from `open-pioneer:react-hooks`, and every key exists in both `i18n/en.yaml` and
   `i18n/de.yaml` of the package.
   Tooltips start with a capital letter in both languages.
+  Test apps or samples aimed at developers are excluded from this rule.
 - **A new sample needs a link in `src/index.html`**; a new component needs a demo in `src/samples/showcase/`.
 
 ### Comments
@@ -158,7 +159,7 @@ The rules below are the ones they cannot check, or that you need before writing.
 Default to no comment; add one for the why a reader cannot see from the code.
 Describe the system as it is now: no history, no former names, no commented-out code, no section banners.
 When you change code, update or delete any comment it makes stale.
-The exception is the published API, whose doc comments TypeDoc and editor hovers show without the code.
+The exception is the published API: readers may need more context since they cannot see the code.
 
 ## Writing
 
