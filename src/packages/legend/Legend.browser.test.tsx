@@ -4,16 +4,12 @@
 import { createTestOlLayer, setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { ReactNode } from "react";
-import { disableReactActWarnings } from "test-utils";
-import { beforeEach, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import { Legend } from "./Legend";
 
-beforeEach(() => {
-    disableReactActWarnings();
-});
-
+// TODO: musst be refactored when migrating other Legend test to browser tests
 it("should successfully create a legend component", async () => {
     const { map, Wrapper } = await setup({
         layers: [
