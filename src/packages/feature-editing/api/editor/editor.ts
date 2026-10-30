@@ -19,7 +19,7 @@ import {
  * React component that provides a complete editing interface for creating and modifying map
  * features.
  *
- * The Editor component manages the entire editing workflow, including feature creation, selection,
+ * The FeatureEditor component manages the entire editing workflow, including feature creation, selection,
  * modification, and deletion. It renders different UI states based on the current editing step:
  * - An action selector for choosing feature templates and initiating drawing, or selecting
  * existing features.
@@ -27,20 +27,20 @@ import {
  *
  * @example
  * ```tsx
- * <Editor
+ * <FeatureEditor
  *     map={mapModel}
  *     templates={featureTemplates}
- *     storage={{
- *         addFeature: async (feature) => { ... },
- *         updateFeature: async (feature) => { ... },
- *         deleteFeature: async (feature) => { ... }
+ *     writer={{
+ *         addFeature: async ({ feature, template, projection }) => { ... },
+ *         updateFeature: async ({ feature, layer, projection }) => { ... },
+ *         deleteFeature: async ({ feature, layer, projection }) => { ... }
  *     }}
  *     selectableLayers={[myLayer]}
  * />
  * ```
  *
  * @group Editor
- * @expandType EditorProps
+ * @expandType FeatureEditorProps
  */
 export const FeatureEditor: FC<FeatureEditorProps> = FeatureEditorImpl;
 

@@ -25,6 +25,7 @@ export class OgcFeaturesVectorSource extends VectorSource {
     #httpService: HttpService;
 
     #options: OgcFeatureVectorSourceOptions;
+    #hasExplicitAttributions: boolean;
     #itemsUrl: string;
     #collectionUrl: string;
 
@@ -59,6 +60,9 @@ export class OgcFeaturesVectorSource extends VectorSource {
         this.#featureFormat = format;
         this.#httpService = httpService;
         this.#options = options;
+        this.#hasExplicitAttributions =
+            options.attributions !== undefined ||
+            options.additionalOptions?.attributions !== undefined;
         this.#collectionUrl = `${options.baseUrl.replace(/\/+$/, "")}/collections/${options.collectionId}`;
         this.#itemsUrl = `${this.#collectionUrl}/items`;
     }
@@ -84,7 +88,6 @@ export class OgcFeaturesVectorSource extends VectorSource {
         // An extent-change should cancel open requests for older extents, because otherwise,
         // old and expensive requests could block new requests for a new extent
         // => no features are drawn on the current map for a long time.
-        //TODO: More context
         this.#featuresAbortController?.abort(createAbortError());
         const abortController = (this.#featuresAbortController = new AbortController());
         const requestCrs = this.#getRequestCrs(collectionMetadata, projection);
@@ -114,9 +117,18 @@ export class OgcFeaturesVectorSource extends VectorSource {
                 break;
         }
 
-        const features = await strategyImpl.load();
-        LOG.debug("Finished loading features for extent:", extent);
-        return features;
+        try {
+            const features = await strategyImpl.load();
+            LOG.debug("Finished loading features for extent:", extent);
+            return features;
+        } catch (e) {
+            // OpenLayers marks the extent as loaded when the loader starts.
+            // A load cancelled by a newer load must be retried when the extent becomes visible again.
+            if (abortController.signal.aborted) {
+                this.removeLoadedExtent(extent);
+            }
+            throw e;
+        }
     }
 
     // Fetches collection metadata from the service (once).
@@ -134,7 +146,11 @@ export class OgcFeaturesVectorSource extends VectorSource {
             }
 
             try {
-                if (this.getAttributions() == null && metadata.attribution) {
+                if (
+                    !this.#hasExplicitAttributions &&
+                    this.getAttributions() == null &&
+                    metadata.attribution
+                ) {
                     this.setAttributions(metadata.attribution);
                 }
             } catch (e) {

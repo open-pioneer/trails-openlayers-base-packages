@@ -30,6 +30,7 @@ const MOCK_NAMESPACE = {
 } satisfies Partial<LocalStorageNamespace>;
 
 const MOCK_STORAGE_SERVICE: Partial<LocalStorageService> = {
+    isSupported: true,
     getNamespace(key): LocalStorageNamespace {
         if (key !== "spatial-bookmarks") {
             throw new Error("unexpected key");
@@ -130,6 +131,28 @@ it("should center the map on the selected bookmark", async () => {
     expect(newExtent).toStrictEqual(bookmarkExtent);
 });
 
+it("keeps the bookmarks in memory if local storage is not supported", async () => {
+    const user = userEvent.setup();
+    const unsupportedStorage: Partial<LocalStorageService> = {
+        isSupported: false,
+        getNamespace() {
+            throw new Error("This browser does not support local storage.");
+        }
+    };
+
+    const { div } = await createBookmarkComponent({
+        mockMapRender: true,
+        storageService: unsupportedStorage
+    });
+    await user.click(await findByText(div, "bookmark.button.create"));
+    await user.type(await findByPlaceholderText(div, "bookmark.input.placeholder"), "Dortmund");
+    await user.click(await findByText(div, "bookmark.button.save"));
+
+    const bookmarkList = await findByRole(div, "listbox");
+    expect(bookmarkList.textContent).toContain("Dortmund");
+    expect(MOCK_NAMESPACE_CONTENT.size).toBe(0);
+});
+
 it("should move the focus up and down inside the bookmarks list", async () => {
     const user = userEvent.setup();
     createBookmarks(2);
@@ -166,9 +189,13 @@ interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
 
-async function createBookmarkComponent(opts?: { mockMapRender?: boolean }) {
+async function createBookmarkComponent(opts?: {
+    mockMapRender?: boolean;
+    storageService?: Partial<LocalStorageService>;
+}) {
     const { mapModel, injectedServices } = await setupComponent({
-        mockMapRender: opts?.mockMapRender
+        mockMapRender: opts?.mockMapRender,
+        storageService: opts?.storageService
     });
 
     renderComponent({ services: injectedServices }, { map: mapModel, "data-testid": "bookmarks" });
@@ -176,13 +203,16 @@ async function createBookmarkComponent(opts?: { mockMapRender?: boolean }) {
     return { mapModel, div };
 }
 
-async function setupComponent(opts: { mockMapRender?: boolean }) {
+async function setupComponent(opts: {
+    mockMapRender?: boolean;
+    storageService?: Partial<LocalStorageService>;
+}) {
     const { map } = await setupMap({
         projection: "EPSG:25832",
         mockMapRender: opts?.mockMapRender
     });
     const injectedServices = {
-        "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
+        "local-storage.LocalStorageService": opts.storageService ?? MOCK_STORAGE_SERVICE
     };
     return {
         mapModel: map,

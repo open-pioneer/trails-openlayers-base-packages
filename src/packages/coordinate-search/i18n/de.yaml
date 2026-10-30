@@ -4,7 +4,6 @@ messages:
     copyLabel: Koordinaten kopieren
     clearLabel: Eingabe leeren
   tooltip:
-    basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."
     spaceOne: "Ungültige Eingabe: Bitte verwenden Sie nur genau ein Leerzeichen zum Trennen der Koordinaten."
     2coords: "Ungültige Eingabe: Es müssen zwei Zahlen eingegeben werden."

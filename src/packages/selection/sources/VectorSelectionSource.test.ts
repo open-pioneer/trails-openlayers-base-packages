@@ -45,6 +45,14 @@ describe("select", () => {
         expect(result?.properties?.name).toBe("Kindertagesstätte");
     });
 
+    it("does not include the geometry in the properties", async () => {
+        const feature = createFeature("kita", POINT_INSIDE, { name: "Kindertagesstätte" });
+        const { source } = createSource({ features: [feature] });
+
+        const [result] = await select(source, EXTENT);
+        expect(result?.properties).toEqual({ name: "Kindertagesstätte" });
+    });
+
     it("generates ids for features without an id", async () => {
         const { source } = createSource({
             features: [

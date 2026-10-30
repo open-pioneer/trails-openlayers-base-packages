@@ -103,7 +103,7 @@ it('should successfully create a map anchor component with prop `position="botto
 });
 
 // TODO(browser-test) check actual position
-it('should successfully create a map anchor component with prop `position="v-center-h-center"`', async () => {
+it('should successfully create a map anchor component with prop `position="center"`', async () => {
     const { map } = await setupMap();
 
     const { container } = render(

@@ -263,6 +263,7 @@ export class WMSLayer extends AbstractLayer {
             .catch((error: unknown) => {
                 if (isAbortError(error)) {
                     LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
+                    return;
                 }
                 LOG.error(`Failed to initialize WMS layer '${this.id}'`, error);
                 const wrappedError =
@@ -387,10 +388,10 @@ export class WMSLayer extends AbstractLayer {
 /**
  * Collects all layer `Name` values from a parsed WMS capabilities document.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 function collectLayerNames(capabilities: Record<string, any> | undefined): Set<string> {
     const names = new Set<string>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line @typescript-eslint/no-explicit-any
     const visit = (layer: Record<string, any> | undefined) => {
         if (!layer) {
             return;

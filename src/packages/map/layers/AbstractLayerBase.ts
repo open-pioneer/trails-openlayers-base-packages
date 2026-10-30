@@ -141,10 +141,10 @@ export abstract class AbstractLayerBase {
     }
 
     /**
-     * Property that specifies if the layer is an "internal" layer. Internal layers are not considered by any UI widget (e.g. Toc or Legend).
-     * The internal state is independent of the layer's visibility which is determined by {@link visible}
+     * Property that specifies if the layer is an "internal" layer. Internal layers are not considered by any UI component (e.g. Toc or Legend).
+     * The internal state is independent of the layer's visibility which is determined by {@link visible}.
      *
-     * NOTE: Some UI widgets might use component specific attributes or props that have precedence over the internal property.
+     * NOTE: Some UI components might use component specific attributes or props that have precedence over the internal property.
      */
     get internal(): boolean {
         return this.#internal.value;
@@ -153,7 +153,7 @@ export abstract class AbstractLayerBase {
     /**
      * Additional attributes associated with this layer.
      *
-     * NOTE: Do not modify vis this getter.
+     * NOTE: Do not modify via this getter.
      * Use {@link updateAttributes} or {@link deleteAttribute} instead.
      */
     get attributes(): Record<string | symbol, unknown> {
@@ -280,8 +280,8 @@ export abstract class AbstractLayerBase {
     }
 
     /**
-     * Attach group layers to its parent group layer.
-     * Called by the parent layer.
+     * Attaches this layer to its parent group layer.
+     * Called by the parent group layer.
      *
      * @internal
      */

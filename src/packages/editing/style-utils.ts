@@ -17,10 +17,10 @@ interface EditingStyleProps {
  * Function to retrieve an OpenLayers style for an editing workflow
  * from editing polygon and vertex style.
  *
- * The polygon OpenLayers FlatStyle is convert to an OpenLayers style.
+ * The polygon OpenLayers FlatStyle is converted to an OpenLayers style.
  *
- * The vertex OpenLayers FlatStyle is convert to an OpenLayers style
- * by setting an geometry to the style to render a vertex geometry instead of the feature's geometry.
+ * The vertex OpenLayers FlatStyle is converted to an OpenLayers style
+ * by setting a geometry on the style to render a vertex geometry instead of the feature's geometry.
  */
 export function createStyles(editingStyle: EditingStyleProps) {
     let polygonStyle = convertFlatStyleToStyle(editingStyle.polygon);

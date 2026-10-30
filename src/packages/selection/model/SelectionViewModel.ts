@@ -278,7 +278,7 @@ export class SelectionViewModel {
             const extent = geometry.getExtent();
             const results = await this.#selectFromSource(source, extent, abortController.signal);
             if (abortController.signal.aborted) {
-                // Superseded by another selection, or the widget is gone.
+                // Superseded by another selection, or the component is gone.
                 throwAbortError();
             }
 

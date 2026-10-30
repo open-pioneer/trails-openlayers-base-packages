@@ -29,7 +29,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * Sets the map's padding directly.
      * Do not use the view's padding property directly on the OL map.
      *
-     * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)
+     * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
      */
     viewPadding?: MapPadding | undefined;
 
@@ -65,7 +65,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
 
     /**
      * Optional aria-label property.
-     * Do not use together with aria-label.
+     * Do not use together with aria-labelledby.
      *
      * This property is directly applied to the map's container div element.
      */
@@ -183,7 +183,7 @@ function MapContainerReady(
         map: MapModel;
         mapAnchorsHost: HTMLElement;
         viewPadding: Required<MapPadding>;
-    } & Omit<MapContainerProps, "mapId" | "map" | "className">
+    } & Omit<MapContainerProps, "map" | "className">
 ): ReactNode {
     const {
         map,

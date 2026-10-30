@@ -263,10 +263,11 @@ it("Should not display collapse all button", async () => {
         </PackageContextProvider>
     );
 
-    await findTools();
-
-    const collapseAllButton = await screen.queryByLabelText("tools.collapseAllGroups");
-    expect(collapseAllButton).toBeNull();
+    const { tools } = await findTools();
+    const menu = await findMenu(tools);
+    expect(screen.queryByLabelText("tools.hideAllLayers")).not.toBeNull();
+    expect(menu.textContent).not.toContain("tools.collapseAllGroups");
+    expect(screen.queryByLabelText("tools.collapseAllGroups")).toBeNull();
 });
 
 async function findTools() {

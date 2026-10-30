@@ -175,7 +175,7 @@ export interface SetupMapResult {
  * The map is configured by using the `options` parameter.
  * If `options.returnMap` is `true` (the default), the map model is also returned.
  *
- * Returns the map registry and the id of the configured map.
+ * Returns the map registry, the layer factory and the id of the configured map.
  */
 export async function setupMap(
     options?: SimpleMapOptions & { returnMap?: true; mockMapRender?: boolean }
@@ -262,7 +262,7 @@ function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfi
     };
 }
 
-/** Creates an new layer of the specified type for testing. */
+/** Creates a new layer of the specified type for testing. */
 export function createTestLayer<LayerType extends Layer, Config extends MapPackageLayerConfig>(
     config: LayerCreateOptions<LayerType, Config>,
     mapOptions?: Pick<SimpleMapOptions, "fetch">
@@ -321,7 +321,7 @@ export function createTestOlLayer(): TileLayer {
  *
  * This helper method can be used to avoid hard-coding service names used in the implementation.
  *
- * @deprecated This function is no longer needed, since most widgets no longer depend on the registry
+ * @deprecated This function is no longer needed, since most components no longer depend on the registry
  * and accept the `map` directly.
  */
 export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
@@ -354,10 +354,10 @@ function mockLayers() {
 }
 
 function useOrCreateLayer(config: LayerConfig): Layer {
+    // "map" discriminates a layer instance from a config (there is no common prototype for Layer)
     return "map" in config
         ? config
         : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) });
-    // using map as discriminator (no prototype for Layer)
 }
 
 // Do not mock layer rendering when running in vitest's browser mode.

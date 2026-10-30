@@ -56,17 +56,18 @@ export function ActionSelector({
         resolveSelectionAvailability
     );
 
+    const [selectButtonIsActive, setSelectButtonActive] = useState(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
+
     // Reset editing step "initial" when the selection becomes unavailable.
     // TODO(refactor): this should be initiated by the model; not the UI.
     const onActionChangeEffect = useEffectEvent(onActionChange);
     useEffect(() => {
         if (editingStep.id === "selection" && selectionAvailability.status === "unavailable") {
+            setSelectButtonActive(false);
             onActionChangeEffect(undefined);
         }
     }, [editingStep.id, selectionAvailability.status]);
-
-    const [selectButtonIsActive, setSelectButtonActive] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
 
     const onButtonClick = useEvent(() => {
         setSelectButtonActive((active) => !active);

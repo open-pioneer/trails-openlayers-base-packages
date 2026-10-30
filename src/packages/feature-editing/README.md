@@ -156,7 +156,7 @@ In summary, the sequence of steps when creating or editing a feature is as follo
 
 #### Example
 
-The following self-contained example demonstrates of all the relevant bits and pieces.
+The following self-contained example demonstrates all the relevant bits and pieces.
 
 ```tsx
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
@@ -535,20 +535,26 @@ const template: FeatureTemplate = {
 
 ### Custom Forms with Property Form Context
 
-For complete control over form layout and behavior, use a dynamic form template with the `usePropertyFormContext` hook:
+For complete control over form layout and behavior, use a dynamic form template with the `useCustomFormContext` hook:
 
 ```tsx
 import { Field, Input, VStack } from "@chakra-ui/react";
-import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
+import { useCustomFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useEffect } from "react";
 
 function CustomSurveyForm() {
-    const context = usePropertyFormContext();
+    const context = useCustomFormContext();
 
     // Read properties reactively - component re-renders when values change
-    const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context]);
-    const email = useReactiveSnapshot(() => context.properties.get("email") ?? "", [context]);
+    const name = useReactiveSnapshot(
+        () => (context.properties.get("name") as string | undefined) ?? "",
+        [context]
+    );
+    const email = useReactiveSnapshot(
+        () => (context.properties.get("email") as string | undefined) ?? "",
+        [context]
+    );
 
     // Manage form validity
     useEffect(() => {
@@ -589,40 +595,43 @@ const template: FeatureTemplate = {
 };
 ```
 
-The `PropertyFormContext` provides:
+The `CustomFormContext` provides:
 
-| Property           | Type                            | Description                          |
-| ------------------ | ------------------------------- | ------------------------------------ |
-| `feature`          | `Feature`                       | The OpenLayers feature being edited  |
-| `properties`       | `ReactiveMap<string, unknown>`  | Reactive map of feature properties   |
-| `propertiesObject` | `() => Record<string, unknown>` | Returns properties as a plain object |
-| `mode`             | `"create" \| "update"`          | Current editing mode                 |
-| `template`         | `FeatureTemplate \| undefined`  | Template used (only in create mode)  |
-| `layer`            | `Layer \| undefined`            | Source layer (only in update mode)   |
-| `isValid`          | `boolean`                       | Controls save button enabled state   |
+| Property                | Type                            | Description                                   |
+| ----------------------- | ------------------------------- | --------------------------------------------- |
+| `feature`               | `Feature`                       | The OpenLayers feature being edited           |
+| `properties`            | `ReactiveMap<string, unknown>`  | Reactive map of feature properties            |
+| `getPropertiesAsObject` | `() => Record<string, unknown>` | Returns properties as a plain object          |
+| `editingStep`           | `CreationStep \| UpdateStep`    | The current editing step                      |
+| `mode`                  | `"create" \| "update"`          | Current editing mode                          |
+| `template`              | `FeatureTemplate \| undefined`  | Template used (only in create mode)           |
+| `layer`                 | `Layer \| undefined`            | Source layer (only in update mode)            |
+| `isValid`               | `boolean`                       | Controls save button enabled state (writable) |
 
 ## Editing Workflow Steps
 
 The editing workflow progresses through these steps:
 
-| Step ID         | Description                           | Active Interaction     |
-| --------------- | ------------------------------------- | ---------------------- |
-| `none`          | No active editing operation           | None                   |
-| `create-draw`   | Drawing a new feature's geometry      | Draw                   |
-| `create-modify` | Modifying a newly drawn feature       | Modify + property form |
-| `update-select` | Selecting an existing feature to edit | Select                 |
-| `update-modify` | Modifying an existing feature         | Modify + property form |
+| Step ID     | Description                           | Active Interaction     |
+| ----------- | ------------------------------------- | ---------------------- |
+| `initial`   | No active editing operation           | None                   |
+| `drawing`   | Drawing a new feature's geometry      | Draw                   |
+| `creation`  | Modifying a newly drawn feature       | Modify + property form |
+| `selection` | Selecting an existing feature to edit | Select                 |
+| `update`    | Modifying an existing feature         | Modify + property form |
+
+The `onEditingStepChange` prop reports every transition with the `EditingStep` object of the new step.
 
 ## Supported keyboard shortcuts (create feature)
 
 The following keyboard shortcuts are supported while drawing the initial feature geometry (not during editing of existing features):
 
-| Shortcut           | Description                      |
-| ------------------ | -------------------------------- |
-| `Ctrl/Command + Z` | Undo last geometry change        |
-| `Ctrl/Command + Y` | Redo last undone geometry change |
-| `Enter`            | Finish drawing or modification   |
-| `Escape`           | Cancel drawing or modification   |
+| Shortcut                                         | Description                      |
+| ------------------------------------------------ | -------------------------------- |
+| `Ctrl/Command + Z`                               | Undo last geometry change        |
+| `Ctrl/Command + Y` or `Ctrl/Command + Shift + Z` | Redo last undone geometry change |
+| `Enter`                                          | Finish drawing                   |
+| `Escape`                                         | Reset drawing                    |
 
 ## License
 

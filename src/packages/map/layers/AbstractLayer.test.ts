@@ -11,7 +11,7 @@ import { LayerCollection } from "../model/LayerCollection";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { ATTACH_TO_MAP, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
+import { ATTACH_TO_MAP, GET_DEPS, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { Layer } from "./unions";
@@ -30,6 +30,17 @@ it("supports access to the olLayer", async () => {
         olLayer: olLayer
     });
     expect(layer.olLayer).toBe(olLayer);
+});
+
+it("throws when dependencies are requested before the layer has been attached", () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A",
+        olLayer: createTestOlLayer()
+    });
+    expect(() => layer[GET_DEPS]()).toThrowErrorMatchingInlineSnapshot(
+        `[Error: Layer 'a' has not been attached to a map yet. Use the LayerFactory to create an instance or add the layer to the map first.]`
+    );
 });
 
 it("supports the visibility attribute", async () => {

@@ -14,8 +14,8 @@ const DEFAULT_BUFFER_FACTOR = 1.2;
  */
 export function calculateBufferedExtent(extent: Extent, factor = DEFAULT_BUFFER_FACTOR): Extent {
     checkExtent(extent);
-    const width = getHeight(extent);
-    const height = getWidth(extent);
+    const width = getWidth(extent);
+    const height = getHeight(extent);
     const bufferWidth = width * factor;
     const bufferHeight = height * factor;
     const bufferedExtent = [

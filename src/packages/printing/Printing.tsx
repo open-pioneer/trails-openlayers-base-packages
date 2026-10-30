@@ -17,7 +17,7 @@ import { FileFormatType, PrintingController } from "./PrintingController";
 const LOG = createLogger(sourceId);
 
 /**
- * This is special property for the Printing.
+ * Properties supported by the {@link Printing} component.
  */
 export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**

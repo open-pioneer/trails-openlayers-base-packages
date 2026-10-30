@@ -48,7 +48,6 @@ export function CancelConfirmationDialog({
                             bg="red.solid"
                             color="red.contrast"
                             _hover={{ bg: "red.solid/90" }}
-                            loadingText={confirmCancelButtonTitle}
                             onClick={onConfirmCancel}
                         >
                             {confirmCancelButtonTitle}

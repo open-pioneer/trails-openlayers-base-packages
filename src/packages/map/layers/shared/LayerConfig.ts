@@ -39,8 +39,8 @@ export interface LayerBaseConfig {
     attributes?: Record<string | symbol, unknown>;
 
     /**
-     * Layers marked as internal are not considered by any UI widget (e.g. Toc or Legend).
-     * By default, layers are not included when retrieving all layers of a collection (see {@link LayerRetrievalOptions.includeInternalLayers}).
+     * Layers marked as internal are not considered by any UI component (e.g. Toc or Legend).
+     * By default, internal layers are not included when retrieving all layers of a collection (see {@link LayerRetrievalOptions.includeInternalLayers}).
      *
      * Defaults to `false`
      */
@@ -48,7 +48,7 @@ export interface LayerBaseConfig {
 }
 
 /**
- * Configuration options supported by all operational layer types.
+ * Configuration options supported by all layer types that are not sublayers.
  *
  * @group Layers
  */
@@ -81,18 +81,18 @@ export interface LayerConfig extends LayerBaseConfig {
     maxResolution?: number;
 
     /**
-     * Optional property to restrict the visibility of a layer to a minimum zoom level (inclusive).
+     * Optional property to restrict the visibility of a layer to a minimum zoom level (exclusive).
      */
     minZoom?: number;
 
     /**
-     * Optional property to restrict the visibility of a layer to a maximum zoom level (exclusive).
+     * Optional property to restrict the visibility of a layer to a maximum zoom level (inclusive).
      */
     maxZoom?: number;
 }
 
 /**
- * Custom function to check the state of a layer and returning a "loaded" or "error".
+ * Custom function that checks the state of a layer and returns `"loaded"` or `"error"`.
  *
  * @group Layer Utilities
  **/

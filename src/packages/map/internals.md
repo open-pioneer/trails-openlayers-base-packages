@@ -1,4 +1,5 @@
-This file contains detailed information about the internals of the map package. It is intended for developers who want to contribute to this package.
+This file contains detailed information about the internals of the map package.
+It is intended for developers who want to contribute to this package.
 
 ## Structure of layer typings and implementations
 
@@ -25,10 +26,10 @@ This file contains detailed information about the internals of the map package. 
 
 ### Layer implementations
 
-- AbstractLayerBase (type: AnyLayerBaseType, AbstractLayerBaseOptions)
+- AbstractLayerBase (type: AnyLayerBaseType, config: AbstractLayerBaseOptions)
     - AbstractLayer (type: LayerBaseType, config: SimpleLayerConfig)
-        - SimpleLayerImpl (type: SimpleLayer, config: SimpleLayerConfig)
-        - WMSLayerImpl (type: WMSLayer, config: WMSLayerConfig)
-        - WMTSLayerImpl (type: WMTSLayer, config: WMTSLayerConfig)
+        - SimpleLayer (type: SimpleLayer, config: SimpleLayerConfig)
+        - WMSLayer (type: WMSLayer, config: WMSLayerConfig)
+        - WMTSLayer (type: WMTSLayer, config: WMTSLayerConfig)
         - GroupLayer (type: GroupLayer, config: GroupLayerConfig)
     - WMSSublayer (type: WMSSublayer, config: WMSSublayerConfig)

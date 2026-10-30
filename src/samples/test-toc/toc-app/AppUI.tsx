@@ -145,10 +145,10 @@ export function AppUI() {
                                             {'"'} Straßennetz mit hide-children {'"'} should not
                                             show its children in the Toc, but show that a sublayer
                                             has an error. {'"'} Verkehr {'"'} should indicate that
-                                            some sublayer are broken.
+                                            some sublayers are broken.
                                         </Text>
                                         <Text>
-                                            The &quot;Toggle steets group&quot; button allows
+                                            The &quot;Toggle streets group&quot; button allows
                                             testing expanded or collapsing specific toc items using
                                             the Toc{"'"}s API.
                                         </Text>

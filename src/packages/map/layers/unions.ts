@@ -46,7 +46,7 @@ export type AnyLayerTypes = LayerTypes | SublayerTypes;
 export type Layer = SimpleLayer | WMSLayer | WMTSLayer | GroupLayer;
 
 /**
- * Union type for all sublayers (extending {@link SublayerBaseType}.
+ * Union type for all sublayers (extending {@link SublayerBaseType}).
  *
  * NOTE: More sublayer implementations may be added in future versions.
  *

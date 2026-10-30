@@ -2,4 +2,3 @@ messages:
   emptyBasemapLabel: Without basemap
   layerNotAvailable: Layer not available
   layerNotVisible: Layer not visible in this scale
-  selected: selected

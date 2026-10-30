@@ -323,7 +323,7 @@ export class AppModel implements Service, AppState {
      * the application specific `resultListMetadata` from the layers' attributes.
      */
     async #initSelectionSources(map: MapModel) {
-        const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
+        const SELECTION_LAYER_IDS = ["ogc_kitas"];
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
         for (const opLayer of opLayers) {

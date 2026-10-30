@@ -21,9 +21,8 @@ import { FlatStyle } from "ol/style/flat";
  * "active:saving":
  * State while feature is being saved after user finished the geometry drawing.
  *
- * "destroyed:
- * state after editing is stopped.
- *
+ * "destroyed":
+ * State after the editing was stopped.
  */
 export type EditingWorkflowState =
     | "active:initialized"
@@ -70,9 +69,9 @@ export interface EditingWorkflow {
     triggerSave(): void;
 
     /**
-     * Wait for the editing to be finished. The returned promise resolves with the
-     * feature ID when saving was successful and rejects if saving the feature
-     * failed. It resolves with undefined when the editing was stopped.
+     * Wait for the editing to be finished. The returned promise resolves with an object
+     * containing the feature ID (`{ featureId }`) when saving was successful and rejects
+     * if saving the feature failed. It resolves with undefined when the editing was stopped.
      */
     whenComplete(): Promise<Record<string, string> | undefined>;
 }

@@ -234,7 +234,7 @@ class EditingController {
                     this.#notificationService.notify({
                         level: "info",
                         message: this.#intl.formatMessage({
-                            id: "demos.editing.update.savingStared"
+                            id: "demos.editing.update.savingStarted"
                         })
                     });
                 }

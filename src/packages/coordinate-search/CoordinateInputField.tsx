@@ -3,9 +3,13 @@
 
 import { Field, Icon, IconButton, Input, InputGroup, VisuallyHidden } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { createLogger } from "@open-pioneer/core";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
+import { sourceId } from "open-pioneer:source-info";
 import { LuCopy, LuX } from "react-icons/lu";
+
+const LOG = createLogger(sourceId);
 
 /**
  * Text input for coordinates.
@@ -69,7 +73,9 @@ export function CoordinateInputField(props: {
                     id: "coordinateInput.copyLabel"
                 })}
                 onClick={() => {
-                    navigator.clipboard.writeText(placeholderString);
+                    navigator.clipboard.writeText(placeholderString).catch((e) => {
+                        LOG.error("Failed to copy the coordinates to the clipboard", e);
+                    });
                 }}
                 icon={
                     <Icon>

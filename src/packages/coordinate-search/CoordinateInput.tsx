@@ -8,7 +8,7 @@ import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
-import { Coordinate } from "ol/coordinate";
+import { Coordinate, equals as coordinatesEqual } from "ol/coordinate";
 import { get as getProjection, Projection, ProjectionLike, transform } from "ol/proj";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
@@ -177,7 +177,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     });
 
     return (
-        <Flex flexDirection={"row"} flexDir={"row"} {...containerProps}>
+        <Flex flexDirection={"row"} {...containerProps}>
             <Tooltip
                 content={errorMessage}
                 showArrow
@@ -223,7 +223,8 @@ function useCoordinateState(
     const [model] = useState(() => new StateModel(intl, selectedProjection, numberParser));
     useEffect(() => {
         const triggerSelect =
-            inputProp !== model.inputProp || selectedProjection !== model.selectedProjection;
+            !sameInput(inputProp, model.inputProp) ||
+            selectedProjection !== model.selectedProjection;
 
         model.setI18n(intl, numberParser);
         model.setInputProp(inputProp);
@@ -310,7 +311,7 @@ class StateModel {
     }
 
     setInputProp(value: Coordinate | undefined) {
-        if (value !== this.#inputProp.value) {
+        if (!sameInput(value, this.#inputProp.value)) {
             this.#inputProp.value = value;
             this.#updateInput();
         }
@@ -335,6 +336,13 @@ class StateModel {
             this.#rawInput.value = formatted;
         }
     }
+}
+
+function sameInput(a: Coordinate | undefined, b: Coordinate | undefined): boolean {
+    if (a == null || b == null) {
+        return a === b;
+    }
+    return coordinatesEqual(a, b);
 }
 
 /**

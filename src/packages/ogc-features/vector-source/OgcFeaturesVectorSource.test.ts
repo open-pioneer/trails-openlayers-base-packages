@@ -143,6 +143,15 @@ describe("Attribution handling", () => {
         await loadFeaturesAndWait(source);
         expect(getAttributionStrings(source)).toEqual(["© Explicit Option"]);
     });
+
+    it("disables attributions when the attributions option is the empty string", async () => {
+        const httpService = createMockHttpService({
+            metadata: { attribution: "© Service Metadata" }
+        });
+        const source = createSource({ attributions: "" }, httpService);
+        await loadFeaturesAndWait(source);
+        expect(getAttributionStrings(source)).toBeUndefined();
+    });
 });
 
 describe("Next strategy", () => {
@@ -395,7 +404,7 @@ function createMockHttpService(opts: MockFetchOptions = {}): HttpService {
     let featureRequestIndex = 0;
 
     return {
-        fetch: vi.fn(async (input: URL | string, _init?: RequestInit) => {
+        fetch: vi.fn(async (input: URL | string, init?: RequestInit) => {
             const url = input instanceof URL ? input : new URL(input as string);
 
             const isItemsRequest = url.pathname.endsWith("/items");
@@ -417,6 +426,9 @@ function createMockHttpService(opts: MockFetchOptions = {}): HttpService {
 
             // Feature page request
             onFetchFeatures?.(url);
+            if (init?.signal?.aborted) {
+                throw init.signal.reason;
+            }
             const idx = featureRequestIndex++;
             const body = featurePageHandler
                 ? featurePageHandler(url, idx)

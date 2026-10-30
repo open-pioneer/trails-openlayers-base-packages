@@ -3,7 +3,7 @@
 
 import { CleanupHandle, reactiveArray, watch } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
-import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
+import { LocalStorageService, StorageNamespace } from "@open-pioneer/local-storage";
 import { MapModel } from "@open-pioneer/map";
 import { Extent as OlExtent, getCenter } from "ol/extent";
 import { transformExtent } from "ol/proj";
@@ -28,7 +28,7 @@ export interface Bookmark {
 
 export class SpatialBookmarkViewModel {
     #map: MapModel;
-    #packageNamespace: LocalStorageNamespace;
+    #packageNamespace: StorageNamespace | undefined;
     #writableBookmarks = reactiveArray<Bookmark>([]);
     #watchBookmarksHandle: CleanupHandle;
 
@@ -43,7 +43,13 @@ export class SpatialBookmarkViewModel {
 
     constructor(map: MapModel, localStorageService: LocalStorageService) {
         this.#map = map;
-        this.#packageNamespace = localStorageService.getNamespace("spatial-bookmarks");
+        if (localStorageService.isSupported) {
+            this.#packageNamespace = localStorageService.getNamespace("spatial-bookmarks");
+        } else {
+            LOG.warn(
+                "Local storage is not supported by this browser, bookmarks are not persisted."
+            );
+        }
 
         // Load from local storage on start; save changes whenever bookmarks change.
         this.#loadState();
@@ -82,8 +88,7 @@ export class SpatialBookmarkViewModel {
     }
 
     /**
-     * Activates the bookmark with the given id by zooming
-     * to the bookmark's extent.
+     * Activates the given bookmark by zooming to its extent.
      */
     activateBookmark(bookmark: Bookmark) {
         LOG.debug("Activating bookmark", bookmark);
@@ -119,7 +124,7 @@ export class SpatialBookmarkViewModel {
     #loadState() {
         LOG.debug("Restoring bookmarks from local storage");
 
-        const rawBookmarks = this.#packageNamespace.get("bookmarks") ?? [];
+        const rawBookmarks = this.#packageNamespace?.get("bookmarks") ?? [];
         try {
             validateBookmarks(rawBookmarks);
             this.#writableBookmarks.push(...rawBookmarks);
@@ -134,6 +139,9 @@ export class SpatialBookmarkViewModel {
      * Saves the bookmarks to local storage.
      */
     #saveState(bookmarks: Bookmark[]) {
+        if (!this.#packageNamespace) {
+            return;
+        }
         LOG.debug("Saving bookmarks to local storage");
         this.#packageNamespace.set("bookmarks", bookmarks);
     }

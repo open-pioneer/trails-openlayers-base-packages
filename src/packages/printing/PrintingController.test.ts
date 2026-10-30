@@ -19,7 +19,6 @@ it("calls the appropriate methods (happy path)", async () => {
         fileFormat: "png"
     });
 
-    //expect(exportToCanvasSpy).toBeCalled();
     expect(exportMapInPNGSpy).toBeCalled();
 
     await controller.handleMapExport({

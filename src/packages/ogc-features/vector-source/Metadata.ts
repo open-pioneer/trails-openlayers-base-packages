@@ -4,20 +4,11 @@
 import { HttpService } from "@open-pioneer/http";
 
 /**
- * @module
- *
- * Provides metadata-related utilities for working with OGC API Features services, such as fetching collection metadata.
- *
- *
- */
-
-/**
  * Requests metadata for an OGC API Features service collection.
  *
- * @param baseUrl Base URL of the OGC API Features service (e.g. `https://example.com/ogcapi/v1`).
- * @param collectionId ID of the collection to retrieve the metadata for.
+ * @param collectionUrl URL of the collection (e.g. `https://example.com/ogcapi/v1/collections/{collectionId}`).
  * @param httpService Instance to perform the HTTP request.
- * @returns
+ * @returns the parsed collection metadata.
  */
 export async function getCollectionMetadata(
     collectionUrl: string,
@@ -47,7 +38,7 @@ export interface CollectionMetadata {
 }
 
 /**
- * Checks if a given coordinate reference system (CRS) identifier  matches any of the available CRS URIs.
+ * Checks if a given coordinate reference system (CRS) identifier matches any of the available CRS URIs.
  * The function especially supports matching a simple EPSG code like "EPSG:4326" with its corresponding CRS URI (e.g. "http://www.opengis.net/def/crs/EPSG/0/4326").
  *
  *
@@ -56,7 +47,6 @@ export interface CollectionMetadata {
  *
  * @returns the matching CRS URI if a match is found, otherwise `undefined`.
  */
-
 export function findMatchingCrs(
     testCrs: string,
     availableCrsUris: string[] | undefined

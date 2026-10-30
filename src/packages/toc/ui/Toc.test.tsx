@@ -108,20 +108,27 @@ it("should support overriding basemap-switcher properties", async () => {
     );
 
     const tocDiv = await findToc();
-    const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+    const { basemapSwitcher, basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    act(() => {
-        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    // select lazy mounts the list of options in dom after opening selection
+    await act(async () => {
+        fireEvent.click(basemapSelectTrigger);
+        await nextTick();
     });
 
     await waitFor(() => {
-        const options = basemapSelect.getElementsByClassName("basemap-switcher-option");
+        // options are portalled
+        const basemapSwitcherContent = document.querySelector(BASEMAP_SWITCHER_CONTENT_CLASS);
+        if (!basemapSwitcherContent) {
+            throw new Error("expected basemap switcher content not rendered");
+        }
+        const options = basemapSwitcherContent.getElementsByClassName("basemap-switcher-option");
         const optionLabels = Array.from(options).map((opt) => opt.textContent);
-        expect(
-            optionLabels,
-            "basemap options are not equal to their expected values"
-        ).toMatchInlineSnapshot(`[]`);
+        expect(optionLabels, "basemap options are not equal to their expected values").toEqual([
+            "OSM",
+            "emptyBasemapLabel"
+        ]);
     });
 });
 
@@ -163,6 +170,47 @@ describe("toc api", () => {
         //should have been called exactly once
         expect(onReadyMock).toBeCalledTimes(1);
         expect(onDisposedMock).toBeCalledTimes(1);
+    });
+
+    it("binds a new api to the new map when the map changes", async () => {
+        const { map: map1, Wrapper } = await setupTocContext();
+        const { map: map2 } = await setupTocContext({
+            layers: [
+                {
+                    title: "Other layer",
+                    id: "other-layer",
+                    olLayer: createTestOlLayer()
+                }
+            ]
+        });
+
+        const onReadyMock = vi.fn<(e: TocReadyEvent) => void>();
+        const onDisposedMock = vi.fn<(e: TocDisposedEvent) => void>();
+        const { rerender } = render(
+            <Toc map={map1} data-testid="toc" onReady={onReadyMock} onDisposed={onDisposedMock} />,
+            { wrapper: Wrapper }
+        );
+        await findToc();
+        await waitFor(() => {
+            expect(onReadyMock).toBeCalledTimes(1);
+        });
+        const api1 = onReadyMock.mock.calls[0]![0].api;
+        expect(api1.getItemByLayerId("layer-1")).toBeDefined();
+
+        rerender(
+            <Toc map={map2} data-testid="toc" onReady={onReadyMock} onDisposed={onDisposedMock} />
+        );
+        await waitFor(() => {
+            expect(onReadyMock).toBeCalledTimes(2);
+        });
+        expect(onDisposedMock).toBeCalledTimes(1);
+
+        // The new api reflects the new map, the old api is no longer in use.
+        const api2 = onReadyMock.mock.calls[1]![0].api;
+        expect(api2).not.toBe(api1);
+        expect(api2.getItemByLayerId("other-layer")).toBeDefined();
+        expect(api2.getItemByLayerId("layer-1")).toBeUndefined();
+        expect(api1.getItems()).toEqual([]);
     });
 
     it("should return TocItems for layers via Toc API", async () => {
