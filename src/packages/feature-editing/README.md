@@ -47,7 +47,7 @@ const templates: FeatureTemplate[] = [
 ];
 
 const featureWriter: FeatureWriter = {
-    async addFeature(feature, template, projection) {
+    async addFeature({ feature, template, projection }) {
         // Persist the new feature in your backend, then update the map
         await myApi.createFeature(feature, template.layerId);
     },
@@ -141,8 +141,13 @@ The editor supports editing _existing_ features or creating _new_ features:
   The user can draw the feature's geometry on a temporary layer.
 
 In both cases, feature attributes can be edited using the editor's form controls.
-Note however, that the layers or their sources in the map are **never** modified directly.
+Note however, that the editor never adds, replaces or removes features in the layers or their sources.
 Instead, the editor calls the `FeatureWriter`'s methods to apply any changes made by the user (see [FeatureWriter](#featurewriter) below).
+
+The feature writer receives the same feature object that is being edited in the map.
+When editing ends, by saving or by cancelling, the editor resets the geometry of this object to its state before the edit.
+Do not put this object into a vector source as is, because the geometry change would be lost.
+Store a copy (`feature.clone()`) instead.
 
 In summary, the sequence of steps when creating or editing a feature is as follows:
 
@@ -197,15 +202,16 @@ function useEditingSetup(map: MapModel) {
         const featureCollection = new Collection<Feature>();
 
         // Callback to "store" data (just a fancy array in this case).
+        // The collection stores copies: the editor resets the geometry of the
+        // original feature when editing ends.
         const featureWriter: FeatureWriter = {
             addFeature: async ({ feature }) => {
-                featureCollection.push(feature);
+                featureCollection.push(feature.clone());
             },
             updateFeature: async ({ feature }) => {
                 const index = featureCollection.getArray().indexOf(feature);
                 if (index >= 0) {
-                    // Triggers an update, even though we write the same feature again.
-                    featureCollection.setAt(index, feature);
+                    featureCollection.setAt(index, feature.clone());
                 }
             },
             deleteFeature: async ({ feature }) => {
