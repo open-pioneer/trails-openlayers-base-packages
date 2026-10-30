@@ -39,13 +39,11 @@ export function AppUI() {
     }
 
     function onSelectViaApi(result: SearchResult) {
-        {
-            notificationService.notify({
-                level: "success",
-                message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
-                displayDuration: 4000
-            });
-        }
+        notificationService.notify({
+            level: "success",
+            message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
+            displayDuration: 4000
+        });
     }
 
     function onSearchCleared(event: SearchClearEvent) {
@@ -167,7 +165,7 @@ export function AppUI() {
                                                     });
                                             }}
                                         >
-                                            set and selected search input
+                                            set and select search input
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

@@ -138,7 +138,7 @@ export function AppUI() {
                                                             </Menu.Item>
                                                             <Menu.Item
                                                                 onClick={() =>
-                                                                    fillResultList(MANY_COLUMS)
+                                                                    fillResultList(MANY_COLUMNS)
                                                                 }
                                                                 value="many_columns"
                                                             >
@@ -450,7 +450,7 @@ const LONG_STRINGS: ResultListInput = {
     ]
 };
 
-const MANY_COLUMS: ResultListInput = {
+const MANY_COLUMNS: ResultListInput = {
     columns: [
         {
             propertyName: "a"

@@ -51,6 +51,6 @@ messages:
     drawingMessageLineString: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Doppelklicken, um die Zeichnung zu beenden.
     drawingMessagePolygon: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Doppelklicken, um die Zeichnung zu beenden.
     drawingMessageCircle: Klicken, um mit dem Zeichnen zu beginnen. <br></br> Maus zum Aufziehen bewegen. <br></br> Doppelklicken zum Beenden.
-    selectionMessage: Zum Auswählen auf ein Feature in der Karte klicken.
+    selectionMessage: Zum Auswählen auf ein Geoobjekt in der Karte klicken.
     modificationMessage: Zum Bearbeiten auf einen Stützpunkt klicken, <br></br> gedrückt halten und ziehen.
     modificationMessagePoint: Zum Bearbeiten auf den Punkt klicken, <br></br> gedrückt halten und ziehen.

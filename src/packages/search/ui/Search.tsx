@@ -4,8 +4,9 @@
 import { Box } from "@chakra-ui/react";
 import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useEffectEvent, useMemo } from "react";
+import { FC, useEffect, useEffectEvent } from "react";
 import {
+    SearchApi,
     SearchClearEvent,
     SearchDisposedEvent,
     SearchReadyEvent,
@@ -113,12 +114,7 @@ function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined
 ) {
-    // The API controls a single view model instance.
-    // A new API is handed out if the view model is replaced (which happens when the map changes).
-    // It might also do Non-ViewModel things in the future (e.g. focus handling), so this is not necessarily just a wrapper.
-    const api = useMemo(() => new SearchApiImpl(viewModel), [viewModel]);
-
-    const readyTrigger = useEffectEvent(() => {
+    const readyTrigger = useEffectEvent((api: SearchApi) => {
         onReady?.({ api });
     });
 
@@ -126,9 +122,10 @@ function useSearchApi(
         onDisposed?.({});
     });
 
-    // The ready / disposed events bracket the lifetime of the API.
+    // The API controls a single view model instance and lives as long as it.
+    // A new API is handed out if the view model is replaced (which happens when the map changes).
     useEffect(() => {
-        readyTrigger();
+        readyTrigger(new SearchApiImpl(viewModel));
         return () => disposeTrigger();
-    }, [api]);
+    }, [viewModel]);
 }

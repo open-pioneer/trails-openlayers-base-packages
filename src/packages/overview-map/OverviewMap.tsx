@@ -27,14 +27,12 @@ export interface OverviewMapProps extends CommonComponentProps, MapModelProps {
     olLayer: OlBaseLayer;
 
     /**
-     * The height of the map.
-     * This defaults to a reasonable pixel size.
+     * The height of the map (default: `"200px"`).
      */
     height?: BoxProps["height"];
 
     /**
-     * The width of the map.
-     * This defaults to a reasonable pixel size.
+     * The width of the map (default: `"300px"`).
      */
     width?: BoxProps["width"];
 }
@@ -51,7 +49,7 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
     const intl = useIntl();
 
     const map = useMapModelValue(props);
-    const overviewMapControlElem = useRef(null);
+    const overviewMapControlElem = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (overviewMapControlElem.current && olLayer) {

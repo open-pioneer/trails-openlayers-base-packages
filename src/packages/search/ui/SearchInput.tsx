@@ -63,7 +63,6 @@ export function SearchInput(props: SearchInputProps) {
             inputValue={inputValue}
             value={selectedValue ? [selectedValue] : []}
             className="search-combobox-component"
-            aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
             placeholder={placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
             openOnClick={inputValue.length > 0}
             closeOnSelect={true}
@@ -80,7 +79,10 @@ export function SearchInput(props: SearchInputProps) {
                         </Icon>
                     }
                 >
-                    <Combobox.Input ref={controlRef} />
+                    <Combobox.Input
+                        ref={controlRef}
+                        aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
+                    />
                 </InputGroup>
                 <Combobox.IndicatorGroup>
                     {pending ? (

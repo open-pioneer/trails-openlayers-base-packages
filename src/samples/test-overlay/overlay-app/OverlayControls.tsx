@@ -75,7 +75,7 @@ function DynamicOverlayControl() {
             }, 1000);
 
             return () => {
-                clearTimeout(timer);
+                clearInterval(timer);
                 overlay.destroy();
             };
         }

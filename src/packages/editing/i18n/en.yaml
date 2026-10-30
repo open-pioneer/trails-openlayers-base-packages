@@ -1,5 +1,4 @@
 messages:
-  title: Editing
   create:
     tooltip:
       begin: Click to start creating the geometry

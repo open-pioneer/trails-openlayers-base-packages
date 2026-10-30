@@ -17,6 +17,9 @@ export interface ScaleBarProps extends CommonComponentProps, MapModelProps {
     displayMode?: "bar" | "line";
 }
 
+/**
+ * Displays the current scale of the map as a line or a bar, using the OpenLayers `ScaleLine` control.
+ */
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
     const { displayMode = "line" } = props;
     const { containerProps } = useCommonComponentProps("scale-bar", props);

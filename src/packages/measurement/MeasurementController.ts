@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { destroyResource, Resource } from "@open-pioneer/core";
+import { destroyResource } from "@open-pioneer/core";
 import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
@@ -45,7 +45,7 @@ export class MeasurementController {
     #layer: SimpleLayer;
 
     /**
-     * Source of {@link layer}.
+     * Source of `#layer`.
      */
     #source: VectorSource;
 
@@ -78,11 +78,6 @@ export class MeasurementController {
     #helpTooltip: Overlay;
 
     /**
-     * Keeps track of registered event handlers.
-     */
-    #resources: Resource[] = [];
-
-    /**
      * Called when a measurement is added to or removed from the source.
      */
     #measurementChangedHandler: MeasurementsChangeHandler | undefined;
@@ -107,12 +102,6 @@ export class MeasurementController {
 
     destroy() {
         this.stopMeasurement();
-
-        // Cleanup registered event handlers etc.
-        for (const resource of this.#resources) {
-            resource.destroy();
-        }
-        this.#resources = [];
 
         // Cleanup measurements and tooltips.
         this.#activeMeasurement = destroyResource(this.#activeMeasurement);

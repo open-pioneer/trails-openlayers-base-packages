@@ -1,12 +1,11 @@
 messages:
-  basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
   legendTitle: "Legend"
   printingTitle: "Printing"
   measurementTitle: "Measurement"
   selectionTitle: "Selection"
   editing:
-    title: "Editierung"
+    title: "Editing"
     create:
       startTitle: "Editing - Create new feature"
       featureCreated: "Created feature with ID: {featureId}"
@@ -16,7 +15,6 @@ messages:
       tooltip:
         select: Select geometry to start editing
     stopTitle: "Editing - Stop"
-    resetTitle: "Editing - Reset"
     error: "Editing failed"
     active: "Editing is active"
     resetGeometry: "Reset geometry"
@@ -30,7 +28,6 @@ messages:
     search: "Search"
     toolbar: "Maptools"
     results: "Results"
-  layerNotVisibleReason: "Matching layer is not visible."
   foundResults: Found {resultsCount, plural,
     =0 {no results}
     one {1 result}

@@ -11,16 +11,12 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { Printing } from "./Printing";
 import * as PrintingControllerModule from "./PrintingController";
 
-const setFileFormatSpy = vi.fn();
-const setTitleSpy = vi.fn();
 const setViewPaddingSpy = vi.fn();
 const handleMapExportSpy = vi.fn((..._args) => Promise.resolve());
 const notifySpy = vi.fn();
 
 /** Mock implementation used by the UI. */
 class MockPrintingController {
-    setTitle = setTitleSpy;
-    setFileFormat = setFileFormatSpy;
     setViewPadding = setViewPaddingSpy;
     handleMapExport = handleMapExportSpy;
 

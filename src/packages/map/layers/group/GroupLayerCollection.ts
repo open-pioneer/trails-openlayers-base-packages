@@ -47,7 +47,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
     }
 
     /**
-     * Destroys this collection, all contained layers are detached from their parent group layer
+     * Destroys this collection and all contained layers.
      */
     destroy() {
         for (const layer of this.#layers) {
@@ -79,10 +79,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
     /**
      * Returns a list of all layers in the collection, including all children (recursively).
      *
-     * > Note: This includes base layers by default (see `options.filter`).
-     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
-     * >
-     * > If the group contains many, deeply nested sub groups, this function could potentially be expensive.
+     * > Note: If the group contains many, deeply nested sub groups, this function could potentially be expensive.
      */
     getRecursiveLayers(options?: RecursiveRetrievalOptions): AnyLayer[] {
         return getRecursiveLayers({

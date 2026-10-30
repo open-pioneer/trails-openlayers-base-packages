@@ -144,8 +144,8 @@ export interface DrawingState {
  * current editing step. This hook handles drawing, selection, and modification interactions, and
  * returns the current drawing state for controlling undo/redo/finish/reset actions.
  *
- * Use this hook when building custom editing implementations that don't use the {@link type }
- * component. For most use cases, the {@link type } component is recommended as it provides a
+ * Use this hook when building custom editing implementations that don't use the `FeatureEditor`
+ * component. For most use cases, the `FeatureEditor` component is recommended as it provides a
  * complete editing interface with built-in UI.
  *
  * @param options - Configuration options for the editing workflow
@@ -155,7 +155,7 @@ export interface DrawingState {
  * ```tsx
  * function CustomEditor() {
  *     const map = useMapModel();
- *     const [editingStep, setEditingStep] = useState<EditingStep>({ id: "none" });
+ *     const [editingStep, setEditingStep] = useState<EditingStep>({ id: "initial" });
  *     const drawingState = useGeometryEditing({ map, editingStep, setEditingStep });
  *
  *     // Render custom UI and controls...

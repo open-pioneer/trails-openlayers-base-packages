@@ -61,13 +61,12 @@ import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/searc
 The search API provides methods to:
 
 - clear the search input (`resetInput`)
-- set the search input value without triggering a search (`setInputValue`)
+- set the search input value without opening the suggestion menu (`setInputValue`)
 - execute a search and automatically select the first matching result (`searchAndSelect`)
 
 To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
 
 ```tsx
-import { Search } from "@open-pioneer/search";
 import { Button } from "@chakra-ui/react";
 import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
@@ -123,9 +122,7 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
                     console.log("Result has no geometry.");
                     return;
                 }
-                appModel.highlightAndZoom(map, [
-                    result.geometry
-                ]);
+                map.highlightAndZoom([result.geometry]);
             })
             .catch((error) => {
                 console.error(error);

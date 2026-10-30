@@ -11,11 +11,10 @@ The following diagram shows the most important files (or directories) of this sa
 ol-app/
 ├── i18n/                       # Translation files
 ├── map/                        # Map related code
-│   ├── CustomLegendItem.tsx    # Renders a custom legend item
-│   └── MapConfigProvider.tsx   # Configures the map's content
+│   └── CustomLegendItems.tsx   # Renders a custom legend item
 ├── sources/                    # Contains search source implementations
 ├── ui/                         # Contains UI components
-├── AppModel.ts                 # Manages application-wide state
+├── AppModel.ts                 # Manages application-wide state and configures the map's content
 └── app.ts                      # Application entry point
 ```
 
@@ -23,30 +22,33 @@ For more information about the contents of `app.ts` and `i18n`, consult the [off
 
 ## Map Configuration
 
-The class `MapConfigProviderImpl` configures the main map (with id `"main"`) by implementing the `map` package's `MapConfigProvider`-API.
-
-An instance of type `MapConfig` is created by that class to hold the map configuration.
+The `AppModel` creates the main map (with id `"main"`) directly through the `map.MapRegistry` service (`createMapModel`).
+The function `getMapConfig` in `AppModel.ts` builds the `MapConfig` for that map.
 With `MapConfig`, you can provide an initial view, the map's projection, its layers (including base layers) and more:
 
 ```ts
-// MapConfigProviderImpl.ts
-export class MapConfigProviderImpl implements MapConfigProvider {
-    // Details omitted
-    async getMapConfig(): Promise<MapConfig> {
-        return {
-            initialView: {
-                kind: "position",
-                center: { x: 404747, y: 5757920 },
-                zoom: 14
-            },
-            projection: "EPSG:25832",
-            layers: [
-                // ...
-            ]
-        };
-    }
+// AppModel.ts
+function getMapConfig(
+    layerFactory: LayerFactory,
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory
+): MapConfig {
+    return {
+        advanced: {
+            view: new View({
+                center: [404747, 5757920],
+                zoom: 13,
+                projection: "EPSG:25832"
+            })
+        },
+        layers: [
+            // ...
+        ]
+    };
 }
 ```
+
+Apps that configure their map declaratively can implement the `map.MapConfigProvider` interface instead.
+The showcase (`src/samples/showcase/`) does this.
 
 The map package supports any kind of OpenLayers layer (called `olLayer` by convention to disambiguate with our own `Layer` types).
 All OpenLayers layer instances can be integrated by configuring a `SimpleLayer`:
@@ -57,13 +59,13 @@ layerFactory.create({
     type: SimpleLayer,
 
     // Unique id
-    id: "ogc_kataster",
+    id: "krankenhaus",
 
     // Display title
-    title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
+    title: "Krankenhäuser",
 
     // OpenLayers instance
-    olLayer: createKatasterLayer(this.vectorSourceFactory)
+    olLayer: createKrankenhausLayer(vectorSourceFactory)
 });
 ```
 
@@ -71,7 +73,8 @@ For some layer types (currently WMTS and WMS), additional support has been imple
 The classes `WMSLayer` and `WMTSLayer` add additional features on top of OpenLayers (such as automatic fetching of service capabilities, automatic legends) that you wouldn't otherwise get when using the `SimpleLayer` class:
 
 ```ts
-new WMSLayer({
+layerFactory.create({
+    type: WMSLayer,
     title: "Linfos",
     visible: true,
     url: "https://www.wms.nrw.de/umwelt/linfos",
@@ -173,7 +176,7 @@ export function MapTools() {
         // ...
         <ToolButton
             label={intl.formatMessage({ id: "tocTitle" })}
-            icon={<PiListLight />}
+            icon={<LuMenu />}
             active={isTocActive}
             onClick={() => appModel.toggleMainContent("toc")} // (2)
         />

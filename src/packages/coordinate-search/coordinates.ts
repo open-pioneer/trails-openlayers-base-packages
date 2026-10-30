@@ -99,18 +99,13 @@ function checkIfCoordsInProjectionsExtent(
         // Some projections don't have an extent, cannot validate.
         return true;
     }
-    if (!coords || coords.length !== 2) {
-        throw new Error(`Internal error: invalid coordinates ${coords}.`);
+    const [minX, minY, maxX, maxY] = extent;
+    const [x, y] = coords;
+    if (x == null || y == null || minX == null || minY == null || maxX == null || maxY == null) {
+        throw new Error(`Internal error: invalid extent or invalid coordinates.`);
     }
 
-    return (
-        /* oxlint-disable @typescript-eslint/no-non-null-assertion */
-        extent[0]! <= coords[0]! &&
-        extent[1]! <= coords[1]! &&
-        extent[2]! >= coords[0]! &&
-        extent[3]! >= coords[1]!
-        /* eslint-enable @typescript-eslint/no-non-null-assertion */
-    );
+    return minX <= x && minY <= y && maxX >= x && maxY >= y;
 }
 
 /* Formats the coordinates as a string with given precision considering locales */

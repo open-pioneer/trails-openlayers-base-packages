@@ -18,10 +18,13 @@ export function getLegendUrl(
     const rootLayerCapabilities = capabilitiesContent?.Layer;
     let url: string | undefined = undefined;
 
-    /** Recurse search for the current layer within the parsed capabilities service*/
+    /** Recursive search for the current layer within the parsed capabilities. */
     //oxlint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchNestedLayer = (layer: Record<string, any>[]) => {
-        for (const currentLayer of layer) {
+    const searchNestedLayer = (layers: Record<string, any>[] | undefined) => {
+        if (!layers) {
+            return;
+        }
+        for (const currentLayer of layers) {
             // spec. if, a layer has a <Name>, then it is a map layer
             if (currentLayer?.Name === layerName) {
                 const activeLayer = currentLayer;
@@ -40,7 +43,8 @@ export function getLegendUrl(
         }
     };
     if (rootLayerCapabilities) {
-        searchNestedLayer(rootLayerCapabilities.Layer);
+        // The root layer may be a named layer itself (e.g. a service with a single layer).
+        searchNestedLayer([rootLayerCapabilities]);
     }
     return url;
 }

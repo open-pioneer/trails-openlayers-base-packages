@@ -12,7 +12,7 @@ To add the component to your app, insert the following snippet (with a reference
 /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
-If the localization was successful, the map is centered on the user's position and zoomed to the accuracy of the localization.
+If the position was determined successfully, the map is centered on the user's position and zoomed to the accuracy of the position.
 If the position is updated, the map is centered again.
 
 Once a user zooms or moves the map, the map is no longer centered on new positions.
@@ -62,7 +62,7 @@ function AppUI() {
     return (
         // ...
         <Geolocation
-            mad={map}
+            map={map}
             positionFeatureStyle={POSITION_STYLE}
             accuracyFeatureStyle={ACCURACY_STYLE}
         />
@@ -71,15 +71,19 @@ function AppUI() {
 ```
 
 To use custom position options from the [Geolocation API](https://www.w3.org/TR/geolocation/#position_options_interface), add the optional property `trackingOptions`.
+Changing the tracking options at runtime stops the current geolocation, so keep the object stable (for example with `useMemo` or a constant outside the render function).
 
 ```jsx
 <Geolocation
     map={map}
-    trackingOptions={{
-        enableHighAccuracy: true,
-        timeout: 60000,
-        maximumAge: 600000
-    }}
+    trackingOptions={useMemo(
+        {
+            enableHighAccuracy: true,
+            timeout: 60000,
+            maximumAge: 600000
+        },
+        []
+    )}
 />
 ```
 

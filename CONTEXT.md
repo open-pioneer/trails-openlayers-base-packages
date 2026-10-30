@@ -108,11 +108,13 @@ A layer displayed below all operational layers, of which at most one is active a
 _Avoid_: basemap (except in the package name `basemap-switcher` and its component), background layer
 
 **Operational layer**:
-A top-level layer that is neither a base layer nor a topmost layer (`LayerCollection.getOperationalLayers()`).
+A top-level layer that is not a base layer (`LayerCollection.getOperationalLayers()`).
+Topmost layers are operational layers too.
 _Avoid_: content layer, data layer, overlay layer
 
 **Topmost layer**:
-A layer displayed above all operational layers (`MapConfig.topmostLayers`, `addLayer(layer, { at: "topmost" })`).
+An operational layer displayed above all other operational layers (`MapConfig.topmostLayers`,
+`addLayer(layer, { at: "topmost" })`).
 Highlights and the helper layers of components live there.
 _Avoid_: top layer, overlay (which is a DOM element over the map)
 
@@ -162,7 +164,7 @@ _Avoid_: actually visible, rendered, shown on the map, displayed
 ### Map content
 
 **Highlight**:
-Geometries drawn on the map to point them out (`MapModel.highlights.add()`, `highlightAndZoom()`), returned as a
+Geometries drawn on the map to point them out (`MapModel.highlights.add()`, `addAndZoom()`), returned as a
 `Highlight` resource that is removed with `destroy()`.
 _Avoid_: selection (which is the result of a selection source), marker, focus
 

@@ -82,7 +82,7 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
                 //  encoded as Strings...
 
                 const filteredProperties = { ...feature.getProperties() };
-                delete filteredProperties.geometries;
+                delete filteredProperties[feature.getGeometryName()];
 
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || uuid4v(),

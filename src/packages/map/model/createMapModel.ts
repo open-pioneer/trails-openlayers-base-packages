@@ -226,14 +226,14 @@ class MapModelBuilder {
             if (!extent) {
                 LOG.warn(
                     `Cannot set default center coordinate because the current projection has no associated extent.\n` +
-                        `Try to configure 'initialView' explicity.`
+                        `Try to configure 'initialView' explicitly.`
                 );
             } else {
                 view.center = getCenter(extent);
             }
         }
 
-        if (view.zoom == null || view.resolution == null) {
+        if (view.zoom == null && view.resolution == null) {
             view.zoom = 0;
         }
     }

@@ -31,7 +31,7 @@ export interface LegendItemComponentProps {
 }
 
 /**
- * Attributes of the legend attribute that can be specified on a layer.
+ * Legend configuration stored in a layer's `legend` attribute.
  *
  * To show a legend for the layer, provide an imageUrl to an image to show
  * or provide a React component that will be rendered as a legend.

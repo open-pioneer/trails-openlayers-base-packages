@@ -2,7 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { MapContainer } from "@open-pioneer/map";
-import { setupMap, waitForMapMount, waitForMapRender } from "@open-pioneer/map-test-utils";
+import {
+    mockMapRender,
+    setupMap,
+    waitForMapMount,
+    waitForMapRender
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

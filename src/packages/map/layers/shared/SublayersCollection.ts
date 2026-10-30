@@ -29,6 +29,9 @@ export class SublayersCollection<
         this.#sublayers = sublayers;
     }
 
+    /**
+     * Destroys this collection and all contained sublayers.
+     */
     destroy() {
         for (const layer of this.#sublayers) {
             layer.destroy();
@@ -56,12 +59,9 @@ export class SublayersCollection<
     }
 
     /**
-     * Returns a list of all layers in the collection, including all children (recursively).
+     * Returns a list of all sublayers in the collection, including all children (recursively).
      *
-     * > Note: This includes base layers by default (see `options.filter`).
-     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
-     * >
-     * > If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
+     * > Note: If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
      */
     getRecursiveLayers(options?: RecursiveRetrievalOptions): Sublayer[] {
         return getRecursiveLayers({

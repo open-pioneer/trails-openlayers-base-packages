@@ -32,8 +32,8 @@ initial extent is applied only then.
 The symbol `DISPLAY_STATUS` exposes that state to the package without publishing it.
 
 `LayerCollection` (`model/LayerCollection.ts`) keeps base, operational and topmost layers in three ordered reactive
-lists, indexes every layer and sublayer by id, and rewrites the OpenLayers layer array from the lists whenever they
-change.
+lists, indexes every layer and sublayer by id, and reassigns the z-index of every `olLayer` from the lists whenever
+they change.
 `addLayer(layer, { at })` places a layer at the top, bottom, above or below a reference, or among the base or topmost
 layers.
 

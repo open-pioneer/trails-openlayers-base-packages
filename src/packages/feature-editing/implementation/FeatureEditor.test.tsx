@@ -144,7 +144,7 @@ describe("Editor interaction", () => {
             </PackageContextProvider>
         );
 
-        // Initial step should be "none"
+        // Initial step should be "initial"
         expect(onEditingStepChange).toHaveBeenCalledWith({ id: "initial" });
 
         // Find and click the select button
@@ -187,7 +187,7 @@ describe("Editor interaction", () => {
         await user.click(selectButton);
 
         await waitFor(() => {
-            // Should change to update-select step
+            // Should change to the "selection" step
             expect(onEditingStepChange).toHaveBeenCalledWith(
                 expect.objectContaining({ id: "selection" })
             );
@@ -276,6 +276,61 @@ describe("Editor interaction", () => {
         layers[0]!.setVisible(true);
         await waitFor(() => {
             expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("resets the select button when the selection becomes unavailable", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const layer = createTestLayer({
+            title: "A",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const onEditingStepChange = vi.fn();
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                    onEditingStepChange={onEditingStepChange}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
+        });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonActiveTitle");
+
+        // Hiding the layer ends the selection and disables the button
+        layer.setVisible(false);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith({ id: "initial" });
+        });
+        expect(selectButton).toBeDisabled();
+
+        // The button is inactive again when it becomes available, and one click starts the selection
+        layer.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonTitle");
+
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
         });
     });
 

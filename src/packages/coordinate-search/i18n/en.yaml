@@ -4,7 +4,6 @@ messages:
     copyLabel: Copy coordinates
     clearLabel: Clear input
   tooltip:
-    basic: "Invalid input"
     space: "Invalid input: Please enter the coordinates separated by a space."
     spaceOne: "Invalid input: Please use exactly one space to separate the coordinates."
     2coords: "Invalid input: Please enter two numbers."

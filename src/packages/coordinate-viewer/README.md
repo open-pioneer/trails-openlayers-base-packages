@@ -10,7 +10,7 @@ To integrate the coordinate viewer in your app, insert the following snippet (an
 <CoordinateViewer map={map} />
 ```
 
-To define the number of decimal places shown, set the optional `precision` property:
+To define the number of decimal places shown, set the optional `precision` property (default: 4):
 
 ```jsx
 <CoordinateViewer map={map} precision={2} />

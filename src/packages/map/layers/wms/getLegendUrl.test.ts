@@ -24,3 +24,33 @@ it("should retrieve the legendURL from the WMS service capabilities, if availabl
     const legendURLClouds = getLegendUrl(wmsCapabilities, "Clouds");
     expect(legendURLClouds).toBeUndefined();
 });
+
+it("returns the legend of a named root layer without child layers", () => {
+    const parser = new WMSCapabilities();
+    const wmsCapabilities = parser.read(SINGLE_LAYER_CAPAS);
+
+    expect(getLegendUrl(wmsCapabilities, "single")).toEqual("http://example.com/legend.png");
+    expect(getLegendUrl(wmsCapabilities, "other")).toBeUndefined();
+});
+
+const SINGLE_LAYER_CAPAS = `<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <Service>
+    <Name>WMS</Name>
+    <Title>Single layer service</Title>
+  </Service>
+  <Capability>
+    <Layer>
+      <Name>single</Name>
+      <Title>Single layer</Title>
+      <Style>
+        <Name>default</Name>
+        <Title>Default</Title>
+        <LegendURL width="20" height="20">
+          <Format>image/png</Format>
+          <OnlineResource xlink:type="simple" xlink:href="http://example.com/legend.png"/>
+        </LegendURL>
+      </Style>
+    </Layer>
+  </Capability>
+</WMS_Capabilities>`;

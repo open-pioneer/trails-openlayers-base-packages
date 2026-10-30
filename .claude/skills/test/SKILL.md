@@ -52,7 +52,7 @@ so nothing draws, and network access throws unless a test passes its own `fetch`
   examples.
 - **Component test** for a mapping component.
   Render with `render` from `@testing-library/react` inside `<PackageContextProvider services={...} properties={...}
-locale={...}>` from `@open-pioneer/test-utils/react`, pass `map={map}` from `setupMap()`, and drive it with
+  locale={...}>` from `@open-pioneer/test-utils/react`, pass `map={map}` from `setupMap()`, and drive it with
   `userEvent` from `@testing-library/user-event`.
   `scale-viewer/ScaleViewer.test.tsx` is the smallest example, `toc/ui/Toc.test.tsx` and `search/ui/Search.test.tsx`
   the larger ones.

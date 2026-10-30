@@ -55,7 +55,7 @@ describe("editing: create", () => {
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).toThrowError(
+            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).toThrow(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
             );
         });
@@ -78,7 +78,7 @@ describe("editing: create", () => {
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.stop(wrongMap)).not.toThrowError();
+            expect(() => editingService.stop(wrongMap)).not.toThrow();
         });
 
         // delete this test if mapId is no longer supported
@@ -87,7 +87,7 @@ describe("editing: create", () => {
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.stop("some-other-map-id")).not.toThrowError();
+            expect(() => editingService.stop("some-other-map-id")).not.toThrow();
         });
     });
 
@@ -145,6 +145,17 @@ describe("editing: update", () => {
             expect(workflow instanceof EditingUpdateWorkflowImpl).toBe(true);
         });
 
+        it("should start a new workflow after a workflow was destroyed on start", async () => {
+            const { editingService, map } = await createEditingService();
+            const featureWithoutId = new Feature({ geometry: new Point([0, 0]) });
+
+            const workflow = editingService.updateFeature(map, OGC_API_URL_TEST, featureWithoutId);
+            expect(workflow.getState()).toBe("destroyed");
+            await expect(workflow.whenComplete()).rejects.toThrow("no feature id available");
+
+            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).not.toThrow();
+        });
+
         it("should throw an error if editing is started twice for the same map", async () => {
             const { editingService, map } = await createEditingService();
 
@@ -152,7 +163,7 @@ describe("editing: update", () => {
 
             expect(() =>
                 editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE)
-            ).toThrowError(
+            ).toThrow(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
             );
         });
@@ -186,7 +197,7 @@ describe("editing: update", () => {
 
             editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
 
-            expect(() => editingService.stop("some-different-id")).not.toThrowError();
+            expect(() => editingService.stop("some-different-id")).not.toThrow();
         });
     });
 

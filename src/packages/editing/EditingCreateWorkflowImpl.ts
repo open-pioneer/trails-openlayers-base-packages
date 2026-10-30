@@ -8,11 +8,7 @@ import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EventsKey } from "ol/events";
 import Feature from "ol/Feature";
-import {
-    default as GeoJSON,
-    default as GeoJSONGeometry,
-    default as GeoJSONGeometryCollection
-} from "ol/format/GeoJSON";
+import GeoJSON, { GeoJSONGeometry, GeoJSONGeometryCollection } from "ol/format/GeoJSON";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
