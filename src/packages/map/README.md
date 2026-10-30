@@ -359,16 +359,17 @@ Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
+
 import {
     MapConfig,
     MapConfigProvider,
     MapConfigProviderOptions,
     SimpleLayer
 } from "@open-pioneer/map";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import { Vector as VectorLayer } from "ol/layer";
+import TileLayer from "ol/layer/Tile";
 import { Vector as VectorSource } from "ol/source";
+import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
@@ -1013,9 +1014,9 @@ WMSSublayer .. Sublayer
 Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
+import type { MapRegistry } from "@open-pioneer/map";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import type { MapRegistry } from "@open-pioneer/map";
 
 interface References {
     mapRegistry: MapRegistry;

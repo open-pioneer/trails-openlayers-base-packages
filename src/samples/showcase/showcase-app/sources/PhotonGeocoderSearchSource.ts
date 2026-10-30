@@ -53,7 +53,7 @@ export class PhotonGeocoder implements SearchSource {
                 this.filteredTypes.includes(feature.properties.type)
             )
             .map((feature: PhotonResponseFeature, idx: number): SearchResult => {
-                const geometry = geojson.readGeometry(feature.geometry);
+                const geometry = geojson.readGeometry(feature.geometry) ?? undefined;
                 return {
                     id: feature.properties.osm_id || idx,
                     label: this.#createLabel(feature),

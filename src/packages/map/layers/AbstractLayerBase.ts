@@ -18,6 +18,7 @@ import { ChildrenCollection } from "./shared/ChildrenCollection";
 import {
     ATTACH_TO_GROUP,
     ATTACH_TO_MAP,
+    CHECK_EFFECTIVE_VISIBILITY,
     DETACH_FROM_GROUP,
     DETACH_FROM_MAP
 } from "./shared/internals";
@@ -42,7 +43,7 @@ export interface AbstractLayerBaseOptions {
  */
 export abstract class AbstractLayerBase {
     #map = reactive<MapModel>();
-    #parent: AnyLayer | undefined;
+    #parent = reactive<AnyLayer>();
 
     #id: string;
     #title: Reactive<string>;
@@ -51,6 +52,26 @@ export abstract class AbstractLayerBase {
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #isDestroyed = reactive(false);
     #internal: Reactive<boolean>;
+
+    #visibleInHierarchy = computed(() => {
+        const parent = this.parent;
+        if (parent && !parent.visibleInHierarchy) {
+            return false;
+        }
+        return this.visible;
+    });
+
+    #effectivelyVisible = computed(() => {
+        if (!this.visibleInHierarchy) {
+            return false;
+        }
+
+        const parent = this.parent;
+        if (parent && !parent.effectivelyVisible) {
+            return false;
+        }
+        return this[CHECK_EFFECTIVE_VISIBILITY]();
+    });
 
     #destroyed = emitter();
 
@@ -165,7 +186,7 @@ export abstract class AbstractLayerBase {
      * The property shall be undefined if the layer is not a sublayer or member of a group layer.
      */
     get parent(): AnyLayer | undefined {
-        return this.#parent;
+        return this.#parent.value;
     }
 
     /**
@@ -218,6 +239,33 @@ export abstract class AbstractLayerBase {
     abstract get legend(): string | undefined;
 
     /**
+     * Returns true if this layer is visible within its layer hierarchy.
+     *
+     * A layer is _visible in its hierarchy_ if it is {@link visible} and all its parents are visible as well.
+     * In other words, a layer is not visible in its hierarchy as soon as any of its parent layers are invisible.
+     *
+     * See also {@link effectivelyVisible}.
+     */
+    get visibleInHierarchy(): boolean {
+        return this.#visibleInHierarchy.value;
+    }
+
+    /**
+     * Returns true if this layer is effectively visible.
+     *
+     * A layer is _effectively visible_ if nothing prevents it from being rendered on the map:
+     *
+     * - the layer and all its parents are {@link visible} (see also {@link visibleInHierarchy}),
+     * - no further conditions of the specific layer types prevents the layer or its parents from being rendered.
+     *   For example, operational layers are only effectively visible if they are visible in the current map scale.
+     *
+     * Use this property to test whether a layer is currently displayed on the map.
+     */
+    get effectivelyVisible(): boolean {
+        return this.#effectivelyVisible.value;
+    }
+
+    /**
      * Attaches the layer to its owning map.
      *
      * @internal
@@ -238,12 +286,12 @@ export abstract class AbstractLayerBase {
      * @internal
      */
     [ATTACH_TO_GROUP](parent: GroupLayer): void {
-        if (this.#parent) {
+        if (this.#parent.value) {
             throw new Error(
-                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
+                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.value.id}'`
             );
         }
-        this.#parent = parent;
+        this.#parent.value = parent;
     }
 
     /**
@@ -263,7 +311,21 @@ export abstract class AbstractLayerBase {
      * @internal
      */
     [DETACH_FROM_GROUP](): void {
-        this.#parent = undefined;
+        this.#parent.value = undefined;
+    }
+
+    /**
+     * Hook for derived classes to add further conditions to {@link effectivelyVisible}.
+     *
+     * Returns `true` if no condition specific to the derived class prevents the layer from being rendered.
+     * The visibility of the layer itself and of its parents is already handled by the base class.
+     *
+     * Implementations should combine their own condition with the result of the super implementation.
+     *
+     * @internal
+     */
+    protected [CHECK_EFFECTIVE_VISIBILITY](): boolean {
+        return true;
     }
 
     /**

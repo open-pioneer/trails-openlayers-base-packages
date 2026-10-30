@@ -25,7 +25,7 @@ type ValueChangeDetails =
     | RadioGroupValueChangeDetails;
 
 export function useOptionProps({ value, field, onChange }: OptionControlProps) {
-    const selectedValue = useMemo(() => (value != undefined ? [value.toString()] : []), [value]);
+    const selectedValue = useMemo(() => (value != null ? [value.toString()] : []), [value]);
     const { collection, onInputValueChange } = useCollection(field);
     const onValueChange = useOnValueChange(field.valueType, onChange);
 

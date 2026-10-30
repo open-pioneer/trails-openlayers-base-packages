@@ -44,7 +44,6 @@
         "@types/react-dom": "catalog:",
         "@vitejs/plugin-react": "catalog:",
         "fast-glob": "catalog:",
-        "handlebars": "catalog:",
         "happy-dom": "catalog:",
         "husky": "catalog:",
         "js-yaml": "catalog:",
@@ -52,6 +51,7 @@
         "lint-staged": "catalog:",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
+        "playwright": "catalog:",
         "react": "catalog:",
         "resize-observer-polyfill": "catalog:",
         "rimraf": "catalog:",
@@ -67,5 +67,5 @@
         "node": ">= 24",
         "pnpm": ">= 10"
     },
-    "packageManager": "pnpm@12.8.1"
+    "packageManager": "pnpm@12.15.0"
 }

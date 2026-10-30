@@ -34,21 +34,21 @@ export function parseCoordinates(
     numberParser: NumberParserService,
     projection: Projection
 ): ParseResult {
-    if (input == "") return err("empty");
+    if (input === "") return err("empty");
 
     if (!input.includes(" ")) {
         return err("tooltip.space");
     }
-    if (input.indexOf(" ") != input.lastIndexOf(" ")) {
+    if (input.indexOf(" ") !== input.lastIndexOf(" ")) {
         return err("tooltip.spaceOne");
     }
 
     const splitCoords = input.split(" ");
     if (
-        splitCoords[0] == undefined ||
-        splitCoords[1] == undefined ||
-        splitCoords[0] == "" ||
-        splitCoords[1] == ""
+        splitCoords[0] == null ||
+        splitCoords[1] == null ||
+        splitCoords[0] === "" ||
+        splitCoords[1] === ""
     ) {
         return err("tooltip.2coords");
     }

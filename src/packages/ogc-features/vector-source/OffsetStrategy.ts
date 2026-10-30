@@ -58,7 +58,7 @@ export class OffsetStrategy {
         let totalFeatures: number | undefined;
         while (currentUrl) {
             let pagesInIteration: number;
-            if (totalFeatures == undefined) {
+            if (totalFeatures == null) {
                 // We don't know the actual size of the result set yet.
                 pagesInIteration = concurrency;
             } else {

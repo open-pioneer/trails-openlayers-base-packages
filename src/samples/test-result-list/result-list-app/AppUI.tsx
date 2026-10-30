@@ -58,7 +58,7 @@ export function AppUI() {
             return currentInput; // unchanged
         }
 
-        const filteredColumns = currentInput.columns.filter((_, index) => index % 2 == 1);
+        const filteredColumns = currentInput.columns.filter((_, index) => index % 2 === 1);
         return {
             ...currentInput,
             columns: filteredColumns
@@ -331,8 +331,8 @@ const GENERATED: ResultListInput = {
         return {
             id: index,
             properties: {
-                "boolean": index % 2 == 0,
-                "empty": index % 2 == 0 ? null : undefined,
+                "boolean": index % 2 === 0,
+                "empty": index % 2 === 0 ? null : undefined,
                 "number": index,
                 "float": index / 7.0,
                 "string": `Item ${index}`,

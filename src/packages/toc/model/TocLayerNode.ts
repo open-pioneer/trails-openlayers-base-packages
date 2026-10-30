@@ -104,7 +104,7 @@ export class TocLayerNode {
         // Unregister this node from the global index.
         const nodesById = this.#shared.nodesById;
         const id = this.id;
-        if (nodesById.get(id) == this) {
+        if (nodesById.get(id) === this) {
             nodesById.delete(id);
         }
 

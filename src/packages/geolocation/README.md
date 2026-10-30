@@ -32,8 +32,8 @@ To configure the style of the user's position and accuracy, add the optional pro
 Both properties support arbitrary OpenLayers [`StyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html#~StyleLike) values: you can configure either a single [Style](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html) instance, an array of them or a function computing such values.
 
 ```tsx
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { Geolocation } from "@open-pioneer/geolocation";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 const POSITION_STYLE = new Style({
     image: new CircleStyle({

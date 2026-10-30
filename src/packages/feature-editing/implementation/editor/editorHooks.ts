@@ -87,7 +87,7 @@ export function useSelectionAvailability(
     // the function is a dependency of the snapshot, too.
     const defaultSelectionAvailability = useCallback(
         ({ layers }: SelectionAvailabilityContext): SelectionAvailability => {
-            const isAvailable = layers.some((layer) => layer.visible);
+            const isAvailable = layers.some((layer) => layer.effectivelyVisible);
             if (!isAvailable) {
                 return {
                     status: "unavailable",

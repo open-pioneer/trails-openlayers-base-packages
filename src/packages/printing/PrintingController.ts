@@ -52,7 +52,7 @@ export class PrintingController {
             });
             const canvas = this.#printMap.getCanvas();
             if (canvas) {
-                if (options.fileFormat == "png") {
+                if (options.fileFormat === "png") {
                     await this.exportMapInPNG(canvas, options);
                 } else {
                     await this.exportMapInPDF(canvas, options);

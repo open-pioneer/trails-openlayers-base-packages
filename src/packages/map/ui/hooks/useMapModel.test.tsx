@@ -244,7 +244,7 @@ function mockMapRegistry(options?: MockModelOptions): MapRegistry {
     let model;
     return {
         async expectMapModel(mapId): Promise<MapModel> {
-            if (expectedMapId != null && expectedMapId == mapId) {
+            if (expectedMapId != null && expectedMapId === mapId) {
                 if (customPromise) {
                     return customPromise;
                 }
