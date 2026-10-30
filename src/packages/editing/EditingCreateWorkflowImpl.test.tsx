@@ -61,7 +61,7 @@ describe("starting create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should creates a tooltip after start a create editing workflow", async () => {
+    it("should create a tooltip after starting a create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
@@ -85,7 +85,7 @@ describe("starting create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should does not contain a geometry after start a create editing workflow", async () => {
+    it("should not contain a geometry after starting a create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
 
@@ -182,7 +182,7 @@ describe("during create editing workflow", () => {
         expect(workflow.getState()).toBe("active:saving");
     });
 
-    it("should updates the tooltip text after starting create editing workflow", async () => {
+    it("should update the tooltip text after starting create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const draw = workflow.getDrawInteraction();
@@ -217,7 +217,7 @@ describe("during create editing workflow", () => {
 
         const feature = draw.getOverlay().getSource()!.getFeatures()[0];
         if (!feature) {
-            throw new Error("no features founded");
+            throw new Error("no features found");
         }
         expect(feature.getGeometry().getCoordinates()).toStrictEqual([
             [
@@ -248,7 +248,7 @@ describe("reset create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should updates the tooltip text after reset create editing workflow", async () => {
+    it("should update the tooltip text after reset create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const draw = workflow.getDrawInteraction();
@@ -270,7 +270,7 @@ describe("reset create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should does not remove interaction after reset create editing workflow", async () => {
+    it("should not remove interaction after reset create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         workflow.reset();
@@ -284,7 +284,7 @@ describe("reset create editing workflow", () => {
         workflow.stop();
     });
 
-    it("should does not contain a geometry after reset create editing workflow", async () => {
+    it("should not contain a geometry after reset create editing workflow", async () => {
         const { map, layerFactory } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map, layerFactory);
         const draw = workflow.getDrawInteraction();

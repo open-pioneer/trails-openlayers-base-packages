@@ -6,13 +6,13 @@ This package provides a UI component to perform a selection on given selection s
 
 To add the component to your app, import `Selection` from `@open-pioneer/selection`. The `@open-pioneer/notifier` package is required too.
 
-The mandatory properties are `map` (unless the `DefaultMapProvider`is used) and `sources` (layer source to be selected on).
+The mandatory properties are `map` (unless the `DefaultMapProvider` is used) and `sources` (layer source to be selected on).
 The limit per selection is 10.000 items.
 
 ```tsx
 <Selection
     map={map}
-    sources={selectionsources}
+    sources={selectionSources}
 /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
@@ -24,10 +24,14 @@ In case of the `onSelectionComplete` event, you can access the selection result 
 In case of the `onSelectionSourceChanged` event, you can access the selected selection source from the parameter `SelectionSourceChangedEvent`.
 
 ```tsx
-import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import {
+    Selection,
+    SelectionCompleteEvent,
+    SelectionSourceChangedEvent
+} from "@open-pioneer/selection";
 <Selection
     map={map}
-    sources={datasources}
+    sources={selectionSources}
     onSelectionComplete={(event: SelectionCompleteEvent) => {
         // do something
     }}

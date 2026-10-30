@@ -1,6 +1,6 @@
 # @open-pioneer/map-ui-components
 
-This package contains ui components that can used together with the map.
+This package contains UI components that can be used together with the map.
 
 ## Tool buttons
 

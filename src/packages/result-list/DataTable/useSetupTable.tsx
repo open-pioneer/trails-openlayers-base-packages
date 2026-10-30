@@ -89,8 +89,7 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
 
 function applyUpdate<T>(current: T, updaterOrValue: Updater<T>): T {
     if (typeof updaterOrValue === "function") {
-        // oxlint-disable-next-line @typescript-eslint/no-explicit-any
-        return (updaterOrValue as any)(current);
+        return (updaterOrValue as (old: T) => T)(current);
     }
     return updaterOrValue;
 }

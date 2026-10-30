@@ -260,7 +260,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
     return useMemo(() => {
         // Not used directly, but the memo must re-execute whenever this changes.
         // Note: columnSizing seems to be needed as well, because otherwise resetting the column size (header.column.resetSize())
-        // won't to anything.
+        // won't do anything.
         // oxlint-disable-next-line @typescript-eslint/no-unused-expressions
         (void columnSizingInfo, columnSizing);
         const colSizes: { [key: string]: number } = {};

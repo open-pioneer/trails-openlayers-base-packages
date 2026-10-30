@@ -267,7 +267,7 @@ export class AppModel implements Service, AppState {
      * Clears the existing highlight created by earlier calls to this method.
      */
     highlightAndZoom(map: MapModel, geometries: Geometry[]): void {
-        const viewport: HTMLElement = map.olMap.getViewport();
+        const viewport: HTMLElement = map.viewport;
 
         this.clearHighlight();
         this.#featureHighlight = map.highlights.addAndZoom(geometries, {
@@ -282,7 +282,7 @@ export class AppModel implements Service, AppState {
      * Zooms to the given geometries.
      */
     zoom(map: MapModel, geometries: Geometry[]): void {
-        const viewport: HTMLElement = map.olMap.getViewport();
+        const viewport: HTMLElement = map.viewport;
 
         map.zoom(geometries, {
             viewPadding:
@@ -323,7 +323,7 @@ export class AppModel implements Service, AppState {
      * the application specific `resultListMetadata` from the layers' attributes.
      */
     async #initSelectionSources(map: MapModel) {
-        const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
+        const SELECTION_LAYER_IDS = ["ogc_kitas"];
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
         for (const opLayer of opLayers) {

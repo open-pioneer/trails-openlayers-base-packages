@@ -150,7 +150,7 @@ export interface MapConfig {
      * Whether to show the default attribution control.
      *
      * The default value is `true`, unless `advanced` options are defined.
-     * The default value changes to `false` if `advanced.controls` defined, mostly for backwards compatibility.
+     * The default value changes to `false` if `advanced.controls` is defined, mostly for backwards compatibility.
      * If `showDefaultAttributions` is set explicitly to `true` _or_ `false`, that value always has precedence.
      *
      * > NOTE: Disabling the default attribution control typically means that you must render the attributions yourself (see {@link MapModel.attributionItems})

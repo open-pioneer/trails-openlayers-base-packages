@@ -43,7 +43,7 @@ export function LocaleSwitcher() {
 }
 
 function getLocale(language: string) {
-    if (language === "en" || language == "de") {
+    if (language === "en" || language === "de") {
         return language;
     }
     throw new Error("unexpected language: " + language);

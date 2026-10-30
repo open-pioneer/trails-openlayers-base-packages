@@ -88,6 +88,18 @@ it("supports adding base layers to the model in MapConfig", async () => {
     expect(model.layers.getActiveBaseLayer()).toBe(layerBase);
 });
 
+it("keeps the zoom level configured in the advanced view options", async () => {
+    model = await create("foo", {
+        advanced: {
+            view: {
+                center: [848890, 6793350],
+                zoom: 5
+            }
+        }
+    });
+    expect(model.olView.getZoom()).toBeCloseTo(5);
+});
+
 describe("fallback layer", () => {
     // Does not make a lot of sense, but this was present since the very beginning.
     it("creates a fallback OSM layer if the user does not specify any layers", async () => {

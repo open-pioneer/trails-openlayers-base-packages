@@ -285,36 +285,6 @@ it("should change the style of the highlight", async () => {
     expect(feature?.getStyle()).toEqual(blueStyle.Point);
 });
 
-it("should set the provided style on the highlight", async () => {
-    const { highlights } = await setup();
-    const point = new Point([852011.307424, 6788511.322702]);
-
-    const greenStyle = createStyle("green");
-    highlights.add([point], { highlightStyle: greenStyle });
-
-    const source = getLayerSource(highlights);
-    const feature = source?.getFeatures()[0];
-    expect(feature).toBeDefined();
-    expect(feature?.getStyle()).toEqual(greenStyle.Point);
-});
-
-it("should change the style of the highlight", async () => {
-    const { highlights } = await setup();
-
-    const point = new Point([852011.307424, 6788511.322702]);
-
-    const greenStyle = createStyle("green");
-    const highlight = highlights.add([point], { highlightStyle: greenStyle });
-
-    const source = getLayerSource(highlights);
-    const feature = source?.getFeatures()[0];
-    expect(feature).toBeDefined();
-
-    const blueStyle = createStyle("blue");
-    highlight.setStyle(blueStyle);
-    expect(feature?.getStyle()).toEqual(blueStyle.Point);
-});
-
 async function setup(options?: SimpleMapOptions & { returnMap?: true; mockMapRender?: boolean }) {
     const { map } = await setupMap({
         ...options,

@@ -138,7 +138,7 @@ export class WMTSLayer extends AbstractLayer {
         return this.#olSource.value;
     }
 
-    /** URL of the WMTS service. */
+    /** Legend URL from the service capabilities, if available. */
     override get legend(): string | undefined {
         return this.#legend.value;
     }
@@ -151,6 +151,7 @@ export class WMTSLayer extends AbstractLayer {
         return undefined;
     }
 
+    /** URL of the WMTS service. */
     get url() {
         return this.#url;
     }
@@ -185,7 +186,8 @@ export class WMTSLayer extends AbstractLayer {
             })
             .catch((error: unknown) => {
                 if (isAbortError(error)) {
-                    LOG.debug(`Layer '${this.name}' has been destroyed before fetching the data`);
+                    LOG.debug(`Layer '${this.id}' has been destroyed before fetching the data`);
+                    return;
                 }
                 LOG.error(`Failed to initialize WMTS layer '${this.name}'`, error);
                 const wrappedError =
@@ -250,7 +252,7 @@ export class WMTSLayer extends AbstractLayer {
             }
 
             const image = tile.getImage();
-            if (!isHtmlImage(image)) {
+            if (!image || !isHtmlImage(image)) {
                 // Could also be canvas or video
                 throw new Error("Only <img> tags are supported as tiles for now.");
             }
@@ -289,7 +291,7 @@ export class WMTSLayer extends AbstractLayer {
         );
         return layerDesc?.Style?.some((style: any) => style.Identifier === styleToUse) ?? false;
     }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    /* oxlint-enable @typescript-eslint/no-explicit-any */
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).

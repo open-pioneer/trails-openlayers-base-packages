@@ -1,5 +1,5 @@
 [![Build and deploy](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/ci.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/ci.yml)
-[![Audit dependencies (daily)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml)
+[![Audit dependencies (weekly)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml/badge.svg)](https://github.com/open-pioneer/trails-openlayers-base-packages/actions/workflows/audit-dependencies.yml)
 
 # OpenLayers Base Packages
 
@@ -18,7 +18,7 @@ To start the development server, run:
 ```bash
 $ pnpm install # initially and always after changing package dependencies
 $ pnpm dev     # starts dev server
-  VITE v4.3.9  ready in 832 ms
+  VITE ready in ...
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
@@ -28,10 +28,12 @@ $ pnpm dev     # starts dev server
 To run tests:
 
 ```bash
-# all tests
+# all tests (watch mode)
 $ pnpm test
 # only run tests for a certain package (or file)
 $ pnpm test <PATH_TO_PACKAGE>
+# run once, as in CI
+$ pnpm test run
 ```
 
 For more details, consult the starter project's [Repository Guide](https://github.com/open-pioneer/trails-starter/blob/main/docs/RepositoryGuide.md).

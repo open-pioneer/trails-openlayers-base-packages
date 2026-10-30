@@ -135,7 +135,7 @@ it("should successfully change the map view on forward", async () => {
     await user.click(historyDivForward);
 
     const actView = map.olMap.getView();
-    expect(actView.getCenter()).toBe(tempViewCenter);
+    expect(actView.getCenter()).toEqual(tempViewCenter);
     expect(actView.getZoom()).toBe(tempViewZoom);
 });
 
@@ -184,8 +184,39 @@ it("should successfully change the map view on backward", async () => {
     await user.click(historyDivBackward);
 
     const actView = map.olMap.getView();
-    expect(actView.getCenter()).toBe(tempViewCenter);
+    expect(actView.getCenter()).toEqual(tempViewCenter);
     expect(actView.getZoom()).toBe(tempViewZoom);
+});
+
+it("keeps the map's view object when navigating", async () => {
+    const user = userEvent.setup();
+    const { map, Wrapper } = await setup();
+
+    render(
+        <>
+            <HistoryBackward map={map} data-testid="navi-history-back" />
+            <HistoryForward map={map} data-testid="navi-history-for" />
+        </>,
+        { wrapper: Wrapper }
+    );
+
+    const { historyDivBackward } = await waitForHistoryComponent();
+    const olView = map.olMap.getView();
+    olView.setRotation(0.5);
+
+    await act(async () => {
+        olView.setCenter([1900000, 6900000]);
+        map.olMap.dispatchEvent("moveend");
+    });
+    await act(async () => {
+        olView.setCenter([1500000, 6500000]);
+        map.olMap.dispatchEvent("moveend");
+    });
+    await user.click(historyDivBackward);
+
+    expect(map.olMap.getView()).toBe(olView);
+    expect(olView.getCenter()).toEqual([1900000, 6900000]);
+    expect(olView.getRotation()).toBe(0.5);
 });
 
 async function waitForHistoryComponent() {

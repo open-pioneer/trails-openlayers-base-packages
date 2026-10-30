@@ -4,12 +4,12 @@ This package provides a UI component to display features and their attributes.
 
 ## Usage
 
-To add the package to your app, import `ResultList` from `@open-pioneer/result-list`. Furthermore, the Id of the currently used map is required.
+To add the package to your app, import `ResultList` from `@open-pioneer/result-list`. Furthermore, the map model is required (or a `DefaultMapProvider`).
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
 
-/* Recommendation: mark the result list (and any other co-located widgets) as an landmark for better screen reader support. */
+/* Recommendation: mark the result list (and any other co-located components) as a landmark for better screen reader support. */
 <Box role="region" aria-label="... region label ...">
     <ResultList
         /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
@@ -48,7 +48,7 @@ The following sample shows a configuration for objects that all have the propert
 <ResultList
     input={{
         data: features, // Obtained from somewhere
-        labelProperty: "name" // Optional
+        labelProperty: "name", // Optional
         columns: [
             {
                 propertyName: "name"
@@ -173,8 +173,8 @@ import { ResultList } from "@open-pioneer/result-list";
 <ResultList map={map} input={input} selectionMode="single" />;
 ```
 
-The style of the selection control can be configured by using the `"selectionStyle"` property (`"checkbox"` or `"radio`).
-Note that the combination of `selectionMode` `"single"` with `selectionStyle` `"radio"` is not allowed:
+The style of the selection control can be configured by using the `"selectionStyle"` property (`"checkbox"` or `"radio"`).
+The `selectionStyle` `"radio"` cannot be combined with the `selectionMode` `"multi"`.
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
@@ -183,7 +183,7 @@ import { ResultList } from "@open-pioneer/result-list";
 
 ### Listening for selection changes
 
-​The `ResultList` supports listening to selection changes via the optional property `onSelectionChange`.
+The `ResultList` supports listening to selection changes via the optional property `onSelectionChange`.
 An event handler function can be passed that will be invoked whenever the user changes the selection.
 
 ```tsx

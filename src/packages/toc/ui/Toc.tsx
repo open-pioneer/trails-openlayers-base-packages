@@ -12,7 +12,7 @@ import {
     useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useId, useRef } from "react";
+import { FC, useEffect, useId } from "react";
 import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
 import { TocViewModel } from "../model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
@@ -45,9 +45,9 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Properties for the embedded basemap switcher.
      *
-     * Property `mapId` is not applied (the basemap switcher uses the same map as the toc).
+     * The `map` property is not applied (the basemap switcher uses the same map as the toc).
      */
-    basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+    basemapSwitcherProps?: Omit<BasemapSwitcherProps, "map">;
 
     /**
      * If `true`, groups in the toc can be collapsed and expanded.
@@ -72,13 +72,16 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     autoShowParents?: boolean;
 
     /**
-     * Callback that is triggered once when the Toc is initialized.
+     * Callback that is triggered when the Toc is initialized.
      * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}.
      */
     onReady?: (event: TocReadyEvent) => void;
 
     /**
-     * Callback that is triggered once when the Toc is disposed and unmounted.
+     * Callback that is triggered when the Toc is disposed, either because it is unmounted
+     * or because the `map` changes.
+     *
+     * Old API objects should not be used anymore.
      */
     onDisposed?: (event: TocDisposedEvent) => void;
 }
@@ -166,9 +169,9 @@ function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }
                 }
             >
                 <BasemapSwitcher
-                    map={map}
                     aria-labelledby={basemapsHeadingId}
                     {...basemapSwitcherProps}
+                    map={map}
                 />
             </TitledSection>
         </Box>
@@ -212,15 +215,7 @@ function useTocAPI(
     onReady: TocProps["onReady"] | undefined,
     onDisposed: TocProps["onDisposed"] | undefined
 ) {
-    const apiRef = useRef<TocApi>(null);
-    // oxlint-disable-next-line react/refs
-    if (!apiRef.current) {
-        apiRef.current = new TocApi(model);
-    }
-
-    const api = apiRef.current;
-
-    const readyTrigger = useEvent(() => {
+    const readyTrigger = useEvent((api: TocApi) => {
         onReady?.({
             api
         });
@@ -230,10 +225,10 @@ function useTocAPI(
         onDisposed?.({});
     });
 
-    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
-    // useEvent() returns a stable function reference.
+    // The api lives as long as the view model, which is replaced when the map changes.
+    // useEvent() returns stable function references, so changed callbacks do not re-run the effect.
     useEffect(() => {
-        readyTrigger();
-        return disposeTrigger;
-    }, [readyTrigger, disposeTrigger]);
+        readyTrigger(new TocApi(model));
+        return () => disposeTrigger();
+    }, [model, readyTrigger, disposeTrigger]);
 }

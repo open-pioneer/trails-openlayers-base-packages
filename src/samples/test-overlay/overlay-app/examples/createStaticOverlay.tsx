@@ -118,6 +118,7 @@ function PhotoWithLicense() {
         <Flex direction="column">
             <Image
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg/330px-M%C3%BCnster%2C_F%C3%BCrstbisch%C3%B6fliches_Schloss_--_2018_--_1925-27-28.jpg"
+                alt="Schloss Münster"
                 w="full"
                 display="block"
             />

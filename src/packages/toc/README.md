@@ -25,7 +25,7 @@ To show the toolset menu, set the `showTools` property to `true`.
 
 The default tools provided by the TOC are:
 
-- A button to hide all layers (sets `visibility` to false, enabled by default)
+- A button to hide all layers that are shown in the TOC (sets `visible` to `false`, enabled by default)
 - A button to collapse all groups (enabled by default if groups are collapsible)
 
 These tools can be configured by using the `toolsConfig` property.
@@ -85,7 +85,8 @@ Groups can be made collapsible through user action by setting the `collapsibleGr
 If enabled, a toggle button appears next to parent nodes by which the user can expand or collapse the group.
 
 Using the `initiallyCollapsed` property, groups can be collapsed by default when the TOC is rendered.
-If `initiallyCollapsed` is set to `true`, `collapsibleGroups` is automatically set to `true`, too.
+If `initiallyCollapsed` is set to `true`, `collapsibleGroups` defaults to `true`, too.
+An explicit `collapsibleGroups={false}` wins, and `initiallyCollapsed` has no effect in that case.
 
 ```tsx
 <Toc
@@ -110,7 +111,7 @@ const internalLayer = layerFactory.create({
 });
 ```
 
-The layer's `internal` state also affects other UI widgets (e.g. Legend). If the layer should be hidden specifically in the Toc (but not in other widgets) the `listMode` attribute can be used to hide the layer item.
+The layer's `internal` state also affects other components (e.g. Legend). If the layer should be hidden specifically in the Toc (but not in other components) the `listMode` attribute can be used to hide the layer item.
 
 ```typescript
 //use listMode to hide the layer specifically in Toc

@@ -36,6 +36,11 @@ interface SelectOption {
      * Undefined is used for "no basemap".
      */
     layer: Layer | undefined;
+
+    /**
+     * Whether the option cannot be selected (the layer failed to load).
+     */
+    disabled?: boolean;
 }
 
 /**
@@ -61,7 +66,7 @@ export interface BasemapSwitcherProps extends CommonComponentProps, MapModelProp
 
     /**
      * Optional aria-label property.
-     * Do not use together with aria-label.
+     * Do not use together with aria-labelledby.
      */
     "aria-label"?: string;
 }
@@ -92,7 +97,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 value: layer.id,
                 layer: layer,
                 label: layer.title,
-                disabled: layer.loadState == "error"
+                disabled: layer.loadState === "error"
             };
         });
 

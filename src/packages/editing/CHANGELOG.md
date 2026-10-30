@@ -1,5 +1,18 @@
 # @open-pioneer/editing
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: `EditingService.updateFeature()` no longer blocks the map when the given feature has no id.
+  The workflow is destroyed immediately in that case.
+  The next `createFeature()` or `updateFeature()` call for the same map now starts a new workflow instead of throwing "EditingWorkflow already in progress".
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes

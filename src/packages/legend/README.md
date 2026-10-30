@@ -2,7 +2,7 @@
 
 This package provides a legend UI component that allows a user to see legend information for layers in the map.
 
-The legend UI shows entries for layers that are currently visible (enabled) in the map.
+The legend UI shows entries for layers that are currently visible in the map.
 
 ## Usage
 
@@ -74,7 +74,37 @@ The legend content for sublayers is shown plain and without hierarchical structu
 
 #### Internal layers
 
-If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend widget. Even if a legend is configured it will not be displayed. The `internal` property also affects other UI widgets (e.g. Toc).
+If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend component.
+Even if a legend is configured it will not be displayed.
+The `internal` property also affects other components (e.g. Toc).
+
+#### Controlling the legend entries with `listMode`
+
+The `listMode` of the `legend` attribute controls whether a layer and its children are shown in the legend.
+Valid values are:
+
+- `"show"`: the layer's legend entry is displayed, and its child layers are considered as well.
+- `"hide"`: neither the layer nor its child layers get a legend entry.
+- `"hide-children"`: the layer's legend entry is displayed, but its child layers (e.g. sublayers or the layers of a group) are ignored.
+
+If `listMode` is not set, internal layers are hidden, layers with a legend use `"hide-children"` and all other layers use `"show"`.
+An explicit `listMode` has precedence over the layer's `internal` property: a layer with `listMode: "show"` is displayed even if it is internal.
+
+```typescript
+layerFactory.create({
+    type: GroupLayer,
+    title: "Group",
+    attributes: {
+        "legend": {
+            imageUrl: "https://example.com/group-legend.png",
+            listMode: "show" // show the group's legend and the legends of its child layers
+        } satisfies LegendItemAttributes
+    },
+    layers: [
+        // ...
+    ]
+});
+```
 
 ### Showing legend for basemap
 

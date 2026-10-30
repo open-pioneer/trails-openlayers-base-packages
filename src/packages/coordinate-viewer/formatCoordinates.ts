@@ -24,11 +24,11 @@ export function formatCoordinates(
     let str;
     // oxlint-disable-next-line oxc/branches-sharing-code
     if (format === "degree" && isFinite(x) && isFinite(y)) {
-        const [xHour, xMin, xSek] = toDegree(x, intl, precision);
-        const [yHour, yMin, ySek] = toDegree(y, intl, precision);
+        const [xHour, xMin, xSek] = toDegree(Math.abs(x), intl, precision);
+        const [yHour, yMin, ySek] = toDegree(Math.abs(y), intl, precision);
 
-        const xString = `${Math.abs(xHour)}°${xMin}'${xSek}"${0 <= xHour ? "(E)" : "(W)"}`;
-        const yString = `${Math.abs(yHour)}°${yMin}'${ySek}"${0 <= yHour ? "(N)" : "(S)"}`;
+        const xString = `${xHour}°${xMin}'${xSek}"${0 <= x ? "(E)" : "(W)"}`;
+        const yString = `${yHour}°${yMin}'${ySek}"${0 <= y ? "(N)" : "(S)"}`;
 
         str = xString + " " + yString;
     } else {
@@ -45,6 +45,7 @@ export function formatCoordinates(
     return str;
 }
 
+/** Splits a non-negative coordinate part into degrees, minutes and formatted seconds. */
 function toDegree(
     coordPart: number,
     intl: PackageIntl,

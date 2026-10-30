@@ -35,6 +35,9 @@ export interface SelectionProps extends CommonComponentProps, MapModelProps {
     onSelectionSourceChanged?(event: SelectionSourceChangedEvent): void;
 }
 
+/**
+ * Event emitted by {@link SelectionProps.onSelectionComplete} after a successful selection.
+ */
 export interface SelectionCompleteEvent {
     /** The source that returned the {@link results}. */
     source: SelectionSource;
@@ -43,6 +46,9 @@ export interface SelectionCompleteEvent {
     results: SelectionResult[];
 }
 
+/**
+ * Event emitted by {@link SelectionProps.onSelectionSourceChanged} when the current source changes.
+ */
 export interface SelectionSourceChangedEvent {
     /** The new selected source */
     source: SelectionSource | undefined;

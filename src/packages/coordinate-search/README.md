@@ -1,6 +1,6 @@
 # @open-pioneer/coordinate-search
 
-This package provides a UI component which allow users to search for coordinates in the map and provides component that is an input field for coordinates.
+This package provides a UI component that allows users to search for coordinates in the map and a component that is an input field for coordinates.
 
 ## Usage coordinate search
 

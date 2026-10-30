@@ -107,6 +107,8 @@ export class LayerCollection {
         this.#topLevelLayers.clear();
         this.#layersById.clear();
         this.#operationalLayerOrder.splice(0, this.#operationalLayerOrder.length);
+        this.#topMostOperationalLayers.splice(0, this.#topMostOperationalLayers.length);
+        this.#baseLayers.splice(0, this.#baseLayers.length);
         this.#activeBaseLayer.value = undefined;
         this.#syncHandle?.destroy();
         this.#syncHandle = undefined;
@@ -172,7 +174,7 @@ export class LayerCollection {
                 return false;
             }
             if (!(newBaseLayer instanceof AbstractLayer)) {
-                LOG.warn(`Cannot activate base layer '${id}: layer has an invalid type.'`);
+                LOG.warn(`Cannot activate base layer '${id}': layer has an invalid type.`);
                 return false;
             }
             if (!newBaseLayer.isBaseLayer) {
@@ -266,6 +268,10 @@ export class LayerCollection {
         });
     }
 
+    /**
+     * Returns the top level layers of this collection.
+     * Same as {@link getLayers()}.
+     */
     getItems(options?: LayerRetrievalOptions): Layer[] {
         return this.getLayers(options);
     }

@@ -3,7 +3,7 @@
 
 import { Resource } from "@open-pioneer/core";
 import OlMap from "ol/Map";
-import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
+import type { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay } from "./utils";
 
 export type FileFormatType = "png" | "pdf";
@@ -52,7 +52,7 @@ export class PrintingController {
             });
             const canvas = this.#printMap.getCanvas();
             if (canvas) {
-                if (options.fileFormat == "png") {
+                if (options.fileFormat === "png") {
                     await this.exportMapInPNG(canvas, options);
                 } else {
                     await this.exportMapInPDF(canvas, options);
@@ -100,7 +100,7 @@ export class PrintingController {
 
         context.fillStyle = "#fff"; // background color for background rect
         context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
-        context.font = 20 + "px bold sans-serif";
+        context.font = "bold 20px sans-serif";
         context.textAlign = "center";
         context.fillStyle = "#000"; // text color
 

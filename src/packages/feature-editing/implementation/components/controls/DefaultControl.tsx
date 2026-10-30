@@ -36,11 +36,7 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
 
     const onInputChange = useEvent((event: ChangeEvent<InputElement>) => {
         if (event.target.value !== "") {
-            if (field.type === "select") {
-                properties.set(field.propertyName, parseFloat(event.target.value));
-            } else {
-                properties.set(field.propertyName, event.target.value);
-            }
+            properties.set(field.propertyName, event.target.value);
         } else {
             properties.set(field.propertyName, undefined);
         }
@@ -144,7 +140,7 @@ export function DefaultControl({ field }: DefaultControlProps): ReactNode {
             return (
                 <Textarea
                     placeholder={field.placeholder ?? field.label}
-                    value={value?.toString()}
+                    value={value?.toString() ?? ""}
                     onChange={onInputChange}
                 />
             );

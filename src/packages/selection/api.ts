@@ -52,7 +52,7 @@ export interface SelectionOptions {
     /**
      * The maximum number of selection results to request.
      * The selection component currently only supports a certain amount of results (indicated by this value).
-     * If a source results more than `maxResults` results, additional results will be ignored.
+     * If a source returns more than `maxResults` results, additional results will be ignored.
      */
     maxResults: number;
 
@@ -72,7 +72,7 @@ export interface SelectionOptions {
      *
      * The signal is aborted when the results of this selection are no longer needed,
      * for example because the user started another selection in the meantime
-     * or because the selection widget has been destroyed.
+     * or because the selection component has been destroyed.
      *
      * You can pass this signal to builtin functions like `fetch` that automatically
      * support cancellation.
@@ -141,7 +141,7 @@ export interface SelectionSource {
      *
      * NOTE: If your selection source implements custom error handling (i.e. `try`/`catch`), it is
      * good practice to forward abort errors without modification. This will enable the selection
-     * widget to differentiate real errors from cancellations.
+     * component to differentiate real errors from cancellations.
      *
      * @param selectionKind The geometry with which to perform the spatial selection. Currently only
      * an extent is supported.
@@ -150,13 +150,32 @@ export interface SelectionSource {
     select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
 }
 
+/**
+ * Options for {@link VectorLayerSelectionSourceFactory.createSelectionSource}.
+ */
 export interface VectorLayerSelectionSourceOptions {
+    /** The optional id of the source, see {@link SelectionSource.id}. */
     id?: string;
+
+    /** The OpenLayers vector layer whose features are selected. */
     vectorLayer: VectorLayer<VectorSource, Feature>;
+
+    /** The label of the source, see {@link SelectionSource.label}. */
     label: string;
 }
 
+/**
+ * A selection source that selects the features of an OpenLayers vector layer.
+ *
+ * Instances are created by the {@link VectorLayerSelectionSourceFactory}.
+ */
 export interface VectorLayerSelectionSource extends SelectionSource, Resource {
+    /**
+     * The status of this source.
+     *
+     * The source is unavailable while the layer is not visible.
+     * This value is reactive.
+     */
     readonly status: SelectionSourceStatus;
 }
 

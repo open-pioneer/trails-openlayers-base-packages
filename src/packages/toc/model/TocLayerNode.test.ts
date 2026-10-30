@@ -144,7 +144,7 @@ describe("shownChildren and hasShownChildren", () => {
         expect(parentNode.hasShownChildren).toBe(false);
     });
 
-    it("is empty if the listMode  is 'hide-children'", () => {
+    it("is empty if the listMode is 'hide-children'", () => {
         const { parentNode } = setup();
         const childNode = parentNode.children[0]!;
 

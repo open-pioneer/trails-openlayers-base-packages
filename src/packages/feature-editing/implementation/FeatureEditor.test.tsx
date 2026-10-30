@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { reactive } from "@conterra/reactivity-core";
-import { LayerFactory } from "@open-pioneer/map";
+import { GroupLayer, LayerFactory } from "@open-pioneer/map";
 import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import type { NotificationService } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -144,7 +144,7 @@ describe("Editor interaction", () => {
             </PackageContextProvider>
         );
 
-        // Initial step should be "none"
+        // Initial step should be "initial"
         expect(onEditingStepChange).toHaveBeenCalledWith({ id: "initial" });
 
         // Find and click the select button
@@ -187,7 +187,7 @@ describe("Editor interaction", () => {
         await user.click(selectButton);
 
         await waitFor(() => {
-            // Should change to update-select step
+            // Should change to the "selection" step
             expect(onEditingStepChange).toHaveBeenCalledWith(
                 expect.objectContaining({ id: "selection" })
             );
@@ -274,6 +274,104 @@ describe("Editor interaction", () => {
 
         // Enabled again when at least one layer is visible
         layers[0]!.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("resets the select button when the selection becomes unavailable", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const layer = createTestLayer({
+            title: "A",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const onEditingStepChange = vi.fn();
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                    onEditingStepChange={onEditingStepChange}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
+        });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonActiveTitle");
+
+        // Hiding the layer ends the selection and disables the button
+        layer.setVisible(false);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith({ id: "initial" });
+        });
+        expect(selectButton).toBeDisabled();
+
+        // The button is inactive again when it becomes available, and one click starts the selection
+        layer.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonTitle");
+
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
+        });
+    });
+
+    it("disables the select button when the layers are not effectively visible", async () => {
+        const { map, layerFactory } = await setupMap();
+
+        // The layer itself is visible, but its parent group is not.
+        const layer = createTestLayer({
+            title: "Child",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            title: "Group",
+            visible: false,
+            layers: [layer]
+        });
+        expect(layer.visible).toBe(true);
+        expect(layer.effectivelyVisible).toBe(false);
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+
+        // Parent group hidden -> disabled, even though the layer is visible on its own
+        expect(selectButton).toBeDisabled();
+
+        // Enabled once the group (and therefore the layer) becomes effectively visible
+        group.setVisible(true);
         await waitFor(() => {
             expect(selectButton).toBeEnabled();
         });

@@ -68,7 +68,7 @@ const deprecatedHighlights = deprecated({
  **/
 export interface ZoomOptions {
     /**
-     * The zoom-level used if there is no valid extend (such as for single points).
+     * The zoom-level used if there is no valid extent (such as for single points).
      */
     pointZoom?: number;
 
@@ -113,7 +113,7 @@ export interface MapPadding {
 /**
  * An item that should be displayed as part of the attributions for the map.
  *
- * @group MapModel
+ * @group Map Model
  */
 export interface AttributionItem {
     /**
@@ -139,7 +139,7 @@ export class MapModel {
     readonly #attributions: MapAttributions;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
-    readonly #tooltips: Overlays;
+    readonly #overlays: Overlays;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
@@ -242,7 +242,7 @@ export class MapModel {
 
         // expects fully constructed mapModel
         this.#highlights = new Highlights(this, this.#layerDeps);
-        this.#tooltips = new Overlays(this);
+        this.#overlays = new Overlays(this);
     }
 
     /**
@@ -269,6 +269,7 @@ export class MapModel {
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
         this.#highlights[DESTROY_HIGHLIGHTS]();
+        this.#overlays.clear();
         this.#attributions.destroy();
         this.#olMap.dispose();
     }
@@ -406,6 +407,19 @@ export class MapModel {
     }
 
     /**
+     * Returns the OpenLayers map's viewport element.
+     */
+    get viewport(): HTMLElement {
+        const viewport = this.#olMap.getViewport();
+        if (viewport) {
+            return viewport;
+        } else {
+            // should never happen because we do not support OffscreenCanvas
+            throw new Error("olMap's viewport is undefined.");
+        }
+    }
+
+    /**
      * Returns the current view of the OpenLayers map.
      */
     get olView(): OlView {
@@ -425,7 +439,7 @@ export class MapModel {
      * Create and receive map overlays
      */
     get overlays(): Overlays {
-        return this.#tooltips;
+        return this.#overlays;
     }
 
     /**
@@ -531,7 +545,7 @@ export class MapModel {
     /**
      * Removes any existing highlights from the map.
      *
-     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead.
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.clear} instead.
      */
     removeHighlights(): void {
         deprecatedHighlights();

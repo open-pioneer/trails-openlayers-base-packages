@@ -1,5 +1,17 @@
 # @open-pioneer/coordinate-search
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: `CoordinateInput` compares the `input` prop by content.
+  Re-rendering the parent with a new array that holds the same coordinates no longer emits another `onSelect` event.
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes

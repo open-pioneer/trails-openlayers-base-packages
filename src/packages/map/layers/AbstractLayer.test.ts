@@ -11,7 +11,7 @@ import { LayerCollection } from "../model/LayerCollection";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { ATTACH_TO_MAP, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
+import { ATTACH_TO_MAP, GET_DEPS, LAYER_DEPS, SET_METADATA_LOAD_INFO } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { Layer } from "./unions";
@@ -30,6 +30,17 @@ it("supports access to the olLayer", async () => {
         olLayer: olLayer
     });
     expect(layer.olLayer).toBe(olLayer);
+});
+
+it("throws when dependencies are requested before the layer has been attached", () => {
+    const layer = new LayerImpl({
+        id: "a",
+        title: "A",
+        olLayer: createTestOlLayer()
+    });
+    expect(() => layer[GET_DEPS]()).toThrowErrorMatchingInlineSnapshot(
+        `[Error: Layer 'a' has not been attached to a map yet. Use the LayerFactory to create an instance or add the layer to the map first.]`
+    );
 });
 
 it("supports the visibility attribute", async () => {
@@ -390,7 +401,7 @@ describe("health checks", () => {
 });
 
 describe("visibility restrictions", () => {
-    it("support {min,max}Zoom and {min,max}Resolution properties", async () => {
+    it("exposes {min,max}Zoom and {min,max}Resolution as aliases for the OpenLayers properties", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -413,7 +424,7 @@ describe("visibility restrictions", () => {
         expect(layer.olLayer.getMaxResolution()).toBe(600);
     });
 
-    it("support reactivity of attributes", async () => {
+    it("updates the properties reactively", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -446,7 +457,7 @@ describe("visibility restrictions", () => {
         }
     });
 
-    it("support the minZoom/maxZoom attribute", async () => {
+    it("computes visibleInScale from minZoom/maxZoom", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -474,7 +485,7 @@ describe("visibility restrictions", () => {
         expect(layer.visibleInScale).toBe(true);
     });
 
-    it("support the minResolution/maxResolution attribute", async () => {
+    it("computes visibleInScale from minResolution/maxResolution", async () => {
         const layer = new LayerImpl({
             id: "testId",
             title: "A",
@@ -492,6 +503,30 @@ describe("visibility restrictions", () => {
         await vi.waitFor(() => {
             expect(layer.visibleInScale).toBe(true);
         });
+    });
+
+    it("makes the layer effectively invisible when it is not visible in scale", async () => {
+        const layer = new LayerImpl({
+            id: "testId",
+            title: "A",
+            minZoom: 10,
+            maxZoom: 16,
+            olLayer: createTestOlLayer()
+        });
+        const { map } = await setupMap({
+            layers: [layer]
+        });
+
+        expect(layer.visible).toBe(true);
+        expect(layer.visibleInHierarchy).toBe(true);
+        expect(layer.visibleInScale).toBe(false);
+        expect(layer.effectivelyVisible).toBe(false);
+
+        map.olMap.getView().setZoom(11);
+        await vi.waitFor(() => {
+            expect(layer.visibleInScale).toBe(true);
+        });
+        expect(layer.effectivelyVisible).toBe(true);
     });
 });
 

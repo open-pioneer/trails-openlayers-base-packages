@@ -10,7 +10,7 @@ To use a map in your app, follow these steps:
 - Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
 - Create a map and set a configuration (see [Map configuration](#map-configuration)).
 
-There are two different ways to create a map (see [Map creation](#map-creation) )
+There are two different ways to create a map (see [Map creation](#map-creation)):
 
 - Implement a `MapConfigProvider` (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)).
 - Directly create a `MapModel` instance (see [Direct mapModel](#create-a-mapmodel-instance-directly))
@@ -30,10 +30,10 @@ Example: Integration of a map container with a given map (for an example with `D
 
 ```jsx
 import { Box } from "@chakra-ui/react";
-import { MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapContainer, useMapModelValue } from "@open-pioneer/map";
 // ...
 function AppUI() {
-    const { map } = useMapModelValue();
+    const map = useMapModelValue();
 
     return (
         <Box height="100%" overflow="hidden">
@@ -43,9 +43,10 @@ function AppUI() {
 }
 ```
 
-> NOTE: If you use `useMapModelValue` There must be a `map.MapConfigProvider` or the map has to be created by you directly (see [Map creation](#map-creation)).
+> NOTE: `useMapModelValue()` without a `map` prop requires a `DefaultMapProvider` parent (see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider)).
+> The map itself is created by a `map.MapConfigProvider` or directly by you (see [Map creation](#map-creation)).
 
-The component itself uses the map registry service to create the map using the provided `map`.
+The component renders the given `map` into the DOM and hosts the map anchors and overlays.
 
 #### Changing the map view's padding
 
@@ -94,7 +95,7 @@ Example: Integration of a map anchor component into the map container with posit
 </MapContainer>
 ```
 
-The component itself calculates the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap`and `verticalGap` to avoid content overflow.
+The component itself calculates the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap` and `verticalGap` to avoid content overflow.
 In this case, the CSS property `overflow` is set to `hidden` to the map anchor component.
 If no `verticalGap` is configured, a default vertical gap of `30px` is used.
 
@@ -120,7 +121,7 @@ import { DefaultMapProvider } from "@open-pioneer/map";
 ```
 
 If an app only contains a single map, the map provider can surround the whole application's UI.
-If multiple maps are used, the provider can be placed around the respective map components that should interact with the corresponding app.
+If multiple maps are used, the provider can be placed around the respective map components that should interact with the corresponding map.
 
 It is possible to override the `map` on each component if some components in the tree should use a different map.
 
@@ -128,28 +129,34 @@ It is possible to override the `map` on each component if some components in the
 
 There are two different ways to create a map Model. Either by implementing a `MapConfigProvider`
 (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)) or by directly creating a `MapModel` instance
-(see [Create a MapModel instance directly](#create-a-mapmodel-instance-directly))).
+(see [Create a MapModel instance directly](#create-a-mapmodel-instance-directly)).
 The latter approach is useful if you manage your app state with an app model and want to
-control the map model programmatically. The MapconfigProvider approach is more declarative and useful
+control the map model programmatically. The `MapConfigProvider` approach is more declarative and useful
 if you want to configure the map once and don't need to change it often depending on your app state.
 
 #### Create a MapModel instance directly
 
-It can be usefull to create a `MapModel` instance directly, for example if you want to manage your app
+It can be useful to create a `MapModel` instance directly, for example if you want to manage your app
 state with an app model and want to control the map model programmatically. E.g. if you want to add or remove layers
 after a user interaction.
 Here is an example of how to create a `MapModel` instance directly in an app model.
 
-```tsx
-import { ServiceOptions } from "@open-pioneer/runtime";
+```ts
+import { MapRegistry } from "@open-pioneer/map";
+import { DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
+
 interface References {
     mapRegistry: MapRegistry;
 }
+
 export class AppModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
+
+    #mapRegistry: MapRegistry;
+
     constructor({ references }: ServiceOptions<References>) {
-        this._mapRegistry = references.mapRegistry;
-        this._mapRegistry.createMapModel("myMapModelId", {/* map config */}).then((map) => {
+        this.#mapRegistry = references.mapRegistry;
+        this.#mapRegistry.createMapModel("myMapModelId", {/* map config */}).then((map) => {
             // use the map model instance
         });
     }
@@ -180,7 +187,7 @@ It is also possible to destroy the map model instance again by calling `mapModel
 ### Implement a MapConfigProvider
 
 Another way to create a map is to implement a `MapConfigProvider`.
-The MapconfigProvider approach is more declarative and useful
+The `MapConfigProvider` approach is more declarative and useful
 if you want to configure the map once and don't need to change it often depending on your app state.
 
 ```ts
@@ -188,6 +195,8 @@ if you want to configure the map once and don't need to change it often dependin
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig(): Promise<MapConfig> {
         return {/* map config */};
     }
@@ -221,6 +230,7 @@ The following map options are supported:
 - `initialView`,
 - `projection`,
 - `layers`, `baseLayers` and `topmostLayers` (see [Layer configuration](#layer-configuration)),
+- `showAttributions` (whether to show the default attribution control, see [Map attributions](#map-attributions)),
 - `advanced`
 
 Always use the provided map model to access the map initially.
@@ -238,6 +248,8 @@ Example: Implementation of the service with `initialView.kind = position`.
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig(): Promise<MapConfig> {
         return {
             initialView: {
@@ -267,6 +279,8 @@ Example: Implementation of the service with `initialView.kind = extent`.
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig(): Promise<MapConfig> {
         return {
             initialView: {
@@ -300,6 +314,8 @@ Example: Implementation of the service with an advanced configuration.
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig(): Promise<MapConfig> {
         return {
             advanced: {
@@ -322,7 +338,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-> IMPORTANT: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported.
+> IMPORTANT: Not all OpenLayers [Map](https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html) options are supported in `advanced`.
 > For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
 
 #### Layer configuration
@@ -336,7 +352,7 @@ You can access the layer factory from within a `MapConfigProvider` or inject it 
 The [Map configuration](#map-configuration) takes three separate lists of layers:
 
 - `baseLayers`: A base layer is always displayed beneath all other layers; only one base layer can be visible at once
-- `layers`: all operational layer; layers will be displayed in their listed order
+- `layers`: all operational layers; they are displayed in their listed order
 - `topmostLayers`: operational layers that are always displayed above all other layers (e.g. a highlight layer); multiple topmost layers will be displayed in their listed order
 
 Example: Create a layer using the layer factory.
@@ -359,18 +375,21 @@ Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
+
 import {
     MapConfig,
     MapConfigProvider,
     MapConfigProviderOptions,
     SimpleLayer
 } from "@open-pioneer/map";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import { Vector as VectorLayer } from "ol/layer";
+import TileLayer from "ol/layer/Tile";
 import { Vector as VectorSource } from "ol/source";
+import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             baseLayers: [
@@ -440,11 +459,11 @@ layer.updateAttributes({
 layer.deleteAttribute("foo");
 ```
 
-An optional property `healthCheck` allows to determine the availability status of a layer (e.g. map service down). The health check is performed asynchronous.
+An optional property `healthCheck` allows to determine the availability status of a layer (e.g. map service down). The health check is performed asynchronously.
 
 It is possible to provide
 
-- either a URL to perform a test request check the returned HTTP status
+- either a URL to perform a test request and check the returned HTTP status
 - or a `HealthCheckFunction` performing a custom check and returning the state
 
 **Important**: The availability of a layer is only checked once during initialization to reduce the load on server side. If a service becomes available again later, the application will need to be reloaded in order to update the availability status.
@@ -465,6 +484,8 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             layers: [
@@ -512,7 +533,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
-###### Mapbox / MapLibre styles
+##### Mapbox / MapLibre styles
 
 To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
 
@@ -551,7 +572,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Because of the changed license of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
+Because of the changed license of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the documentation of `ol-mapbox-style`).
 
 ##### OGC API Tiles
 
@@ -564,6 +585,8 @@ Example: How to configure a vector tile layer:
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
 export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "main";
+
     async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
@@ -717,7 +740,7 @@ import { MapModel, LayerFactory, SimpleLayer, registerProjections } from "@open-
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 
-// Global setup: register UTM32 (only needed for this specific layer)
+// Global setup: register EPSG:31466 (only needed for this specific layer)
 registerProjections({
     "EPSG:31466":
         "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs"
@@ -926,10 +949,10 @@ This point is especially important for the map model's central features:
 
 In those cases, the properties or methods provided by this package should always be used:
 
-- `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
+- `map.layers.addLayer(layer)` and `map.layers.removeLayer(layer)` to add or remove layers
 - `map.layers.getLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
 - `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
-- `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
+- `layer.updateAttributes()` and `layer.deleteAttribute()` to change a layer's custom attributes
 
 #### Layer classes
 
@@ -1013,9 +1036,9 @@ WMSSublayer .. Sublayer
 Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
+import type { MapRegistry } from "@open-pioneer/map";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import type { MapRegistry } from "@open-pioneer/map";
 
 interface References {
     mapRegistry: MapRegistry;
@@ -1077,6 +1100,39 @@ To access the map model instance, use the React hooks `useMapModel` or `useMapMo
     }
     ```
 
+#### Map highlights
+
+Use the `mapModel.highlights` API to highlight geometries or features on the map.
+Highlight are drawn for the given geometries (or `BaseFeature` objects with a geometry) on an internal vector layer.
+`add()` creates a highlight, `addAndZoom()` also zooms the map to the geometries (see `MapModel.zoom()` for the zoom options) and `clear()` removes all highlights.
+Call `destroy()` on the returned `Highlight` to remove it again, or `setStyle()` to change its style.
+
+Example:
+
+```ts
+import { MapModel } from "@open-pioneer/map";
+import { Point } from "ol/geom";
+
+const map: MapModel = ... // the map model
+
+const highlight = map.highlights.addAndZoom([new Point([848890, 6793350])], {
+    pointZoom: 14, // zoom level used for single points (default: 17)
+    highlightStyle: {
+        // optional OpenLayers styles per geometry type: Point, LineString, Polygon, ...
+    }
+});
+
+// later
+highlight.destroy();
+```
+
+#### Map attributions
+
+By default, the map shows the attributions of its sources in attribution control provided by OpenLayers.
+Set `showAttributions: false` in the map configuration to hide that control.
+The current attributions remain available as `mapModel.attributionItems` (reactive), so an app can render them itself.
+The `text` of an item may contain HTML, which has already been sanitized.
+
 #### Map overlays
 
 Use the `mapModel.overlays` API to create overlays on the map.
@@ -1085,7 +1141,7 @@ An overlay is a UI element that is displayed over the map.
 Overlays are tied to coordinates on the map and not to a position on the screen.
 The rendered content of an overlay is a `ReactNode`: you can use either simple text or arbitrarily rich React components.
 
-The new overlays API is implemented on top of the raw OpenLayers overlays and should be preferred for in most cases.
+The new overlays API is implemented on top of the raw OpenLayers overlays and should be preferred in most cases.
 You can access the raw `olOverlay` in advanced scenarios.
 
 Example:

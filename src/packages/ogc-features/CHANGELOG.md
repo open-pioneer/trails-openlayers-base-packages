@@ -1,5 +1,22 @@
 # @open-pioneer/ogc-features
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: Setting `attributions` on the vector source to the empty string now disables the attribution from the collection metadata, as documented.
+- 35eff05: Updated dependencies
+- 5ae6686: Raise OL version to 10.11.0 and fix arising issues with OL's typings
+
+    - introduce new readonly property `viewport` on MapModel
+        - shorthand for `mapModel.olMap.getViewport()`
+    - throw error if unsupported execution in a worker thread with `OffscreenCanvas` available
+    - use new `viewport` property in packages
+
 ## 1.5.0
 
 ### Minor Changes

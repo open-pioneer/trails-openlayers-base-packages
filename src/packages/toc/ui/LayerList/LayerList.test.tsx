@@ -321,9 +321,18 @@ it("supports initial collapsed groups", async () => {
     expect(collapsibleList).toBeDefined();
     expect(collapsibleList.getAttribute("data-state")).toBe("closed");
 
+    // Children of a collapsed group are mounted lazily, so they have no html element yet.
+    const memberNode = viewModel.getNodeById("member")!;
+    expect(findLayerItem(container, "member")).toBeNull();
+    expect(memberNode.htmlElement).toBeUndefined();
+
     await user.click(groupCollapseButton); //expand
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
     expect(collapsibleList.getAttribute("data-state")).toBe("open");
+
+    const memberItem = findLayerItem(container, "member");
+    expect(memberItem).not.toBeNull();
+    expect(memberNode.htmlElement).toBe(memberItem);
 });
 
 it("displays the layer item only if the layer is not internal", async () => {

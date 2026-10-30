@@ -211,7 +211,7 @@ export class SelectionViewModel {
      * and marks the viewport with css classes when selection interaction is active or inactive.
      */
     #initViewport(): Resource[] {
-        const viewport = this.#map.olMap.getViewport();
+        const viewport = this.#map.viewport;
         const disableContextMenu = (e: MouseEvent) => {
             e.preventDefault();
             return false;
@@ -278,7 +278,7 @@ export class SelectionViewModel {
             const extent = geometry.getExtent();
             const results = await this.#selectFromSource(source, extent, abortController.signal);
             if (abortController.signal.aborted) {
-                // Superseded by another selection, or the widget is gone.
+                // Superseded by another selection, or the component is gone.
                 throwAbortError();
             }
 

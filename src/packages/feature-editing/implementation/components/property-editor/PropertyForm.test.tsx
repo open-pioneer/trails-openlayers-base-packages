@@ -91,7 +91,7 @@ describe("rendering", () => {
         expect(radioB).toBeDefined();
         await user.click(radioB!);
         await waitFor(() => {
-            expect(context.properties.get("stringRadioGroup")).toBe("b");
+            expect(context.properties.get("stringRadioGroup")).toBe("option-b");
         });
     });
 
@@ -113,7 +113,7 @@ describe("rendering", () => {
         expect(radio2).toBeDefined();
         await user.click(radio2!);
         await waitFor(() => {
-            expect(context.properties.get("numberRadioGroup")).toBe(2);
+            expect(context.properties.get("numberRadioGroup")).toBe(20);
         });
     });
 
@@ -852,9 +852,9 @@ const allInputTypesTemplate: FeatureTemplate & DeclarativeFormTemplate = {
             propertyName: "stringRadioGroup",
             label: "String Radio Group",
             options: [
-                { label: "Option A", value: "a" },
-                { label: "Option B", value: "b" },
-                { label: "Option C", value: "c" }
+                { label: "Option A", value: "option-a" },
+                { label: "Option B", value: "option-b" },
+                { label: "Option C", value: "option-c" }
             ]
         },
         {
@@ -863,9 +863,9 @@ const allInputTypesTemplate: FeatureTemplate & DeclarativeFormTemplate = {
             propertyName: "numberRadioGroup",
             label: "Number Radio Group",
             options: [
-                { label: "One", value: 1 },
-                { label: "Two", value: 2 },
-                { label: "Three", value: 3 }
+                { label: "One", value: 10 },
+                { label: "Two", value: 20 },
+                { label: "Three", value: 30 }
             ]
         },
         {

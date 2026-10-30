@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
-import { SearchSource, SearchResult } from "@open-pioneer/search";
-import { SearchOptions } from "@open-pioneer/search/api";
+import { SearchOptions, SearchResult, SearchSource } from "@open-pioneer/search";
 import GeoJSON from "ol/format/GeoJSON";
 
 interface PhotonResponseFeature {
@@ -54,7 +53,7 @@ export class PhotonGeocoder implements SearchSource {
                 this.filteredTypes.includes(feature.properties.type)
             )
             .map((feature: PhotonResponseFeature, idx: number): SearchResult => {
-                const geometry = geojson.readGeometry(feature.geometry);
+                const geometry = geojson.readGeometry(feature.geometry) ?? undefined;
                 return {
                     id: feature.properties.osm_id || idx,
                     label: this.#createLabel(feature),

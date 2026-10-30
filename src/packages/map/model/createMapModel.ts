@@ -7,6 +7,7 @@ import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
 import { getCenter } from "ol/extent";
+import { WORKER_OFFSCREEN_CANVAS } from "ol/has";
 import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import OlMap, { MapOptions } from "ol/Map";
@@ -64,6 +65,12 @@ class MapModelBuilder {
     }
 
     async buildMapModel() {
+        if (WORKER_OFFSCREEN_CANVAS) {
+            throw new Error(
+                "Execution context with worker with OffscreenCanvas available is not supported."
+            );
+        }
+
         const mapId = this.#mapId;
         const mapConfig = this.#mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
@@ -219,14 +226,14 @@ class MapModelBuilder {
             if (!extent) {
                 LOG.warn(
                     `Cannot set default center coordinate because the current projection has no associated extent.\n` +
-                        `Try to configure 'initialView' explicity.`
+                        `Try to configure 'initialView' explicitly.`
                 );
             } else {
                 view.center = getCenter(extent);
             }
         }
 
-        if (view.zoom == null || view.resolution == null) {
+        if (view.zoom == null && view.resolution == null) {
             view.zoom = 0;
         }
     }

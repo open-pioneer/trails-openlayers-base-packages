@@ -9,11 +9,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { Collection } from "ol";
 import { EventsKey } from "ol/events";
 import Feature from "ol/Feature";
-import {
-    default as GeoJSON,
-    default as GeoJSONGeometry,
-    default as GeoJSONGeometryCollection
-} from "ol/format/GeoJSON";
+import GeoJSON, { GeoJSONGeometry, GeoJSONGeometryCollection } from "ol/format/GeoJSON";
 import { Modify } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";

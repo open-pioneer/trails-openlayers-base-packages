@@ -14,7 +14,7 @@ messages:
       description: This demo shows how to use the <code>Printing</code> component to export a screenshot of the map.
     spatialBookmarks:
       title: Spatial Bookmarks
-      description: This demo shows how to use the <code>SpatialBookmarks</code> component to save und load spatial bookmarks.
+      description: This demo shows how to use the <code>SpatialBookmarks</code> component to save and load spatial bookmarks.
     overviewMap:
       title: Overview map
       description: This demo shows how to use the <code>OverviewMap</code>.
@@ -26,7 +26,7 @@ messages:
       description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
     coordinateViewer:
       title: Coordinate viewer
-      description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the users current mouse position.
+      description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the user's current mouse position.
     coordinateInput:
       title: Coordinate input
       description: This demo shows how to use the <code>CoordinateInput</code> component to allow users to enter coordinates. The validation checks if the input is a valid coordinate for the selected projection.
@@ -36,7 +36,7 @@ messages:
       setInput: Set input value
     coordinateSearch:
       title: Coordinate search
-      description: This demo shows how to use the <code>CoordinateSearch</code> component to show the coordinates at the users current mouse position and to search for coordinates. It is possible to switch between different projections.
+      description: This demo shows how to use the <code>CoordinateSearch</code> component to show the coordinates at the user's current mouse position and to search for coordinates. It is possible to switch between different projections.
       cleared: Input field cleared
       entered: "Coordinate entered: {coordinates} in {projection}"
     scaleViewer:
@@ -50,7 +50,7 @@ messages:
       description: This demo shows how to use the <code>ScaleBar</code> component. The component is shown directly on the map (in the bottom right corner).
     measurement:
       title: Measurement
-      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas. <code>Measurement</code> component for measuring distances and areas.
+      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas.
     tocLegend:
       title: Toc, BasemapSwitcher and Legend
       description: This demo shows how to use the <code>Toc</code>, <code>BasemapSwitcher</code> and <code>Legend</code> components to control the map content and to show the legend for the contents.
@@ -58,7 +58,7 @@ messages:
       legendTitle: Legend
     selectionResultList:
       title: Selection and Result List
-      description: This demo shows how to use the <code>Selection</code> component to select feature in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
+      description: This demo shows how to use the <code>Selection</code> component to select features in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
     editing:
       title: Editing
       description: This demo shows how the API of the <code>editing</code> package can be used to provide editing functionality.
@@ -73,7 +73,7 @@ messages:
         featureModified: "Modified feature with ID: {featureId}"
         tooltip:
           select: Select geometry to start editing
-        savingStared: "Feature is being saved..."
+        savingStarted: "Feature is being saved..."
       activeInfo: "Status: editing active"
       inactiveInfo: "Status: editing inactive"
     featureEditing:

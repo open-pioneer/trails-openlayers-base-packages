@@ -1,5 +1,23 @@
 # @open-pioneer/feature-editing
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- fdd184f: Make the select button available by default once at least one editable layer is _effectively_ visible.
+  The availability was previously derived from the layer's individual visibility, which mishandled layers in invisible groups (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/708).
+- 20f0a7b: Fix three bugs in the `FeatureEditor` component:
+
+    - The select button remained in its active state after the selection became unavailable (for example because the editable layer was hidden). It is now reset correctly.
+    - A `radio-group` field stored only the first character of the selected option's `value` (for `valueType: "number"`, only the first digit).
+    - Clearing a `text-area` field switched the input to an uncontrolled element and logged a React warning.
+
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes

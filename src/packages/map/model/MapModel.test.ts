@@ -137,6 +137,24 @@ it("exposes the OpenLayers load status as a reactive property", async () => {
     expect(events).toEqual([true, false]);
 });
 
+it("has a defined map viewport", async () => {
+    model = await create("foo", {});
+    const viewport = model.viewport;
+
+    expect(viewport).toBeDefined();
+    expect(viewport).toBe(model.olMap.getViewport());
+});
+
+it("destroys the overlays when the map is destroyed", async () => {
+    model = await create("foo", {});
+    const overlay = model.overlays.add({ content: "overlay" });
+    expect(overlay.isDestroyed).toBe(false);
+
+    model.destroy();
+    expect(overlay.isDestroyed).toBe(true);
+    expect(model.overlays.getAll()).toHaveLength(0);
+});
+
 describe("zoom", () => {
     it("should successfully zoom for geometries", async () => {
         model = await create("foo", {});
