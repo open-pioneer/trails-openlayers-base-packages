@@ -10,6 +10,7 @@
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/coordinate-search": "workspace:*",
         "@open-pioneer/coordinate-viewer": "workspace:*",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/editing": "workspace:*",
         "@open-pioneer/feature-editing": "workspace:*",
         "@open-pioneer/geolocation": "workspace:*",

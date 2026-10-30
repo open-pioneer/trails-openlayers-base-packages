@@ -22,7 +22,9 @@
     },
     "dependencies": {
         "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/test-utils": "catalog:",
         "@testing-library/react": "catalog:",
         "ol": "catalog:"

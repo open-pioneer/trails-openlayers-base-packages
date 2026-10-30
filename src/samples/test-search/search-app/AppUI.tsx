@@ -14,10 +14,10 @@ import {
     SearchResult,
     SearchSelectEvent
 } from "@open-pioneer/search";
-import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
 import { useMemo, useRef } from "react";
+import { FakeCitySource } from "./FakeCitySource";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const LOG = createLogger(sourceId);

@@ -26,13 +26,13 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
+        "ol": "catalog:",
         "openlayers-base-packages": "workspace:*",
         "test-utils": "workspace:*"
     }

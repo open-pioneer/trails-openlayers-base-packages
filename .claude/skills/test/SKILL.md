@@ -14,7 +14,7 @@ case and `-u` to update snapshots.
 ## The map in tests
 
 OpenLayers runs in happy-dom with the shims from `src/testing/global-setup.ts` (`Worker`, `URL.createObjectURL`,
-jsdom's `DOMParser`, `ResizeObserver`).
+jsdom's `DOMParser`).
 `vite.config.ts` inlines `@open-pioneer/*` and `ol/` for Vitest; a module resolution error in a test usually means
 a new dependency needs the same treatment.
 Importing `@open-pioneer/map-test-utils` replaces the `render` methods of `VectorLayer` and `TileLayer` with no-ops,

@@ -8,6 +8,7 @@
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "ol": "catalog:",
         "react": "catalog:"
     }
 }

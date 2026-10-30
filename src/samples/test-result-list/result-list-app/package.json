@@ -9,6 +9,8 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/result-list": "workspace:*",
         "@open-pioneer/runtime": "catalog:",
-        "react": "catalog:"
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:"
     }
 }

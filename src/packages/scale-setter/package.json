@@ -22,18 +22,18 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
-        "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"
     },
     "devDependencies": {
+        "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
+        "ol": "catalog:",
         "openlayers-base-packages": "workspace:*"
     }
 }

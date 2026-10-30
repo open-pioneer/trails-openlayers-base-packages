@@ -23,6 +23,7 @@
     "dependencies": {
         "@chakra-ui/react": "catalog:",
         "@conterra/reactivity-core": "catalog:",
+        "@formatjs/intl": "catalog:",
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
@@ -30,15 +31,14 @@
         "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
-        "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:",
         "react-use": "catalog:"
     },
     "devDependencies": {
-        "@formatjs/intl": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
+        "ol": "catalog:",
         "openlayers-base-packages": "workspace:*",
         "test-utils": "workspace:*"
     }
