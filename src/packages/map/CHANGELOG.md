@@ -1,5 +1,41 @@
 # @open-pioneer/map
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+- fdd184f: Add the properties `visibleInHierarchy` and `effectivelyVisible` to all layers.
+
+    - A layer is `visibleInHierarchy` if it is `visible` and all its parents are visible as well.
+      Use this property to test whether a layer is hidden by one of its parents (e.g. an invisible group layer).
+    - A layer is `effectivelyVisible` if nothing prevents it from being rendered on the map:
+      it must be visible in its hierarchy and no other condition of the layer type may block it.
+      For example, operational layers are only effectively visible if they are also `visibleInScale`.
+
+- 5ae6686: Raise OL version to 10.11.0 and fix arising issues with OL's typings
+
+    - introduce new readonly property `viewport` on MapModel
+        - shorthand for `mapModel.olMap.getViewport()`
+    - throw error if unsupported execution in a worker thread with `OffscreenCanvas` available
+    - use new `viewport` property in packages
+
+### Patch Changes
+
+- 20f0a7b: The `zoom` configured in `MapConfig.advanced.view` is no longer reset to `0` when the map config has no `initialView`.
+- 20f0a7b: `calculateBufferedExtent()` now buffers the width of the extent by its width and the height by its height.
+  Previously the two were swapped, so a non-square extent grew by the wrong amount in each direction.
+  This also affects the `buffer` option of `MapModel.zoom()` and `Highlights.addAndZoom()`.
+- 20f0a7b: `MapModel.destroy()` now also destroys the overlays in `map.overlays`.
+- 20f0a7b: Fix several small problems in the layer classes:
+
+    - `WMSLayer` no longer fails to initialize when the root layer of the service capabilities has a `Name` and no child layers.
+      The legend URL of such a root layer is now found as well.
+    - A `minZoom`, `maxZoom`, `minResolution` or `maxResolution` of `0` in the layer config is now applied to the OpenLayers layer.
+    - `WMSLayer` and `WMTSLayer` no longer log an error when they are destroyed before their capabilities request has completed.
+
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes
