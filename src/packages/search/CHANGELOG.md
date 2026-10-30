@@ -1,5 +1,16 @@
 # @open-pioneer/search
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: The accessible label of the search field ("Search bar") is now set on the input element instead of the surrounding container.
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes

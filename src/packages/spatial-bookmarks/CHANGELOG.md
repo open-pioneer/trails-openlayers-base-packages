@@ -1,5 +1,17 @@
 # @open-pioneer/spatial-bookmarks
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: `SpatialBookmarks` no longer throws when the browser does not support local storage.
+  Bookmarks are kept in memory for the lifetime of the component in that case and a warning is logged.
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes

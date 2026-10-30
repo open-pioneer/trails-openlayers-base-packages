@@ -1,5 +1,17 @@
 # @open-pioneer/coordinate-viewer
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: Fix the `degree` format of `CoordinateViewer` for negative coordinates.
+  A coordinate such as `-7.5` was shown as `8°30'0.00"(W)` instead of `7°30'0.00"(W)`.
+- 35eff05: Updated dependencies
+
 ## 1.5.0
 
 ### Minor Changes
