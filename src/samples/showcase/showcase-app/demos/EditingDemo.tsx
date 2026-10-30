@@ -240,7 +240,6 @@ class EditingController {
                 }
                 if (newState[0] === "destroyed") {
                     watchStateHandle.destroy();
-                    console.log("destroyed");
                 }
             }
         );
