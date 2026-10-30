@@ -20,6 +20,9 @@
         "fmt": "oxfmt",
         "fmt:check": "oxfmt --check",
         "test": "vitest",
+        "test:unit": "vitest --project unit",
+        "test:browser": "vitest --project browser",
+        "test:headless": "vitest --browser.headless",
         "prepare": "husky && pnpm check-duplicates",
         "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
         "ci:version": "pnpm changeset version && tsx ./support/write-release-package-version.ts && pnpm exec oxfmt **/package.json ./src/**/CHANGELOG.md && pnpm install",
@@ -43,6 +46,8 @@
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
         "@vitejs/plugin-react": "catalog:",
+        "@vitest/browser-playwright": "catalog:",
+        "@vitest/browser-preview": "catalog:",
         "fast-glob": "catalog:",
         "happy-dom": "catalog:",
         "husky": "catalog:",
@@ -61,6 +66,7 @@
         "typescript": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:",
+        "vitest-browser-react": "catalog:",
         "zx": "catalog:"
     },
     "engines": {
