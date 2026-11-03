@@ -366,7 +366,7 @@ overrides:
   dompurify@<=3.4.16: ^3.4.17
   zod@>=4.0.0 <4.6.6: ^4.6.6
   glob@>=9.0.0 <=14.0.1: ^14.0.2
-  minimatch@<=11.0.1: ^11.0.2
+  minimatch@>=11.0.0 <=11.0.1: ^11.0.2
 
 patchedDependencies:
   '@ark-ui/react': 9330cbb0bbd280b4c310e443cd1879da15ad0994f24c7265e15a2a6629356de8
@@ -3897,6 +3897,9 @@ packages:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
 
+  balanced-match@1.0.2:
+    resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
   balanced-match@4.0.4:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
@@ -3911,6 +3914,9 @@ packages:
 
   bidi-js@1.1.0:
     resolution: {integrity: sha512-fX1Onk0tdVPC7obPWB5EbJ1z7NVhLq4m2xZLq2YXBkxzMXIGRpNMU88n0EPgWseKl12J7zXs7qrDxPK4sRs2fg==}
+
+  brace-expansion@1.1.21:
+    resolution: {integrity: sha512-9zeA+KLZNNzglF2TPKRQEDyx6Yby7daAkuy8MiPzpXPsYDWi/DRM8jmwUDxokQjYqBpv5DgPiwD4h4ZZSy1Ujw==}
 
   brace-expansion@5.0.12:
     resolution: {integrity: sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==}
@@ -3964,6 +3970,9 @@ packages:
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+
+  concat-map@0.0.1:
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
@@ -4584,9 +4593,16 @@ packages:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
 
+  minimatch@10.2.6:
+    resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
+    engines: {node: 18 || 20 || >=22}
+
   minimatch@11.0.3:
     resolution: {integrity: sha512-iny/40PEGkNJQ5/Pv6z3nm6FbRAby32GeZRjCUJk2WnNDbgPSTcdI+DDvLqsgBdD4cD5sMtMheqPPnehCCa8Nw==}
     engines: {node: 18 || 20 || >=22}
+
+  minimatch@3.1.5:
+    resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -5928,7 +5944,7 @@ snapshots:
     dependencies:
       '@eslint/object-schema': 2.1.7
       debug: 4.4.3(supports-color@7.2.0)
-      minimatch: 11.0.3
+      minimatch: 3.1.5
     transitivePeerDependencies:
       - supports-color
 
@@ -5949,7 +5965,7 @@ snapshots:
       ignore: 5.3.2
       import-fresh: 3.3.1
       js-yaml: 4.3.2
-      minimatch: 11.0.3
+      minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
@@ -7517,6 +7533,8 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
+  balanced-match@1.0.2: {}
+
   balanced-match@4.0.4: {}
 
   base64-arraybuffer@1.0.2: {}
@@ -7528,6 +7546,11 @@ snapshots:
   bidi-js@1.1.0:
     dependencies:
       require-from-string: 2.0.2
+
+  brace-expansion@1.1.21:
+    dependencies:
+      balanced-match: 1.0.2
+      concat-map: 0.0.1
 
   brace-expansion@5.0.12:
     dependencies:
@@ -7579,6 +7602,8 @@ snapshots:
   commander@15.0.0: {}
 
   commander@2.20.3: {}
+
+  concat-map@0.0.1: {}
 
   confbox@0.1.8: {}
 
@@ -7755,7 +7780,7 @@ snapshots:
       is-glob: 4.0.3
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
-      minimatch: 11.0.3
+      minimatch: 3.1.5
       natural-compare: 1.4.0
       optionator: 0.9.4
     transitivePeerDependencies:
@@ -8216,10 +8241,18 @@ snapshots:
 
   min-indent@1.0.1: {}
 
+  minimatch@10.2.6:
+    dependencies:
+      brace-expansion: 5.0.12
+
   minimatch@11.0.3:
     dependencies:
       '@isaacs/nonrecursive-glob-match': 1.0.3
       brace-expansion: 5.0.12
+
+  minimatch@3.1.5:
+    dependencies:
+      brace-expansion: 1.1.21
 
   minimist@1.2.8: {}
 
@@ -8864,7 +8897,7 @@ snapshots:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
       markdown-it: 14.3.3
-      minimatch: 11.0.3
+      minimatch: 10.2.6
       typescript: 6.0.3
       yaml: 2.9.1
 
