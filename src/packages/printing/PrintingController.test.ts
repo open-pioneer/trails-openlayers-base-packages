@@ -3,7 +3,7 @@
 
 import { createManualPromise } from "@open-pioneer/core";
 import { SimpleLayer } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
 import BaseLayer from "ol/layer/Base";
 import OlMap from "ol/Map";
@@ -431,6 +431,8 @@ async function setUp() {
 
     exportMapInPNGSpy.mockImplementation(() => undefined);
     exportMapInPDFSpy.mockImplementation(() => undefined);
+
+    await waitForMapRender(map);
 
     return {
         map,

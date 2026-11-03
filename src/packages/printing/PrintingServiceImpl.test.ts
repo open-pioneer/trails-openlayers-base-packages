@@ -3,7 +3,7 @@
 
 import { createManualPromise } from "@open-pioneer/core";
 import { DEFAULT_DPI } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
 import { ScaleLine } from "ol/control";
 import OlMap from "ol/Map";
@@ -350,6 +350,8 @@ async function setUp() {
     // Cant use canvas.getContext() in tests
     const removePaddingSpy = vi.spyOn(PrintJob.prototype as any, "removePadding");
     removePaddingSpy.mockImplementation((canvas: any) => canvas);
+
+    await waitForMapRender(map);
 
     return { map, olMap, printToCanvasSpy, printingService, removePaddingSpy };
 }
