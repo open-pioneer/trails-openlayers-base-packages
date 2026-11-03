@@ -127,86 +127,47 @@ describe("getMapCenterPixel", () => {
     });
 });
 
-// TODO does not work due to missing canvas implementation
-// TODO use https://github.com/wobsoriano/vitest-canvas-mock ?
-describe.skip("drawPrintArea", () => {
-    const overlayColor = [0, 5, 25, 0.7];
-    const transparent = [0, 0, 0, 0];
-
-    let context: CanvasRenderingContext2D;
-
-    beforeEach(() => {
-        vi.clearAllMocks();
-
-        context = {
+describe("drawPrintArea", () => {
+    it("covers the canvas with a gray overlay except for the print area in the center (hole)", () => {
+        const context = {
             canvas: {
                 width: 800,
                 height: 600
             },
-            getImageData: vi.fn(),
-            lineTo: vi.fn(),
-            moveTo: vi.fn(),
             reset: vi.fn(),
             save: vi.fn(),
+            lineTo: vi.fn(),
+            moveTo: vi.fn(),
             beginPath: vi.fn(),
             closePath: vi.fn(),
             fill: vi.fn(),
-            restore: vi.fn()
+            restore: vi.fn(),
+            fillStyle: ""
         } as unknown as CanvasRenderingContext2D;
 
-        Object.defineProperty(context, "fillStyle", {
-            set: vi.fn()
-        });
-    });
-
-    it("covers the canvas with a gray overlay except for the print area in the center (hole)", () => {
-        const printArea = [100, 80, 400, 300];
+        const printArea = [100, 50, 400, 300];
 
         drawPrintArea(context, printArea);
 
-        // check if outer bounds of overlay are gray
-        expect(context.getImageData(0, 0, 1, 1).data).toEqual(overlayColor);
-        expect(context.getImageData(context.canvas.width, 0, 1, 1).data).toEqual(overlayColor);
-        expect(context.getImageData(0, context.canvas.height, 1, 1).data).toEqual(overlayColor);
-        expect(
-            context.getImageData(context.canvas.width, context.canvas.height, 1, 1).data
-        ).toEqual(overlayColor);
+        expect(context.reset).toHaveBeenCalledOnce();
+        expect(context.save).toHaveBeenCalledOnce();
+        expect(context.beginPath).toHaveBeenCalledOnce();
 
-        // check if inner bounds of overlay are gray
-        expect(context.getImageData(100 - 1, 80 - 1, 1, 1).data).toEqual(overlayColor);
-        expect(context.getImageData(100 - 1, 300 + 1, 1, 1).data).toEqual(overlayColor);
-        expect(context.getImageData(400 + 1, 80 - 1, 1, 1).data).toEqual(overlayColor);
-        expect(context.getImageData(400 + 1, 300 + 1, 1, 1).data).toEqual(overlayColor);
+        expect(context.moveTo).toHaveBeenCalledTimes(2);
+        expect(context.moveTo).toHaveBeenNthCalledWith(1, 0, 0); // outer gray area
+        expect(context.moveTo).toHaveBeenNthCalledWith(2, 100, 50); // hole
+        expect(context.lineTo).toHaveBeenCalledTimes(6);
+        expect(context.lineTo).toHaveBeenNthCalledWith(1, 800, 0); // outer gray area
+        expect(context.lineTo).toHaveBeenNthCalledWith(2, 800, 600);
+        expect(context.lineTo).toHaveBeenNthCalledWith(3, 0, 600);
+        expect(context.lineTo).toHaveBeenNthCalledWith(4, 100, 300); // hole
+        expect(context.lineTo).toHaveBeenNthCalledWith(5, 400, 300);
+        expect(context.lineTo).toHaveBeenNthCalledWith(6, 400, 50);
 
-        // check if outer bounds of hole are transparent
-        expect(context.getImageData(100, 80, 1, 1).data).toEqual(transparent);
-        expect(context.getImageData(100, 300, 1, 1).data).toEqual(transparent);
-        expect(context.getImageData(400, 80, 1, 1).data).toEqual(transparent);
-        expect(context.getImageData(400, 300, 1, 1).data).toEqual(transparent);
-    });
-
-    it("does not draw any gray overlay when print area is larger than canvas", () => {
-        const printArea = [
-            context.canvas.width - 1,
-            context.canvas.height - 1,
-            context.canvas.width + 1,
-            context.canvas.height + 1
-        ];
-
-        drawPrintArea(context, printArea);
-
-        // check if outer bounds of overlay are transparent
-        expect(context.getImageData(0, 0, 1, 1).data).toEqual(transparent);
-        expect(context.getImageData(context.canvas.width, 0, 1, 1).data).toEqual(transparent);
-        expect(context.getImageData(0, context.canvas.height, 1, 1).data).toEqual(transparent);
-        expect(
-            context.getImageData(context.canvas.width, context.canvas.height, 1, 1).data
-        ).toEqual(transparent);
-
-        // check if center is transparent
-        expect(
-            context.getImageData(context.canvas.width / 2, context.canvas.height / 2, 1, 1).data
-        ).toEqual(overlayColor);
+        expect(context.closePath).toHaveBeenCalledOnce();
+        expect(context.fillStyle).toBe("rgba(0, 5, 25, 0.70)");
+        expect(context.fill).toHaveBeenCalledOnce();
+        expect(context.restore).toHaveBeenCalledOnce();
     });
 });
 
