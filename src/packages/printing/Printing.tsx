@@ -120,7 +120,12 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
-    const controller = useController(map, intl, viewPadding, pageFormat, orientation, scale);
+    const controller = useController(map, intl, {
+        viewPadding: viewPadding,
+        pageFormat: pageFormat,
+        orientation: orientation,
+        scale: scale
+    });
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     function changePageFormat(pageFormat: string) {
@@ -364,17 +369,17 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 };
 
+interface PrintingControllerOptions {
+    viewPadding: ViewPaddingBehavior;
+    pageFormat: PageFormatType;
+    orientation: PageOrientationType;
+    scale: number;
+}
+
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(
-    map: MapModel,
-    intl: PackageIntl,
-    viewPadding: ViewPaddingBehavior,
-    pageFormat: PageFormatType,
-    orientation: PageOrientationType,
-    scale: number
-) {
+function useController(map: MapModel, intl: PackageIntl, options: PrintingControllerOptions) {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
     const layerFactory = useService<LayerFactory>("map.LayerFactory");
@@ -392,20 +397,20 @@ function useController(
     }, [map, intl, printingService, layerFactory]);
 
     useEffect(() => {
-        controller?.setViewPadding(viewPadding);
-    }, [controller, viewPadding]);
+        controller?.setViewPadding(options.viewPadding);
+    }, [controller, options.viewPadding]);
 
     useEffect(() => {
-        controller?.setPageFormat(pageFormat);
-    }, [controller, pageFormat]);
+        controller?.setPageFormat(options.pageFormat);
+    }, [controller, options.pageFormat]);
 
     useEffect(() => {
-        controller?.setOrientation(orientation);
-    }, [controller, orientation]);
+        controller?.setOrientation(options.orientation);
+    }, [controller, options.orientation]);
 
     useEffect(() => {
-        controller?.setScale(scale);
-    }, [controller, scale]);
+        controller?.setScale(options.scale);
+    }, [controller, options.scale]);
 
     return controller;
 }
