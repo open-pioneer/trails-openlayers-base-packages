@@ -3,12 +3,17 @@
 
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, Layer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import {
+    createTestLayer,
+    createTestOlLayer,
+    setupMap,
+    waitForMapRender
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { TocDisposedEvent, TocReadyEvent } from "../model";
+import { TocDisposedEvent, TocReadyEvent } from "../api";
 import { Toc } from "./Toc";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
@@ -17,10 +22,11 @@ const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
 const BASEMAP_SWITCHER_TRIGGER_CLASS = ".basemap-switcher-select-trigger";
 
 it("should successfully create a toc component", async () => {
-    const { map, Wrapper } = await setupTocContext();
+    const { map, Wrapper } = await setupTocContext({ mockMapRender: true });
     render(<Toc map={map} data-testid="toc" />, {
         wrapper: Wrapper
     });
+    await waitForMapRender(map);
 
     const tocDiv = await findToc();
     const { basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
@@ -46,7 +52,7 @@ it("should successfully create a toc component", async () => {
 });
 
 it("should successfully create a toc component with additional css classes", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} className="test" data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -56,7 +62,7 @@ it("should successfully create a toc component with additional css classes", asy
 });
 
 it("should embed the basemap switcher by default", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -67,7 +73,7 @@ it("should embed the basemap switcher by default", async () => {
 });
 
 it("should not show the basemap switcher if 'showBasemapSwitcher' is set to false", async () => {
-    const { map, Wrapper } = await setupTocContext([]);
+    const { map, Wrapper } = await setupTocContext({ layers: [] });
     render(<Toc map={map} showBasemapSwitcher={false} data-testid="toc" />, {
         wrapper: Wrapper
     });
@@ -78,13 +84,15 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' is set to fals
 });
 
 it("should support overriding basemap-switcher properties", async () => {
-    const { map, Wrapper } = await setupTocContext([
-        {
-            title: "OSM",
-            olLayer: createTestOlLayer(),
-            isBaseLayer: true
-        }
-    ]);
+    const { map, Wrapper } = await setupTocContext({
+        layers: [
+            {
+                title: "OSM",
+                olLayer: createTestOlLayer(),
+                isBaseLayer: true
+            }
+        ]
+    });
     render(
         <Toc
             map={map}
@@ -100,20 +108,27 @@ it("should support overriding basemap-switcher properties", async () => {
     );
 
     const tocDiv = await findToc();
-    const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+    const { basemapSwitcher, basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    act(() => {
-        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    // select lazy mounts the list of options in dom after opening selection
+    await act(async () => {
+        fireEvent.click(basemapSelectTrigger);
+        await nextTick();
     });
 
     await waitFor(() => {
-        const options = basemapSelect.getElementsByClassName("basemap-switcher-option");
+        // options are portalled
+        const basemapSwitcherContent = document.querySelector(BASEMAP_SWITCHER_CONTENT_CLASS);
+        if (!basemapSwitcherContent) {
+            throw new Error("expected basemap switcher content not rendered");
+        }
+        const options = basemapSwitcherContent.getElementsByClassName("basemap-switcher-option");
         const optionLabels = Array.from(options).map((opt) => opt.textContent);
-        expect(
-            optionLabels,
-            "basemap options are not equal to their expected values"
-        ).toMatchInlineSnapshot(`[]`);
+        expect(optionLabels, "basemap options are not equal to their expected values").toEqual([
+            "OSM",
+            "emptyBasemapLabel"
+        ]);
     });
 });
 
@@ -155,6 +170,47 @@ describe("toc api", () => {
         //should have been called exactly once
         expect(onReadyMock).toBeCalledTimes(1);
         expect(onDisposedMock).toBeCalledTimes(1);
+    });
+
+    it("binds a new api to the new map when the map changes", async () => {
+        const { map: map1, Wrapper } = await setupTocContext();
+        const { map: map2 } = await setupTocContext({
+            layers: [
+                {
+                    title: "Other layer",
+                    id: "other-layer",
+                    olLayer: createTestOlLayer()
+                }
+            ]
+        });
+
+        const onReadyMock = vi.fn<(e: TocReadyEvent) => void>();
+        const onDisposedMock = vi.fn<(e: TocDisposedEvent) => void>();
+        const { rerender } = render(
+            <Toc map={map1} data-testid="toc" onReady={onReadyMock} onDisposed={onDisposedMock} />,
+            { wrapper: Wrapper }
+        );
+        await findToc();
+        await waitFor(() => {
+            expect(onReadyMock).toBeCalledTimes(1);
+        });
+        const api1 = onReadyMock.mock.calls[0]![0].api;
+        expect(api1.getItemByLayerId("layer-1")).toBeDefined();
+
+        rerender(
+            <Toc map={map2} data-testid="toc" onReady={onReadyMock} onDisposed={onDisposedMock} />
+        );
+        await waitFor(() => {
+            expect(onReadyMock).toBeCalledTimes(2);
+        });
+        expect(onDisposedMock).toBeCalledTimes(1);
+
+        // The new api reflects the new map, the old api is no longer in use.
+        const api2 = onReadyMock.mock.calls[1]![0].api;
+        expect(api2).not.toBe(api1);
+        expect(api2.getItemByLayerId("other-layer")).toBeDefined();
+        expect(api2.getItemByLayerId("layer-1")).toBeUndefined();
+        expect(api1.getItems()).toEqual([]);
     });
 
     it("should return TocItems for layers via Toc API", async () => {
@@ -247,7 +303,7 @@ describe("toc api", () => {
                 })
             ]
         });
-        const { map, Wrapper } = await setupTocContext([group]);
+        const { map, Wrapper } = await setupTocContext({ layers: [group] });
         let readyEvent: TocReadyEvent | undefined;
         const onReadyHandler = (e: TocReadyEvent) => {
             readyEvent = e;
@@ -294,9 +350,12 @@ describe("toc api", () => {
     });
 });
 
-async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
+async function setupTocContext(opts?: {
+    layers?: (SimpleLayerConfig | Layer)[];
+    mockMapRender?: boolean;
+}) {
     const { map } = await setupMap({
-        layers: layers ?? [
+        layers: opts?.layers ?? [
             {
                 title: "Base layer",
                 id: "base-layer",
@@ -313,7 +372,8 @@ async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
                 id: "layer-2",
                 olLayer: createTestOlLayer()
             }
-        ]
+        ],
+        mockMapRender: opts?.mockMapRender
     });
     const Wrapper = (props: { children?: ReactNode }) => {
         return <PackageContextProvider>{props.children}</PackageContextProvider>;

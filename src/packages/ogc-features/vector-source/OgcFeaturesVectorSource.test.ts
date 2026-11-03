@@ -143,6 +143,15 @@ describe("Attribution handling", () => {
         await loadFeaturesAndWait(source);
         expect(getAttributionStrings(source)).toEqual(["© Explicit Option"]);
     });
+
+    it("disables attributions when the attributions option is the empty string", async () => {
+        const httpService = createMockHttpService({
+            metadata: { attribution: "© Service Metadata" }
+        });
+        const source = createSource({ attributions: "" }, httpService);
+        await loadFeaturesAndWait(source);
+        expect(getAttributionStrings(source)).toBeUndefined();
+    });
 });
 
 describe("Next strategy", () => {
@@ -360,6 +369,17 @@ describe("URL construction", () => {
     });
 });
 
+it("enters the error state when the collection metadata cannot be loaded", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const httpService = createMockHttpService({ failMetadata: true });
+
+    const source = createSource({}, httpService);
+    expect(source.getState()).toBe("ready");
+
+    await loadFeaturesAndWait(source);
+    expect(source.getState()).toBe("error");
+});
+
 it("forwards additionalOptions to the underlying VectorSource", () => {
     const httpService = createMockHttpService();
     const source = createSource(
@@ -378,13 +398,20 @@ it("forwards additionalOptions to the underlying VectorSource", () => {
 
 interface MockFetchOptions {
     metadata?: Partial<CollectionMetadata>;
+    failMetadata?: boolean;
     supportsOffset?: boolean;
     onFetchFeatures?: (url: URL) => void;
     featurePageHandler?: (url: URL, requestIndex: number) => object;
 }
 
 function createMockHttpService(opts: MockFetchOptions = {}): HttpService {
-    const { metadata, supportsOffset = true, onFetchFeatures, featurePageHandler } = opts;
+    const {
+        metadata,
+        failMetadata = false,
+        supportsOffset = true,
+        onFetchFeatures,
+        featurePageHandler
+    } = opts;
 
     const resolvedMetadata: CollectionMetadata = {
         id: COLLECTION_ID,
@@ -395,13 +422,16 @@ function createMockHttpService(opts: MockFetchOptions = {}): HttpService {
     let featureRequestIndex = 0;
 
     return {
-        fetch: vi.fn(async (input: URL | string, _init?: RequestInit) => {
+        fetch: vi.fn(async (input: URL | string, init?: RequestInit) => {
             const url = input instanceof URL ? input : new URL(input as string);
 
             const isItemsRequest = url.pathname.endsWith("/items");
 
             if (!isItemsRequest) {
                 // Collection metadata request
+                if (failMetadata) {
+                    throw new Error("Metadata request failed");
+                }
                 return new Response(JSON.stringify(resolvedMetadata), { status: 200 });
             }
 
@@ -417,6 +447,9 @@ function createMockHttpService(opts: MockFetchOptions = {}): HttpService {
 
             // Feature page request
             onFetchFeatures?.(url);
+            if (init?.signal?.aborted) {
+                throw init.signal.reason;
+            }
             const idx = featureRequestIndex++;
             const body = featurePageHandler
                 ? featurePageHandler(url, idx)

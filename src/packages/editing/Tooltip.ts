@@ -3,6 +3,8 @@
 
 import { Resource } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
+import { TooltipBox } from "@open-pioneer/map-ui-components";
+import { createElement } from "react";
 
 /**
  * Represents a tooltip rendered on the OpenLayers map
@@ -20,8 +22,14 @@ export interface Tooltip extends Resource {
  * Note: the tooltip starts invisible, and must be toggled on via `setVisible(true)`.
  */
 export function createTooltip(map: MapModel, text: string): Tooltip {
+    let currentText = text;
+    let visible = false;
+
+    const renderContent = () =>
+        createElement(TooltipBox, { visibility: visible ? undefined : "hidden" }, currentText);
+
     const overlay = map.overlays.add({
-        content: text,
+        content: renderContent(),
         position: "follow-pointer",
         offset: [15, 0],
         positioning: "center-left",
@@ -33,11 +41,19 @@ export function createTooltip(map: MapModel, text: string): Tooltip {
         destroy() {
             overlay.destroy();
         },
-        setVisible(visible) {
-            overlay.element.classList.toggle("editing-tooltip-hidden", !visible);
+        setVisible(newVisible) {
+            if (visible === newVisible) {
+                return;
+            }
+            visible = newVisible;
+            overlay.setContent(renderContent());
         },
-        setText(text) {
-            overlay.setContent(text);
+        setText(newText) {
+            if (currentText === newText) {
+                return;
+            }
+            currentText = newText;
+            overlay.setContent(renderContent());
         }
     };
 }

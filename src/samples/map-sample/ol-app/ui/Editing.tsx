@@ -11,6 +11,7 @@ import {
 } from "@open-pioneer/core";
 import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
 import { Layer, MapModel, Overlay, useMapModelValue } from "@open-pioneer/map";
+import { TooltipBox } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -274,7 +275,6 @@ class EditingViewModel {
                 map.olMap.addInteraction(selectInteraction);
 
                 tooltip = createEditingTooltip(this.#intl, map);
-                tooltip.overlay.element.classList.remove("editing-tooltip-hidden");
 
                 let feature: Feature<Geometry> | undefined;
                 // oxlint-disable-next-line no-constant-condition
@@ -331,10 +331,13 @@ interface Tooltip extends Resource {
 
 function createEditingTooltip(intl: PackageIntl, map: MapModel): Tooltip {
     const overlay = map.overlays.add({
-        content: intl.formatMessage({ id: "editing.update.tooltip.select" }),
+        content: (
+            <TooltipBox>{intl.formatMessage({ id: "editing.update.tooltip.select" })}</TooltipBox>
+        ),
         offset: [15, 0],
         positioning: "center-left",
-        className: "editing-tooltip editing-tooltip-hidden",
+        ariaRole: "tooltip",
+        className: "editing-tooltip",
         position: "follow-pointer"
     });
 

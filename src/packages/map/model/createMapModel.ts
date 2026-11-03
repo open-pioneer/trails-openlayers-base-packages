@@ -7,6 +7,7 @@ import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { MapBrowserEvent } from "ol";
 import { getCenter } from "ol/extent";
+import { WORKER_OFFSCREEN_CANVAS } from "ol/has";
 import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import OlMap, { MapOptions } from "ol/Map";
@@ -14,6 +15,8 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import View, { ViewOptions } from "ol/View";
 import { sourceId } from "open-pioneer:source-info";
+import { Layer } from "..";
+import { DECLARED_AS_BASE_LAYER } from "../layers/shared/internals";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../utils/InternalConstructorTag";
 import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
@@ -38,10 +41,12 @@ export async function createMapModel(
     currentIntl: ReadonlyReactive<PackageIntl>,
     httpService: HttpService
 ): Promise<MapModel> {
-    return await new MapModelFactory(mapId, mapConfig, currentIntl, httpService).createMapModel();
+    const builder = new MapModelBuilder(mapId, mapConfig, currentIntl, httpService);
+    const mapModel = await builder.buildMapModel();
+    return mapModel;
 }
 
-class MapModelFactory {
+class MapModelBuilder {
     #mapId: string;
     #mapConfig: MapConfig;
     #currentIntl: ReadonlyReactive<PackageIntl>;
@@ -59,7 +64,13 @@ class MapModelFactory {
         this.#httpService = httpService;
     }
 
-    async createMapModel() {
+    async buildMapModel() {
+        if (WORKER_OFFSCREEN_CANVAS) {
+            throw new Error(
+                "Execution context with worker with OffscreenCanvas available is not supported."
+            );
+        }
+
         const mapId = this.#mapId;
         const mapConfig = this.#mapConfig;
         const { view: viewOption, ...rawOlOptions } = mapConfig.advanced ?? {};
@@ -93,7 +104,12 @@ class MapModelFactory {
         this.#initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
 
-        if (!mapOptions.layers && !mapConfig.layers) {
+        if (
+            !mapOptions.layers &&
+            !mapConfig.layers &&
+            !mapConfig.baseLayers &&
+            !mapConfig.topmostLayers
+        ) {
             mapOptions.layers = [
                 new TileLayer({
                     source: new OSM()
@@ -103,10 +119,13 @@ class MapModelFactory {
 
         const initialView = mapConfig.initialView;
         const initialExtent = initialView?.kind === "extent" ? initialView.extent : undefined;
+        const initialPosition = initialView?.kind === "position" ? initialView : undefined;
 
         LOG.debug(`Constructing OpenLayers map with options`, mapOptions);
 
-        if (import.meta.env.VITEST) {
+        // Only patch for unit tests (within node). Vitest's browser mode runs like in production.
+        // oxlint-disable-next-line typescript/no-explicit-any
+        if (import.meta.env.VITEST && !(globalThis as any).__vitest_browser__) {
             patchOpenLayersClassesForTesting();
         }
 
@@ -116,6 +135,7 @@ class MapModelFactory {
                 id: mapId,
                 olMap,
                 initialExtent,
+                initialPosition,
                 showDefaultAttributions,
                 currentIntl: this.#currentIntl,
                 httpService: this.#httpService
@@ -125,9 +145,44 @@ class MapModelFactory {
 
         return batch(() => {
             try {
+                this.#assertUniqueLayerPlacement(mapConfig);
                 if (mapConfig.layers) {
                     for (const layerConfig of mapConfig.layers) {
+                        if (mapConfig.baseLayers && layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            LOG.warn(
+                                `Prefer to configure base layer '${layerConfig.title ?? layerConfig.id}' in the 'MapConfig.baseLayers' property instead of using the 'LayerConfig.isBaseLayer' property.`
+                            );
+                        }
+
                         mapModel.layers.addLayer(layerConfig);
+                    }
+                }
+                if (mapConfig.baseLayers) {
+                    for (const layerConfig of mapConfig.baseLayers) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            if (layerConfig[DECLARED_AS_BASE_LAYER]) {
+                                LOG.warn(
+                                    `Base layer ${layerConfig.title ?? layerConfig.id} is already configured in the 'MapConfig.baseLayers' property. The 'LayerConfig.isBaseLayer' property can be omitted.`
+                                );
+                            } else {
+                                LOG.warn(
+                                    `Base layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.baseLayers' property but 'LayerConfig.isBaseLayer' property is explicitly set to false. This layer will be treated as a base layer. Prefer using only the 'MapConfig.baseLayers' property for base layers.`
+                                );
+                            }
+                        }
+
+                        mapModel.layers.addLayer(layerConfig, { at: "base" });
+                    }
+                }
+                if (mapConfig.topmostLayers) {
+                    for (const layerConfig of mapConfig.topmostLayers) {
+                        if (layerConfig[DECLARED_AS_BASE_LAYER] != null) {
+                            LOG.warn(
+                                `Topmost layer ${layerConfig.title ?? layerConfig.id} is configured in the 'MapConfig.topmostLayers'. The 'LayerConfig.isBaseLayer' property can be omitted.`
+                            );
+                        }
+
+                        mapModel.layers.addLayer(layerConfig, { at: "topmost" });
                     }
                 }
                 return mapModel;
@@ -160,30 +215,7 @@ class MapModelFactory {
 
         const projection = (view.projection = this.#initializeProjection(mapConfig.projection));
         const initialView = mapConfig.initialView;
-        if (initialView) {
-            switch (initialView.kind) {
-                case "position":
-                    view.zoom = initialView.zoom;
-                    view.center = [initialView.center.x, initialView.center.y];
-                    break;
-                case "extent": {
-                    /*
-                        OpenLayers does not support configuration of the initial map extent.
-                        The only relevant options here are center, zoom (and resolution).
-                        We must set those values because otherwise OpenLayers will not initialize layer sources.
-
-                        The actual initial extent is applied once tha map has loaded and its size is known.
-                    */
-                    const extent = initialView.extent;
-                    view.zoom = 0;
-                    view.center = [
-                        extent.xMin + (extent.xMax - extent.xMin) / 2,
-                        extent.yMin + (extent.yMax - extent.yMin) / 2
-                    ];
-                    break;
-                }
-            }
-        } else {
+        if (!initialView) {
             this.#setViewDefaults(view, projection);
         }
     }
@@ -194,14 +226,14 @@ class MapModelFactory {
             if (!extent) {
                 LOG.warn(
                     `Cannot set default center coordinate because the current projection has no associated extent.\n` +
-                        `Try to configure 'initialView' explicity.`
+                        `Try to configure 'initialView' explicitly.`
                 );
             } else {
                 view.center = getCenter(extent);
             }
         }
 
-        if (view.zoom == null || view.resolution == null) {
+        if (view.zoom == null && view.resolution == null) {
             view.zoom = 0;
         }
     }
@@ -217,5 +249,33 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
+    }
+
+    #assertUniqueLayerPlacement(mapConfig: MapConfig) {
+        type GroupName = "baseLayers" | "layers" | "topmostLayers";
+
+        const groups = new Map<GroupName, Layer[] | undefined>([
+            ["baseLayers", mapConfig.baseLayers],
+            ["layers", mapConfig.layers],
+            ["topmostLayers", mapConfig.topmostLayers]
+        ]);
+        const groupByLayer = new WeakMap<Layer, GroupName>();
+
+        for (const [groupName, layers] of groups) {
+            if (!layers) {
+                continue;
+            }
+
+            for (const layer of layers) {
+                const previousGroup = groupByLayer.get(layer);
+                if (previousGroup != null) {
+                    throw new Error(
+                        `Layer '${layer.title ?? layer.id}' is configured in both '${previousGroup}' and '${groupName}'. ` +
+                            `A layer may only appear in one layer list.`
+                    );
+                }
+                groupByLayer.set(layer, groupName);
+            }
+        }
     }
 }

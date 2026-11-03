@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { LayerFactory } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { reactive } from "@conterra/reactivity-core";
+import { GroupLayer, LayerFactory } from "@open-pioneer/map";
+import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import type { NotificationService } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -127,6 +128,7 @@ describe("Editor interaction", () => {
     it("changes editing step when clicking the select button", async () => {
         const user = userEvent.setup();
         const { map, layerFactory } = await setupMap();
+        const layer = createTestLayer();
         const onEditingStepChange = vi.fn();
 
         render(
@@ -135,12 +137,14 @@ describe("Editor interaction", () => {
                     map={map}
                     templates={allTemplates}
                     writer={mockWriter}
+                    // Needs at least one layer to enable the button
+                    selectableLayers={[layer]}
                     onEditingStepChange={onEditingStepChange}
                 />
             </PackageContextProvider>
         );
 
-        // Initial step should be "none"
+        // Initial step should be "initial"
         expect(onEditingStepChange).toHaveBeenCalledWith({ id: "initial" });
 
         // Find and click the select button
@@ -156,6 +160,51 @@ describe("Editor interaction", () => {
     });
 
     it("toggles select button state when clicked", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const layer = createTestLayer();
+
+        const onEditingStepChange = vi.fn();
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    // Needs at least one layer to enable the button
+                    selectableLayers={[layer]}
+                    onEditingStepChange={onEditingStepChange}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+
+        // Click to activate
+        await user.click(selectButton);
+
+        await waitFor(() => {
+            // Should change to the "selection" step
+            expect(onEditingStepChange).toHaveBeenCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
+        });
+
+        // Click again to deactivate
+        await user.click(selectButton);
+
+        await waitFor(() => {
+            // Should go back to initial step
+            const calls = onEditingStepChange.mock.calls;
+            const lastCall = calls[calls.length - 1]?.[0];
+            expect(lastCall).toEqual({ id: "initial" });
+        });
+    });
+
+    it("disables the select button when there are no selectable layers", async () => {
         const user = userEvent.setup();
         const { map, layerFactory } = await setupMap();
         const onEditingStepChange = vi.fn();
@@ -175,24 +224,198 @@ describe("Editor interaction", () => {
             name: /actionSelector\.selectButtonTitle/i
         });
 
-        // Click to activate
-        await user.click(selectButton);
+        // No layers -> disabled
+        expect(selectButton).toBeDisabled();
 
+        // The tooltip explains why the button is disabled.
+        await user.hover(selectButton);
+        await waitFor(
+            () => {
+                expect(selectButton).toHaveAccessibleDescription("selection.noVisibleLayers");
+            },
+            { timeout: 3000 }
+        );
+    });
+
+    it("disables the select button when all layers are invisible", async () => {
+        const { map, layerFactory } = await setupMap();
+        const layers = [
+            createTestLayer({
+                title: "A",
+                olLayer: createTestOlLayer(),
+                visible: false
+            }),
+            createTestLayer({
+                title: "B",
+                olLayer: createTestOlLayer(),
+                visible: false
+            })
+        ];
+        const onEditingStepChange = vi.fn();
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={layers}
+                    onEditingStepChange={onEditingStepChange}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+
+        // All layers hidden -> disabled
+        expect(selectButton).toBeDisabled();
+
+        // Enabled again when at least one layer is visible
+        layers[0]!.setVisible(true);
         await waitFor(() => {
-            // Should change to update-select step
-            expect(onEditingStepChange).toHaveBeenCalledWith(
+            expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("resets the select button when the selection becomes unavailable", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const layer = createTestLayer({
+            title: "A",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const onEditingStepChange = vi.fn();
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                    onEditingStepChange={onEditingStepChange}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
                 expect.objectContaining({ id: "selection" })
             );
         });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonActiveTitle");
 
-        // Click again to deactivate
-        await user.click(selectButton);
-
+        // Hiding the layer ends the selection and disables the button
+        layer.setVisible(false);
         await waitFor(() => {
-            // Should go back to initial step
-            const calls = onEditingStepChange.mock.calls;
-            const lastCall = calls[calls.length - 1]?.[0];
-            expect(lastCall).toEqual({ id: "initial" });
+            expect(onEditingStepChange).toHaveBeenLastCalledWith({ id: "initial" });
+        });
+        expect(selectButton).toBeDisabled();
+
+        // The button is inactive again when it becomes available, and one click starts the selection
+        layer.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+        expect(selectButton).toHaveTextContent("actionSelector.selectButtonTitle");
+
+        await user.click(selectButton);
+        await waitFor(() => {
+            expect(onEditingStepChange).toHaveBeenLastCalledWith(
+                expect.objectContaining({ id: "selection" })
+            );
+        });
+    });
+
+    it("disables the select button when the layers are not effectively visible", async () => {
+        const { map, layerFactory } = await setupMap();
+
+        // The layer itself is visible, but its parent group is not.
+        const layer = createTestLayer({
+            title: "Child",
+            olLayer: createTestOlLayer(),
+            visible: true
+        });
+        const group = createTestLayer({
+            type: GroupLayer,
+            title: "Group",
+            visible: false,
+            layers: [layer]
+        });
+        expect(layer.visible).toBe(true);
+        expect(layer.effectivelyVisible).toBe(false);
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    selectableLayers={[layer]}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+
+        // Parent group hidden -> disabled, even though the layer is visible on its own
+        expect(selectButton).toBeDisabled();
+
+        // Enabled once the group (and therefore the layer) becomes effectively visible
+        group.setVisible(true);
+        await waitFor(() => {
+            expect(selectButton).toBeEnabled();
+        });
+    });
+
+    it("supports custom strategies for the availability of the selection interaction", async () => {
+        const user = userEvent.setup();
+        const { map, layerFactory } = await setupMap();
+        const onEditingStepChange = vi.fn();
+
+        // Simple signal to test reactivity
+        const errorMessage = reactive("");
+
+        render(
+            <PackageContextProvider services={createInjectedServices(layerFactory)}>
+                <FeatureEditor
+                    map={map}
+                    templates={allTemplates}
+                    writer={mockWriter}
+                    onEditingStepChange={onEditingStepChange}
+                    resolveSelectionAvailability={() => {
+                        return errorMessage.value
+                            ? { status: "unavailable", reason: errorMessage.value }
+                            : { status: "available" };
+                    }}
+                />
+            </PackageContextProvider>
+        );
+
+        const selectButton = await screen.findByRole("button", {
+            name: /actionSelector\.selectButtonTitle/i
+        });
+        expect(selectButton).toBeEnabled();
+
+        // The editor watches on the function above, which uses this signal.
+        errorMessage.value = "Something went wrong!";
+        await waitFor(() => {
+            expect(selectButton).toBeDisabled();
+        });
+
+        // The tooltip carries the reason from above.
+        await user.hover(selectButton);
+        await waitFor(() => {
+            expect(selectButton).toHaveAccessibleDescription(errorMessage.value);
         });
     });
 });

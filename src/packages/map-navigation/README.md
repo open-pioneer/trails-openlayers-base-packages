@@ -33,9 +33,9 @@ You can also use the generic `Zoom` component:
 <Zoom map={map} zoomDirection="in" />
 ```
 
-### View history forward and backward
+### Navigate history forward and backward
 
-To integrate the component in your app, insert the following snippet and reference a view Model:
+To integrate the components in your app, insert the following snippet (and reference a map):
 
 ```jsx
 <HistoryBackward map={map} /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */

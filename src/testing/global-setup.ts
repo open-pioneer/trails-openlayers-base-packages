@@ -10,12 +10,6 @@ import "@testing-library/jest-dom/vitest";
 /* oxlint-disable @typescript-eslint/no-explicit-any */
 
 if (typeof window !== "undefined") {
-    // Running with mocked dom (happy-dom or jsdom)
-    if (!globalThis.ResizeObserver) {
-        const ResizeObserver = (await import("resize-observer-polyfill")).default;
-        globalThis.ResizeObserver = ResizeObserver;
-    }
-
     // happy dom does not implement a good XML parser, use the one from jsdom instead.
     const { JSDOM } = await import("jsdom");
     window.DOMParser = new JSDOM().window.DOMParser;

@@ -14,10 +14,10 @@ import {
     SearchResult,
     SearchSelectEvent
 } from "@open-pioneer/search";
-import { FakeCitySource } from "@open-pioneer/search/testSources";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import { FakeCitySource } from "./FakeCitySource";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const LOG = createLogger(sourceId);
@@ -28,7 +28,7 @@ export function AppUI() {
     const notificationService = useService<NotificationService>("notifier.NotificationService");
     const searchApiRef = useRef<SearchApi>(undefined);
 
-    const sources = [new FakeCitySource(1)];
+    const sources = useMemo(() => [new FakeCitySource(1)], []);
 
     function onSearchSelect({ result }: SearchSelectEvent) {
         notificationService.notify({
@@ -39,13 +39,11 @@ export function AppUI() {
     }
 
     function onSelectViaApi(result: SearchResult) {
-        {
-            notificationService.notify({
-                level: "success",
-                message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
-                displayDuration: 4000
-            });
-        }
+        notificationService.notify({
+            level: "success",
+            message: intl.formatMessage({ id: "selectedViaApi" }, { label: result.label }),
+            displayDuration: 4000
+        });
     }
 
     function onSearchCleared(event: SearchClearEvent) {
@@ -167,7 +165,7 @@ export function AppUI() {
                                                     });
                                             }}
                                         >
-                                            set and selected search input
+                                            set and select search input
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

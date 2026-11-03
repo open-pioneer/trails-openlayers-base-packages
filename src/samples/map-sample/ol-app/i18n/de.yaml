@@ -1,5 +1,4 @@
 messages:
-  basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
   legendTitle: "Legende"
   printingTitle: "Drucken"
@@ -16,7 +15,6 @@ messages:
       tooltip:
         select: Geometrie auswählen, um mit der Bearbeitung zu starten
     stopTitle: "Editierung - Stoppen"
-    resetTitle: "Editierung - Zurücksetzen"
     error: "Editierung fehlgeschlagen"
     active: "Editierung ist aktiv"
     resetGeometry: "Geometrie zurücksetzen"

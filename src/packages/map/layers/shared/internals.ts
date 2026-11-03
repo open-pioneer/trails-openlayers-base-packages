@@ -72,3 +72,5 @@ export const ATTACH_TO_PARENT = Symbol("ATTACH_TO_PARENT");
 export const SET_LEGEND = Symbol("SET_LEGEND");
 export const LAYER_DEPS = Symbol("LAYER_DEPS");
 export const SET_METADATA_LOAD_INFO = Symbol("SET_METADATA_LOAD_INFO");
+export const DECLARED_AS_BASE_LAYER = Symbol("DECLARED_AS_BASE_LAYER");
+export const CHECK_EFFECTIVE_VISIBILITY = Symbol("CHECK_EFFECTIVE_VISIBILITY");

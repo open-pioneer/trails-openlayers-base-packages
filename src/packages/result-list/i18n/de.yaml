@@ -6,5 +6,4 @@ messages:
     true: ja
     false: nein
   ariaLabel:
-    selectSingle: Drücken Sie die Leertaste zum ab- oder anwählen von {featureProperty}.
-    region: Ergebnisliste
+    selectSingle: Drücken Sie die Leertaste zum Ab- oder Anwählen von {featureProperty}.

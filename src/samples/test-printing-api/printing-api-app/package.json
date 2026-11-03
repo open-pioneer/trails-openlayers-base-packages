@@ -4,10 +4,12 @@
     "private": true,
     "dependencies": {
         "@chakra-ui/react": "catalog:",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/printing": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "ol": "catalog:",
         "react": "catalog:"
     }
 }

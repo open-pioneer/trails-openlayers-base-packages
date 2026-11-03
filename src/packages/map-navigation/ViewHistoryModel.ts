@@ -3,8 +3,7 @@
 
 import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { MapModel } from "@open-pioneer/map";
-import { View } from "ol";
-import { Coordinate } from "ol/coordinate";
+import { Coordinate, equals } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
@@ -68,18 +67,15 @@ export class ViewHistoryModel {
     };
 
     #goto(activeViewId: number) {
-        const view = this.#olMap.getView();
         const activeView = this.mapViews.get(activeViewId);
         if (activeView == null) {
             throw new Error(`No view found for id ${activeViewId}`);
         }
-        this.#olMap.setView(
-            new View({
-                center: activeView.center,
-                resolution: activeView.resolution,
-                projection: view.getProjection()
-            })
-        );
+
+        // Keep the configured view (constraints, rotation, listeners) and only move it.
+        const view = this.#olMap.getView();
+        view.setCenter(activeView.center);
+        view.setResolution(activeView.resolution);
     }
 
     #setActiveView(activeViewId: number) {
@@ -98,9 +94,11 @@ export class ViewHistoryModel {
             const resolution = view.getResolution();
             const center = view.getCenter();
             if (resolution != null && center != null) {
+                const activeView = mapViews.get(this.activeViewId);
                 if (
-                    center !== mapViews.get(this.activeViewId)?.center ||
-                    resolution !== mapViews.get(this.activeViewId)?.resolution
+                    activeView == null ||
+                    !equals(center, activeView.center) ||
+                    resolution !== activeView.resolution
                 ) {
                     const mapState = {
                         resolution: resolution,
@@ -141,14 +139,12 @@ interface ViewModelState {
 const VIEW_MODELS = new WeakMap<MapModel, ViewModelState>();
 
 /**
- * An internal hook that returns a shared HistoryViewModel.
+ * An internal hook that returns a shared ViewHistoryModel.
  * History tools that are active at the same time share a single model.
  *
  * The model is destroyed when the last tool is unmounted.
  *
- * TODO: `undefined` only because the map can be undefined at the moment (loading).
- *
- * NOTE: May be useful to have this a general solution in the future; but this is the only usage right now.
+ * Returns `undefined` until the effect that creates or looks up the model has run.
  */
 export function useHistoryViewModel(map: MapModel): ViewHistoryModel | undefined {
     const [vm, setVm] = useState<ViewHistoryModel>();

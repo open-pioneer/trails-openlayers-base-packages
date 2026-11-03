@@ -38,6 +38,8 @@ export class InMemoryStore {
 
     readonly #features = new Collection<Feature>();
 
+    // The store keeps copies: the editor resets the geometry of the original feature when editing ends.
+
     /** Adds a new feature to the underlying feature collection. */
     addFeature(feature: Feature): void {
         this.#features.push(feature.clone());

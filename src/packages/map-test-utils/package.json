@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-test-utils",
-    "version": "1.4.0",
+    "version": "1.6.0",
     "description": "This package is an internal support package for testing map-related UI components.",
     "keywords": [
         "open-pioneer-trails"
@@ -22,7 +22,9 @@
     },
     "dependencies": {
         "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/test-utils": "catalog:",
         "@testing-library/react": "catalog:",
         "ol": "catalog:"

@@ -3,9 +3,12 @@
 
 import { constant, watchValue } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
-import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
+import {
+    mockMapRender,
+    waitForInitialExtent,
+    waitForMapRender
+} from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
-import { waitFor } from "@testing-library/dom";
 import { Coordinate } from "ol/coordinate";
 import { LineString, Point } from "ol/geom";
 import { fromLonLat } from "ol/proj";
@@ -50,30 +53,18 @@ describe("initial extent", () => {
         const oldCenter = olMap.getView().getCenter();
         const oldZoom = olMap.getView().getZoom();
 
-        // Initially the map has no size.
-        // The center is initialized from the extent's center, but zoom is set to 0.
+        // Initially the map has no size, zoom and center.
         expect(olMap.getSize()).toBeFalsy();
-        expect(oldZoom).toEqual(0);
-        expect(oldCenter).toMatchInlineSnapshot(`
-      [
-        1183856,
-        6672646,
-      ]
-    `);
+        expect(oldZoom).toEqual(undefined);
+        expect(oldCenter).toEqual(undefined);
 
-        // Simulate mounting by setting an explicit size.
-        // This triggers the extent initialization in MapModel.
-        olMap.setSize([500, 500]);
-        await waitFor(() => {
-            if (olMap.getView().getZoom() === 0) {
-                throw new Error("zoom did not change: view has not been initialized");
-            }
-        });
+        mockMapRender(model);
+        await waitForMapRender(model);
 
         const finalCenter = olMap.getView().getCenter();
         const finalZoom = olMap.getView().getZoom();
         expect(finalZoom).toBeCloseTo(3.6);
-        expect(finalCenter).toEqual(oldCenter);
+        expect(finalCenter).toEqual([1183856, 6672646]);
     });
 
     it("sets the initial extent if only center and zoom are configured", async () => {
@@ -94,20 +85,13 @@ describe("initial extent", () => {
         const oldCenter = olMap.getView().getCenter();
         const oldZoom = olMap.getView().getZoom();
 
-        // Center and zoom are set initially.
+        // Initially the map has no size, zoom and center.
         expect(olMap.getSize()).toBeFalsy();
-        expect(oldZoom).toEqual(4);
-        expect(oldCenter).toMatchInlineSnapshot(`
-      [
-        1183856,
-        6672646,
-      ]
-    `);
+        expect(oldZoom).toBe(undefined);
+        expect(oldCenter).toBe(undefined);
 
-        // Simulate mounting by setting an explicit size.
-        // This triggers the extent initialization in MapModel.
-        olMap.setSize([500, 500]);
-        await waitForInitialExtent(model);
+        mockMapRender(model);
+        await waitForMapRender(model);
 
         const initialExtent = model.initialExtent;
         if (!initialExtent) {
@@ -154,6 +138,24 @@ it("exposes the OpenLayers load status as a reactive property", async () => {
     model.olMap.dispatchEvent("loadend");
     expect(model.loading).toBe(false);
     expect(events).toEqual([true, false]);
+});
+
+it("has a defined map viewport", async () => {
+    model = await create("foo", {});
+    const viewport = model.viewport;
+
+    expect(viewport).toBeDefined();
+    expect(viewport).toBe(model.olMap.getViewport());
+});
+
+it("destroys the overlays when the map is destroyed", async () => {
+    model = await create("foo", {});
+    const overlay = model.overlays.add({ content: "overlay" });
+    expect(overlay.isDestroyed).toBe(false);
+
+    model.destroy();
+    expect(overlay.isDestroyed).toBe(true);
+    expect(model.overlays.getAll()).toHaveLength(0);
 });
 
 describe("zoom", () => {

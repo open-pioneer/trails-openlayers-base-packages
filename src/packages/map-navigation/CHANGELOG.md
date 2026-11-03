@@ -1,5 +1,32 @@
 # @open-pioneer/map-navigation
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 20f0a7b: Fix `HistoryBackward` and `HistoryForward` replacing the map's OpenLayers view when navigating.
+  The configured view options (extent, zoom limits, resolution constraints, rotation) and any listeners on `map.olView` survive a navigation now.
+
+    Fix `ZoomIn` and `ZoomOut` ignoring every click after a click that happened before the map had a zoom level.
+
+- 35eff05: Updated dependencies
+
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- a186f5d: Update core packages to 4.8.0.
+
+### Patch Changes
+
+- 0d9a9d0: Adapt to timing changes during map initialization.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes

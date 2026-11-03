@@ -24,15 +24,16 @@ export interface AddLayerOptionsBase {
      * - "above": Insert the new layer _above_ the specified `reference` layer.
      * - "below": Insert the new layer _below_ the specified `reference` layer.
      * - "topmost": Insert a new layer that is always displayed on top of all layers that were added at `top` (e.g. a highlight layer).
+     * - "base": Insert a new layer as a base layer.
      */
-    at: "top" | "bottom" | "above" | "below" | "topmost";
+    at: "top" | "bottom" | "above" | "below" | "topmost" | "base";
 }
 
 /**
  * @group Layer Utilities
  */
 export interface AddLayerOptionsTopBottom extends AddLayerOptionsBase {
-    at: "top" | "bottom" | "topmost";
+    at: "top" | "bottom" | "topmost" | "base";
 }
 
 /**

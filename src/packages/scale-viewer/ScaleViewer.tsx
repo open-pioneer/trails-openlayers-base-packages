@@ -17,6 +17,9 @@ import { FC, useEffect, useMemo, useState } from "react";
  */
 export interface ScaleViewerProps extends CommonComponentProps, MapModelProps {}
 
+/**
+ * Displays the current scale of the map as text, for example `1:25,000`.
+ */
 export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     const { containerProps } = useCommonComponentProps("scale-viewer", props);
     const map = useMapModelValue(props);

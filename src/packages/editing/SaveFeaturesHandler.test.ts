@@ -2,11 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
-import {
-    default as GeoJSON,
-    default as GeoJSONGeometry,
-    default as GeoJSONGeometryCollection
-} from "ol/format/GeoJSON";
+import GeoJSON, { GeoJSONGeometry, GeoJSONGeometryCollection } from "ol/format/GeoJSON";
 import { Point } from "ol/geom";
 import { Projection } from "ol/proj";
 import { describe, expect, it, vi } from "vitest";

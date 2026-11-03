@@ -91,14 +91,14 @@ exports[`Should successfully create a toc with default tool component > find-too
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              for="checkbox:_r_6_:input"
-              id="checkbox:_r_6_"
+              for="checkbox:_r_5_:input"
+              id="checkbox:_r_5_"
             >
               <input
                 aria-invalid="false"
-                aria-labelledby="checkbox:_r_6_:label"
+                aria-labelledby="checkbox:_r_5_:label"
                 checked=""
-                id="checkbox:_r_6_:input"
+                id="checkbox:_r_5_:input"
                 style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                 type="checkbox"
                 value="on"
@@ -110,7 +110,7 @@ exports[`Should successfully create a toc with default tool component > find-too
                 data-scope="checkbox"
                 data-state="checked"
                 dir="ltr"
-                id="checkbox:_r_6_:control"
+                id="checkbox:_r_5_:control"
               >
                 <svg
                   class="css-wuqtn7"
@@ -128,14 +128,11 @@ exports[`Should successfully create a toc with default tool component > find-too
                 data-scope="checkbox"
                 data-state="checked"
                 dir="ltr"
-                id="checkbox:_r_6_:label"
+                id="checkbox:_r_5_:label"
               >
                 <span>
                   Layer 1
                 </span>
-                <div
-                  class="css-cfk6a1"
-                />
               </span>
             </label>
             <div

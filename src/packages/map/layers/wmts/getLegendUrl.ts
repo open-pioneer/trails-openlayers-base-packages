@@ -39,4 +39,4 @@ export function getLegendUrl(
     const legendUrl = activeStyle.LegendURL?.[0]?.href;
     return legendUrl as string | undefined;
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
+/* oxlint-enable @typescript-eslint/no-explicit-any */

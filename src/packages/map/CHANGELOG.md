@@ -1,5 +1,95 @@
 # @open-pioneer/map
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+- fdd184f: Add the properties `visibleInHierarchy` and `effectivelyVisible` to all layers.
+
+    - A layer is `visibleInHierarchy` if it is `visible` and all its parents are visible as well.
+      Use this property to test whether a layer is hidden by one of its parents (e.g. an invisible group layer).
+    - A layer is `effectivelyVisible` if nothing prevents it from being rendered on the map:
+      it must be visible in its hierarchy and no other condition of the layer type may block it.
+      For example, operational layers are only effectively visible if they are also `visibleInScale`.
+
+- 5ae6686: Raise OL version to 10.11.0 and fix arising issues with OL's typings
+
+    - introduce new readonly property `viewport` on MapModel
+        - shorthand for `mapModel.olMap.getViewport()`
+    - throw error if unsupported execution in a worker thread with `OffscreenCanvas` available
+    - use new `viewport` property in packages
+
+### Patch Changes
+
+- 20f0a7b: The `zoom` configured in `MapConfig.advanced.view` is no longer reset to `0` when the map config has no `initialView`.
+- 20f0a7b: `calculateBufferedExtent()` now buffers the width of the extent by its width and the height by its height.
+  Previously the two were swapped, so a non-square extent grew by the wrong amount in each direction.
+  This also affects the `buffer` option of `MapModel.zoom()` and `Highlights.addAndZoom()`.
+- 20f0a7b: `MapModel.destroy()` now also destroys the overlays in `map.overlays`.
+- 20f0a7b: Fix several small problems in the layer classes:
+
+    - `WMSLayer` no longer fails to initialize when the root layer of the service capabilities has a `Name` and no child layers.
+      The legend URL of such a root layer is now found as well.
+    - A `minZoom`, `maxZoom`, `minResolution` or `maxResolution` of `0` in the layer config is now applied to the OpenLayers layer.
+    - `WMSLayer` and `WMTSLayer` no longer log an error when they are destroyed before their capabilities request has completed.
+
+- 35eff05: Updated dependencies
+
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- 38658ce: Add `setStyle` method to `Highlight` to change the style of existing highlights.
+- ebda251: The `addLayer` method now also accepts `at: "base"` to add a base layer.
+- 0d9a9d0: The map initialization has been adjusted to fix the map view initialization if initial view is configured with extent.
+  This change affects the order and timing of the map's initialization.
+
+    The timing changes might affect early map interactions or tests:
+    To wait until the map is actually being rendered (and thus fully initialized), you can use the map model's existing `whenDisplayed()` method.
+    The new test helper function `waitForMapRender` is provided from (`@open-pioneer/map-test-utils`) to wait in tests for the map view to be completely initialized.
+
+- a186f5d: Update core packages to 4.8.0.
+- ebda251: Add new properties for topmost layers and base layers in `MapConfig`.
+
+    - With `MapConfig.topmostLayers` topmost layers can now be defined in the initial map setup.
+    - Base layers can now be defined in the initial map setup with the `MapConfig.baseLayers` property
+
+    We recommend using the `baseLayers` property instead of `isBaseLayer: true` for new apps.
+
+    ```typescript
+    export class MapConfigProviderImpl implements MapConfigProvider {
+        mapId = MAP_ID;
+
+        async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
+            return {
+                initialView: {...},
+                projection: "EPSG:25832",
+                baseLayers: [
+                    //all base layers
+                    layerFactory.create(...)
+                ],
+                layers: [
+                    //all other operational layers
+                    layerFactory.create(...),
+                    layerFactory.create(...)
+                ],
+                topmostLayers: [
+                    //all operational highlight layers
+                    layerFactory.create(...)
+                ]
+            };
+        }
+    }
+    ```
+
+### Patch Changes
+
+- 3203815: Update code to match new react linting rules from oxlint.
+- 09ec7c7: Updated dependencies
+- 0d9a9d0: Do not mock layer rendering when vitest browser mode is detected.
+
 ## 1.4.0
 
 ### Minor Changes

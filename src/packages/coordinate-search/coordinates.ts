@@ -34,21 +34,21 @@ export function parseCoordinates(
     numberParser: NumberParserService,
     projection: Projection
 ): ParseResult {
-    if (input == "") return err("empty");
+    if (input === "") return err("empty");
 
     if (!input.includes(" ")) {
         return err("tooltip.space");
     }
-    if (input.indexOf(" ") != input.lastIndexOf(" ")) {
+    if (input.indexOf(" ") !== input.lastIndexOf(" ")) {
         return err("tooltip.spaceOne");
     }
 
     const splitCoords = input.split(" ");
     if (
-        splitCoords[0] == undefined ||
-        splitCoords[1] == undefined ||
-        splitCoords[0] == "" ||
-        splitCoords[1] == ""
+        splitCoords[0] == null ||
+        splitCoords[1] == null ||
+        splitCoords[0] === "" ||
+        splitCoords[1] === ""
     ) {
         return err("tooltip.2coords");
     }
@@ -99,18 +99,13 @@ function checkIfCoordsInProjectionsExtent(
         // Some projections don't have an extent, cannot validate.
         return true;
     }
-    if (!coords || coords.length !== 2) {
-        throw new Error(`Internal error: invalid coordinates ${coords}.`);
+    const [minX, minY, maxX, maxY] = extent;
+    const [x, y] = coords;
+    if (x == null || y == null || minX == null || minY == null || maxX == null || maxY == null) {
+        throw new Error(`Internal error: invalid extent or invalid coordinates.`);
     }
 
-    return (
-        /* oxlint-disable @typescript-eslint/no-non-null-assertion */
-        extent[0]! <= coords[0]! &&
-        extent[1]! <= coords[1]! &&
-        extent[2]! >= coords[0]! &&
-        extent[3]! >= coords[1]!
-        /* eslint-enable @typescript-eslint/no-non-null-assertion */
-    );
+    return minX <= x && minY <= y && maxX >= x && maxY >= y;
 }
 
 /* Formats the coordinates as a string with given precision considering locales */

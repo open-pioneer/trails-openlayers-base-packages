@@ -13,7 +13,7 @@ import { SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection
 /**
  * Initializes the (internal) view model used by the selection component.
  *
- * The view model contains the primary widget state.
+ * The view model contains the primary component state.
  * It is a long lived instance that is updated in place when relevant react props are changed.
  */
 export function useSelectionViewModel(

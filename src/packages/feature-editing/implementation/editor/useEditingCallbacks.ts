@@ -80,7 +80,7 @@ export function useEditingCallbacks(
             showNotifier("delete", result);
         }
     });
-    const onCancel = useEvent(async () => {
+    const onCancel = useEvent(() => {
         setEditingStep(INITIAL);
     });
 

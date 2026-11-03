@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/overview-map",
-    "version": "1.4.0",
+    "version": "1.6.0",
     "description": "This package offers a UI component with which an overview map can be integrated.",
     "keywords": [
         "open-pioneer-trails"
@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",

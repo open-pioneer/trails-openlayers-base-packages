@@ -29,7 +29,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * Sets the map's padding directly.
      * Do not use the view's padding property directly on the OL map.
      *
-     * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)
+     * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
      */
     viewPadding?: MapPadding | undefined;
 
@@ -65,7 +65,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
 
     /**
      * Optional aria-label property.
-     * Do not use together with aria-label.
+     * Do not use together with aria-labelledby.
      *
      * This property is directly applied to the map's container div element.
      */
@@ -160,7 +160,7 @@ export function MapContainer(props: MapContainerProps) {
                 {ready && map && (
                     <MapContainerReady
                         map={map}
-                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion react/refs
                         mapAnchorsHost={mapAnchorsHost.current!}
                         viewPadding={viewPadding}
                         viewPaddingChangeBehavior={viewPaddingChangeBehavior}
@@ -183,7 +183,7 @@ function MapContainerReady(
         map: MapModel;
         mapAnchorsHost: HTMLElement;
         viewPadding: Required<MapPadding>;
-    } & Omit<MapContainerProps, "mapId" | "map" | "className">
+    } & Omit<MapContainerProps, "map" | "className">
 ): ReactNode {
     const {
         map,
@@ -277,13 +277,14 @@ function useSyncViewPadding(
     map: MapModel
 ) {
     const mapView = useReactiveSnapshot(() => map.olView, [map]);
+    const displayStatus = useReactiveSnapshot(() => map[DISPLAY_STATUS], [map]);
 
     // Tracks target state for in-progress animations.
     const targetViewPoint = useRef<TargetViewPoint>(undefined);
 
     useEffect(() => {
         const olMap = map.olMap;
-        if (!mapView) {
+        if (!mapView || displayStatus !== "ready") {
             return;
         }
 
@@ -347,7 +348,7 @@ function useSyncViewPadding(
             }
             case "none":
         }
-    }, [viewPadding, viewPaddingChangeBehavior, map, mapView]);
+    }, [viewPadding, viewPaddingChangeBehavior, map, mapView, displayStatus]);
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {

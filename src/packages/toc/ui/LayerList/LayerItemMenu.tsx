@@ -3,20 +3,21 @@
 
 import { CloseButton, Icon, IconButton, Popover, Portal, Text } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer } from "@open-pioneer/map";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
-import { useLoadState } from "./hooks";
 
 export function LayerItemMenu(props: {
-    layer: AnyLayer;
     title: string;
     description: string;
-    intl: PackageIntl;
+
+    /**
+     * Whether the menu is disabled.
+     * The layer item is disabled if the layer itself has a severe issue (e.g. it failed to load).
+     */
+    disabled: boolean;
 }) {
-    const { layer, title, description } = props;
+    const { title, description, disabled } = props;
     const isPresent = !!description;
 
     const triggerId = useId(); // see https://chakra-ui.com/docs/components/tooltip#with-menutrigger
@@ -29,7 +30,7 @@ export function LayerItemMenu(props: {
                 lazyMount={true}
                 unmountOnExit={true}
             >
-                <TriggerButton triggerId={triggerId} layer={layer} />
+                <TriggerButton triggerId={triggerId} disabled={disabled} />
                 <Portal>
                     <Popover.Positioner>
                         <Popover.Content
@@ -61,17 +62,16 @@ export function LayerItemMenu(props: {
     );
 }
 
-function TriggerButton(props: { triggerId: string; layer: AnyLayer }) {
-    const { layer, triggerId } = props;
+function TriggerButton(props: { triggerId: string; disabled: boolean }) {
+    const { triggerId, disabled } = props;
     const intl = useIntl();
     const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
-    const isAvailable = useLoadState(layer) !== "error";
 
     return (
         <Tooltip ids={{ trigger: triggerId }} content={buttonLabel}>
             <Popover.Trigger asChild>
                 <IconButton
-                    disabled={!isAvailable}
+                    disabled={disabled}
                     className="toc-layer-item-details-button"
                     aria-label={buttonLabel}
                     borderRadius="full"

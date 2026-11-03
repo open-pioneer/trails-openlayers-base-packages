@@ -66,7 +66,8 @@ export const Zoom: FC<ZoomProps> = function Zoom(props: ZoomProps) {
     const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
     function zoom() {
-        if (disabled) {
+        let currZoom = map.zoomLevel;
+        if (disabled || currZoom == null) {
             return;
         }
         setDisabled(true);
@@ -74,17 +75,13 @@ export const Zoom: FC<ZoomProps> = function Zoom(props: ZoomProps) {
         const view = map.olView;
         const maxZoom = view.getMaxZoom() || Number.MAX_SAFE_INTEGER;
         const minZoom = view.getMinZoom() || 0;
-
-        let currZoom = map.zoomLevel;
-        if (currZoom != null) {
-            if (zoomDirection === "in" && currZoom < maxZoom) {
-                ++currZoom;
-            } else if (zoomDirection === "out" && currZoom > minZoom) {
-                --currZoom;
-            }
-
-            view.animate({ zoom: currZoom, duration: 200 }, () => setDisabled(false));
+        if (zoomDirection === "in" && currZoom < maxZoom) {
+            ++currZoom;
+        } else if (zoomDirection === "out" && currZoom > minZoom) {
+            --currZoom;
         }
+
+        view.animate({ zoom: currZoom, duration: 200 }, () => setDisabled(false));
     }
 
     return (

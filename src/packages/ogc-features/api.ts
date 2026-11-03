@@ -32,7 +32,8 @@ export interface OgcFeatureVectorSourceOptions {
 
     /**
      * The URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832
-     * If not provided, the vector source will attempt to use the map's CRS if supported by the collection, or fall back to CRS84 otherwise.
+     * If not provided, the vector source uses the map's CRS if the collection supports it (a map in EPSG:4326 requests CRS84).
+     * Otherwise, loading features fails with an error.
      */
     crs?: string;
 
@@ -56,7 +57,7 @@ export interface OgcFeatureVectorSourceOptions {
      *
      * If set, this property is passed to the map as attribution information for this vector source.
      * If the property is not set or `undefined`, the vector source will check if the collection metadata contains a non-standard `attribution` property and use it as attribution.
-     * Setting the this value to the empty string will explicitly disable attributions for this vector source, even if the collection metadata contains an `attribution` property.
+     * Setting this value to the empty string will explicitly disable attributions for this vector source, even if the collection metadata contains an `attribution` property.
      */
     attributions?: AttributionLike | undefined;
 
@@ -65,7 +66,7 @@ export interface OgcFeatureVectorSourceOptions {
 
     /**
      * Use this property to define the feature fetching strategy.
-     * Allowed value are `offset` and `next`.
+     * Allowed values are `offset` and `next`.
      * By default, the vector source attempts to detect the server's capabilities and will prefer `"offset"`, if possible.
      */
     strategy?: OgcFetchStrategy;
@@ -96,7 +97,7 @@ export interface OgcFeaturesVectorSourceFactory extends DeclaredService<"ogc-fea
     createVectorSource(options: OgcFeatureVectorSourceOptions): VectorSource;
 }
 
-/** Options for {@link OgcFeaturesVectorSourceFactory.createVectorSource()}. */
+/** Options for {@link OgcFeaturesSearchSourceFactory.createSearchSource()}. */
 export interface OgcFeatureSearchSourceOptions {
     /** The source's label. May be used as a title for results from this source. */
     label: string;
@@ -136,7 +137,7 @@ export interface OgcFeatureSearchSourceOptions {
     labelProperty?: string;
 
     /**
-     * Function to create custom a label for a given feature.
+     * Function to create a custom label for a given feature.
      *
      * If the label is not customized by this function, `labelProperty` (or `searchProperty`) will be used instead.
      */

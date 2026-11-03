@@ -204,6 +204,38 @@ it("should update coordinates in selected option", async () => {
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot(`"7.726 52.549"`);
 });
 
+it("emits onSelect once for an input prop that is re-rendered with equal coordinates", async () => {
+    const { map, injectedServices } = await setUp();
+    const onSelect = vi.fn();
+
+    function componentContent(input: number[]) {
+        return (
+            <PackageContextProvider services={injectedServices}>
+                <MapContainer map={map} data-testid="map" />
+                <CoordinateInput
+                    map={map}
+                    data-testid="coordinate-input"
+                    input={input}
+                    onSelect={onSelect}
+                />
+            </PackageContextProvider>
+        );
+    }
+
+    const { rerender } = render(componentContent([851594.11, 6789283.95]));
+    await waitForMapMount("map");
+    await waitForCoordinateInput();
+    await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(1));
+
+    // A new array with the same content is not a change.
+    rerender(componentContent([851594.11, 6789283.95]));
+    await nextTick();
+    expect(onSelect).toHaveBeenCalledTimes(1);
+
+    rerender(componentContent([860000, 6900000.95]));
+    await waitFor(() => expect(onSelect).toHaveBeenCalledTimes(2));
+});
+
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
     const input = [851594.11, 6789283.95];

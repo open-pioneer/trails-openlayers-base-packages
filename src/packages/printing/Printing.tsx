@@ -44,7 +44,7 @@ const INITIAL_PAGE_ORIENTATION = "landscape";
 const INITIAL_FILE_FORMAT = "pdf";
 
 /**
- * This is special property for the Printing.
+ * Properties supported by the {@link Printing} component.
  */
 export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**

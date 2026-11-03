@@ -8,6 +8,11 @@ messages:
     resetButtonTooltip: Reset drawing
     undoButtonTooltip: Undo
     redoButtonTooltip: Redo
+
+  selection:
+    defaultNotAvailableMessage: "No features can be selected."
+    noVisibleLayers: "No editable layers are visible in the map."
+
   propertyEditor:
     defaultEditHeading: Edit Feature
     defaultCreateHeading: Create Feature
@@ -26,11 +31,13 @@ messages:
     message: Are you sure you want to delete this feature?
     deleteButtonTitle: Delete feature
     cancelButtonTitle: Cancel
+
   cancelConfirmationDialog:
     title: Discard changes
     message: Are you sure you want to discard your changes?
     confirmCancelButtonTitle: Discard changes
     abortCancelButtonTitle: Continue editing
+
   notifier:
     creationSuccess: Feature created
     creationFailure: The feature failed to be created.
@@ -38,6 +45,7 @@ messages:
     updateFailure: The feature failed to be updated.
     deletionSuccess: Feature deleted
     deletionFailure: The feature failed to be deleted.
+
   tooltips:
     drawingMessagePoint: Click on the map to draw the point.
     drawingMessageLineString: Click to start drawing. Double-click to finish drawing.

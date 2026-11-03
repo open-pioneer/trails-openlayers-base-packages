@@ -3,13 +3,6 @@
 
 import { SearchSource, SearchResult } from "./api";
 
-interface Feature {
-    bbox: number[];
-    geometry?: { coordinates: [number, number]; type: string };
-    properties: Readonly<Record<string, unknown>>;
-    type: string;
-    id: string;
-}
 const fakeStreetData = [
     {
         text: "Brückenweg 1"
@@ -75,44 +68,6 @@ const getFakeData = async (
     });
 };
 
-const request = async (url: string, signal?: AbortSignal | undefined): Promise<Feature[] | []> => {
-    try {
-        const response = await fetch(url, { signal });
-        if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-        }
-        const result = await response.json();
-
-        return result.features;
-    } catch (error) {
-        // return [];
-        throw new Error("Request failed: " + error, { cause: error });
-    }
-};
-export class GeoSearchSource implements SearchSource {
-    label: string = "Bkg-Service";
-    async search(
-        inputValue: string,
-        options?: { signal?: AbortSignal | undefined } | undefined
-    ): Promise<SearchResult[]> {
-        const signal = options?.signal;
-        const url = this.#getUrl(inputValue);
-
-        try {
-            const features = await request(url, signal);
-            return features.map((feature, idx) => ({
-                id: idx,
-                label: feature.properties?.text as string
-            })) satisfies SearchResult[];
-        } catch (_error) {
-            return [];
-        }
-    }
-    #getUrl(inputValue: string): string {
-        return `URL ${inputValue}`;
-    }
-}
-
 export class FakeStreetSource implements SearchSource {
     label: string = "Streets";
     timeout: number;
@@ -159,11 +114,5 @@ export class FakeRiverSource implements SearchSource {
             label: item.text
         }));
         return suggestions;
-    }
-}
-export class FakeRejectionSource implements SearchSource {
-    label: string = "Rejected";
-    async search(inputValue: string): Promise<SearchResult[]> {
-        return Promise.reject(new Error(`search with ${inputValue} rejected`));
     }
 }

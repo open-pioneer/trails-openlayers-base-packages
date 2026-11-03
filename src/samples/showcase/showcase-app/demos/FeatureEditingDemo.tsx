@@ -102,6 +102,7 @@ function createFeatureWriter(collections: Map<string, Collection<Feature>>): Fea
         }
         return collection;
     };
+    // The collections keep copies: the editor resets the geometry of the original feature when editing ends.
     return {
         addFeature: async ({ feature, template }) => {
             const collection = getCollection(template.layerId);

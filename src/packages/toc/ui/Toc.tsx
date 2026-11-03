@@ -12,18 +12,12 @@ import {
     useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useId, useRef } from "react";
-import {
-    createOptions,
-    TocApi,
-    TocApiImpl,
-    TocDisposedEvent,
-    TocModel,
-    TocModelProvider,
-    TocReadyEvent
-} from "../model";
+import { FC, useEffect, useId } from "react";
+import { TocApi, TocDisposedEvent, TocReadyEvent } from "../api";
+import { TocViewModel } from "../model/TocViewModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
+import { useTocViewModel } from "./useTocViewModel";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -51,22 +45,22 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Properties for the embedded basemap switcher.
      *
-     * Property `mapId` is not applied (the basemap switcher uses the same map as the toc).
+     * The `map` property is not applied (the basemap switcher uses the same map as the toc).
      */
-    basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+    basemapSwitcherProps?: Omit<BasemapSwitcherProps, "map">;
 
     /**
      * If `true`, groups in the toc can be collapsed and expanded.
      * This property should only be `true` if the map actually contains layer groups.
      *
-     * Defaults to `false`.
+     * Defaults to `true` if {@link initiallyCollapsed} is enabled, `false` otherwise.
      */
     collapsibleGroups?: boolean;
 
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise, only the top level layers will appear in the toc.
+     * Defaults to `false`.
      */
     initiallyCollapsed?: boolean;
 
@@ -78,13 +72,16 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     autoShowParents?: boolean;
 
     /**
-     * Callback that is triggered once when the Toc is initialized.
+     * Callback that is triggered when the Toc is initialized.
      * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}.
      */
     onReady?: (event: TocReadyEvent) => void;
 
     /**
-     * Callback that is triggered once when the Toc is disposed and unmounted.
+     * Callback that is triggered when the Toc is disposed, either because it is unmounted
+     * or because the `map` changes.
+     *
+     * Old API objects should not be used anymore.
      */
     onDisposed?: (event: TocDisposedEvent) => void;
 }
@@ -135,18 +132,22 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const map = useMapModelValue(props);
+    const viewModel = useTocViewModel(map, props);
 
     return (
-        <Flex {...containerProps} direction="column" gap={PADDING}>
-            <TocContent {...props} map={map} />
-        </Flex>
+        viewModel && (
+            <Flex {...containerProps} direction="column" gap={PADDING}>
+                <TocContent {...props} map={map} viewModel={viewModel} />
+            </Flex>
+        )
     );
 };
 
-/** This component is rendered once we have a reference to the loaded map model. */
-function TocContent(props: TocProps & { map: MapModel }) {
+/** This component is rendered once we have constructed the view model. */
+function TocContent(props: TocProps & { map: MapModel; viewModel: TocViewModel }) {
     const {
         map,
+        viewModel,
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
@@ -155,8 +156,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
         onDisposed
     } = props;
     const intl = useIntl();
-    const model = useTocModel(props);
-    useTocAPI(model, onReady, onDisposed);
+    useTocAPI(viewModel, onReady, onDisposed);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -169,9 +169,9 @@ function TocContent(props: TocProps & { map: MapModel }) {
                 }
             >
                 <BasemapSwitcher
-                    map={map}
                     aria-labelledby={basemapsHeadingId}
                     {...basemapSwitcherProps}
+                    map={map}
                 />
             </TitledSection>
         </Box>
@@ -189,13 +189,13 @@ function TocContent(props: TocProps & { map: MapModel }) {
                                 })}
                             </Text>
                             <Spacer />
-                            {showTools && <Tools map={map} {...toolsConfig} />}
+                            {showTools && <Tools viewModel={viewModel} {...toolsConfig} />}
                         </Flex>
                     </SectionHeading>
                 }
             >
                 <TopLevelLayerList
-                    map={map}
+                    viewModel={viewModel}
                     aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                 />
             </TitledSection>
@@ -203,54 +203,19 @@ function TocContent(props: TocProps & { map: MapModel }) {
     );
 
     return (
-        <TocModelProvider value={model}>
+        <>
             {basemapSwitcher}
             {layerList}
-        </TocModelProvider>
+        </>
     );
 }
 
-function useTocModel(props: TocProps): TocModel {
-    const initialProps = useRef(props);
-    const tocModelRef = useRef<TocModel>(null);
-    if (!tocModelRef.current) {
-        tocModelRef.current = new TocModel(
-            createOptions(
-                initialProps.current.autoShowParents,
-                initialProps.current.collapsibleGroups,
-                initialProps.current.initiallyCollapsed
-            )
-        );
-    }
-
-    // Sync props to model
-    useEffect(() => {
-        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tocModelRef.current!.updateOptions(
-            createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
-        );
-    }, [
-        props.autoShowParents,
-        props.collapsibleGroups,
-        props.initiallyCollapsed,
-        tocModelRef.current.options
-    ]);
-    return tocModelRef.current;
-}
-
 function useTocAPI(
-    model: TocModel,
+    model: TocViewModel,
     onReady: TocProps["onReady"] | undefined,
     onDisposed: TocProps["onDisposed"] | undefined
 ) {
-    const apiRef = useRef<TocApi>(null);
-    if (!apiRef.current) {
-        apiRef.current = new TocApiImpl(model);
-    }
-
-    const api = apiRef.current;
-
-    const readyTrigger = useEvent(() => {
+    const readyTrigger = useEvent((api: TocApi) => {
         onReady?.({
             api
         });
@@ -260,10 +225,10 @@ function useTocAPI(
         onDisposed?.({});
     });
 
-    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
-    // useEvent() returns a stable function reference.
+    // The api lives as long as the view model, which is replaced when the map changes.
+    // useEvent() returns stable function references, so changed callbacks do not re-run the effect.
     useEffect(() => {
-        readyTrigger();
-        return disposeTrigger;
-    }, [readyTrigger, disposeTrigger]);
+        readyTrigger(new TocApi(model));
+        return () => disposeTrigger();
+    }, [model, readyTrigger, disposeTrigger]);
 }

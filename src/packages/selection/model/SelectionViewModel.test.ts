@@ -258,7 +258,7 @@ describe("viewport", () => {
     it("marks the viewport with a css class matching the active state", async () => {
         const source = new TestSource("Source", "unavailable");
         const { map } = await setup({ sources: [source] });
-        const viewport = map.olMap.getViewport();
+        const viewport = map.viewport;
 
         await vi.waitFor(() => {
             expect(viewport.classList.contains("selection-inactive")).toBe(true);
@@ -275,13 +275,13 @@ describe("viewport", () => {
     it("suppresses the viewport's context menu", async () => {
         const { map } = await setup();
         const event = new MouseEvent("contextmenu", { cancelable: true });
-        map.olMap.getViewport().dispatchEvent(event);
+        map.viewport.dispatchEvent(event);
         expect(event.defaultPrevented).toBe(true);
     });
 
     it("restores the viewport when the view model is destroyed", async () => {
         const { map, viewModel } = await setup();
-        const viewport = map.olMap.getViewport();
+        const viewport = map.viewport;
         await vi.waitFor(() => {
             expect(viewport.classList.contains("selection-inactive")).toBe(true);
         });
@@ -572,10 +572,10 @@ function findInteraction<T extends Interaction>(
  */
 function getTooltipMessage(map: MapModel): string | undefined {
     const content = findTooltip(map)?.content;
-    if (!isValidElement<{ content?: string }>(content)) {
+    if (!isValidElement<{ children?: string }>(content)) {
         return undefined;
     }
-    return content.props.content;
+    return content.props.children;
 }
 
 function findTooltip(map: MapModel) {

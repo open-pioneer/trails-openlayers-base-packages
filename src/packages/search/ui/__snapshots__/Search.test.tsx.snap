@@ -6,7 +6,6 @@ exports[`should successfully create a search component 1`] = `
   data-testid="search"
 >
   <div
-    aria-label="ariaLabel.search"
     class="search-combobox-component chakra-combobox__root css-1oswll3"
     data-part="root"
     data-scope="combobox"
@@ -61,6 +60,7 @@ exports[`should successfully create a search component 1`] = `
           aria-autocomplete="list"
           aria-controls="combobox:_r_0_:content"
           aria-expanded="false"
+          aria-label="ariaLabel.search"
           autocapitalize="none"
           autocomplete="off"
           autocorrect="off"

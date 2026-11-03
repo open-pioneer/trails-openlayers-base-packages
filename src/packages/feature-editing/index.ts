@@ -65,6 +65,13 @@ export type {
     SnappingOptions
 } from "./api/model/InteractionOptions";
 
+export type {
+    SelectionAvailability,
+    SelectionAvailabilityContext,
+    SelectionAvailable,
+    SelectionUnavailable
+} from "./api/model/SelectionAvailability";
+
 // =================================================================
 // Field configurations
 // =================================================================

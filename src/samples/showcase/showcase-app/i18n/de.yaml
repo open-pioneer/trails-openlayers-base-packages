@@ -50,15 +50,15 @@ messages:
       description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen. Die Komponente wird direkt auf der Karte dargestellt (unten rechts).
     measurement:
       title: Messen
-      description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der karte zu durchzuführen.
+      description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der Karte durchzuführen.
     tocLegend:
       title: Karteninhalt, Grundkarte und Legende
-      description: Diese Demo zeigt, wie die <code>Toc</code>-, <code>BasemapSwitcher</code> und <code>Legend</code>-Komponenten verwendet werden können, um die Karteninhalte zu kontrollieren und eine Legende anzuzeigen.
+      description: Diese Demo zeigt, wie die <code>Toc</code>-, <code>BasemapSwitcher</code>- und <code>Legend</code>-Komponenten verwendet werden können, um die Karteninhalte zu kontrollieren und eine Legende anzuzeigen.
       tocTitle: Karteninhalt
       legendTitle: Legende
     selectionResultList:
       title: Selektion und Ergebnisliste
-      description: Diese Demo zeigt, wie die <code>Selection</code>-Komponente verwendet werden kann, um Features in der Karte zu selektieren und wie die <code>ResultList</code>-Komponente verwendet werden kann, die Attribute von Features in einer Liste anzuzeigen.
+      description: Diese Demo zeigt, wie die <code>Selection</code>-Komponente verwendet werden kann, um Features in der Karte zu selektieren und wie die <code>ResultList</code>-Komponente verwendet werden kann, um die Attribute von Features in einer Liste anzuzeigen.
     editing:
       title: Editing
       description: Diese Demo zeigt, wie mit Hilfe der API des Paketes <code>editing</code> Editier-Funktionen angeboten werden können.
@@ -73,7 +73,7 @@ messages:
         featureModified: "Objekt aktualisiert mit ID: {featureId}"
         tooltip:
           select: Geometrie auswählen, um mit der Bearbeitung zu starten
-        savingStared: "Feature wird gespeichert..."
+        savingStarted: "Feature wird gespeichert..."
       activeInfo: "Status: Editierung aktiv"
       inactiveInfo: "Status: Editierung inaktiv"
     featureEditing:

@@ -6,30 +6,7 @@ import { HttpService } from "@open-pioneer/http";
 import { SearchOptions, SearchResult, SearchSource } from "@open-pioneer/search";
 import GeoJSON from "ol/format/GeoJSON";
 import { v4 as uuid4v } from "uuid";
-import { OgcFeatureSearchSourceOptions } from "../api";
-
-/** The general shape of features returned by an OGC API Features service. */
-export interface FeatureResponse {
-    /**
-     * The type of the feature (e.g. `Feature`).
-     */
-    type: string;
-
-    /**
-     * The id of the feature.
-     */
-    id: string | number;
-
-    /**
-     * The geometry of the feature.
-     */
-    geometry: unknown;
-
-    /**
-     * The properties of the feature.
-     */
-    properties: Readonly<Record<string, unknown>>;
-}
+import { FeatureResponse, OgcFeatureSearchSourceOptions } from "../api";
 
 /**
  * An implementation of {@link SearchSource} that searches on an OGC Features API service.
@@ -89,7 +66,7 @@ export class OgcFeatureSearchSource implements SearchSource {
         return {
             id: feature.id ?? uuid4v(),
             label: label,
-            geometry: geojson.readGeometry(feature.geometry),
+            geometry: geojson.readGeometry(feature.geometry) ?? undefined,
             properties: feature.properties
         };
     }

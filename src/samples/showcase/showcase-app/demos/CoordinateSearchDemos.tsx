@@ -89,7 +89,7 @@ function CoordinateInputComponent(props: { notificationService: NotificationServ
     function onSearchCleared() {
         notificationService.notify({
             level: "info",
-            message: intl.formatMessage({ id: "demos.coordinateSearch.cleared" }),
+            message: intl.formatMessage({ id: "demos.coordinateInput.cleared" }),
             displayDuration: 4000
         });
         setInput(undefined);

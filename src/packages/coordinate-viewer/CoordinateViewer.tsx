@@ -19,6 +19,7 @@ import { formatCoordinates } from "./formatCoordinates";
 export interface CoordinateViewerProps extends CommonComponentProps, MapModelProps {
     /**
      * Number of decimal places shown for coordinates.
+     * Defaults to `4`.
      */
     precision?: number;
 

@@ -1,6 +1,6 @@
 messages:
   basemapsLabel: "Hintergrundkarten"
-  descriptionLabel: "Layer Beschreibung"
+  descriptionLabel: "Layerbeschreibung"
   operationalLayerLabel: "Layer"
   childgroupLabel: "Layergruppe {title}"
   missingLayers: "Es sind keine Layer vorhanden."

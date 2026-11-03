@@ -1,0 +1,20 @@
+# Builds the sample apps in this repository as a website and uploads it as an artifact.
+# NOTE: This is part of the PR preview workflow -- the main site is built in `ci.yml`.
+name: Build Samples
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+concurrency:
+  group: build-samples-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: open-pioneer/trails-repo-automation/.github/workflows/shared-build-samples.yml@main

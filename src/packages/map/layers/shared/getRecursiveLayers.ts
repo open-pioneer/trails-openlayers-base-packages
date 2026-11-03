@@ -9,7 +9,7 @@ import { RecursiveRetrievalOptions } from "./LayerRetrievalOptions";
 export interface RecursiveLayerOptions<LayerType> extends RecursiveRetrievalOptions {
     /**
      * Starting point(s) of the recursion.
-     * The layers in this collections and their all of their children (recursively) will be included in the result.
+     * The layers in this collection and all of their children (recursively) will be included in the result.
      */
     from: ChildrenCollection<LayerType>;
 

@@ -61,13 +61,12 @@ import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/searc
 The search API provides methods to:
 
 - clear the search input (`resetInput`)
-- set the search input value without triggering a search (`setInputValue`)
+- set the search input value without opening the suggestion menu (`setInputValue`)
 - execute a search and automatically select the first matching result (`searchAndSelect`)
 
 To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
 
 ```tsx
-import { Search } from "@open-pioneer/search";
 import { Button } from "@chakra-ui/react";
 import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
@@ -123,9 +122,7 @@ function onSearchCleared(clearEvent: SearchClearEvent) {
                     console.log("Result has no geometry.");
                     return;
                 }
-                appModel.highlightAndZoom(map, [
-                    result.geometry
-                ]);
+                map.highlightAndZoom([result.geometry]);
             })
             .catch((error) => {
                 console.error(error);
@@ -174,6 +171,11 @@ import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 class MySearchSource implements SearchSource {
+    // The optional id of this source. It must be unique among the sources used by the same
+    // search component and it must not change. If no id is defined, the search component
+    // generates one internally.
+    id = "my-sample-rest-service";
+
     // The label of this source, used as a title for this source's results.
     label = "My sample REST-Service";
 

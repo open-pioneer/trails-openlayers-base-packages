@@ -39,7 +39,7 @@ export type MeasurementsChangeEvent = MeasurementsAddEvent | MeasurementsRemoveE
 export type MeasurementGeometry = LineString | Polygon;
 
 /**
- * This is for special properties of the Measurement.
+ * Properties supported by the {@link Measurement} component.
  */
 export interface MeasurementProps extends CommonComponentProps, MapModelProps {
     /**
@@ -53,7 +53,10 @@ export interface MeasurementProps extends CommonComponentProps, MapModelProps {
     finishedFeatureStyle?: StyleLike;
 
     /**
-     * List of measurements to be rendered when the component is initialized.
+     * Measurement geometries that are rendered in addition to the measurements drawn by the user.
+     *
+     * The measurements are re-applied whenever the array changes, so keep the array stable
+     * (for example with `useMemo`) to avoid needless updates.
      */
     predefinedMeasurements?: MeasurementGeometry[];
 

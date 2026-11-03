@@ -25,7 +25,7 @@ type ValueChangeDetails =
     | RadioGroupValueChangeDetails;
 
 export function useOptionProps({ value, field, onChange }: OptionControlProps) {
-    const selectedValue = useMemo(() => (value != undefined ? [value.toString()] : []), [value]);
+    const selectedValue = useMemo(() => (value != null ? [value.toString()] : []), [value]);
     const { collection, onInputValueChange } = useCollection(field);
     const onValueChange = useOnValueChange(field.valueType, onChange);
 
@@ -44,7 +44,9 @@ export function useOnValueChange(
     onChange: (value: unknown) => void
 ) {
     return useEvent((details: ValueChangeDetails) => {
-        const newValue = details.value?.[0];
+        // Select and combo box report an array of values, the radio group a single string.
+        const newValue =
+            (Array.isArray(details.value) ? details.value[0] : details.value) ?? undefined;
         if (valueType === "number") {
             onChange(newValue !== undefined ? parseFloat(newValue) : undefined);
         } else {

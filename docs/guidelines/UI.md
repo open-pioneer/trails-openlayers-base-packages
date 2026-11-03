@@ -27,7 +27,7 @@ Guidelines for React components developed in this repository.
     - Do not specify max size / min size: let the user control the outer layout
     - In general: do not implement scrolling yourself, unless it makes sense to do so
 - "Tool"-Buttons:
-    - Use the `ToolButton` component from `@open-pioneer/react-utils`
+    - Use the `ToolButton` component from `@open-pioneer/map-ui-components`
     - The label must be an i18n-string (might be same like aria-label)
     - Snippet:
         ```jsx
@@ -37,17 +37,22 @@ Guidelines for React components developed in this repository.
 - Tooltips (yaml / i18n)
     - Start with a capital letter at the beginning across languages (e.g. "Zoom in", "Vergrößern")
 - Icons
-    - Use icons from `react-icons`package. Preferably, use icons from `Lucide`. If Lucide does not provide a suitable icon, prefer `Tabler` Icons. (Lucide is a community extension of Feather icons which was used most often in the ol-base-packages. Additionally, Lucide icons are used most often in the chakra snippets.)
+    - Use icons from the `react-icons` package. Preferably, use icons from `Lucide`. If Lucide does not provide a suitable icon, prefer `Tabler` Icons. (Lucide is a community extension of Feather icons which was used most often in the ol-base-packages. Additionally, Lucide icons are used most often in the chakra snippets.)
 
 ## Mobile / Responsive Design
 
 - Use flexbox layout to resolve simple responsive design issues
 - Test with different screen sizes: ensure sensible behavior
 
+## Map Overlays
+
+- Use the `TooltipBox` component to show a "Help"-Tooltip over the map (combining `mapModel.overlay` with `TooltipBox` from @open-pioneer/map-ui-components).
+  This component is styled like a Chakra Tooltip, but can be rendered at any position.
+
 ## Documentation and Examples
 
 - Create a Demo / Samples for components
-- Use the OpenLayers sample app as a showcase with many components
+- Add a demo to the showcase (`src/samples/showcase/`) for every component
 - Create a separate sample app for complex components
 
 - Maintain a high level document explaining the UI-Concept

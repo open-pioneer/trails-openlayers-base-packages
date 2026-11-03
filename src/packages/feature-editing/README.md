@@ -47,7 +47,7 @@ const templates: FeatureTemplate[] = [
 ];
 
 const featureWriter: FeatureWriter = {
-    async addFeature(feature, template, projection) {
+    async addFeature({ feature, template, projection }) {
         // Persist the new feature in your backend, then update the map
         await myApi.createFeature(feature, template.layerId);
     },
@@ -141,8 +141,13 @@ The editor supports editing _existing_ features or creating _new_ features:
   The user can draw the feature's geometry on a temporary layer.
 
 In both cases, feature attributes can be edited using the editor's form controls.
-Note however, that the layers or their sources in the map are **never** modified directly.
+Note however, that the editor never adds, replaces or removes features in the layers or their sources.
 Instead, the editor calls the `FeatureWriter`'s methods to apply any changes made by the user (see [FeatureWriter](#featurewriter) below).
+
+The feature writer receives the same feature object that is being edited in the map.
+When editing ends, by saving or by cancelling, the editor resets the geometry of this object to its state before the edit.
+Do not put this object into a vector source as is, because the geometry change would be lost.
+Store a copy (`feature.clone()`) instead.
 
 In summary, the sequence of steps when creating or editing a feature is as follows:
 
@@ -156,7 +161,7 @@ In summary, the sequence of steps when creating or editing a feature is as follo
 
 #### Example
 
-The following self-contained example demonstrates of all the relevant bits and pieces.
+The following self-contained example demonstrates all the relevant bits and pieces.
 
 ```tsx
 import { FeatureEditor, FeatureWriter, type FeatureTemplate } from "@open-pioneer/feature-editing";
@@ -197,15 +202,16 @@ function useEditingSetup(map: MapModel) {
         const featureCollection = new Collection<Feature>();
 
         // Callback to "store" data (just a fancy array in this case).
+        // The collection stores copies: the editor resets the geometry of the
+        // original feature when editing ends.
         const featureWriter: FeatureWriter = {
             addFeature: async ({ feature }) => {
-                featureCollection.push(feature);
+                featureCollection.push(feature.clone());
             },
             updateFeature: async ({ feature }) => {
                 const index = featureCollection.getArray().indexOf(feature);
                 if (index >= 0) {
-                    // Triggers an update, even though we write the same feature again.
-                    featureCollection.setAt(index, feature);
+                    featureCollection.setAt(index, feature.clone());
                 }
             },
             deleteFeature: async ({ feature }) => {
@@ -328,18 +334,19 @@ const featureWriter: FeatureWriter = {
 
 The `FeatureEditor` component accepts the following props:
 
-| Prop                             | Type                                     | Required | Description                                                                                                                     |
-| -------------------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                      |
-| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                  |
-| `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                        |
-| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                      |
-| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                 |
-| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                            |
-| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                |
-| `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification. |
-| `failureNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display failure notifications. By default, never disappears. Use `false` to completely hide the notification. |
-| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                                         |
+| Prop                             | Type                                     | Required | Description                                                                                                                       |
+| -------------------------------- | ---------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `map`                            | `MapModel`                               | No       | Map model to use (defaults to context map)                                                                                        |
+| `templates`                      | `FeatureTemplate[]`                      | Yes      | Feature templates defining the types of features that can be created or edited                                                    |
+| `writer`                         | `FeatureWriter`                          | Yes      | Storage implementation for feature create, update, and delete operations                                                          |
+| `selectableLayers`               | `Layer[]`                                | No       | Layers from which features can be selected. Defaults to layers matching template layer IDs                                        |
+| `snappableLayers`                | `Layer[]`                                | No       | Layers for snapping during drawing/modification. Defaults to `selectableLayers`                                                   |
+| `resolveSelectionAvailability`   | `(context) => SelectionAvailability`     | No       | Custom function to enable or disable the selection interaction. By default: disabled when there are no visible selectable layers. |
+| `resolveFormTemplate`            | `(context) => FormTemplate \| undefined` | No       | Custom function to determine which form template to use when editing an existing feature (see below)                              |
+| `showActionBar`                  | `boolean`                                | No       | Whether to show undo/redo/finish/reset controls during drawing (default: `true`)                                                  |
+| `successNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display success notifications. By default, never disappears. Use `false` to completely hide the notification.   |
+| `failureNotifierDisplayDuration` | `number \| false`                        | No       | Duration in ms to display failure notifications. By default, never disappears. Use `false` to completely hide the notification.   |
+| `onEditingStepChange`            | `(newEditingStep) => void`               | No       | Callback invoked when the editing workflow step changes                                                                           |
 
 ### Interaction Options
 
@@ -354,6 +361,48 @@ The FeatureEditor also accepts OpenLayers interaction options for fine-grained c
 | `highlightingOptions` | `HighlightOptions`    | Options for feature highlighting   |
 
 The drawing options will be merged with those of the selected feature template (if any are given), with the ones of the template taking precedence.
+
+### Customizing the Availability of the Selection Interaction
+
+Editing an existing feature requires the user to select it on the map first.
+By default, the selection is only available if at least one of the selectable layers is visible; otherwise the selection button is disabled and a hint is shown to the user.
+The default rule uses the layer's `effectivelyVisible` property, so a layer inside an invisible group layer does not count as visible.
+
+Use the `resolveSelectionAvailability` prop to implement a different rule, for example if selection should also require a certain zoom level:
+
+```tsx
+import type {
+    SelectionAvailability,
+    SelectionAvailabilityContext
+} from "@open-pioneer/feature-editing";
+
+// Use a function that does not change its value on every render.
+const customResolveSelectionAvailability = useCallback(
+    ({ mapModel, layers }: SelectionAvailabilityContext): SelectionAvailability => {
+        if (!layers.some((layer) => layer.effectivelyVisible)) {
+            return { status: "unavailable", reason: "Please activate an editable layer." };
+        }
+        if ((mapModel.zoomLevel ?? 0) < 12) {
+            return { status: "unavailable", reason: "Please zoom in to select a feature." };
+        }
+        return { status: "available" };
+    },
+    []
+);
+
+<FeatureEditor
+    templates={templates}
+    writer={featureWriter}
+    resolveSelectionAvailability={customResolveSelectionAvailability}
+/>;
+```
+
+The `context` contains the `mapModel` and the `layers` that would be used for the selection interaction (i.e. `selectableLayers`, or the layers derived from the templates).
+The function is evaluated reactively: if it accesses reactive values (such as `layer.visible` or the map's zoom level),
+the availability is recomputed automatically when those values change.
+When `status` is `"unavailable"`, the optional `reason` is presented to the user.
+
+Use `useCallback` or any alternative measure to ensure that the function does not change too frequently.
 
 ### Resolving Form Templates
 
@@ -492,20 +541,26 @@ const template: FeatureTemplate = {
 
 ### Custom Forms with Property Form Context
 
-For complete control over form layout and behavior, use a dynamic form template with the `usePropertyFormContext` hook:
+For complete control over form layout and behavior, use a dynamic form template with the `useCustomFormContext` hook:
 
 ```tsx
-import { usePropertyFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { Field, Input, VStack } from "@chakra-ui/react";
+import { useCustomFormContext, type FeatureTemplate } from "@open-pioneer/feature-editing";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useEffect } from "react";
 
 function CustomSurveyForm() {
-    const context = usePropertyFormContext();
+    const context = useCustomFormContext();
 
     // Read properties reactively - component re-renders when values change
-    const name = useReactiveSnapshot(() => context.properties.get("name") ?? "", [context]);
-    const email = useReactiveSnapshot(() => context.properties.get("email") ?? "", [context]);
+    const name = useReactiveSnapshot(
+        () => (context.properties.get("name") as string | undefined) ?? "",
+        [context]
+    );
+    const email = useReactiveSnapshot(
+        () => (context.properties.get("email") as string | undefined) ?? "",
+        [context]
+    );
 
     // Manage form validity
     useEffect(() => {
@@ -546,40 +601,43 @@ const template: FeatureTemplate = {
 };
 ```
 
-The `PropertyFormContext` provides:
+The `CustomFormContext` provides:
 
-| Property           | Type                            | Description                          |
-| ------------------ | ------------------------------- | ------------------------------------ |
-| `feature`          | `Feature`                       | The OpenLayers feature being edited  |
-| `properties`       | `ReactiveMap<string, unknown>`  | Reactive map of feature properties   |
-| `propertiesObject` | `() => Record<string, unknown>` | Returns properties as a plain object |
-| `mode`             | `"create" \| "update"`          | Current editing mode                 |
-| `template`         | `FeatureTemplate \| undefined`  | Template used (only in create mode)  |
-| `layer`            | `Layer \| undefined`            | Source layer (only in update mode)   |
-| `isValid`          | `boolean`                       | Controls save button enabled state   |
+| Property                | Type                            | Description                                   |
+| ----------------------- | ------------------------------- | --------------------------------------------- |
+| `feature`               | `Feature`                       | The OpenLayers feature being edited           |
+| `properties`            | `ReactiveMap<string, unknown>`  | Reactive map of feature properties            |
+| `getPropertiesAsObject` | `() => Record<string, unknown>` | Returns properties as a plain object          |
+| `editingStep`           | `CreationStep \| UpdateStep`    | The current editing step                      |
+| `mode`                  | `"create" \| "update"`          | Current editing mode                          |
+| `template`              | `FeatureTemplate \| undefined`  | Template used (only in create mode)           |
+| `layer`                 | `Layer \| undefined`            | Source layer (only in update mode)            |
+| `isValid`               | `boolean`                       | Controls save button enabled state (writable) |
 
 ## Editing Workflow Steps
 
 The editing workflow progresses through these steps:
 
-| Step ID         | Description                           | Active Interaction     |
-| --------------- | ------------------------------------- | ---------------------- |
-| `none`          | No active editing operation           | None                   |
-| `create-draw`   | Drawing a new feature's geometry      | Draw                   |
-| `create-modify` | Modifying a newly drawn feature       | Modify + property form |
-| `update-select` | Selecting an existing feature to edit | Select                 |
-| `update-modify` | Modifying an existing feature         | Modify + property form |
+| Step ID     | Description                           | Active Interaction     |
+| ----------- | ------------------------------------- | ---------------------- |
+| `initial`   | No active editing operation           | None                   |
+| `drawing`   | Drawing a new feature's geometry      | Draw                   |
+| `creation`  | Modifying a newly drawn feature       | Modify + property form |
+| `selection` | Selecting an existing feature to edit | Select                 |
+| `update`    | Modifying an existing feature         | Modify + property form |
+
+The `onEditingStepChange` prop reports every transition with the `EditingStep` object of the new step.
 
 ## Supported keyboard shortcuts (create feature)
 
 The following keyboard shortcuts are supported while drawing the initial feature geometry (not during editing of existing features):
 
-| Shortcut           | Description                      |
-| ------------------ | -------------------------------- |
-| `Ctrl/Command + Z` | Undo last geometry change        |
-| `Ctrl/Command + Y` | Redo last undone geometry change |
-| `Enter`            | Finish drawing or modification   |
-| `Escape`           | Cancel drawing or modification   |
+| Shortcut                                         | Description                      |
+| ------------------------------------------------ | -------------------------------- |
+| `Ctrl/Command + Z`                               | Undo last geometry change        |
+| `Ctrl/Command + Y` or `Ctrl/Command + Shift + Z` | Redo last undone geometry change |
+| `Enter`                                          | Finish drawing                   |
+| `Escape`                                         | Reset drawing                    |
 
 ## License
 

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { destroyResource, Resource } from "@open-pioneer/core";
+import { destroyResource } from "@open-pioneer/core";
 import { LayerFactory, MapModel, Overlay, SimpleLayer } from "@open-pioneer/map";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
@@ -45,7 +45,7 @@ export class MeasurementController {
     #layer: SimpleLayer;
 
     /**
-     * Source of {@link layer}.
+     * Source of `#layer`.
      */
     #source: VectorSource;
 
@@ -78,11 +78,6 @@ export class MeasurementController {
     #helpTooltip: Overlay;
 
     /**
-     * Keeps track of registered event handlers.
-     */
-    #resources: Resource[] = [];
-
-    /**
      * Called when a measurement is added to or removed from the source.
      */
     #measurementChangedHandler: MeasurementsChangeHandler | undefined;
@@ -107,12 +102,6 @@ export class MeasurementController {
 
     destroy() {
         this.stopMeasurement();
-
-        // Cleanup registered event handlers etc.
-        for (const resource of this.#resources) {
-            resource.destroy();
-        }
-        this.#resources = [];
 
         // Cleanup measurements and tooltips.
         this.#activeMeasurement = destroyResource(this.#activeMeasurement);
@@ -261,7 +250,10 @@ export class MeasurementController {
     #updateTooltip() {
         const overlay = this.#helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.#activeMeasurement);
-        const newContent = createElement(MeasurementTooltipContent, { content: helpMessage });
+        const newContent = createElement(MeasurementTooltipContent, {
+            kind: "help",
+            content: helpMessage
+        });
         overlay.setContent(newContent);
     }
 
@@ -373,7 +365,9 @@ class MeasurementInstance {
             output = formatLength(geometry, projection, this.#messages);
         }
         if (output) {
-            this.#tooltip.setContent(createElement(MeasurementTooltipContent, { content: output }));
+            this.#tooltip.setContent(
+                createElement(MeasurementTooltipContent, { kind: this.#state, content: output })
+            );
         }
     }
 
@@ -424,7 +418,7 @@ function createHelpTooltip(map: MapModel): Overlay {
         offset: [15, 0],
         positioning: "center-left",
         ariaRole: "tooltip",
-        content: createElement(MeasurementTooltipContent)
+        content: createElement(MeasurementTooltipContent, { kind: "help" })
     });
 
     return helpOverlay;
@@ -432,7 +426,9 @@ function createHelpTooltip(map: MapModel): Overlay {
 
 function createMeasureTooltip(map: MapModel, isFinished = false): Overlay {
     const overlay = map.overlays.add({
-        content: createElement(MeasurementTooltipContent),
+        content: createElement(MeasurementTooltipContent, {
+            kind: isFinished ? "finished" : "active"
+        }),
         offset: !isFinished ? DEFAULT_MEASUREMENT_OFFSET : FINISHED_MEASUREMENT_OFFSET,
         positioning: "bottom-center",
         className: !isFinished ? ACTIVE_MEASUREMENT_CLASSNAME : FINISHED_MEASUREMENT_CLASSNAME,

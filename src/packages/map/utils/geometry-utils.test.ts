@@ -46,6 +46,12 @@ describe("calculateBufferedExtent", () => {
     it("throws for an extent that is not a rectangle", () => {
         expect(() => calculateBufferedExtent([0, 0, 1])).toThrow(/expected length 4/);
     });
+
+    it("buffers the width and the height of the extent independently", () => {
+        const extent = [0, 0, 100, 10];
+        const bufferedExtent = calculateBufferedExtent(extent, 2);
+        expect(bufferedExtent).toEqual([-50, -5, 150, 15]);
+    });
 });
 
 describe("getPointResolution", () => {

@@ -35,7 +35,7 @@
 
 - Use [this template](../templates/package-README.md) to start documenting a new package.
 - Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
-- (There is no need to document for each component wether additional CSS classes can be passed using the `className` prop. This is documented in the UI concept documentation.)
+- (There is no need to document for each component whether additional CSS classes can be passed using the `className` prop. This is documented in the UI concept documentation.)
 
 ## Code style
 
@@ -86,7 +86,7 @@
             "scope": "javascript,typescript",
             "prefix": "license",
             "body": [
-                "// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)",
+                "// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)",
                 "// SPDX-License-Identifier: Apache-2.0"
             ]
         }

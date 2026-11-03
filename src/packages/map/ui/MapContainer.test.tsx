@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { BoxProps } from "@chakra-ui/react";
-import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer, MapContainerProps } from "./MapContainer";
@@ -71,7 +72,9 @@ it("does not change view padding on map if padding values are not changed", asyn
     });
 
     // expect initial padding is set
-    expect(map.olView.padding).toEqual([10, 20, 30, 40]);
+    await waitFor(() => {
+        expect(map.olView.padding).toEqual([10, 20, 30, 40]);
+    });
 
     // render with same padding
     let changeFired = false;
@@ -95,7 +98,9 @@ it("does update view padding on map if padding values are changed", async () => 
     });
 
     // expect initial padding is set
-    expect(map.olView.padding).toEqual([10, 20, 30, 40]);
+    await waitFor(() => {
+        expect(map.olView.padding).toEqual([10, 20, 30, 40]);
+    });
 
     // update with changed padding
     let changeFired = false;
@@ -121,6 +126,8 @@ it("does keep center if padding is changed during animation", async () => {
         viewPadding: initialPadding
     });
 
+    await waitForMapRender(map);
+
     // expect initial padding is set
     expect(map.olView.padding).toEqual([10, 20, 30, 40]);
     await map.whenDisplayed();
@@ -129,6 +136,11 @@ it("does keep center if padding is changed during animation", async () => {
     const centerValuesDuringAnimation: any[] = [];
     map.olView.on("change:center", () => {
         centerValuesDuringAnimation.push(map.olView.getCenter());
+    });
+
+    // Wait for initial padding to be applied before getting the original center
+    await vi.waitFor(() => {
+        expect(map.olView.getAnimating()).toBe(false);
     });
     const currentCenter = map.olView.getCenter();
 

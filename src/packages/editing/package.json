@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/editing",
-    "version": "1.4.0",
+    "version": "1.6.0",
     "description": "This package provides an editing service that allows to start and handle geometry editing workflows.",
     "keywords": [
         "open-pioneer-trails"
@@ -25,8 +25,10 @@
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/map-ui-components": "workspace:*",
         "@open-pioneer/runtime": "catalog:",
-        "ol": "catalog:"
+        "ol": "catalog:",
+        "react": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:*",

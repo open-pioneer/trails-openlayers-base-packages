@@ -14,6 +14,7 @@ import {
     MouseEvent,
     MouseEventHandler,
     ReactElement,
+    Ref,
     RefAttributes,
     memo,
     useState
@@ -25,7 +26,7 @@ import {
 export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
      * The label for the ToolButton.
-     * This value services as the tooltip text and the aria-label.
+     * This value serves as the tooltip text and the aria-label.
      *
      * This property is required for a11y reasons because a ToolButton usually only displays an icon.
      */
@@ -83,7 +84,7 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
 }
 
 /**
- * An button with a tooltip, used for tool buttons on a map.
+ * A button with a tooltip, used for tool buttons on a map.
  */
 export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: ToolButtonProps) {
     const {
@@ -155,7 +156,7 @@ export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: T
  * This component wraps chakra's button to ignore the *-by attributes.
  */
 const ButtonIgnoringAriaProps = function ButtonIgnoringAriaProps(
-    props: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }
+    props: ButtonProps & { ref?: Ref<HTMLButtonElement> }
 ) {
     const { "aria-labelledby": _label, "aria-describedby": _describedBy, ref, ...rest } = props;
     return <Button ref={ref} {...rest} />;

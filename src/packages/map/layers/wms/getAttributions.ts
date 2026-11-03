@@ -32,4 +32,4 @@ function isSet(value: any): value is string {
     return typeof value === "string" && !!value && !NONE.test(value);
 }
 
-/* eslint-enable @typescript-eslint/no-explicit-any */
+/* oxlint-enable @typescript-eslint/no-explicit-any */

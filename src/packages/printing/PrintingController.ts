@@ -12,7 +12,7 @@ import { Pixel } from "ol/pixel";
 import { getRenderPixel } from "ol/render";
 import RenderEvent from "ol/render/Event";
 import VectorSource from "ol/source/Vector";
-import {
+import type {
     FileFormatType,
     PageOrientationType,
     PageFormatType,
@@ -166,7 +166,7 @@ export class PrintingController {
                 width: paperWidth
             });
             const canvas = this.#printMap.getCanvas();
-            if (options.fileFormat == "png") {
+            if (options.fileFormat === "png") {
                 await this.exportMapInPNG(canvas, options);
             } else {
                 await this.exportMapInPDF(canvas, options);
@@ -213,7 +213,7 @@ export class PrintingController {
 
         context.fillStyle = "#fff"; // background color for background rect
         context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
-        context.font = 20 + "px bold sans-serif";
+        context.font = "bold 20px sans-serif";
         context.textAlign = "center";
         context.fillStyle = "#000"; // text color
 

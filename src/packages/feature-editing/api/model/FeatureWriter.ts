@@ -16,6 +16,11 @@ import type { FeatureTemplate } from "./FeatureTemplate";
  * Note that the `FeatureWriter` does not _load_ features.
  * Features and their attributes are taken from the map.
  *
+ * The feature writer receives the same feature object that is being edited in the map.
+ * When editing ends, by saving or by cancelling, the editor resets the geometry of this object to its state before the edit.
+ * Do not put this object into a vector source as is, because the geometry change would be lost.
+ * Store a copy (`feature.clone()`) instead.
+ *
  * If any function throws an error, an error message will be shown to the user
  * via the NotificationService. On success, a success notification is shown.
  *

@@ -27,8 +27,8 @@ Both properties support arbitrary OpenLayers [`StyleLike`](https://openlayers.or
 As an example, the following configuration will render completed features using black color and active ones using red color:
 
 ```tsx
-import { Fill, Stroke, Style } from "ol/style";
 import { Measurement } from "@open-pioneer/measurement";
+import { Fill, Stroke, Style } from "ol/style";
 
 const BLACK_STYLE = new Style({
     stroke: new Stroke({
@@ -67,8 +67,8 @@ Note that predefined measurements are re-applied when the array changes.
 To prevent accidental updates, wrap the array in a `useMemo` hook or store it somewhere outside the render function.
 
 ```tsx
-import LineString from "ol/geom/LineString";
 import { MeasurementGeometry } from "@open-pioneer/measurement";
+import LineString from "ol/geom/LineString";
 
 const measurements = useMemo(
     () => [

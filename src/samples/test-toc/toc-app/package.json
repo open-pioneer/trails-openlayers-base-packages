@@ -9,7 +9,6 @@
         "@open-pioneer/map": "workspace:*",
         "@open-pioneer/map-ui-components": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
-        "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/toc": "workspace:*",
         "ol": "catalog:",

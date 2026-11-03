@@ -2,3 +2,4 @@
 // SPDX-License-Identifier: Apache-2.0
 
 export { type ToolButtonProps, ToolButton } from "./ToolButton";
+export { TooltipBox, type TooltipBoxProps } from "./TooltipBox";

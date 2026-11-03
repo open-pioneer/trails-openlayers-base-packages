@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/ogc-features",
-    "version": "1.4.0",
+    "version": "1.6.0",
     "description": "This package provides utilities to work with OGC API Features services.",
     "keywords": [
         "open-pioneer-trails"
@@ -23,12 +23,14 @@
     "dependencies": {
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/search": "workspace:*",
         "ol": "catalog:",
         "uuid": "catalog:"
     },
     "devDependencies": {
+        "@open-pioneer/map": "workspace:*",
         "@open-pioneer/map-test-utils": "workspace:*",
-        "@open-pioneer/search": "workspace:*",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     }

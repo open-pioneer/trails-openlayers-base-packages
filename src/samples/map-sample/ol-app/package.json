@@ -8,6 +8,7 @@
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:*",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/editing": "workspace:*",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/legend": "workspace:*",
@@ -30,7 +31,6 @@
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
-        "react-icons": "catalog:",
-        "react-use": "catalog:"
+        "react-icons": "catalog:"
     }
 }

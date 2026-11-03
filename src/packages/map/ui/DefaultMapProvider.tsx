@@ -36,7 +36,7 @@ export function DefaultMapProvider(
 }
 
 /**
- * Accesses the default map props provided by {@link DefaultMapProvider} (or returns undefined).
+ * Accesses the default map provided by {@link DefaultMapProvider} (or returns undefined).
  *
  * @internal
  */

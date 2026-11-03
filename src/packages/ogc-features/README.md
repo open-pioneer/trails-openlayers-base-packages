@@ -84,7 +84,7 @@ The optional `rewriteUrl` option can be used to modify the feature requests made
 This is useful, for example, to filter the OGC service on the server side.
 
 Note that modifying the vector source's URL requires some care: existing query parameters should not be overwritten unless you know what you're doing.
-The vector source may add additional query parameters in the future, which might conflict the changes done by custom `rewriteUrl` implementations.
+The vector source may add additional query parameters in the future, which might conflict with the changes done by custom `rewriteUrl` implementations.
 
 Example:
 

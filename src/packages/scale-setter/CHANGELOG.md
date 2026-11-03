@@ -1,5 +1,27 @@
 # @open-pioneer/scale-setter
 
+## 1.6.0
+
+### Minor Changes
+
+- 2b94d1f: Update core packages to 4.9.0
+
+### Patch Changes
+
+- 35eff05: Updated dependencies
+
+## 1.5.0
+
+### Minor Changes
+
+- f790fda: Update to Chakra 3.37.0
+- a186f5d: Update core packages to 4.8.0.
+
+### Patch Changes
+
+- 0d9a9d0: Adapt to timing changes during map initialization.
+- 09ec7c7: Updated dependencies
+
 ## 1.4.0
 
 ### Minor Changes

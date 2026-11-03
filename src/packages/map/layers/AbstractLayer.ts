@@ -20,6 +20,8 @@ import { InternalConstructorTag } from "../utils/InternalConstructorTag";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     ATTACH_TO_MAP,
+    CHECK_EFFECTIVE_VISIBILITY,
+    DECLARED_AS_BASE_LAYER,
     GET_DEPS,
     getLayerDependencies,
     LAYER_DEPS,
@@ -49,7 +51,7 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 export type LayerLoadInfo = "not-loaded" | "loading" | "loaded" | { kind: "error"; error: Error };
 
 /**
- * Represents an operational layer in the map.
+ * Base class of all operational layer types.
  *
  * These layers always have an associated OpenLayers layer.
  *
@@ -65,9 +67,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
     #olSource: ReadonlyReactive<OlSource | undefined>;
-    #isBaseLayer: boolean;
+    #declaredAsBaseLayer: boolean | undefined; //original value from LayerConfig, only used internally
     #healthCheck?: string | HealthCheckFunction;
 
+    #isBaseLayer: ReadonlyReactive<boolean>;
     #visible: ReadonlyReactive<boolean>;
     #minResolution: ReadonlyReactive<number>;
     #maxResolution: ReadonlyReactive<number>;
@@ -96,8 +99,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
         this.#olSource = synchronizedOlSource(this.#olLayer);
-        this.#isBaseLayer = config.isBaseLayer ?? false;
+        this.#declaredAsBaseLayer = config.isBaseLayer;
         this.#healthCheck = config.healthCheck;
+        this.#isBaseLayer = computed(() => {
+            const effective = this.nullableMap?.layers.getBaseLayers().includes(this as Layer);
+            const declared = this.#declaredAsBaseLayer; // <-- Legacy
+            return effective || declared || false;
+        });
         this.#visible = synchronized(
             () => this.#olLayer.getVisible(),
             (cb) => {
@@ -156,7 +164,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.#visibleInScale = computed(() => {
             const map = this.nullableMap; // handle case where not in the map yet
             if (!map) {
-                return true; // or false? doesn't really matter
+                return true;
             }
 
             const zoom = map.zoomLevel;
@@ -177,17 +185,17 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             return zoom > this.minZoom && zoom <= this.maxZoom;
         });
 
-        if (config.maxResolution) {
+        if (config.maxResolution != null) {
             this.#olLayer.setMaxResolution(config.maxResolution);
         }
-        if (config.minResolution) {
+        if (config.minResolution != null) {
             this.#olLayer.setMinResolution(config.minResolution);
         }
 
-        if (config.maxZoom) {
+        if (config.maxZoom != null) {
             this.#olLayer.setMaxZoom(config.maxZoom);
         }
-        if (config.minZoom) {
+        if (config.minZoom != null) {
             this.#olLayer.setMinZoom(config.minZoom);
         }
     }
@@ -230,14 +238,14 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      * Only one base layer can be visible at a time.
      */
     get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
+        return this.#isBaseLayer.value;
     }
 
     /**
      * The combined load state of a layer.
      *
      * Aggregates the OpenLayers source state, health check and metadata state.
-     * Priority for the state: `error` > `loading` > `not-loaded` > `loaded`.
+     * Priority for the state: `error` > `loading` > `loaded` > `not-loaded`.
      */
     get loadState(): LayerLoadState {
         return loadInfoState(this.#loadInfo.value);
@@ -286,6 +294,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
      */
     get visibleInScale(): boolean {
         return this.#visibleInScale.value;
+    }
+
+    /**
+     * @internal
+     */
+    protected override [CHECK_EFFECTIVE_VISIBILITY](): boolean {
+        return super[CHECK_EFFECTIVE_VISIBILITY]() && this.visibleInScale;
     }
 
     /**
@@ -372,9 +387,17 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             return map[LAYER_DEPS];
         }
         throw new Error(
-            `Layer '${this.id}' has not been attached to a map yet. "
-            + "Use the LayerFactory to create an instance or add the layer to the map first.`
+            `Layer '${this.id}' has not been attached to a map yet. ` +
+                "Use the LayerFactory to create an instance or add the layer to the map first."
         );
+    }
+
+    /**
+     * Always returns original, configured `isBaseLayer` value from LayerConfig instead of computed value from `get isBaseLayer()`
+     *
+     * @internal */
+    get [DECLARED_AS_BASE_LAYER](): boolean | undefined {
+        return this.#declaredAsBaseLayer;
     }
 }
 
@@ -437,7 +460,7 @@ const LOAD_STATE_SEVERITY: Record<LayerLoadState, number> = {
     error: 3
 };
 
-/** Returns the higher severity of two load states: error > loading > not-loaded > loaded. */
+/** Returns the higher severity of two load states: error > loading > loaded > not-loaded. */
 function higherSeverity(a: LayerLoadState, b: LayerLoadState): LayerLoadState {
     return LOAD_STATE_SEVERITY[a] >= LOAD_STATE_SEVERITY[b] ? a : b;
 }
@@ -466,7 +489,7 @@ function loadInfoState(info: LayerLoadInfo): LayerLoadState {
 // OpenLayers sources carry no error detail, so synthesize one.
 function makeSourceInfo(id: string, state: LayerLoadState | undefined): LayerLoadInfo {
     if (state == null) {
-        // no state -> no source -> just pretend its loaded
+        // no state -> no source -> just pretend it's loaded
         return "loaded";
     }
     if (state === "error") {

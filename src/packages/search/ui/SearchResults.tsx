@@ -4,16 +4,16 @@
 import { Combobox, Highlight, HStack, ListCollection, Span } from "@chakra-ui/react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo } from "react";
-import { SearchOption, SearchResultsState } from "./useSearchState";
+import { SearchOption } from "./useComboboxCollection";
 
 export interface SearchResultsProps {
-    collection: ListCollection<SearchOption>;
     input: string;
-    results: SearchResultsState;
+    collection: ListCollection<SearchOption>;
+    pending: boolean;
 }
 
 export const SearchResults = memo(function SearchResults(props: SearchResultsProps) {
-    const { collection, input, results } = props;
+    const { collection, input, pending } = props;
     return (
         <Combobox.Content
             className="search-component-menu"
@@ -23,28 +23,27 @@ export const SearchResults = memo(function SearchResults(props: SearchResultsPro
             overflowX="hidden"
             visibility={input.length ? "visible" : "hidden"}
         >
-            <FallbackContent results={results} />
-            <SearchResultList collection={collection} input={input} results={results} />
+            <FallbackContent pending={pending} />
+            <SearchResultList collection={collection} input={input} pending={pending} />
         </Combobox.Content>
     );
 });
 
-const SearchResultList = memo(function SearchResults(props: SearchResultsProps) {
-    const { collection, input, results } = props;
+const SearchResultList = memo(function SearchResultList(props: SearchResultsProps) {
+    const { collection, input, pending } = props;
     return collection.group().map(([groupId, groupOptions]) => {
         return (
             <Combobox.ItemGroup key={groupId}>
                 <Combobox.ItemGroupLabel
-                    key={groupId}
                     backgroundColor="colorPalette.100"
-                    visibility={results.kind === "loading" ? "hidden" : "visible"}
+                    visibility={pending ? "hidden" : "visible"}
                 >
                     {groupOptions[0]?.group.label}
                 </Combobox.ItemGroupLabel>
                 {groupOptions.map((option) => {
                     return (
                         <Combobox.Item
-                            key={option.result.id}
+                            key={option.value}
                             item={option}
                             css={{
                                 _checked: {
@@ -72,12 +71,12 @@ const SearchResultList = memo(function SearchResults(props: SearchResultsProps) 
 /**
  * Show loading label or fallback message when no results are found.
  */
-const FallbackContent = memo(function FallbackContent(props: { results: SearchResultsState }) {
-    const { results } = props;
+const FallbackContent = memo(function FallbackContent(props: { pending: boolean }) {
+    const { pending } = props;
     const intl = useIntl();
 
     let content;
-    if (results.kind === "loading") {
+    if (pending) {
         content = intl.formatMessage({ id: "loadingText" });
     } else {
         content = intl.formatMessage({ id: "noOptionsText" });

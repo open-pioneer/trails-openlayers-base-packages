@@ -52,16 +52,24 @@ editingService.stop(map);
 
 ### Watch editing workflow states
 
-During an editing workflow different states can occur. Retrieve the current state by calling `getState` method on the workflow.
+During an editing workflow different states can occur (see `EditingWorkflowState`).
+Retrieve the current state by calling the `getState()` method on the workflow.
 
-Alternatively, the state can be watched using `on()`.
+`getState()` is reactive, so the state can be watched with `watch()` from `@conterra/reactivity-core`.
 
 Example:
 
 ```js
-workflow.on("active:drawing", () => {
-    // ....
-});
+import { watch } from "@conterra/reactivity-core";
+
+const handle = watch(
+    () => [workflow.getState()],
+    ([state]) => {
+        // ...
+    }
+);
+
+// Call handle.destroy() when the state is no longer needed.
 ```
 
 ### Finish editing workflow
@@ -70,7 +78,7 @@ After the editing is finished, a `Promise` will be returned.
 
 - The returned promise rejects if saving the feature failed.
 - The promise resolves with `undefined` when the editing was stopped.
-- The promise resolves with the feature ID when saving was successful.
+- The promise resolves with an object containing the feature ID (`{ featureId }`) when saving was successful.
 
 Example:
 

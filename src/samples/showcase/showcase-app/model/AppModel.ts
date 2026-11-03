@@ -9,7 +9,7 @@ import {
     ReadonlyReactive,
     watch
 } from "@conterra/reactivity-core";
-import { createLogger, Resource } from "@open-pioneer/core";
+import { createLogger, destroyResources, Resource } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -66,6 +66,7 @@ export class AppModel {
 
     destroy(): void {
         this.#currentDemo.value[1].destroy?.();
+        destroyResources(this.#resources);
     }
 
     get map(): MapModel {

@@ -58,7 +58,7 @@ export function AppUI() {
             return currentInput; // unchanged
         }
 
-        const filteredColumns = currentInput.columns.filter((_, index) => index % 2 == 1);
+        const filteredColumns = currentInput.columns.filter((_, index) => index % 2 === 1);
         return {
             ...currentInput,
             columns: filteredColumns
@@ -138,7 +138,7 @@ export function AppUI() {
                                                             </Menu.Item>
                                                             <Menu.Item
                                                                 onClick={() =>
-                                                                    fillResultList(MANY_COLUMS)
+                                                                    fillResultList(MANY_COLUMNS)
                                                                 }
                                                                 value="many_columns"
                                                             >
@@ -331,8 +331,8 @@ const GENERATED: ResultListInput = {
         return {
             id: index,
             properties: {
-                "boolean": index % 2 == 0,
-                "empty": index % 2 == 0 ? null : undefined,
+                "boolean": index % 2 === 0,
+                "empty": index % 2 === 0 ? null : undefined,
                 "number": index,
                 "float": index / 7.0,
                 "string": `Item ${index}`,
@@ -450,7 +450,7 @@ const LONG_STRINGS: ResultListInput = {
     ]
 };
 
-const MANY_COLUMS: ResultListInput = {
+const MANY_COLUMNS: ResultListInput = {
     columns: [
         {
             propertyName: "a"

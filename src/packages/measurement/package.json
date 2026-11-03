@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/measurement",
-    "version": "1.4.0",
+    "version": "1.6.0",
     "description": "This package provides a UI component that allows the user to perform area and distance measurements on the map.",
     "keywords": [
         "open-pioneer-trails"
@@ -25,6 +25,7 @@
         "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:*",
+        "@open-pioneer/map-ui-components": "workspace:*",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "ol": "catalog:",

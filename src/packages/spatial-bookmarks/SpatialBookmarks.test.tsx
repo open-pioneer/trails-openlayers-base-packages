@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapRender } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     act,
@@ -30,6 +30,7 @@ const MOCK_NAMESPACE = {
 } satisfies Partial<LocalStorageNamespace>;
 
 const MOCK_STORAGE_SERVICE: Partial<LocalStorageService> = {
+    isSupported: true,
     getNamespace(key): LocalStorageNamespace {
         if (key !== "spatial-bookmarks") {
             throw new Error("unexpected key");
@@ -62,7 +63,7 @@ it("should save a bookmark and update the list", async () => {
     const user = userEvent.setup();
     MOCK_NAMESPACE.set("bookmarks", []);
 
-    const { div } = await createBookmarkComponent();
+    const { div } = await createBookmarkComponent({ mockMapRender: true });
 
     const createBtn = await findByText(div, "bookmark.button.create");
 
@@ -115,7 +116,8 @@ it("should remove bookmark from the list by clicking the remove button", async (
 it("should center the map on the selected bookmark", async () => {
     const user = userEvent.setup();
     const bookmarks = createBookmarks();
-    const { mapModel, div } = await createBookmarkComponent();
+    const { mapModel, div } = await createBookmarkComponent({ mockMapRender: true });
+    await waitForMapRender(mapModel);
 
     const extent = bookmarks[0]!.extent;
     const bookmarkExtent = [extent.minX, extent.minY, extent.maxX, extent.maxY];
@@ -127,6 +129,28 @@ it("should center the map on the selected bookmark", async () => {
     await user.click(bookmarkItem);
     const newExtent = mapModel.olMap.getView().calculateExtent();
     expect(newExtent).toStrictEqual(bookmarkExtent);
+});
+
+it("keeps the bookmarks in memory if local storage is not supported", async () => {
+    const user = userEvent.setup();
+    const unsupportedStorage: Partial<LocalStorageService> = {
+        isSupported: false,
+        getNamespace() {
+            throw new Error("This browser does not support local storage.");
+        }
+    };
+
+    const { div } = await createBookmarkComponent({
+        mockMapRender: true,
+        storageService: unsupportedStorage
+    });
+    await user.click(await findByText(div, "bookmark.button.create"));
+    await user.type(await findByPlaceholderText(div, "bookmark.input.placeholder"), "Dortmund");
+    await user.click(await findByText(div, "bookmark.button.save"));
+
+    const bookmarkList = await findByRole(div, "listbox");
+    expect(bookmarkList.textContent).toContain("Dortmund");
+    expect(MOCK_NAMESPACE_CONTENT.size).toBe(0);
 });
 
 it("should move the focus up and down inside the bookmarks list", async () => {
@@ -165,19 +189,30 @@ interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
 
-async function createBookmarkComponent() {
-    const { mapModel, injectedServices } = await setupComponent();
+async function createBookmarkComponent(opts?: {
+    mockMapRender?: boolean;
+    storageService?: Partial<LocalStorageService>;
+}) {
+    const { mapModel, injectedServices } = await setupComponent({
+        mockMapRender: opts?.mockMapRender,
+        storageService: opts?.storageService
+    });
+
     renderComponent({ services: injectedServices }, { map: mapModel, "data-testid": "bookmarks" });
     const div = await waitForSpatialBookmarks();
     return { mapModel, div };
 }
 
-async function setupComponent() {
+async function setupComponent(opts: {
+    mockMapRender?: boolean;
+    storageService?: Partial<LocalStorageService>;
+}) {
     const { map } = await setupMap({
-        projection: "EPSG:25832"
+        projection: "EPSG:25832",
+        mockMapRender: opts?.mockMapRender
     });
     const injectedServices = {
-        "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
+        "local-storage.LocalStorageService": opts.storageService ?? MOCK_STORAGE_SERVICE
     };
     return {
         mapModel: map,

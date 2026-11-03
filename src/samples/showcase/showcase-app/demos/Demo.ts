@@ -7,7 +7,7 @@ import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import { ReactNode } from "react";
 import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
 import { createEditingDemo } from "./EditingDemo";
@@ -62,7 +62,7 @@ export interface SharedDemoOptions {
     currentIntl: ReadonlyReactive<PackageIntl>;
     httpService: HttpService;
     mapModel: MapModel;
-    vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     editingService: EditingService;
     notificationService: NotificationService;
 }

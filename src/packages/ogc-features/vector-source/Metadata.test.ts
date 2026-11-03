@@ -34,7 +34,7 @@ describe("findMatchingCrs", () => {
         ).toBe(undefined);
     });
 
-    it("expect returns undefined on no available CRSes", () => {
+    it("expect returns undefined when the available CRS list is undefined", () => {
         const noAvailableCRS = undefined;
         expect(findMatchingCrs("http://www.opengis.net/def/crs/EPSG/0/4326", noAvailableCRS)).toBe(
             undefined

@@ -21,6 +21,16 @@ it("should format coordinates to correct coordinate string for the corresponding
     expect(renderCoords(INTL_DE, 0)).equals("3.545 4.543.543");
 });
 
+it("formats positive coordinates as eastern and northern degrees", () => {
+    const formatted = formatCoordinates([7.5, 51.94], 2, INTL_EN, "degree");
+    expect(formatted).equals(`7°30'0.00"(E) 51°56'24.00"(N)`);
+});
+
+it("formats negative coordinates as western and southern degrees", () => {
+    const formatted = formatCoordinates([-7.5, -51.94], 2, INTL_EN, "degree");
+    expect(formatted).equals(`7°30'0.00"(W) 51°56'24.00"(S)`);
+});
+
 it("should format coordinates to correct coordinate string with default precision", async () => {
     const coords = [3545.08081, 4543543.009];
     const formatted = formatCoordinates(coords, undefined, INTL_DE, undefined);

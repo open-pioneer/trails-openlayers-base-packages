@@ -13,7 +13,7 @@ import {
     Service,
     ServiceOptions
 } from "@open-pioneer/runtime";
-import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import { sourceId } from "open-pioneer:source-info";
 import { createDemos } from "../demos/Demo";
 import { MAP_ID } from "../MapConfigProviderImpl";
@@ -30,7 +30,7 @@ export interface References {
     httpService: HttpService;
     mapRegistry: MapRegistry;
     notifier: NotificationService;
-    vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     editingService: EditingService;
     notificationService: NotificationService;
 }

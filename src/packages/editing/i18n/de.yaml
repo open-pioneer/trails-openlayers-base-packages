@@ -1,5 +1,4 @@
 messages:
-  title: Editierung von Objekten
   create:
     tooltip:
       begin: Klicken, um mit Erstellung der Geometrie zu beginnen

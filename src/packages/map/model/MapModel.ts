@@ -45,7 +45,7 @@ import {
 } from "./Highlights";
 import { LayerCollection } from "./LayerCollection";
 import { MapAttributions } from "./MapAttributions";
-import { ExtentConfig } from "./MapConfig";
+import { ExtentConfig, InitialPositionConfig } from "./MapConfig";
 import { Overlays } from "./Overlays";
 
 const LOG = createLogger(sourceId);
@@ -70,7 +70,7 @@ const deprecatedHighlights = deprecated({
  **/
 export interface ZoomOptions {
     /**
-     * The zoom-level used if there is no valid extend (such as for single points).
+     * The zoom-level used if there is no valid extent (such as for single points).
      */
     pointZoom?: number;
 
@@ -115,7 +115,7 @@ export interface MapPadding {
 /**
  * An item that should be displayed as part of the attributions for the map.
  *
- * @group MapModel
+ * @group Map Model
  */
 export interface AttributionItem {
     /**
@@ -141,7 +141,7 @@ export class MapModel {
     readonly #attributions: MapAttributions;
     readonly #layers = new LayerCollection(this, INTERNAL_CONSTRUCTOR_TAG);
     readonly #highlights: Highlights;
-    readonly #tooltips: Overlays;
+    readonly #overlays: Overlays;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
 
@@ -156,7 +156,7 @@ export class MapModel {
     readonly #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
-    #displayStatus: DisplayStatus;
+    #displayStatus = reactive<DisplayStatus>("waiting");
     #displayWaiter: ManualPromise<void> | undefined;
 
     /**
@@ -166,6 +166,7 @@ export class MapModel {
         options: {
             id: string;
             olMap: OlMap;
+            initialPosition: InitialPositionConfig | undefined;
             initialExtent: ExtentConfig | undefined;
             showDefaultAttributions: boolean;
             currentIntl: ReadonlyReactive<PackageIntl>;
@@ -199,10 +200,10 @@ export class MapModel {
             httpService: options.httpService
         };
 
-        this.#displayStatus = "waiting";
-        this.#initializeView().then(
+        this.#displayStatus.value = "waiting";
+        this.#initializeView(options.initialPosition).then(
             () => {
-                this.#displayStatus = "ready";
+                this.#displayStatus.value = "ready";
                 this.#displayWaiter?.resolve();
                 this.#displayWaiter = undefined;
             },
@@ -211,7 +212,7 @@ export class MapModel {
                     LOG.error(`Failed to initialize map`, error);
                 }
 
-                this.#displayStatus = "error";
+                this.#displayStatus.value = "error";
                 this.#displayWaiter?.reject(new Error(`Failed to initialize map.`));
                 this.#displayWaiter = undefined;
             }
@@ -236,7 +237,7 @@ export class MapModel {
 
         // expects fully constructed mapModel
         this.#highlights = new Highlights(this, this.#layerDeps);
-        this.#tooltips = new Overlays(this);
+        this.#overlays = new Overlays(this);
     }
 
     /**
@@ -263,6 +264,7 @@ export class MapModel {
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
         this.#highlights[DESTROY_HIGHLIGHTS]();
+        this.#overlays.clear();
         this.#attributions.destroy();
         this.#olMap.dispose();
     }
@@ -281,7 +283,7 @@ export class MapModel {
      * @internal
      */
     get [DISPLAY_STATUS](): DisplayStatus {
-        return this.#displayStatus;
+        return this.#displayStatus.value;
     }
 
     /**
@@ -404,6 +406,19 @@ export class MapModel {
     }
 
     /**
+     * Returns the OpenLayers map's viewport element.
+     */
+    get viewport(): HTMLElement {
+        const viewport = this.#olMap.getViewport();
+        if (viewport) {
+            return viewport;
+        } else {
+            // should never happen because we do not support OffscreenCanvas
+            throw new Error("olMap's viewport is undefined.");
+        }
+    }
+
+    /**
      * Returns the current view of the OpenLayers map.
      */
     get olView(): OlView {
@@ -423,7 +438,7 @@ export class MapModel {
      * Create and receive map overlays
      */
     get overlays(): Overlays {
-        return this.#tooltips;
+        return this.#overlays;
     }
 
     /**
@@ -572,7 +587,7 @@ export class MapModel {
     /**
      * Removes any existing highlights from the map.
      *
-     * @deprecated Highlight functions wil be removed in a future major release; call {@link Highlights.clear} instead.
+     * @deprecated Highlight functions will be removed in a future major release; call {@link Highlights.clear} instead.
      */
     removeHighlights(): void {
         deprecatedHighlights();
@@ -586,10 +601,10 @@ export class MapModel {
         if (this.#isDestroyed) {
             return Promise.reject(new Error("Map model was destroyed."));
         }
-        if (this.#displayStatus === "error") {
+        if (this.#displayStatus.value === "error") {
             return Promise.reject(new Error(`Failed to initialize map.`));
         }
-        if (this.#displayStatus === "ready") {
+        if (this.#displayStatus.value === "ready") {
             return Promise.resolve();
         }
         return (this.#displayWaiter ??= createManualPromise()).promise;
@@ -602,7 +617,7 @@ export class MapModel {
      * AbortError is thrown when cancelled via `this.#abortController`, for example
      * when the map model is destroyed before it has ever been displayed.
      */
-    async #initializeView(): Promise<void> {
+    async #initializeView(initialPosition: InitialPositionConfig | undefined): Promise<void> {
         try {
             await waitForMapSize(this.olMap, this.#abortController.signal); // may throw on cancel
         } catch (e) {
@@ -630,6 +645,11 @@ export class MapModel {
                 view.setCenter(olCenter);
                 view.setResolution(resolution);
             } else {
+                if (initialPosition) {
+                    view.setZoom(initialPosition.zoom);
+                    view.setCenter([initialPosition.center.x, initialPosition.center.y]);
+                }
+
                 // Initial extent was NOT set from the outside.
                 // We detect whatever the view is displaying and consider it to be the initial extent.
                 const olExtent = view.calculateExtent();
@@ -668,21 +688,21 @@ interface ViewBindings {
 function createViewBindings(view: OlView): ViewBindings {
     return {
         resolution: synchronized(
-            () => view.getResolution(),
+            () => view.getResolution() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);
             }
         ),
         center: synchronized(
-            () => view.getCenter(),
+            () => view.getCenter() ?? undefined,
             (cb) => {
                 const key = view.on("change:center", cb);
                 return () => unByKey(key);
             }
         ),
         zoom: synchronized(
-            () => view.getZoom(),
+            () => view.getZoom() ?? undefined,
             (cb) => {
                 const key = view.on("change:resolution", cb);
                 return () => unByKey(key);

@@ -49,8 +49,7 @@ export class EditingServiceImpl implements EditingService {
             layerFactory: this.#serviceOptions.references.layerFactory,
             intl: this.#serviceOptions.currentIntl
         });
-        this.#workflows.set(mapId, workflow);
-        this._connectToWorkflowDestroyEvent(workflow, mapId);
+        this.#registerWorkflow(mapId, workflow);
 
         return workflow;
     }
@@ -83,8 +82,7 @@ export class EditingServiceImpl implements EditingService {
             layerFactory: this.#serviceOptions.references.layerFactory,
             intl: this.#serviceOptions.currentIntl
         });
-        this.#workflows.set(mapId, workflow);
-        this._connectToWorkflowDestroyEvent(workflow, mapId);
+        this.#registerWorkflow(mapId, workflow);
 
         return workflow;
     }
@@ -108,10 +106,17 @@ export class EditingServiceImpl implements EditingService {
         }
     }
 
-    _connectToWorkflowDestroyEvent(
-        workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
-        mapId: string
+    // A workflow destroys itself in its constructor when it cannot start (for example, a feature without an id).
+    // Such a workflow must not block the map.
+    #registerWorkflow(
+        mapId: string,
+        workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl
     ) {
+        if (workflow.getState() === "destroyed") {
+            return;
+        }
+
+        this.#workflows.set(mapId, workflow);
         const watchStateHandle = watch(
             () => [workflow.getState()],
             ([newState]) => {

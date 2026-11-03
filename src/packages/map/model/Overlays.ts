@@ -87,7 +87,7 @@ export class Overlays {
  */
 export interface OverlayOptions {
     /**
-     * Optional, readonly tag that helps identifying the overlay instance.
+     * Optional, readonly tag that helps to identify the overlay instance.
      */
     tag?: string;
 
@@ -132,7 +132,7 @@ export interface OverlayOptions {
     positioning?: OverlayPositioning;
 
     /**
-     * Offsets in _pixels_ relative to the overlay`s coordinates on the map.
+     * Offsets in _pixels_ relative to the overlay's coordinates on the map.
      * The first element in the array is the horizontal offset.
      *
      * @see {@link Overlay.setOffset}
@@ -147,7 +147,7 @@ export interface OverlayOptions {
     stopEvent?: boolean;
 
     /**
-     * Raw OpenLayers overlay properties. `OlOverlayOptions` override corresponding `OverlayProperties`, except for id and element.
+     * Raw OpenLayers overlay properties. `OlOverlayOptions` override the corresponding `OverlayOptions`, except for `id` and `element`.
      *
      * **warning** Using OpenLayers options can create inconsistencies that lead to errors.
      * The OpenLayers API can change with updates of OpenLayers.
@@ -220,7 +220,7 @@ export type OverlayPositioning =
 export interface OlOverlayOptions extends Omit<Partial<Options>, "id" | "element"> {}
 
 /**
- * An overlay is an UI element that is displayed over the map.
+ * An overlay is a UI element that is displayed over the map.
  *
  * Overlays are tied to coordinates on the map and not to a position on the screen.
  * The overlay renders a react node at the specified coordinates.
@@ -236,7 +236,7 @@ export class Overlay {
     readonly id: string;
 
     /**
-     * Optional, readonly tag that helps identifying the overlay instance.
+     * Optional, readonly tag that helps to identify the overlay instance.
      */
     readonly tag: string | undefined;
 
@@ -387,14 +387,14 @@ export class Overlay {
     }
 
     /**
-     * The HTML element that that wraps the overlay's content.
+     * The HTML element that wraps the overlay's content.
      */
     get element(): HTMLElement {
         return this.#overlayDiv;
     }
 
     /**
-     * Offset in _pixels_ relative to the overlay`s coordinates.
+     * Offset in _pixels_ relative to the overlay's coordinates.
      *
      * The first element in the array is the horizontal offset.
      */
@@ -460,7 +460,7 @@ export class Overlay {
     }
 
     /**
-     * Set offset in _pixels_ relative to the overlay`s coordinates on the map.
+     * Set offset in _pixels_ relative to the overlay's coordinates on the map.
      * The first element in the array is the horizontal offset.
      */
     setOffset(offset: number[]) {

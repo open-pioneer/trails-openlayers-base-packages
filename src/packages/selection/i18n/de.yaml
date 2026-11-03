@@ -1,6 +1,6 @@
 messages:
   selectSource: "Quelle auswählen"
-  tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"
+  tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf."
   disabledTooltip: "Die aktuelle Selektionsquelle ist nicht verfügbar."
   noSourceTooltip: "Es ist keine Selektionsquelle ausgewählt. Zum Starten bitte Selektionsquelle auswählen."
   sourceNotAvailable: "Quelle nicht verfügbar"
