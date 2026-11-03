@@ -284,6 +284,16 @@ it("sets the default dpi for the scale line if no dpi was specified", async () =
     expect(ScaleLineSpy).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ dpi: 300 }));
 });
 
+it("should throw an error when the map container is missing", async () => {
+    const { map, printingService } = await setUp();
+
+    vi.spyOn(map.olMap, "getTargetElement").mockReturnValue(undefined);
+
+    await expect(() => printingService.printMap(map)).rejects.toThrow(
+        "Cannot get the dom node containing the map"
+    );
+});
+
 function findScaleLine(olMap: OlMap) {
     const scaleLine = olMap
         .getControls()

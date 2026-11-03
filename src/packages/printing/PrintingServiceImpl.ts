@@ -72,6 +72,7 @@ export class PrintJob {
     #blockUserInteraction: boolean = false;
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
+    #mapContainer: HTMLElement;
     #dpi: number | undefined = undefined;
     #height: number | undefined = undefined; // Pixels!
     #width: number | undefined = undefined; // Pixels!
@@ -101,14 +102,21 @@ export class PrintJob {
         this.#overlayText = options.overlayText;
         this.#viewPadding = options.viewPadding;
 
+        const mapContainer = this.#olMap.getTargetElement();
+        if (!mapContainer) {
+            throw new Error("Cannot get the dom node containing the map");
+        }
+        this.#mapContainer = mapContainer;
+
         // save current state of map
         const viewResolution = olMap.getView().getResolution();
         if (viewResolution == null) {
             throw new Error("Cannot get current view resolution");
         }
         this.#viewResolution = viewResolution;
-        this.#viewHeight = this.#olMap.getTargetElement().style.height;
-        this.#viewWidth = this.#olMap.getTargetElement().style.width;
+
+        this.#viewHeight = this.#mapContainer.style.height;
+        this.#viewWidth = this.#mapContainer.style.width;
 
         const screenSize =
             (this.#map &&
@@ -134,8 +142,8 @@ export class PrintJob {
             undefined;
 
         // if no params for target image specified, export current map canvas
-        this.#width = targetWidth ?? this.#olMap.getTargetElement().offsetWidth;
-        this.#height = targetHeight ?? this.#olMap.getTargetElement().offsetHeight;
+        this.#width = targetWidth ?? this.#mapContainer.offsetWidth;
+        this.#height = targetHeight ?? this.#mapContainer.offsetHeight;
         this.#scaleResolution = targetViewResolution ?? this.#olMap.getView().getResolution();
         this.#dpi = options.dpi ?? DEFAULT_DPI;
     }
@@ -196,8 +204,8 @@ export class PrintJob {
         }
 
         // set print size if specified
-        this.#olMap.getTargetElement().style.width = this.#width + "px";
-        this.#olMap.getTargetElement().style.height = this.#height + "px";
+        this.#mapContainer.style.width = this.#width + "px";
+        this.#mapContainer.style.height = this.#height + "px";
         this.#olMap.updateSize();
         this.#olMap.getView().setResolution(this.#scaleResolution);
 
@@ -278,8 +286,8 @@ export class PrintJob {
 
     #reset() {
         // reset original map size
-        this.#olMap.getTargetElement().style.width = this.#viewWidth;
-        this.#olMap.getTargetElement().style.height = this.#viewHeight;
+        this.#mapContainer.style.width = this.#viewWidth;
+        this.#mapContainer.style.height = this.#viewHeight;
         this.#olMap.updateSize();
         this.#olMap.getView().setResolution(this.#viewResolution);
 
