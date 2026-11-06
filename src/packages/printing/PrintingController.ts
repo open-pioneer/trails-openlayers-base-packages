@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
-import { LayerFactory, SimpleLayer } from "@open-pioneer/map";
-import { MapModel } from "@open-pioneer/map/model/MapModel";
+import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { EventsKey } from "ol/events";
 import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
@@ -87,6 +86,7 @@ export class PrintingController {
         this.#reset();
         unByKey(this.#postrenderListener);
         this.#map.layers.removeLayer(this.#printAreaLayer);
+        this.#printAreaLayer.destroy();
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {

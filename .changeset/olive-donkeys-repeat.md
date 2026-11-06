@@ -8,5 +8,5 @@ Fix `mapModel.setScale()` for projections that do not use meters as their unit (
 equator) instead of the point resolution at the map's center. For projections in degrees the resulting
 scale was therefore too small, and increasingly so towards the poles.
 
-This could be observed in the scale setter: a different scale then the user originally selected was shown after the selection completed.
+This could be observed in the scale setter: a different scale than the user originally selected was shown after the selection completed.
 `setScale()` and `mapModel.scale` should now be consistent for every projection.

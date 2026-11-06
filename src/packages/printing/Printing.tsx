@@ -22,7 +22,7 @@ import {
     ViewPaddingBehavior
 } from "./index";
 import { PrintingController } from "./PrintingController";
-import { getPageSize, getScreenSizeForPageSize, getViewPadding } from "./utils";
+import { getPageSize, getScreenSizeForPageSize, getViewPadding, PageSize } from "./utils";
 
 const LOG = createLogger(sourceId);
 
@@ -39,9 +39,9 @@ const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
 // TODO make configurable with props in future
 const INITIAL_DPI = 96;
-const INITIAL_PAGE_FORMAT = "a4";
-const INITIAL_PAGE_ORIENTATION = "landscape";
-const INITIAL_FILE_FORMAT = "pdf";
+const INITIAL_PAGE_FORMAT: PageFormatType = "a4";
+const INITIAL_PAGE_ORIENTATION: PageOrientationType = "landscape";
+const INITIAL_FILE_FORMAT: FileFormatType = "pdf";
 
 /**
  * Properties supported by the {@link Printing} component.
@@ -97,26 +97,19 @@ export const Printing: FC<PrintingProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
 
-    const initialScale = useMemo(() => getFittingScale(map, scales), [map, scales]);
-    const initialDpi = useMemo(() => getInitialOption(dpis, INITIAL_DPI), [dpis]);
-    const initialPageFormat = useMemo(
-        () => getInitialOption(pageFormats, INITIAL_PAGE_FORMAT),
-        [pageFormats]
+    const [pageFormat, setPageFormat] = useState(() =>
+        getInitialOption(pageFormats, INITIAL_PAGE_FORMAT, "pageFormats")
     );
-    const initialPageOrientation = useMemo(
-        () => getInitialOption(pageOrientations, INITIAL_PAGE_ORIENTATION),
-        [pageOrientations]
+    const [orientation, setOrientation] = useState(() =>
+        getInitialOption(pageOrientations, INITIAL_PAGE_ORIENTATION, "pageOrientations")
     );
-    const initialFileFormat = useMemo(
-        () => getInitialOption(fileFormats, INITIAL_FILE_FORMAT),
-        [fileFormats]
+    const [scale, setScale] = useState(() =>
+        getFittingScale(map, scales, getPageSize(pageFormat, orientation))
     );
-
-    const [scale, setScale] = useState<number>(initialScale);
-    const [dpi, setDpi] = useState<number>(initialDpi);
-    const [pageFormat, setPageFormat] = useState<PageFormatType>(initialPageFormat);
-    const [orientation, setOrientation] = useState<PageOrientationType>(initialPageOrientation);
-    const [fileFormat, setFileFormat] = useState<FileFormatType>(initialFileFormat);
+    const [dpi, setDpi] = useState(() => getInitialOption(dpis, INITIAL_DPI, "dpis"));
+    const [fileFormat, setFileFormat] = useState(() =>
+        getInitialOption(fileFormats, INITIAL_FILE_FORMAT, "fileFormats")
+    );
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
@@ -420,10 +413,10 @@ function renderScaleText(intl: PackageIntl, rawScale: number): string {
 }
 
 // find the largest scale that fits completely inside the map view, considering some padding
-function getFittingScale(map: MapModel, scales: number[]): number {
+function getFittingScale(map: MapModel, scales: number[], pageSize: PageSize): number {
     const fallbackScale = scales[0];
-    if (!fallbackScale) {
-        throw new Error("No scales defined");
+    if (fallbackScale == null) {
+        throw new Error("'scales' must not be empty");
     }
 
     const mapSize = map.olMap.getSize();
@@ -435,8 +428,6 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     const viewPadding = getViewPadding(map.olView);
     const maxPrintHeight = mapHeight - viewPadding.top - viewPadding.bottom - PRINT_AREA_BUFFER; // pixels
     const maxPrintWidth = mapWidth - viewPadding.left - viewPadding.right - PRINT_AREA_BUFFER;
-
-    const pageSize = getPageSize(INITIAL_PAGE_FORMAT, INITIAL_PAGE_ORIENTATION);
 
     const sortedScales = scales.toSorted((a, b) => b - a); // sort descending
     // return first scale that fits in the map screen
@@ -451,19 +442,15 @@ function getFittingScale(map: MapModel, scales: number[]): number {
     return fallbackScale;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function getInitialOption(options: any[], initialOption: any) {
-    if (options.includes(initialOption)) {
-        return initialOption;
-    } else {
-        LOG.warn(
-            `Configured initial option '${initialOption}' not included in list. Use first option as fallback.`
-        );
-        if (options[0]) {
-            return options[0];
-        } else {
-            LOG.error("No fallback option found in options. Is the list empty?");
-        }
+// The preferred option if the list contains it, otherwise the first entry of the list.
+function getInitialOption<T>(options: T[], preferred: T, propName: string): T {
+    if (options.includes(preferred)) {
+        return preferred;
     }
+
+    const first = options[0];
+    if (first == null) {
+        throw new Error(`'${propName}' must not be empty`);
+    }
+    return first;
 }
-/* eslint-ensable @typescript-eslint/no-explicit-any */

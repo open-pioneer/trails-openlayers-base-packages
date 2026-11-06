@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { ReadonlyReactive } from "@conterra/reactivity-core";
-import { createManualPromise, Resource } from "@open-pioneer/core";
+import { createManualPromise, deprecated, Resource } from "@open-pioneer/core";
 import { DEFAULT_DPI, MapModel } from "@open-pioneer/map";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { Options } from "html2canvas";
@@ -16,12 +16,19 @@ import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior
 import {
     canvasToPng,
     createBlockUserOverlay,
-    getScreenSizeForPageSize,
+    getPageSizeInPixels,
     getViewPadding,
     PRINTING_HIDE_CLASS,
     scalePadding,
     ViewPadding
 } from "./utils";
+
+const deprecatedOlMapParameter = deprecated({
+    name: "PrintingService.printMap() called with an OlMap",
+    packageName: "@open-pioneer/printing",
+    since: "v1.7.0",
+    alternative: "pass the MapModel instead"
+});
 
 export class PrintingServiceImpl implements PrintingService {
     #intl: ReadonlyReactive<PackageIntl>;
@@ -43,6 +50,7 @@ export class PrintingServiceImpl implements PrintingService {
             olMap = map.olMap;
         } else {
             olMap = mapParam;
+            deprecatedOlMapParameter();
         }
 
         const job = new PrintJob(map, olMap, {
@@ -67,15 +75,16 @@ type PrintJobOptions = PrintingOptions &
 
 // Exported just for test (mocking)
 export class PrintJob {
-    #map: MapModel | undefined;
     #olMap: OlMap;
     #blockUserInteraction: boolean = false;
     #overlayText: string;
     #viewPadding: ViewPaddingBehavior;
     #mapContainer: HTMLElement;
-    #dpi: number | undefined = undefined;
-    #height: number | undefined = undefined; // Pixels!
-    #width: number | undefined = undefined; // Pixels!
+    #dpi: number;
+
+    /** The size of the map container while printing, in CSS pixels. */
+    #width: number;
+    #height: number;
 
     #running = false;
     #drawInformation: DrawInfo[] | undefined = [];
@@ -91,12 +100,11 @@ export class PrintJob {
     /** The original width, at the start of the print job. */
     #viewWidth: string;
 
-    /** The target resolution for the print job. */
-    #scaleResolution: number | undefined = undefined;
+    /** The view resolution while printing. */
+    #printResolution: number;
 
     // NOTE: Map is optional here to support the legacy "OlMap-only" API.
     constructor(map: MapModel | undefined, olMap: OlMap, options: PrintJobOptions) {
-        this.#map = map;
         this.#olMap = olMap;
         this.#blockUserInteraction = options.blockUserInteraction;
         this.#overlayText = options.overlayText;
@@ -117,35 +125,30 @@ export class PrintJob {
 
         this.#viewHeight = this.#mapContainer.style.height;
         this.#viewWidth = this.#mapContainer.style.width;
+        this.#dpi = options.dpi;
 
-        const screenSize =
-            (this.#map &&
-                options.width != null &&
-                options.height != null &&
-                options.scale != null &&
-                options.dpi != null &&
-                getScreenSizeForPageSize(
-                    this.#map,
-                    { paperWidth: options.width, paperHeight: options.height },
-                    options.scale,
-                    options.dpi // map DPI will be set to paper DPI during printing
-                )) ||
-            undefined;
+        // Without a map model or a scale, the map is printed as it is currently displayed.
+        const { scale, width, height } = options;
+        let printResolution: number | undefined;
+        if (map && scale != null) {
+            printResolution = map.getViewResolutionForScale(scale, options.dpi);
+        }
+        this.#printResolution = printResolution ?? viewResolution;
 
-        const padding = getViewPadding(olMap.getView());
-        const targetWidth = screenSize && screenSize.pixelWidth + padding.left + padding.right;
-        const targetHeight = screenSize && screenSize.pixelHeight + padding.top + padding.bottom;
-        const targetViewResolution =
-            (options.scale != null &&
-                options.dpi != null &&
-                this.#map?.getViewResolutionForScale(options.scale, options.dpi)) ||
-            undefined;
-
-        // if no params for target image specified, export current map canvas
-        this.#width = targetWidth ?? this.#mapContainer.offsetWidth;
-        this.#height = targetHeight ?? this.#mapContainer.offsetHeight;
-        this.#scaleResolution = targetViewResolution ?? this.#olMap.getView().getResolution();
-        this.#dpi = options.dpi ?? DEFAULT_DPI;
+        if (map && scale != null && width != null && height != null) {
+            // The page in pixels at the print dpi, plus the view padding (which is cropped from the result again).
+            const pageSize = getPageSizeInPixels(
+                { paperWidth: width, paperHeight: height },
+                options.dpi
+            );
+            const padding = getViewPadding(olMap.getView());
+            this.#width = pageSize.pixelWidth + padding.left + padding.right;
+            this.#height = pageSize.pixelHeight + padding.top + padding.bottom;
+        } else {
+            // if no params for target image specified, export current map canvas
+            this.#width = mapContainer.offsetWidth;
+            this.#height = mapContainer.offsetHeight;
+        }
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -207,7 +210,7 @@ export class PrintJob {
         this.#mapContainer.style.width = this.#width + "px";
         this.#mapContainer.style.height = this.#height + "px";
         this.#olMap.updateSize();
-        this.#olMap.getView().setResolution(this.#scaleResolution);
+        this.#olMap.getView().setResolution(this.#printResolution);
 
         await this.#addScaleLine();
     }

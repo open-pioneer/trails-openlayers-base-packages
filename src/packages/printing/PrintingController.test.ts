@@ -195,9 +195,9 @@ it("updates the print area when output params changed using setter", async () =>
     const layer = addLayerSpy.mock.lastCall![0] as SimpleLayer;
     const changedSpy = vi.spyOn(layer.olLayer, "changed");
 
-    controller.setViewPadding("none" as never);
-    controller.setPageFormat("a4" as never);
-    controller.setOrientation("landscape" as never);
+    controller.setViewPadding("ignore");
+    controller.setPageFormat("a4");
+    controller.setOrientation("landscape");
     controller.setScale(25000);
 
     expect(changedSpy).toHaveBeenCalledTimes(4);

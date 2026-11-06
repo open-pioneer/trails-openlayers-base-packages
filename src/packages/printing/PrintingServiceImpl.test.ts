@@ -64,8 +64,8 @@ it("should print the map using the defined dimensions (scale, dpi, width, height
 
     vi.spyOn(utils, "getViewPadding").mockReturnValue({ left: 12, right: 34, top: 56, bottom: 78 });
 
-    const getScreenSizeForPageSizeSpy = vi
-        .spyOn(utils, "getScreenSizeForPageSize")
+    const getPageSizeInPixelsSpy = vi
+        .spyOn(utils, "getPageSizeInPixels")
         .mockReturnValue({ pixelHeight: 2000, pixelWidth: 3000 });
 
     const resolutionBefore = map.resolution;
@@ -79,10 +79,8 @@ it("should print the map using the defined dimensions (scale, dpi, width, height
         width: 210
     });
 
-    expect(getScreenSizeForPageSizeSpy).toHaveBeenCalledExactlyOnceWith(
-        map,
+    expect(getPageSizeInPixelsSpy).toHaveBeenCalledExactlyOnceWith(
         { paperWidth: 210, paperHeight: 297 },
-        10000,
         300
     );
 
@@ -266,7 +264,7 @@ it("adds scale-line during print and removes it after print", async () => {
     expect(findScaleLine(map.olMap)).toBeUndefined();
 });
 
-it("sets the provided dpi for the scale line", async () => {
+it("sets the default dpi for the scale line if no dpi was specified", async () => {
     const { map, printingService } = await setUp();
 
     await printingService.printMap(map);
@@ -276,7 +274,7 @@ it("sets the provided dpi for the scale line", async () => {
     );
 });
 
-it("sets the default dpi for the scale line if no dpi was specified", async () => {
+it("sets the provided dpi for the scale line", async () => {
     const { map, printingService } = await setUp();
 
     await printingService.printMap(map, { dpi: 300 });

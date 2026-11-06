@@ -2,11 +2,11 @@
 
 This package provides a UI component and an API to export the current map view as a printable file.
 
-The UI allows users to enter a title, switch between the printing file formats, and trigger the export.
+The UI allows users to enter a title, to choose the page format, the page orientation, the file format, the print resolution and the scale, and to trigger the export.
+While the component is shown, the area of the map that will be printed is highlighted on the map.
 
 The supported file formats are PDF and PNG.
-If file format is PNG, the current map canvas is exported as an image.
-If file format is PDF, the map is printed as a DIN A4 landscape PDF file, preserving the current map scale and showing the current map center in the middle of the exported map image.
+The printed map shows the current map in the middle of the page at the selected scale.
 
 The package also provides a printing service that creates an image of the map as a canvas element or a data URL for a PNG image.
 
@@ -20,6 +20,23 @@ To integrate the printing in your app, insert the following snippet and referenc
 <Printing
     map={map}
 /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
+```
+
+#### Configuring the available options
+
+To restrict or extend the options that can be chosen by the user, pass the allowed values as props.
+
+For example:
+
+```tsx
+<Printing
+    map={map}
+    pageFormats={["a4", "a3"]}
+    pageOrientations={["landscape"]}
+    fileFormats={["pdf"]}
+    dpis={[150, 300]}
+    scales={[25000, 10000, 5000]}
+/>
 ```
 
 ### Printing Service
@@ -40,7 +57,7 @@ export default defineBuildConfig({
 ```tsx
 const printingService = useService<PrintingService>("printing.PrintingService");
 
-// Triggers printing and waits for the result.
+// Triggers printing of the map model and waits for the result.
 const printResult = await printingService.printMap(map);
 
 // An HTMLCanvasElement containing an image of the map
@@ -62,6 +79,19 @@ const printResult = await printingService.printMap(map, {
     overlayText: "custom text"
 });
 ```
+
+To print the map at a specific scale and page size, pass the scale denominator, the print resolution in dots per inch and the page size in millimeters:
+
+```tsx
+const printResult = await printingService.printMap(map, {
+    scale: 25000,
+    dpi: 300,
+    width: 297,
+    height: 210
+});
+```
+
+The map is resized and zoomed while printing and restored afterwards.
 
 ### Printed elements
 

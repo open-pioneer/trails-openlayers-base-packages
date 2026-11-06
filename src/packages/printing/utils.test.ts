@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { getScaleForPointResolution, MapModel } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map";
 import type OlView from "ol/View";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PageFormatType, PageOrientationType } from "./index";
@@ -11,16 +11,13 @@ import {
     drawRectangle,
     getMapCenterPixel,
     getPageSize,
+    getPageSizeInPixels,
     getPixelBounds,
     getScreenSizeForPageSize,
     getViewPadding,
     PageSize,
     PRINTING_HIDE_CLASS
 } from "./utils";
-
-vi.mock("@open-pioneer/map", () => ({
-    getScaleForPointResolution: vi.fn()
-}));
 
 describe("createBlockUserOverlay", () => {
     it("creates an overlay in the parent container", () => {
@@ -97,6 +94,8 @@ describe("getMapCenterPixel", () => {
     it("considers padding when calculating the center pixel of the map", async () => {
         const olMap = {
             getSize: vi.fn().mockReturnValue([1000, 800]),
+
+            // top, right, bottom, left
             getView: vi.fn().mockReturnValue({ padding: [100, 200, 50, 80] } as OlView)
         };
 
@@ -303,22 +302,18 @@ describe("getScreenSizeForPageSize", () => {
             pixelHeight: 3713 // 297 mm * 25.000 / 1.000 mm/m = 7.425 m; 7.425 m / 2 m/px = 3.712,5 px
         });
     });
+});
 
-    it("uses the scale calculated for the target DPI when targetDpi is provided", () => {
-        const map = createMap(2);
-
-        vi.mocked(getScaleForPointResolution).mockReturnValue(10000);
-
-        const result = getScreenSizeForPageSize(map, pageSize, 25000, 300);
-
-        expect(getScaleForPointResolution).toHaveBeenCalledWith({
-            pointResolution: 2,
-            dpi: 300
-        });
-
-        expect(result).toEqual({
-            pixelWidth: 1050, // 210 mm * 10.000 / 1.000 mm/m = 2.100 m; 2.100 m / 2 m/px = 1.050 px
-            pixelHeight: 1485 // 297 mm * 10.000 / 1.000 mm/m = 2.970 m; 2.970 m / 2 m/px = 1.485 px
-        });
+describe("getPageSizeInPixels", () => {
+    it("converts the page size to pixels at the given dpi", () => {
+        // DIN A4 width at 300 dpi: 210 mm / 25.4 mm per inch * 300 px per inch = 2480.3 px (rounded down)
+        const a4 = getPageSize("a4", "portrait");
+        const result = getPageSizeInPixels(a4, 300);
+        expect(result).toMatchInlineSnapshot(`
+          {
+            "pixelHeight": 3508,
+            "pixelWidth": 2480,
+          }
+        `);
     });
 });

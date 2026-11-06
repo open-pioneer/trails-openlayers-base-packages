@@ -6,13 +6,9 @@ import { DeclaredService } from "@open-pioneer/runtime";
 import type OlMap from "ol/Map";
 
 /**
- * These options are supported when printing an `olMap` only (without a map model).
- *
- * They will eventually move into {@link PrintingOptions}.
- *
- * @deprecated
+ * Options supported when printing the map.
  */
-export interface OlMapPrintingOptions {
+export interface PrintingOptions {
     /**
      * When this is true (the default), an overlay will be added above the map
      * to block user interactions.
@@ -31,34 +27,42 @@ export interface OlMapPrintingOptions {
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
-}
 
-/**
- * Options supported when printing the map.
- *
- * These options require a `mapModel` to be passed -- not a raw OlMap.
- */
-export interface PrintingOptions extends OlMapPrintingOptions {
     /**
      * The print resolution to be generated in dots per inch (default: current display resolution).
      */
     dpi?: number;
 
     /**
-     * The scale of the generated map (default: current map scale).
+     * The scale denominator of the generated map, for example `25000` for `1:25000`
+     * (default: current map scale).
      */
     scale?: number;
 
     /**
-     * The vertical size of the generated map in millimeters (default: current map size).
+     * The height of the generated map in millimeters (default: current map size).
+     *
+     * Only takes effect together with `width` and `scale`.
      */
     height?: number;
 
     /**
-     * The horizontal size of the generated map in millimeters (default: current map size).
+     * The width of the generated map in millimeters (default: current map size).
+     *
+     * Only takes effect together with `height` and `scale`.
      */
     width?: number;
 }
+
+/**
+ * The options supported when printing a raw `OlMap` without a map model.
+ *
+ * @deprecated Pass the `MapModel` to {@link PrintingService.printMap} and use {@link PrintingOptions} instead.
+ */
+export type OlMapPrintingOptions = Pick<
+    PrintingOptions,
+    "blockUserInteraction" | "overlayText" | "viewPadding"
+>;
 
 /**
  * Whether to respect the map view's padding when printing.
@@ -117,7 +121,7 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      *
-     * @deprecated
+     * @deprecated Pass the `MapModel` instead. Options such as `scale` and `dpi` require a map model.
      */
     printMap(olMap: OlMap, options?: OlMapPrintingOptions): Promise<PrintResult>;
 

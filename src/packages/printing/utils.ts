@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
-import { getScaleForPointResolution, MapModel } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map";
 import type OlMap from "ol/Map";
 import type OlView from "ol/View";
 import { PageOrientationType, PageFormatType } from "./index";
@@ -20,13 +20,13 @@ const PAGE_FORMAT: Record<PageFormatType, PageFormat> = {
     a5: { short: 148, long: 210 }
 };
 
-// height and width of a page in millimeters
+/** height and width of a page in millimeters */
 export interface PageSize {
     paperHeight: number;
     paperWidth: number;
 }
 
-// height and width of a screen extent in pixels
+/** height and width of a screen extent in pixels */
 export interface ScreenSize {
     pixelHeight: number;
     pixelWidth: number;
@@ -103,6 +103,7 @@ export function getMapCenterPixel(olMap: OlMap): number[] | undefined {
 
     const padding = getViewPadding(olMap.getView());
 
+    // TODO:
     const x = Math.round((mapSize[0] + padding.left - padding.right) / 2);
     const y = Math.round((mapSize[1] + padding.top - padding.bottom) / 2);
 
@@ -178,30 +179,40 @@ export function getPixelBounds(
 }
 
 /**
- * Returns the size of a page on screen in pixels.
+ * Returns the size of a page on screen in pixels when the map is displayed at `scale`.
  *
- * `pageSize` is the size of a paper page in millimeters.
- * `scale` is the scale denominator of the printed map.
- * `targetDpi` is the screen pixel density in _pixels per inch_ if not {@link DEFAULT_DPI}.
+ * - `pageSize` is the size of the page in millimeters
+ * - `scale` the scale denominator of the printed map.
+ *
+ * Returns `undefined` if the map has no resolution or center yet.
  */
 export function getScreenSizeForPageSize(
     map: MapModel,
     pageSize: PageSize,
-    scale: number,
-    targetDpi?: number
+    scale: number
 ): ScreenSize | undefined {
     const centerPointResolution = map.getCenterPointResolution(); // meters in real world per pixel
-    if (!centerPointResolution) return;
+    if (!centerPointResolution) {
+        return;
+    }
 
-    const sc = targetDpi
-        ? getScaleForPointResolution({ pointResolution: centerPointResolution, dpi: targetDpi })
-        : scale;
-
-    const realWidth = (pageSize.paperWidth * sc) / 1000.0; // meters in real world
-    const realHeight = (pageSize.paperHeight * sc) / 1000.0;
+    const realWidth = (pageSize.paperWidth * scale) / 1000.0; // meters in real world
+    const realHeight = (pageSize.paperHeight * scale) / 1000.0;
 
     const pixelWidth = Math.round(realWidth / centerPointResolution); // pixels on screen
     const pixelHeight = Math.round(realHeight / centerPointResolution);
 
     return { pixelWidth, pixelHeight };
+}
+
+const MILLIMETERS_PER_INCH = 25.4;
+
+/**
+ * Returns the size of a page in pixels when it is rendered at the given resolution in dots per inch.
+ */
+export function getPageSizeInPixels(pageSize: PageSize, dpi: number): ScreenSize {
+    return {
+        pixelWidth: Math.round((pageSize.paperWidth / MILLIMETERS_PER_INCH) * dpi),
+        pixelHeight: Math.round((pageSize.paperHeight / MILLIMETERS_PER_INCH) * dpi)
+    };
 }

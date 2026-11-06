@@ -2,7 +2,7 @@ messages:
   formLabel: "Configure map printing"
   title: "Title"
   pageFormat:
-    label: "Page Size"
+    label: "Page size"
     a3: "DIN A3"
     a4: "DIN A4"
     a5: "DIN A5"

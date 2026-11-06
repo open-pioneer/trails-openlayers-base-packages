@@ -17,8 +17,6 @@ import { PageSize } from "./utils";
 
 const { promise, resolve } = createManualPromise();
 const handleMapExportPromise = promise;
-const setFileFormatSpy = vi.fn();
-const setTitleSpy = vi.fn();
 const setViewPaddingSpy = vi.fn();
 const setPageFormatSpy = vi.fn();
 const setOrientationSpy = vi.fn();
@@ -28,8 +26,6 @@ const notifySpy = vi.fn();
 
 /** Mock implementation used by the UI. */
 class MockPrintingController {
-    setTitle = setTitleSpy;
-    setFileFormat = setFileFormatSpy;
     setViewPadding = setViewPaddingSpy;
     setPageFormat = setPageFormatSpy;
     setOrientation = setOrientationSpy;
@@ -379,7 +375,7 @@ it("should throw an error when no scales are provided", async () => {
         createPrinting({
             scales: []
         })
-    ).rejects.toThrow("No scales defined");
+    ).rejects.toThrow("'scales' must not be empty");
 });
 
 it("should use the first scale option as fallback when map size cannot be calculated", async () => {
@@ -430,17 +426,10 @@ it("should use the first scale option as fallback when screen size cannot be cal
     expect(printingSelectScale.value).toEqual("70");
 });
 
-it("should throw an error when no initial selection can be found", async () => {
-    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    await createPrinting({ fileFormats: [] });
-
-    expect(errorSpy).toHaveBeenCalledTimes(1);
-    expect(errorSpy.mock.lastCall).toMatchInlineSnapshot(`
-      [
-        "[ERROR] @open-pioneer/printing/Printing: No fallback option found in options. Is the list empty?",
-      ]
-    `);
+it("throws an error when an option list is empty", async () => {
+    await expect(() => createPrinting({ fileFormats: [] })).rejects.toThrow(
+        "'fileFormats' must not be empty"
+    );
 });
 
 it("should propagate changes of printing options to the controller", async () => {
