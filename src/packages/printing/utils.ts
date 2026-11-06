@@ -103,7 +103,6 @@ export function getMapCenterPixel(olMap: OlMap): number[] | undefined {
 
     const padding = getViewPadding(olMap.getView());
 
-    // TODO:
     const x = Math.round((mapSize[0] + padding.left - padding.right) / 2);
     const y = Math.round((mapSize[1] + padding.top - padding.bottom) / 2);
 
