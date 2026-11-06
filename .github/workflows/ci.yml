@@ -23,6 +23,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
     with:
       demo-id: openlayers-base-packages
     secrets:
