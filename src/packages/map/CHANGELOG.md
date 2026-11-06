@@ -1,5 +1,32 @@
 # @open-pioneer/map
 
+## 1.7.0
+
+### Minor Changes
+
+- 17aab37: Export the scale and resolution algorithms from `@open-pioneer/map`:
+
+    - `getPointResolution()` returns the point resolution (_meters per pixel_) at a given point.
+    - `getScaleForPointResolution()` converts a point resolution into a scale denominator.
+    - `getResolutionForScale()` computes the view resolution (_projection units per pixel_) for a scale.
+    - `DEFAULT_DPI` is now part of the public API.
+
+    `MapModel` now has two new methods built on top of them: `getCenterPointResolution()` and `getViewResolutionForScale()`.
+
+### Patch Changes
+
+- 17aab37: Fix `mapModel.setScale()` for projections that do not use meters as their unit (e.g. `EPSG:4326`).
+
+    `setScale()` derived the new resolution from the projection's _nominal_ `metersPerUnit` (its value at the
+    equator) instead of the point resolution at the map's center. For projections in degrees the resulting
+    scale was therefore too small, and increasingly so towards the poles.
+
+    This could be observed in the scale setter: a different scale than the user originally selected was shown after the selection completed.
+    `setScale()` and `mapModel.scale` should now be consistent for every projection.
+
+- 17aab37: Use the exact inches per meter factor (`1000 / 25.4`) when converting between scale and resolution, as OpenLayers does.
+  Computed scale values previously used the rounded value `39.37` and may now differ by a tiny fraction.
+
 ## 1.6.0
 
 ### Minor Changes
