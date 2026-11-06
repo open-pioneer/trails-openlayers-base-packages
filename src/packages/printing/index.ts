@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { MapModel } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
-import OlMap from "ol/Map";
+import type OlMap from "ol/Map";
 
 /**
  * Options supported when printing the map.
@@ -26,7 +27,42 @@ export interface PrintingOptions {
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
+
+    /**
+     * The print resolution to be generated in dots per inch (default: current display resolution).
+     */
+    dpi?: number;
+
+    /**
+     * The scale denominator of the generated map, for example `25000` for `1:25000`
+     * (default: current map scale).
+     */
+    scale?: number;
+
+    /**
+     * The height of the generated map in millimeters (default: current map size).
+     *
+     * Only takes effect together with `width` and `scale`.
+     */
+    height?: number;
+
+    /**
+     * The width of the generated map in millimeters (default: current map size).
+     *
+     * Only takes effect together with `height` and `scale`.
+     */
+    width?: number;
 }
+
+/**
+ * The options supported when printing a raw `OlMap` without a map model.
+ *
+ * @deprecated Pass the `MapModel` to {@link PrintingService.printMap} and use {@link PrintingOptions} instead.
+ */
+export type OlMapPrintingOptions = Pick<
+    PrintingOptions,
+    "blockUserInteraction" | "overlayText" | "viewPadding"
+>;
 
 /**
  * Whether to respect the map view's padding when printing.
@@ -36,6 +72,42 @@ export interface PrintingOptions {
  * - `"ignore"`: Ignore the map's viewPadding. The entire map will be printed.
  */
 export type ViewPaddingBehavior = "auto" | "ignore";
+
+/**
+ * Standard page size formats.
+ */
+export type PageFormatType = "a3" | "a4" | "a5";
+
+/**
+ * Type guard for checking if the value is a {@link PageFormatType}.
+ */
+export function isPageFormatType(value: string): value is PageFormatType {
+    return value === "a3" || value === "a4" || value === "a5";
+}
+
+/**
+ * Orientation of a page.
+ */
+export type PageOrientationType = "landscape" | "portrait";
+
+/**
+ * Type guard for checking if the value is a {@link PageOrientationType}.
+ */
+export function isPageOrientationType(value: string): value is PageOrientationType {
+    return value === "landscape" || value === "portrait";
+}
+
+/**
+ * Output file format.
+ */
+export type FileFormatType = "png" | "pdf";
+
+/**
+ * Type guard for checking if the value is a {@link FileFormatType}.
+ */
+export function isFileFormatType(value: string): value is FileFormatType {
+    return value === "png" || value === "pdf";
+}
 
 /**
  * The printing service provides an image of a map as a canvas element or a data URL for a PNG image.
@@ -48,8 +120,18 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      *
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
+     *
+     * @deprecated Pass the `MapModel` instead. Options such as `scale` and `dpi` require a map model.
      */
-    printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResult>;
+    printMap(olMap: OlMap, options?: OlMapPrintingOptions): Promise<PrintResult>;
+
+    /**
+     * Starts a map print operation on the specified map.
+     *
+     * The promise resolves with the resulting map image or with any error that occurred
+     * while printing the map.
+     */
+    printMap(map: MapModel, options?: PrintingOptions): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */

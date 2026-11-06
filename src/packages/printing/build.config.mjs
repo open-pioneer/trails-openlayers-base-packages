@@ -13,7 +13,7 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["notifier.NotificationService", "printing.PrintingService"]
+        references: ["map.LayerFactory", "notifier.NotificationService", "printing.PrintingService"]
     },
     publishConfig: {
         strict: true

@@ -2,63 +2,174 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Resource } from "@open-pioneer/core";
+import { LayerFactory, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { EventsKey } from "ol/events";
+import VectorLayer from "ol/layer/Vector";
 import OlMap from "ol/Map";
-import type { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
-import { canvasToPng, createBlockUserOverlay } from "./utils";
-
-export type FileFormatType = "png" | "pdf";
+import { unByKey } from "ol/Observable";
+import { Pixel } from "ol/pixel";
+import { getRenderPixel } from "ol/render";
+import RenderEvent from "ol/render/Event";
+import VectorSource from "ol/source/Vector";
+import type {
+    FileFormatType,
+    PageOrientationType,
+    PageFormatType,
+    PrintingService,
+    PrintResult,
+    ViewPaddingBehavior
+} from "./index";
+import {
+    canvasToPng,
+    createBlockUserOverlay,
+    drawPrintArea,
+    getPageSize,
+    getPixelBounds
+} from "./utils";
 
 const DEFAULT_FILE_NAME = "map";
 
 export interface ExportOptions {
     title?: string | undefined;
     fileFormat: FileFormatType;
+    dpi: number;
 }
 
 export class PrintingController {
+    #map: MapModel;
     #olMap: OlMap;
+    #printingService: PrintingService;
     #i18n: I18n;
 
-    #printingService: PrintingService;
     #viewPadding: ViewPaddingBehavior | undefined;
+    #pageFormat: PageFormatType | undefined;
+    #orientation: PageOrientationType | undefined;
+    #scale: number | undefined;
 
     #printMap: PrintResult | undefined = undefined;
     #overlay: Resource | undefined = undefined;
+    #printAreaLayer: SimpleLayer;
+    #postrenderListener: EventsKey;
 
-    constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
-        this.#olMap = olMap;
+    constructor(
+        map: MapModel,
+        layerFactory: LayerFactory,
+        printingService: PrintingService,
+        i18n: I18n
+    ) {
+        this.#map = map;
+        this.#olMap = map.olMap;
         this.#printingService = printingService;
         this.#i18n = i18n;
+
+        const vectorLayer = new VectorLayer({
+            source: new VectorSource({
+                useSpatialIndex: false,
+                wrapX: true
+            })
+        });
+        this.#printAreaLayer = layerFactory.create({
+            type: SimpleLayer,
+            internal: true,
+            title: "print-area-layer",
+            olLayer: vectorLayer
+        });
+
+        this.#map.layers.addLayer(this.#printAreaLayer, { at: "topmost" });
+
+        this.#postrenderListener = vectorLayer.on("postrender", (event) => {
+            this.#showPrintArea(event);
+        });
     }
 
     destroy() {
         this.#reset();
+        unByKey(this.#postrenderListener);
+        this.#map.layers.removeLayer(this.#printAreaLayer);
+        this.#printAreaLayer.destroy();
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {
         this.#viewPadding = padding;
+        this.#updatePrintArea();
+    }
+
+    setPageFormat(pageFormat: PageFormatType) {
+        this.#pageFormat = pageFormat;
+        this.#updatePrintArea();
+    }
+
+    setOrientation(orientation: PageOrientationType) {
+        this.#orientation = orientation;
+        this.#updatePrintArea();
+    }
+
+    setScale(scale: number) {
+        this.#scale = scale;
+        this.#updatePrintArea();
+    }
+
+    #updatePrintArea(): void {
+        this.#printAreaLayer.olLayer.changed();
+    }
+
+    #showPrintArea(renderEvent: RenderEvent) {
+        const context = renderEvent.context;
+        if (!this.isCanvasRenderingContext2D(context)) return;
+
+        if (!this.#pageFormat || !this.#orientation || !this.#scale) return;
+        const printArea = getPixelBounds(
+            this.#map,
+            this.#pageFormat,
+            this.#orientation,
+            this.#scale
+        );
+        if (!printArea) return;
+        const printAreaCanvas = this.viewportToCanvas(printArea, renderEvent);
+
+        drawPrintArea(context, printAreaCanvas);
+    }
+
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate drawing logic from CanvasRenderingContext2D implementation which is not available in tests.
+    private viewportToCanvas(printArea: number[], renderEvent: RenderEvent) {
+        const [minX, minY, maxX, maxY] = printArea;
+
+        const min = getRenderPixel(renderEvent, [minX, minY] as Pixel) as [number, number];
+        const max = getRenderPixel(renderEvent, [maxX, maxY] as Pixel) as [number, number];
+
+        return [min[0], min[1], max[0], max[1]];
+    }
+
+    // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
+    // `vi.spyOn(controller, ...)` to isolate drawing logic from CanvasRenderingContext2D implementation which is not available in tests.
+    private isCanvasRenderingContext2D(context: unknown): context is CanvasRenderingContext2D {
+        return context != null && context instanceof CanvasRenderingContext2D;
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.#olMap) {
-            return;
+        if (!this.#pageFormat || !this.#orientation || !this.#scale) {
+            throw new Error("Printing params undefined");
         }
 
         try {
             this.#begin();
-            this.#printMap = await this.#printingService.printMap(this.#olMap, {
+
+            const { paperHeight, paperWidth } = getPageSize(this.#pageFormat, this.#orientation);
+
+            this.#printMap = await this.#printingService.printMap(this.#map, {
                 blockUserInteraction: false,
-                viewPadding: this.#viewPadding
+                viewPadding: this.#viewPadding,
+                dpi: options.dpi,
+                scale: this.#scale,
+                height: paperHeight,
+                width: paperWidth
             });
             const canvas = this.#printMap.getCanvas();
-            if (canvas) {
-                if (options.fileFormat === "png") {
-                    await this.exportMapInPNG(canvas, options);
-                } else {
-                    await this.exportMapInPDF(canvas, options);
-                }
+            if (options.fileFormat === "png") {
+                await this.exportMapInPNG(canvas, options);
             } else {
-                throw new Error("Canvas export failed");
+                await this.exportMapInPDF(canvas, options);
             }
         } finally {
             this.#reset();
@@ -70,11 +181,13 @@ export class PrintingController {
         if (container) {
             this.#overlay = createBlockUserOverlay(container, this.#i18n.overlayText);
         }
+        this.#printAreaLayer.setVisible(false);
     }
 
     #reset() {
         this.#overlay?.destroy();
         this.#overlay = undefined;
+        this.#printAreaLayer.setVisible(true);
     }
 
     #getTitleAndFileName(options: ExportOptions) {
@@ -127,9 +240,9 @@ export class PrintingController {
         // Lazy load pdfjs as well.
         const { jsPDF } = await import("jspdf");
         const pdf = new jsPDF({
-            orientation: "landscape",
+            orientation: this.#orientation,
             unit: "mm",
-            format: "a4"
+            format: this.#pageFormat
         });
 
         // Simple layout: 50 pixels for the header and
