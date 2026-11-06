@@ -133,7 +133,6 @@ describe("drawPrintArea", () => {
                 width: 800,
                 height: 600
             },
-            reset: vi.fn(),
             save: vi.fn(),
             lineTo: vi.fn(),
             moveTo: vi.fn(),
@@ -148,7 +147,6 @@ describe("drawPrintArea", () => {
 
         drawPrintArea(context, printArea);
 
-        expect(context.reset).toHaveBeenCalledOnce();
         expect(context.save).toHaveBeenCalledOnce();
         expect(context.beginPath).toHaveBeenCalledOnce();
 

@@ -110,8 +110,6 @@ export function getMapCenterPixel(olMap: OlMap): number[] | undefined {
 }
 
 export function drawPrintArea(context: CanvasRenderingContext2D, printArea: number[]) {
-    context.reset();
-
     context.save();
 
     context.beginPath();
