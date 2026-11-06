@@ -10,7 +10,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
-import { FC, FormEvent, useEffect, useMemo, useState } from "react";
+import { FC, FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import {
     FileFormatType,
     isFileFormatType,
@@ -37,7 +37,6 @@ const DEFAULT_PAGE_FORMATS: PageFormatType[] = ["a3", "a4", "a5"];
 const DEFAULT_PAGE_ORIENTATIONS: PageOrientationType[] = ["landscape", "portrait"];
 const DEFAULT_FILE_FORMATS: FileFormatType[] = ["png", "pdf"];
 
-// TODO make configurable with props in future
 const INITIAL_DPI = 96;
 const INITIAL_PAGE_FORMAT: PageFormatType = "a4";
 const INITIAL_PAGE_ORIENTATION: PageOrientationType = "landscape";
@@ -179,54 +178,37 @@ export const Printing: FC<PrintingProps> = (props) => {
             });
     }
 
-    const scaleOptions = useMemo(
-        () =>
-            scales.map((scaleValue) => (
-                <option key={scaleValue} value={scaleValue}>
-                    {renderScaleText(intl, scaleValue)}
-                </option>
-            )),
-        [intl, scales]
-    );
-
-    const dpiOptions = useMemo(
-        () =>
-            dpis.map((dpi) => (
-                <option key={dpi} value={dpi}>
-                    {dpi}
-                </option>
-            )),
-        [dpis]
-    );
-
     const pageFormatOptions = useMemo(
         () =>
-            pageFormats.map((pageFormat) => (
-                <option key={pageFormat} value={pageFormat}>
-                    {intl.formatMessage({ id: "pageFormat." + pageFormat })}
-                </option>
-            )),
+            pageFormats.map((format) => ({
+                value: format,
+                label: intl.formatMessage({ id: "pageFormat." + format })
+            })),
         [intl, pageFormats]
     );
-
     const pageOrientationOptions = useMemo(
         () =>
-            pageOrientations.map((pageOrientation) => (
-                <option key={pageOrientation} value={pageOrientation}>
-                    {intl.formatMessage({ id: "pageOrientation." + pageOrientation })}
-                </option>
-            )),
+            pageOrientations.map((pageOrientation) => ({
+                value: pageOrientation,
+                label: intl.formatMessage({ id: "pageOrientation." + pageOrientation })
+            })),
         [intl, pageOrientations]
     );
-
     const fileFormatOptions = useMemo(
         () =>
-            fileFormats.map((fileFormat) => (
-                <option key={fileFormat} value={fileFormat}>
-                    {intl.formatMessage({ id: "fileFormat." + fileFormat })}
-                </option>
-            )),
+            fileFormats.map((format) => ({
+                value: format,
+                label: intl.formatMessage({ id: "fileFormat." + format })
+            })),
         [intl, fileFormats]
+    );
+    const dpiOptions = useMemo(
+        () => dpis.map((value) => ({ value, label: String(value) })),
+        [dpis]
+    );
+    const scaleOptions = useMemo(
+        () => scales.map((value) => ({ value, label: renderScaleText(intl, value) })),
+        [intl, scales]
     );
 
     return (
@@ -241,110 +223,50 @@ export const Printing: FC<PrintingProps> = (props) => {
                     exportMap();
                 }}
             >
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "title" })}
-                        </Field.Label>
-                        <Input
-                            placeholder={intl.formatMessage({ id: "input.placeholder" })}
-                            value={title}
-                            onChange={(event) => {
-                                setTitle(event.target.value);
-                            }}
-                        />
-                    </HStack>
-                </Field.Root>
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "pageFormat.label" })}
-                        </Field.Label>
-                        <NativeSelectRoot>
-                            <NativeSelectField
-                                className="printing-select-pageformat"
-                                value={pageFormat}
-                                onChange={(event) => {
-                                    changePageFormat(event.target.value);
-                                }}
-                            >
-                                {pageFormatOptions}
-                            </NativeSelectField>
-                        </NativeSelectRoot>
-                    </HStack>
-                </Field.Root>
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "pageOrientation.label" })}
-                        </Field.Label>
-                        <NativeSelectRoot>
-                            <NativeSelectField
-                                className="printing-select-orientation"
-                                value={orientation}
-                                onChange={(event) => {
-                                    changeOrientation(event.target.value);
-                                }}
-                            >
-                                {pageOrientationOptions}
-                            </NativeSelectField>
-                        </NativeSelectRoot>
-                    </HStack>
-                </Field.Root>
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "fileFormat.label" })}
-                        </Field.Label>
-                        <NativeSelectRoot>
-                            <NativeSelectField
-                                className="printing-select-fileformat"
-                                value={fileFormat}
-                                onChange={(event) => {
-                                    changeFileFormat(event.target.value);
-                                }}
-                            >
-                                {fileFormatOptions}
-                            </NativeSelectField>
-                        </NativeSelectRoot>
-                    </HStack>
-                </Field.Root>
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "dpi" })}
-                        </Field.Label>
-                        <NativeSelectRoot>
-                            <NativeSelectField
-                                className="printing-select-dpi"
-                                value={dpi}
-                                onChange={(event) => {
-                                    changeDpi(event.target.value);
-                                }}
-                            >
-                                {dpiOptions}
-                            </NativeSelectField>
-                        </NativeSelectRoot>
-                    </HStack>
-                </Field.Root>
-                <Field.Root asChild>
-                    <HStack mb={2}>
-                        <Field.Label minWidth={82} mb={1}>
-                            {intl.formatMessage({ id: "scale.label" })}
-                        </Field.Label>
-                        <NativeSelectRoot>
-                            <NativeSelectField
-                                className="printing-select-scale"
-                                value={scale}
-                                onChange={(event) => {
-                                    changeScale(event.target.value);
-                                }}
-                            >
-                                {scaleOptions}
-                            </NativeSelectField>
-                        </NativeSelectRoot>
-                    </HStack>
-                </Field.Root>
+                <FormRow label={intl.formatMessage({ id: "title" })}>
+                    <Input
+                        placeholder={intl.formatMessage({ id: "input.placeholder" })}
+                        value={title}
+                        onChange={(event) => {
+                            setTitle(event.target.value);
+                        }}
+                    />
+                </FormRow>
+                <SelectField
+                    label={intl.formatMessage({ id: "pageFormat.label" })}
+                    className="printing-select-pageformat"
+                    value={pageFormat}
+                    options={pageFormatOptions}
+                    onChange={changePageFormat}
+                />
+                <SelectField
+                    label={intl.formatMessage({ id: "pageOrientation.label" })}
+                    className="printing-select-orientation"
+                    value={orientation}
+                    options={pageOrientationOptions}
+                    onChange={changeOrientation}
+                />
+                <SelectField
+                    label={intl.formatMessage({ id: "fileFormat.label" })}
+                    className="printing-select-fileformat"
+                    value={fileFormat}
+                    options={fileFormatOptions}
+                    onChange={changeFileFormat}
+                />
+                <SelectField
+                    label={intl.formatMessage({ id: "dpi" })}
+                    className="printing-select-dpi"
+                    value={dpi}
+                    options={dpiOptions}
+                    onChange={changeDpi}
+                />
+                <SelectField
+                    label={intl.formatMessage({ id: "scale.label" })}
+                    className="printing-select-scale"
+                    value={scale}
+                    options={scaleOptions}
+                    onChange={changeScale}
+                />
                 <Button
                     loading={running}
                     loadingText={intl.formatMessage({ id: "printingMap" })}
@@ -361,6 +283,50 @@ export const Printing: FC<PrintingProps> = (props) => {
         </Box>
     );
 };
+
+function FormRow(props: { label: string; children: ReactNode }) {
+    return (
+        <Field.Root asChild>
+            <HStack mb={2}>
+                <Field.Label minWidth={82} mb={1}>
+                    {props.label}
+                </Field.Label>
+                {props.children}
+            </HStack>
+        </Field.Root>
+    );
+}
+
+interface SelectFieldProps {
+    label: string;
+    className: string;
+    value: string | number;
+    options: { value: string | number; label: string }[];
+    onChange: (value: string) => void;
+}
+
+function SelectField(props: SelectFieldProps) {
+    const { label, className, value, options, onChange } = props;
+    return (
+        <FormRow label={label}>
+            <NativeSelectRoot>
+                <NativeSelectField
+                    className={className}
+                    value={value}
+                    onChange={(event) => {
+                        onChange(event.target.value);
+                    }}
+                >
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </NativeSelectField>
+            </NativeSelectRoot>
+        </FormRow>
+    );
+}
 
 interface PrintingControllerOptions {
     viewPadding: ViewPaddingBehavior;
