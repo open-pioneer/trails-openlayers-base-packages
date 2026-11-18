@@ -1,1 +1,5 @@
-pnpm-*
+# pnpm
+/reactivity-core
+/reactivity-events
+/reactivity-react
+# pnpm end
