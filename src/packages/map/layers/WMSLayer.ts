@@ -159,9 +159,9 @@ export class WMSLayer extends AbstractLayer {
             constructSublayers(config.sublayers),
             INTERNAL_CONSTRUCTOR_TAG
         );
-        this.#sublayers
-            [GET_RAW_SUBLAYERS]()
-            .forEach((sublayer) => sublayer[ATTACH_TO_PARENT](this, this));
+        this.#sublayers[GET_RAW_SUBLAYERS]().forEach((sublayer) =>
+            sublayer[ATTACH_TO_PARENT](this, this)
+        );
 
         this.#visibleSublayers = computed(() => this.#getVisibleLayerNames(), {
             equal(a, b) {
