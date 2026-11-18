@@ -223,7 +223,6 @@ async function createSelection(options?: CreateSelectionOptions) {
         const [sources, updateSources] = useState(
             () => options?.sources ?? [new FakePointSelectionSource()]
         );
-        // oxlint-disable-next-line react/globals
         setSources = updateSources;
         return props.children(sources);
     }
