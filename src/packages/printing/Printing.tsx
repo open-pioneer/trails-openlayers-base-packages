@@ -18,6 +18,7 @@ import {
     isPageFormatType,
     PageOrientationType,
     PageFormatType,
+    PrintingMode,
     PrintingService,
     ViewPaddingBehavior
 } from "./index";
@@ -47,6 +48,16 @@ const INITIAL_FILE_FORMAT: FileFormatType = "pdf";
  */
 export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**
+     * The mode of the component (default: `page`).
+     *
+     * Use `"screenshot"` to print the entire map as it is currently displayed.
+     * In that mode, the user can only choose the title and the file format, and no print area is shown on the map.
+     *
+     * See also {@link PrintingMode}.
+     */
+    mode?: PrintingMode;
+
+    /**
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      *
      * See also {@link ViewPaddingBehavior}.
@@ -55,21 +66,29 @@ export interface PrintingProps extends CommonComponentProps, MapModelProps {
 
     /**
      * The set of scales that can be selected by the user (default: selection of pre-configured values).
+     *
+     * Cannot be used when `mode` is `"screenshot"`.
      */
     scales?: number[];
 
     /**
      * The set of print resolutions in DPI that can be selected by the user (default: selection of pre-configured values).
+     *
+     * Cannot be used when `mode` is `"screenshot"`.
      */
     dpis?: number[];
 
     /**
      * The set of page formats that can be selected by the user (default: selection of pre-configured values).
+     *
+     * Cannot be used when `mode` is `"screenshot"`.
      */
     pageFormats?: PageFormatType[];
 
     /**
      * The set of page orientations that can be selected by the user (default: selection of pre-configured values).
+     *
+     * Cannot be used when `mode` is `"screenshot"`.
      */
     pageOrientations?: PageOrientationType[];
 
@@ -86,7 +105,9 @@ export const Printing: FC<PrintingProps> = (props) => {
     const intl = useIntl();
     const map = useMapModelValue(props);
 
+    checkProps(props);
     const {
+        mode = "page",
         viewPadding = "auto",
         scales = DEFAULT_SCALES,
         dpis = DEFAULT_DPIS,
@@ -113,6 +134,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [running, setRunning] = useState<boolean>(false);
 
     const controller = useController(map, intl, {
+        mode: mode,
         viewPadding: viewPadding,
         pageFormat: pageFormat,
         orientation: orientation,
@@ -232,20 +254,24 @@ export const Printing: FC<PrintingProps> = (props) => {
                         }}
                     />
                 </FormRow>
-                <SelectField
-                    label={intl.formatMessage({ id: "pageFormat.label" })}
-                    className="printing-select-pageformat"
-                    value={pageFormat}
-                    options={pageFormatOptions}
-                    onChange={changePageFormat}
-                />
-                <SelectField
-                    label={intl.formatMessage({ id: "pageOrientation.label" })}
-                    className="printing-select-orientation"
-                    value={orientation}
-                    options={pageOrientationOptions}
-                    onChange={changeOrientation}
-                />
+                {mode === "page" && (
+                    <>
+                        <SelectField
+                            label={intl.formatMessage({ id: "pageFormat.label" })}
+                            className="printing-select-pageformat"
+                            value={pageFormat}
+                            options={pageFormatOptions}
+                            onChange={changePageFormat}
+                        />
+                        <SelectField
+                            label={intl.formatMessage({ id: "pageOrientation.label" })}
+                            className="printing-select-orientation"
+                            value={orientation}
+                            options={pageOrientationOptions}
+                            onChange={changeOrientation}
+                        />
+                    </>
+                )}
                 <SelectField
                     label={intl.formatMessage({ id: "fileFormat.label" })}
                     className="printing-select-fileformat"
@@ -253,20 +279,24 @@ export const Printing: FC<PrintingProps> = (props) => {
                     options={fileFormatOptions}
                     onChange={changeFileFormat}
                 />
-                <SelectField
-                    label={intl.formatMessage({ id: "dpi" })}
-                    className="printing-select-dpi"
-                    value={dpi}
-                    options={dpiOptions}
-                    onChange={changeDpi}
-                />
-                <SelectField
-                    label={intl.formatMessage({ id: "scale.label" })}
-                    className="printing-select-scale"
-                    value={scale}
-                    options={scaleOptions}
-                    onChange={changeScale}
-                />
+                {mode === "page" && (
+                    <>
+                        <SelectField
+                            label={intl.formatMessage({ id: "dpi" })}
+                            className="printing-select-dpi"
+                            value={dpi}
+                            options={dpiOptions}
+                            onChange={changeDpi}
+                        />
+                        <SelectField
+                            label={intl.formatMessage({ id: "scale.label" })}
+                            className="printing-select-scale"
+                            value={scale}
+                            options={scaleOptions}
+                            onChange={changeScale}
+                        />
+                    </>
+                )}
                 <Button
                     loading={running}
                     loadingText={intl.formatMessage({ id: "printingMap" })}
@@ -328,7 +358,8 @@ function SelectField(props: SelectFieldProps) {
     );
 }
 
-interface PrintingControllerOptions {
+interface ControllerOptions {
+    mode: PrintingMode;
     viewPadding: ViewPaddingBehavior;
     pageFormat: PageFormatType;
     orientation: PageOrientationType;
@@ -338,13 +369,15 @@ interface PrintingControllerOptions {
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(map: MapModel, intl: PackageIntl, options: PrintingControllerOptions) {
+function useController(map: MapModel, intl: PackageIntl, options: ControllerOptions) {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
     const layerFactory = useService<LayerFactory>("map.LayerFactory");
+    const mode = options.mode;
 
     useEffect(() => {
         const controller = new PrintingController(map, layerFactory, printingService, {
+            mode: mode,
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -353,7 +386,7 @@ function useController(map: MapModel, intl: PackageIntl, options: PrintingContro
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl, printingService, layerFactory]);
+    }, [map, intl, printingService, layerFactory, mode]);
 
     useEffect(() => {
         controller?.setViewPadding(options.viewPadding);
@@ -372,6 +405,21 @@ function useController(map: MapModel, intl: PackageIntl, options: PrintingContro
     }, [controller, options.scale]);
 
     return controller;
+}
+
+// The props that configure the options of "page" mode. They have no meaning in "screenshot" mode.
+const PAGE_MODE_PROPS = ["scales", "dpis", "pageFormats", "pageOrientations"] as const;
+
+function checkProps(props: PrintingProps) {
+    if (props.mode !== "screenshot") {
+        return;
+    }
+
+    for (const propName of PAGE_MODE_PROPS) {
+        if (props[propName] != null) {
+            throw new Error(`'${propName}' is not supported when 'mode' is "screenshot"`);
+        }
+    }
 }
 
 function renderScaleText(intl: PackageIntl, rawScale: number): string {

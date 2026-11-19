@@ -9,7 +9,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, getByRole, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Printing, PrintingProps } from "./Printing";
 import * as PrintingControllerModule from "./PrintingController";
 import * as utils from "./utils";
@@ -23,6 +23,7 @@ const setOrientationSpy = vi.fn();
 const setScaleSpy = vi.fn();
 const handleMapExportSpy = vi.fn((..._args) => handleMapExportPromise);
 const notifySpy = vi.fn();
+const controllerOptionsSpy = vi.fn();
 
 /** Mock implementation used by the UI. */
 class MockPrintingController {
@@ -31,6 +32,14 @@ class MockPrintingController {
     setOrientation = setOrientationSpy;
     setScale = setScaleSpy;
     handleMapExport = handleMapExportSpy;
+    constructor(
+        _map: unknown,
+        _layerFactory: unknown,
+        _printingService: unknown,
+        options: unknown
+    ) {
+        controllerOptionsSpy(options);
+    }
     destroy() {}
 }
 
@@ -573,6 +582,69 @@ it("should trigger a notification if the map export fails", async () => {
         [Error: Error from map export],
       ]
     `);
+});
+
+describe("screenshot mode", () => {
+    it("only shows the title and the file format", async () => {
+        await createPrinting({ mode: "screenshot" });
+
+        const printingDiv = await screen.findByTestId<HTMLDivElement>("printing");
+        const form = within(printingDiv).getByRole("form");
+
+        // File title and dropdown for the file type
+        expect(within(form).getAllByRole("textbox")).toHaveLength(1);
+        expect(within(form).getAllByRole("combobox")).toHaveLength(1);
+        expect(printingDiv).toMatchSnapshot();
+    });
+
+    it("creates the controller in screenshot mode", async () => {
+        await createPrinting({ mode: "screenshot" });
+        await screen.findByTestId("printing");
+
+        await waitFor(() => expect(controllerOptionsSpy).toHaveBeenCalled());
+        expect(controllerOptionsSpy.mock.lastCall![0].mode).toBe("screenshot");
+    });
+
+    it("respects 'fileFormats' and 'viewPadding'", async () => {
+        await createPrinting({ mode: "screenshot", fileFormats: ["png"], viewPadding: "ignore" });
+
+        const printingDiv = await screen.findByTestId<HTMLDivElement>("printing");
+        const select = printingDiv.querySelector<HTMLSelectElement>(".printing-select-fileformat")!;
+        expect(Array.from(select.options).map((o) => o.value)).toEqual(["png"]);
+        await waitFor(() => expect(setViewPaddingSpy.mock.lastCall![0]).toBe("ignore"));
+    });
+
+    it("triggers the map export with the title and the file format", async () => {
+        const user = userEvent.setup();
+        await createPrinting({ mode: "screenshot" });
+
+        const printingDiv = await screen.findByTestId<HTMLDivElement>("printing");
+        await user.type(within(printingDiv).getByRole("textbox"), "test title");
+        await user.click(getByRole(printingDiv, "button"));
+
+        expect(handleMapExportSpy).toHaveBeenCalledOnce();
+        expect(handleMapExportSpy.mock.lastCall![0]).toMatchObject({
+            title: "test title",
+            fileFormat: "pdf"
+        });
+    });
+
+    it.each([
+        ["scales", { scales: [1000] }],
+        ["dpis", { dpis: [96] }],
+        ["pageFormats", { pageFormats: ["a4"] }],
+        ["pageOrientations", { pageOrientations: [] }]
+    ] satisfies [string, PrintingProps][])(
+        "throws an error when '%s' is set",
+        async (propName, props) => {
+            // React logs errors thrown while rendering
+            vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+            await expect(() => createPrinting({ mode: "screenshot", ...props })).rejects.toThrow(
+                `'${propName}' is not supported when 'mode' is "screenshot"`
+            );
+        }
+    );
 });
 
 async function createPrinting(props?: PrintingProps, map?: MapModel, layerFactory?: LayerFactory) {

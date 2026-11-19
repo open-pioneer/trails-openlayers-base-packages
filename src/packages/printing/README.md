@@ -39,6 +39,22 @@ For example:
 />
 ```
 
+#### Printing a screenshot of the map
+
+By default, the component uses the `"page"` mode described above.
+To print the entire map as it is currently displayed, set `mode` to `"screenshot"`:
+
+```tsx
+<Printing map={map} mode="screenshot" />
+```
+
+In this mode, the user can only enter a title and choose the file format.
+This was the default behavior of the component prior to v1.7.0.
+
+The props `fileFormats` and `viewPadding` are supported in both modes.
+The props `pageFormats`, `pageOrientations`, `dpis` and `scales` are not supported in `"screenshot"` mode.
+The component throws an error if one of them is set.
+
 ### Printing Service
 
 To use the printing service, inject it as following:

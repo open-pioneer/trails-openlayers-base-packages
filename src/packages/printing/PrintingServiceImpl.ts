@@ -82,9 +82,11 @@ export class PrintJob {
     #mapContainer: HTMLElement;
     #dpi: number;
 
-    /** The size of the map container while printing, in CSS pixels. */
-    #width: number;
-    #height: number;
+    /**
+     * The size of the map container while printing, in CSS pixels.
+     * Undefined if the map is printed at its current size: the container is left untouched in that case.
+     */
+    #printSize: { width: number; height: number } | undefined;
 
     #running = false;
     #drawInformation: DrawInfo[] | undefined = [];
@@ -100,8 +102,11 @@ export class PrintJob {
     /** The original width, at the start of the print job. */
     #viewWidth: string;
 
-    /** The view resolution while printing. */
-    #printResolution: number;
+    /**
+     * The view resolution while printing.
+     * Undefined if the map is printed at its current resolution: the view is left untouched in that case.
+     */
+    #printResolution: number | undefined;
 
     // NOTE: Map is optional here to support the legacy "OlMap-only" API.
     constructor(map: MapModel | undefined, olMap: OlMap, options: PrintJobOptions) {
@@ -129,11 +134,9 @@ export class PrintJob {
 
         // Without a map model or a scale, the map is printed as it is currently displayed.
         const { scale, width, height } = options;
-        let printResolution: number | undefined;
         if (map && scale != null) {
-            printResolution = map.getViewResolutionForScale(scale, options.dpi);
+            this.#printResolution = map.getViewResolutionForScale(scale, options.dpi);
         }
-        this.#printResolution = printResolution ?? viewResolution;
 
         if (map && scale != null && width != null && height != null) {
             // The page in pixels at the print dpi, plus the view padding (which is cropped from the result again).
@@ -142,12 +145,10 @@ export class PrintJob {
                 options.dpi
             );
             const padding = getViewPadding(olMap.getView());
-            this.#width = pageSize.pixelWidth + padding.left + padding.right;
-            this.#height = pageSize.pixelHeight + padding.top + padding.bottom;
-        } else {
-            // if no params for target image specified, export current map canvas
-            this.#width = mapContainer.offsetWidth;
-            this.#height = mapContainer.offsetHeight;
+            this.#printSize = {
+                width: pageSize.pixelWidth + padding.left + padding.right,
+                height: pageSize.pixelHeight + padding.top + padding.bottom
+            };
         }
     }
 
@@ -206,11 +207,14 @@ export class PrintJob {
             }
         }
 
-        // set print size if specified
-        this.#mapContainer.style.width = this.#width + "px";
-        this.#mapContainer.style.height = this.#height + "px";
-        this.#olMap.updateSize();
-        this.#olMap.getView().setResolution(this.#printResolution);
+        if (this.#printSize) {
+            this.#mapContainer.style.width = this.#printSize.width + "px";
+            this.#mapContainer.style.height = this.#printSize.height + "px";
+            this.#olMap.updateSize();
+        }
+        if (this.#printResolution != null) {
+            this.#olMap.getView().setResolution(this.#printResolution);
+        }
 
         await this.#addScaleLine();
     }
@@ -277,8 +281,10 @@ export class PrintJob {
             }
         };
 
-        exportOptions.width = this.#width;
-        exportOptions.height = this.#height;
+        if (this.#printSize) {
+            exportOptions.width = this.#printSize.width;
+            exportOptions.height = this.#printSize.height;
+        }
 
         // Lazy load html2canvas: it is a large dependency (a few hundred KiB) that is only
         // required when actually printed. This speeds up the initial page load.
@@ -288,11 +294,14 @@ export class PrintJob {
     }
 
     #reset() {
-        // reset original map size
-        this.#mapContainer.style.width = this.#viewWidth;
-        this.#mapContainer.style.height = this.#viewHeight;
-        this.#olMap.updateSize();
-        this.#olMap.getView().setResolution(this.#viewResolution);
+        if (this.#printSize) {
+            this.#mapContainer.style.width = this.#viewWidth;
+            this.#mapContainer.style.height = this.#viewHeight;
+            this.#olMap.updateSize();
+        }
+        if (this.#printResolution != null) {
+            this.#olMap.getView().setResolution(this.#viewResolution);
+        }
 
         if (this.#scaleLine) {
             this.#olMap?.removeControl(this.#scaleLine);

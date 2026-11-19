@@ -74,6 +74,17 @@ export type OlMapPrintingOptions = Pick<
 export type ViewPaddingBehavior = "auto" | "ignore";
 
 /**
+ * The mode of the {@link Printing} component.
+ *
+ * - `"page"`: The user chooses the page format, the page orientation, the print resolution and the scale.
+ *   The area of the map that will be printed is shown on the map.
+ *   This is the default.
+ * - `"screenshot"`: The user only chooses the title and the file format.
+ *   The entire map is printed as it is currently displayed, and no print area is shown on the map.
+ */
+export type PrintingMode = "page" | "screenshot";
+
+/**
  * Standard page size formats.
  */
 export type PageFormatType = "a3" | "a4" | "a5";
