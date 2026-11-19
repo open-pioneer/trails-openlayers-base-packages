@@ -1,5 +1,18 @@
 # @open-pioneer/feature-editing
 
+## 1.7.0
+
+### Minor Changes
+
+- 294e5a2: Update Chakra to 3.38.0
+- 437a900: Update trails core packages to 4.10.0
+
+### Patch Changes
+
+- 62243b5: Document that the editor resets the geometry of the edited feature when editing ends.
+  A `FeatureWriter` that keeps features in a vector source should store a copy (`feature.clone()`) and update/reload the source.
+- b2be33b: Enable trusted publishing for this package.
+
 ## 1.6.0
 
 ### Minor Changes

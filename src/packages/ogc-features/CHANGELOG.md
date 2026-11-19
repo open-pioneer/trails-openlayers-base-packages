@@ -1,5 +1,17 @@
 # @open-pioneer/ogc-features
 
+## 1.7.0
+
+### Minor Changes
+
+- 294e5a2: Update Chakra to 3.38.0
+- 437a900: Update trails core packages to 4.10.0
+
+### Patch Changes
+
+- eaa94de: The vector source created by `OgcFeaturesVectorSourceFactory` now enters the `error` state when the collection metadata cannot be loaded.
+- b2be33b: Enable trusted publishing for this package.
+
 ## 1.6.0
 
 ### Minor Changes
