@@ -1,5 +1,37 @@
 # @open-pioneer/printing
 
+## 1.7.0
+
+### Minor Changes
+
+- 17aab37: Add a new `printMap` overload to the `PrintingService` that takes a `MapModel` instead of a raw `olMap`. The overload taking an `olMap` has been deprecated.
+- 17aab37: Extend the `Printing` component and the `PrintingService` with print settings and a preview of the printed area.
+
+    The `Printing` component now lets the user choose the page format (DIN A3, A4 or A5), the page orientation, the print resolution in dpi and the scale of the printed map.
+    While the component is shown, the area of the map that will be printed is highlighted on the map.
+    The options available to the user can be configured with the new props `pageFormats`, `pageOrientations`, `dpis`, `scales` and `fileFormats`.
+
+    The new prop `mode: "screenshot"` can be used to revert to the old behavior.
+
+    `PrintingService.printMap()` supports the new options `scale`, `dpi`, `width` and `height` to print the map at a specific scale and page size.
+    These options require a `MapModel`.
+
+- 212e363: Add the `mode` prop to the `Printing` component.
+
+    - `mode="page"` is the default: the user can control the output page format, scale, etc., with a preview rendered on the map.
+    - `mode="screenshot"` keeps the behavior of earlier versions: the entire map is printed as it is currently being displayed, with no additional options and no preview.
+
+    ```tsx
+    <Printing map={map} mode="screenshot" />
+    ```
+
+- 294e5a2: Update Chakra to 3.38.0
+- 437a900: Update trails core packages to 4.10.0
+
+### Patch Changes
+
+- b2be33b: Enable trusted publishing for this package.
+
 ## 1.6.0
 
 ### Minor Changes
