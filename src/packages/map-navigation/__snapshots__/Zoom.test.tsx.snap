@@ -3,7 +3,7 @@
 exports[`should successfully create a zoom component with additional css classes 1`] = `
 <button
   aria-label="zoom-in.title"
-  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in testClass1 testClass2 css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in testClass1 testClass2 css-1u28qy8"
   data-ownedby="_r_2_"
   data-part="trigger"
   data-scope="tooltip"
@@ -40,7 +40,7 @@ exports[`should successfully create a zoom component with additional css classes
 exports[`should successfully create a zoom-in and zoom-out buttons > zoom-in 1`] = `
 <button
   aria-label="zoom-in.title"
-  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in css-1u28qy8"
   data-ownedby="_r_0_"
   data-part="trigger"
   data-scope="tooltip"
@@ -77,7 +77,7 @@ exports[`should successfully create a zoom-in and zoom-out buttons > zoom-in 1`]
 exports[`should successfully create a zoom-in and zoom-out buttons > zoom-out 1`] = `
 <button
   aria-label="zoom-out.title"
-  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-out css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-out css-1u28qy8"
   data-ownedby="_r_1_"
   data-part="trigger"
   data-scope="tooltip"

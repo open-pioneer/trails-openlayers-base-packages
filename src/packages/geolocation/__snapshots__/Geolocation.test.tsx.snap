@@ -4,7 +4,7 @@ exports[`should successfully create a geolocation component with a button 1`] = 
 <button
   aria-label="locateNotSupported"
   aria-pressed="false"
-  class="chakra-button chakra-tooltip__trigger tool-button geolocation tool-button--disabled css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button geolocation tool-button--disabled css-1u28qy8"
   data-ownedby="_r_0_"
   data-part="trigger"
   data-scope="tooltip"

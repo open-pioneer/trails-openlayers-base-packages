@@ -26,7 +26,7 @@ exports[`should successfully create a printing component 1`] = `
         title
       </label>
       <input
-        class="chakra-input css-16b029e"
+        class="chakra-input css-1u247mz"
         data-part="input"
         data-scope="field"
         id="_r_0_"
@@ -54,7 +54,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select-pageformat css-1fgm1uu"
+          class="chakra-native-select__field printing-select-pageformat css-gdb0ip"
           data-part="select"
           data-scope="field"
           id="_r_1_"
@@ -109,7 +109,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select-orientation css-1fgm1uu"
+          class="chakra-native-select__field printing-select-orientation css-gdb0ip"
           data-part="select"
           data-scope="field"
           id="_r_2_"
@@ -159,7 +159,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select-fileformat css-1fgm1uu"
+          class="chakra-native-select__field printing-select-fileformat css-gdb0ip"
           data-part="select"
           data-scope="field"
           id="_r_3_"
@@ -209,7 +209,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select-dpi css-1fgm1uu"
+          class="chakra-native-select__field printing-select-dpi css-gdb0ip"
           data-part="select"
           data-scope="field"
           id="_r_4_"
@@ -264,7 +264,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select-scale css-1fgm1uu"
+          class="chakra-native-select__field printing-select-scale css-gdb0ip"
           data-part="select"
           data-scope="field"
           id="_r_5_"
@@ -415,7 +415,7 @@ exports[`should successfully create a printing component 1`] = `
       </div>
     </div>
     <button
-      class="chakra-button printing-export-button css-10si0hy"
+      class="chakra-button printing-export-button css-1p2chda"
       type="submit"
     >
       export

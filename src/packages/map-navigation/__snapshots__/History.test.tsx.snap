@@ -3,7 +3,7 @@
 exports[`should successfully create an view history navigation component > history-div-backward 1`] = `
 <button
   aria-label="view-backward.title"
-  class="chakra-button chakra-tooltip__trigger tool-button view view-backward tool-button--disabled css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button view view-backward tool-button--disabled css-1u28qy8"
   data-ownedby="_r_0_"
   data-part="trigger"
   data-scope="tooltip"
@@ -41,7 +41,7 @@ exports[`should successfully create an view history navigation component > histo
 exports[`should successfully create an view history navigation component > history-div-forward 1`] = `
 <button
   aria-label="view-forward.title"
-  class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-19u3ixl"
+  class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-1u28qy8"
   data-ownedby="_r_1_"
   data-part="trigger"
   data-scope="tooltip"

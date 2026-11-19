@@ -559,7 +559,9 @@ describe("validation", () => {
         nameInput.focus();
 
         await waitFor(() => {
-            const errorElementId = nameInput.getAttribute("aria-errormessage");
+            // This was "aria-errormessage" in Chakra 3.37.0 but was changed back in 3.38.0 to describedby
+            // due to browser limitations, see: https://chakra-ui.com/blog/chakra-3.38-command#upgrading
+            const errorElementId = nameInput.getAttribute("aria-describedby");
             expect(errorElementId).toBeTruthy();
             const errorElement = document.getElementById(errorElementId!);
             expect(errorElement).toHaveTextContent("custom error text");

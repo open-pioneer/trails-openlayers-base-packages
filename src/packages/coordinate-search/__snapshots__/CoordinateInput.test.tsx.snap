@@ -30,7 +30,7 @@ exports[`should successfully create a coordinate input component 1`] = `
         id="select:_r_1_:control"
       >
         <label
-          class="chakra-select__label css-164gb0n"
+          class="chakra-select__label css-1y9v0ey"
           data-part="label"
           data-scope="select"
           dir="ltr"
@@ -46,7 +46,7 @@ exports[`should successfully create a coordinate input component 1`] = `
           aria-invalid="false"
           aria-labelledby="select:_r_1_:label"
           aria-required="false"
-          class="coordinate-input-select-trigger chakra-select__trigger css-12wxxq1"
+          class="coordinate-input-select-trigger chakra-select__trigger css-5y1py3"
           data-part="trigger"
           data-scope="select"
           data-state="closed"
@@ -100,7 +100,7 @@ exports[`should successfully create a coordinate input component 1`] = `
         <input
           aria-label="coordinateInput.ariaLabel"
           autocomplete="off"
-          class="chakra-input css-1jwcmrs"
+          class="chakra-input css-1pgnw0g"
           data-part="input"
           data-scope="field"
           id="_r_2_"

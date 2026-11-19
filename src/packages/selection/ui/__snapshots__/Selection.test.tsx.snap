@@ -13,7 +13,7 @@ exports[`renders the select control for the current selection source 1`] = `
     id="select:_r_0_"
   >
     <label
-      class="chakra-select__label css-p3rj3s"
+      class="chakra-select__label css-shlo9u"
       data-part="label"
       data-scope="select"
       dir="ltr"
@@ -38,7 +38,7 @@ exports[`renders the select control for the current selection source 1`] = `
         aria-invalid="false"
         aria-labelledby="select:_r_0_:label"
         aria-required="false"
-        class="chakra-select__trigger css-lwaeyv"
+        class="chakra-select__trigger css-zsoewd"
         data-part="trigger"
         data-scope="select"
         data-state="closed"

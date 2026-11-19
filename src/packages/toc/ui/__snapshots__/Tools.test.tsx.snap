@@ -28,7 +28,7 @@ exports[`Should successfully create a toc with default tool component > find-too
               aria-expanded="false"
               aria-haspopup="menu"
               aria-label="toolsLabel"
-              class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
+              class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-1x6878j"
               data-controls="menu:_r_2_:content"
               data-ownedby="_r_3_"
               data-part="trigger"
@@ -150,7 +150,7 @@ exports[`Should successfully create a toc with default tool component > find-too
       aria-expanded="false"
       aria-haspopup="menu"
       aria-label="toolsLabel"
-      class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
+      class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-1x6878j"
       data-controls="menu:_r_2_:content"
       data-ownedby="_r_3_"
       data-part="trigger"
@@ -214,7 +214,7 @@ exports[`Should successfully create a toc with default tool component > find-too
 >
   <div
     aria-label="tools.hideAllLayers"
-    class="chakra-menu__item css-u03wm8"
+    class="chakra-menu__item css-hu99zp"
     data-ownedby="menu:_r_2_:content"
     data-part="item"
     data-scope="menu"
