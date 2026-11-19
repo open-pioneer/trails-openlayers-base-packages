@@ -8,8 +8,8 @@ import { createService } from "@open-pioneer/test-utils/services";
 import BaseLayer from "ol/layer/Base";
 import OlMap from "ol/Map";
 import RenderEvent from "ol/render/Event";
-import { vi, it, expect, afterEach, beforeEach } from "vitest";
-import { PageFormatType, PageOrientationType, ViewPaddingBehavior } from "./index";
+import { vi, it, expect, afterEach, beforeEach, describe } from "vitest";
+import { PageFormatType, PageOrientationType, PrintingMode, ViewPaddingBehavior } from "./index";
 import { PrintingController } from "./PrintingController";
 import { PrintJob, PrintingServiceImpl } from "./PrintingServiceImpl";
 import * as utils from "./utils";
@@ -393,6 +393,50 @@ it("removes the listener, the overlay and print area layer when destroyed", asyn
     expect(findOverlay(map.olMap)).toBeUndefined();
 });
 
+describe("screenshot mode", () => {
+    it("does not add a print area layer to the map", async () => {
+        const { map, controller, layerCreateSpy, addLayerSpy, removeLayerSpy } =
+            await setUp("screenshot");
+        const layerIds = map.layers.getLayers({ includeInternalLayers: true }).map((l) => l.id);
+
+        expect(layerCreateSpy).not.toHaveBeenCalled();
+        expect(addLayerSpy).not.toHaveBeenCalled();
+
+        controller.setPageFormat("a3");
+        controller.setOrientation("portrait");
+        controller.setScale(8000);
+        controller.destroy();
+
+        expect(removeLayerSpy).not.toHaveBeenCalled();
+        expect(map.layers.getLayers({ includeInternalLayers: true }).map((l) => l.id)).toEqual(
+            layerIds
+        );
+    });
+
+    it("prints the map as displayed, without scale, page size or dpi", async () => {
+        const { map, controller, printingService } = await setUp("screenshot");
+        const printMapSpy = vi.spyOn(printingService as any, "printMap");
+
+        // Print settings of "page" mode are not required and have no effect.
+        await controller.handleMapExport({ fileFormat: "png", dpi: 300 });
+        expect(printMapSpy).toHaveBeenLastCalledWith(map, {
+            blockUserInteraction: false,
+            viewPadding: undefined
+        });
+
+        controller.setViewPadding("ignore");
+        controller.setPageFormat("a3");
+        controller.setOrientation("portrait");
+        controller.setScale(8000);
+
+        await controller.handleMapExport({ fileFormat: "png", dpi: 300 });
+        expect(printMapSpy).toHaveBeenLastCalledWith(map, {
+            blockUserInteraction: false,
+            viewPadding: "ignore"
+        });
+    });
+});
+
 function findOverlay(olMap: OlMap) {
     const target = olMap.getTarget() as HTMLElement | undefined;
     if (!target) {
@@ -406,7 +450,7 @@ function findOverlay(olMap: OlMap) {
     return overlay;
 }
 
-async function setUp() {
+async function setUp(mode: PrintingMode = "page") {
     const target = document.createElement("div");
 
     const { mapId, registry, layerFactory } = await setupMap({ mapId: "printing-controller-test" });
@@ -423,8 +467,10 @@ async function setUp() {
     const exportToCanvasSpy = vi.spyOn(PrintJob.prototype as any, "printToCanvas");
     exportToCanvasSpy.mockImplementation(() => document.createElement("canvas"));
 
-    const overlayText = { overlayText: "Map printing ..." };
-    const controller = new PrintingController(map, layerFactory, printingService, overlayText);
+    const controller = new PrintingController(map, layerFactory, printingService, {
+        mode: mode,
+        overlayText: "Map printing ..."
+    });
 
     const exportMapInPNGSpy = vi.spyOn(controller as any, "exportMapInPNG");
     const exportMapInPDFSpy = vi.spyOn(controller as any, "exportMapInPDF");

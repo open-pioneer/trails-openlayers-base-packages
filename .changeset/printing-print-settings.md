@@ -8,5 +8,7 @@ The `Printing` component now lets the user choose the page format (DIN A3, A4 or
 While the component is shown, the area of the map that will be printed is highlighted on the map.
 The options available to the user can be configured with the new props `pageFormats`, `pageOrientations`, `dpis`, `scales` and `fileFormats`.
 
+The new prop `mode: "screenshot"` can be used to revert to the old behavior.
+
 `PrintingService.printMap()` supports the new options `scale`, `dpi`, `width` and `height` to print the map at a specific scale and page size.
 These options require a `MapModel`.

@@ -15,6 +15,8 @@ import type {
     FileFormatType,
     PageOrientationType,
     PageFormatType,
+    PrintingMode,
+    PrintingOptions,
     PrintingService,
     PrintResult,
     ViewPaddingBehavior
@@ -32,14 +34,25 @@ const DEFAULT_FILE_NAME = "map";
 export interface ExportOptions {
     title?: string | undefined;
     fileFormat: FileFormatType;
+
+    /** The print resolution. Only used in "page" mode. */
     dpi: number;
+}
+
+export interface PrintingControllerOptions {
+    /** In "page" mode, the controller shows the print area on the map. */
+    mode: PrintingMode;
+
+    /** The text of the overlay that blocks the map while printing. */
+    overlayText: string;
 }
 
 export class PrintingController {
     #map: MapModel;
     #olMap: OlMap;
     #printingService: PrintingService;
-    #i18n: I18n;
+    #mode: PrintingMode;
+    #overlayText: string;
 
     #viewPadding: ViewPaddingBehavior | undefined;
     #pageFormat: PageFormatType | undefined;
@@ -48,20 +61,40 @@ export class PrintingController {
 
     #printMap: PrintResult | undefined = undefined;
     #overlay: Resource | undefined = undefined;
-    #printAreaLayer: SimpleLayer;
-    #postrenderListener: EventsKey;
+    #printAreaLayer: SimpleLayer | undefined;
+    #postrenderListener: EventsKey | undefined;
 
     constructor(
         map: MapModel,
         layerFactory: LayerFactory,
         printingService: PrintingService,
-        i18n: I18n
+        options: PrintingControllerOptions
     ) {
         this.#map = map;
         this.#olMap = map.olMap;
         this.#printingService = printingService;
-        this.#i18n = i18n;
+        this.#mode = options.mode;
+        this.#overlayText = options.overlayText;
 
+        if (this.#mode === "page") {
+            this.#createPrintAreaLayer(layerFactory);
+        }
+    }
+
+    destroy() {
+        this.#reset();
+        if (this.#postrenderListener) {
+            unByKey(this.#postrenderListener);
+            this.#postrenderListener = undefined;
+        }
+        if (this.#printAreaLayer) {
+            this.#map.layers.removeLayer(this.#printAreaLayer);
+            this.#printAreaLayer.destroy();
+            this.#printAreaLayer = undefined;
+        }
+    }
+
+    #createPrintAreaLayer(layerFactory: LayerFactory) {
         const vectorLayer = new VectorLayer({
             source: new VectorSource({
                 useSpatialIndex: false,
@@ -80,13 +113,6 @@ export class PrintingController {
         this.#postrenderListener = vectorLayer.on("postrender", (event) => {
             this.#showPrintArea(event);
         });
-    }
-
-    destroy() {
-        this.#reset();
-        unByKey(this.#postrenderListener);
-        this.#map.layers.removeLayer(this.#printAreaLayer);
-        this.#printAreaLayer.destroy();
     }
 
     setViewPadding(padding: ViewPaddingBehavior) {
@@ -110,7 +136,7 @@ export class PrintingController {
     }
 
     #updatePrintArea(): void {
-        this.#printAreaLayer.olLayer.changed();
+        this.#printAreaLayer?.olLayer.changed();
     }
 
     #showPrintArea(renderEvent: RenderEvent) {
@@ -148,23 +174,12 @@ export class PrintingController {
     }
 
     async handleMapExport(options: ExportOptions) {
-        if (!this.#pageFormat || !this.#orientation || !this.#scale) {
-            throw new Error("Printing params undefined");
-        }
+        const printingOptions = this.#getPrintingOptions(options);
 
         try {
             this.#begin();
 
-            const { paperHeight, paperWidth } = getPageSize(this.#pageFormat, this.#orientation);
-
-            this.#printMap = await this.#printingService.printMap(this.#map, {
-                blockUserInteraction: false,
-                viewPadding: this.#viewPadding,
-                dpi: options.dpi,
-                scale: this.#scale,
-                height: paperHeight,
-                width: paperWidth
-            });
+            this.#printMap = await this.#printingService.printMap(this.#map, printingOptions);
             const canvas = this.#printMap.getCanvas();
             if (options.fileFormat === "png") {
                 await this.exportMapInPNG(canvas, options);
@@ -176,18 +191,41 @@ export class PrintingController {
         }
     }
 
+    #getPrintingOptions(options: ExportOptions): PrintingOptions {
+        if (this.#mode === "screenshot") {
+            // Without scale and page size, the service prints the map as it is currently displayed.
+            return {
+                blockUserInteraction: false,
+                viewPadding: this.#viewPadding
+            };
+        }
+
+        if (!this.#pageFormat || !this.#orientation || !this.#scale) {
+            throw new Error("Internal error: printing params are not set");
+        }
+        const { paperHeight, paperWidth } = getPageSize(this.#pageFormat, this.#orientation);
+        return {
+            blockUserInteraction: false,
+            viewPadding: this.#viewPadding,
+            dpi: options.dpi,
+            scale: this.#scale,
+            height: paperHeight,
+            width: paperWidth
+        };
+    }
+
     #begin() {
         const container = this.#olMap.getTargetElement();
         if (container) {
-            this.#overlay = createBlockUserOverlay(container, this.#i18n.overlayText);
+            this.#overlay = createBlockUserOverlay(container, this.#overlayText);
         }
-        this.#printAreaLayer.setVisible(false);
+        this.#printAreaLayer?.setVisible(false);
     }
 
     #reset() {
         this.#overlay?.destroy();
         this.#overlay = undefined;
-        this.#printAreaLayer.setVisible(true);
+        this.#printAreaLayer?.setVisible(true);
     }
 
     #getTitleAndFileName(options: ExportOptions) {
@@ -236,13 +274,14 @@ export class PrintingController {
     // Kept as a TypeScript `private` method (not a `#` private) so tests can replace it via
     // `vi.spyOn(controller, ...)` to isolate export-format dispatch from actual file export.
     private async exportMapInPDF(canvas: HTMLCanvasElement, options: ExportOptions) {
-        // Landscape map export.
+        const screenshot = this.#mode === "screenshot";
+
         // Lazy load pdfjs as well.
         const { jsPDF } = await import("jspdf");
         const pdf = new jsPDF({
-            orientation: this.#orientation,
+            orientation: screenshot ? "landscape" : this.#orientation,
             unit: "mm",
-            format: this.#pageFormat
+            format: screenshot ? "a4" : this.#pageFormat
         });
 
         // Simple layout: 50 pixels for the header and
@@ -274,8 +313,4 @@ export class PrintingController {
         pdf.addImage(canvas, "", imageX, imageY, targetImageWidth, targetImageHeight);
         pdf.save(fileName + ".pdf");
     }
-}
-
-interface I18n {
-    overlayText: string;
 }

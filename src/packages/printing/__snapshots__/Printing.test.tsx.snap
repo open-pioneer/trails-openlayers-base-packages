@@ -1,5 +1,99 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`screenshot mode > only shows the title and the file format 1`] = `
+<div
+  class="printing"
+  data-testid="printing"
+>
+  <form
+    aria-label="formLabel"
+    class="css-1crq8d6"
+  >
+    <div
+      class="chakra-stack chakra-field__root css-12dfuz6"
+      data-part="root"
+      data-scope="field"
+      id="field::_r_30_"
+      role="group"
+    >
+      <label
+        class="chakra-field__label css-sevaap"
+        data-part="label"
+        data-scope="field"
+        for="_r_30_"
+        id="field::_r_30_::label"
+      >
+        title
+      </label>
+      <input
+        class="chakra-input css-1u247mz"
+        data-part="input"
+        data-scope="field"
+        id="_r_30_"
+        placeholder="input.placeholder"
+        value=""
+      />
+    </div>
+    <div
+      class="chakra-stack chakra-field__root css-12dfuz6"
+      data-part="root"
+      data-scope="field"
+      id="field::_r_31_"
+      role="group"
+    >
+      <label
+        class="chakra-field__label css-sevaap"
+        data-part="label"
+        data-scope="field"
+        for="_r_31_"
+        id="field::_r_31_::label"
+      >
+        fileFormat.label
+      </label>
+      <div
+        class="chakra-native-select__root css-dup0sm"
+      >
+        <select
+          class="chakra-native-select__field printing-select-fileformat css-gdb0ip"
+          data-part="select"
+          data-scope="field"
+          id="_r_31_"
+        >
+          <option
+            value="png"
+          >
+            fileFormat.png
+          </option>
+          <option
+            value="pdf"
+          >
+            fileFormat.pdf
+          </option>
+        </select>
+        <div
+          class="chakra-native-select__indicator css-d7tss2"
+        >
+          <svg
+            class="css-s3mb0o"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="m6 9 6 6 6-6"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <button
+      class="chakra-button printing-export-button css-1p2chda"
+      type="submit"
+    >
+      export
+    </button>
+  </form>
+</div>
+`;
+
 exports[`should successfully create a printing component 1`] = `
 <div
   class="printing"

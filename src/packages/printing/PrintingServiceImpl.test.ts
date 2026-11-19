@@ -112,6 +112,9 @@ it("should print the current map canvas without resizing when no dimensions are 
     const heightBefore = map.container?.style.height;
     const widthBefore = map.container?.style.width;
 
+    const updateSizeSpy = vi.spyOn(map.olMap, "updateSize");
+    const setResolutionSpy = vi.spyOn(map.olView, "setResolution");
+
     const printDonePromise = printingService.printMap(map);
 
     // no resize while printing
@@ -122,6 +125,51 @@ it("should print the current map canvas without resizing when no dimensions are 
     resolve(document.createElement("canvas"));
 
     await printDonePromise;
+
+    // The container and the view are never touched
+    expect(updateSizeSpy).not.toHaveBeenCalled();
+    expect(setResolutionSpy).not.toHaveBeenCalled();
+});
+
+it("does not write a size to the map container when no dimensions are provided", async () => {
+    const { map, olMap, printToCanvasSpy, printingService } = await setUp();
+
+    // The container is sized by CSS, e.g. by a parent layout
+    const target = olMap.getTargetElement()!;
+    target.style.width = "";
+    target.style.height = "";
+
+    const { promise, resolve } = createManualPromise();
+    printToCanvasSpy.mockImplementation(() => promise);
+
+    const printDonePromise = printingService.printMap(map);
+    await vi.waitFor(() => expect(printToCanvasSpy).toHaveBeenCalled());
+    expect(target.style.width).toBe("");
+    expect(target.style.height).toBe("");
+
+    resolve(document.createElement("canvas"));
+    await printDonePromise;
+});
+
+it("only changes the view resolution when a scale is provided without a page size", async () => {
+    const { map, printToCanvasSpy, printingService } = await setUp();
+
+    const { promise, resolve } = createManualPromise();
+    printToCanvasSpy.mockImplementation(() => promise);
+
+    const resolutionBefore = map.resolution;
+    const updateSizeSpy = vi.spyOn(map.olMap, "updateSize");
+
+    const printDonePromise = printingService.printMap(map, { scale: 10000 });
+    await vi.waitFor(() => expect(printToCanvasSpy).toHaveBeenCalled());
+    expect(map.resolution).not.toEqual(resolutionBefore);
+    expect(map.container?.style.width).toEqual("800px");
+
+    resolve(document.createElement("canvas"));
+    await printDonePromise;
+
+    expect(map.resolution).toEqual(resolutionBefore);
+    expect(updateSizeSpy).not.toHaveBeenCalled();
 });
 
 it("should respect the map's padding by default", async () => {
