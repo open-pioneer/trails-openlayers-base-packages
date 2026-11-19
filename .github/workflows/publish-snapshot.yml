@@ -21,5 +21,4 @@ jobs:
       id-token: write
     with:
       snapshot-tag: ${{ inputs.snapshot-tag }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      trusted-publishing: true

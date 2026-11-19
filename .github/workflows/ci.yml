@@ -26,6 +26,6 @@ jobs:
       id-token: write
     with:
       demo-id: openlayers-base-packages
+      trusted-publishing: true
     secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       DEMO_DEPLOY_TOKEN: ${{ secrets.DEMO_DEPLOY_TOKEN }}
