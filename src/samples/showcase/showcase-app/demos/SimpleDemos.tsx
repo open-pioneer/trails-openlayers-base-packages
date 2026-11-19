@@ -139,7 +139,7 @@ export function createPrintingDemo({ currentIntl }: SharedDemoOptions): Demo {
                 description: (
                     <FormattedRichMessage intl={currentIntl} id="demos.printing.description" />
                 ),
-                mainWidget: <Printing mode="screenshot" />
+                mainWidget: <Printing />
             };
         }
     };
