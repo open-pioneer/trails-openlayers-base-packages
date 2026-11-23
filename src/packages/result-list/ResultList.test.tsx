@@ -237,6 +237,56 @@ it("expect all rows to be selected and deselected", async () => {
     });
 });
 
+it("clears the selection when the selection mode changes", async () => {
+    const { map } = await setup();
+    const user = userEvent.setup();
+    const onSelectionChange = vi.fn();
+    const result = render(
+        <PackageContextProvider>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                map={map}
+                selectionMode="multi"
+                data-testid="result-list"
+                onSelectionChange={onSelectionChange}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectRowCheckboxes } = await waitForResultList();
+    await user.click(selectRowCheckboxes[0]!);
+    expect(selectRowCheckboxes[0]).toBeChecked();
+
+    result.rerender(
+        <PackageContextProvider>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                map={map}
+                selectionMode="multi"
+                data-testid="result-list"
+                onSelectionChange={onSelectionChange}
+            />
+        </PackageContextProvider>
+    );
+    expect(selectRowCheckboxes[0]).toBeChecked();
+
+    result.rerender(
+        <PackageContextProvider>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                map={map}
+                selectionMode="single"
+                data-testid="result-list"
+                onSelectionChange={onSelectionChange}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectRowRadios } = await waitForResultList();
+    expect(selectRowRadios[0]).not.toBeChecked();
+    expect(onSelectionChange.mock.lastCall?.[0].features).toEqual([]);
+});
+
 it("expect only single rows to be selected and deselected by radio buttons", async () => {
     const { map } = await setup();
     const user = userEvent.setup();
