@@ -34,7 +34,6 @@
         "proj4": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
-        "react-use": "catalog:",
         "uuid": "catalog:"
     },
     "devDependencies": {

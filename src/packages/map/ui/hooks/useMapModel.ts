@@ -4,8 +4,7 @@
 import { createLogger } from "@open-pioneer/core";
 import { useService } from "open-pioneer:react-hooks";
 import { sourceId } from "open-pioneer:source-info";
-import { useEffect, useMemo } from "react";
-import { useAsync } from "react-use";
+import { useEffect, useState } from "react";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
 import { useDefaultMap } from "../DefaultMapProvider";
@@ -105,25 +104,36 @@ export function useMapModel(
         );
     }
 
-    const state = useAsync(async () => {
-        if (mapId == null) {
-            // For backwards compatibility
-            return defaultMap;
-        }
-
-        return await mapRegistry.expectMapModel(mapId);
-    }, [mapRegistry, mapId]);
-
-    const result = useMemo((): UseMapModelResult => {
-        if (state.loading) {
-            return { kind: "loading" };
-        }
-        if (state.error) {
-            return { kind: "rejected", error: state.error };
-        }
-        // oxlint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return { kind: "resolved", map: state.value! };
-    }, [state]);
+    const defaultMapForLookup = mapId == null ? defaultMap : undefined;
+    const [result, setResult] = useState<UseMapModelResult>({ kind: "loading" });
+    useEffect(() => {
+        let current = true;
+        setResult((previous) => (previous.kind === "loading" ? previous : { kind: "loading" }));
+        const lookupMap = async () => {
+            if (mapId != null) {
+                return mapRegistry.expectMapModel(mapId);
+            }
+            if (!defaultMapForLookup) {
+                throw new Error("No default map available.");
+            }
+            return defaultMapForLookup;
+        };
+        lookupMap().then(
+            (map) => {
+                if (current) {
+                    setResult({ kind: "resolved", map });
+                }
+            },
+            (error: Error) => {
+                if (current) {
+                    setResult({ kind: "rejected", error });
+                }
+            }
+        );
+        return () => {
+            current = false;
+        };
+    }, [mapRegistry, mapId, defaultMapForLookup]);
 
     const quiet = (typeof props === "object" ? props.quiet : undefined) ?? false;
     useEffect(() => {

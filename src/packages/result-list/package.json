@@ -32,8 +32,7 @@
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:",
-        "react-use": "catalog:"
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:*",

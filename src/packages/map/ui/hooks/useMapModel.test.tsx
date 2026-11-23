@@ -6,7 +6,7 @@ import {
     PackageContextProvider,
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
-import { renderHook, RenderHookResult, waitFor } from "@testing-library/react";
+import { act, renderHook, RenderHookResult, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
@@ -162,6 +162,41 @@ describe("useMapModel", () => {
 
         expect(hook.result.current.error).toBe(err);
         expect(errorSpy.mock.calls.length).toBe(0);
+    });
+
+    it("ignores a previous lookup that resolves after the map id changes", async () => {
+        const first = createManualPromise<MapModel>();
+        const second = createManualPromise<MapModel>();
+        const services = {
+            "map.MapRegistry": {
+                expectMapModel: (id: string) => (id === "first" ? first.promise : second.promise)
+            } as MapRegistry
+        };
+        const hook = renderHook(({ mapId }) => useMapModel(mapId), {
+            initialProps: { mapId: "first" },
+            wrapper: (props) => <PackageContextProvider services={services} {...props} />
+        });
+
+        hook.rerender({ mapId: "second" });
+        const secondMap = mockMapModel();
+        await act(async () => second.resolve(secondMap));
+        expect(hook.result.current).toEqual({ kind: "resolved", map: secondMap });
+
+        await act(async () => first.resolve(mockMapModel()));
+        expect(hook.result.current).toEqual({ kind: "resolved", map: secondMap });
+    });
+
+    it("ignores lookup failures after unmount", async () => {
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+        const { promise, reject } = createManualPromise<MapModel>();
+        const services = mockServices({ expectedMapId: "foo", customPromise: promise });
+        const hook = renderHook(() => useMapModel("foo"), {
+            wrapper: (props) => <PackageContextProvider services={services} {...props} />
+        });
+
+        hook.unmount();
+        await act(async () => reject(new Error("lookup failed")));
+        expect(errorSpy).not.toHaveBeenCalled();
     });
 });
 
